@@ -1,8 +1,20 @@
 {
+  "item.quantity.bushel": "Bushel",
+  "item.quantity.bushels": "Bushels",
+  "item.status.pending_audit": "Pending Audit",
+  "item.status.received": "Received",
+  "item.status.shipped": "Shipped",
+  "item.type.apples": "Apples",
+  "item.type.bananas": "Bananas",
+  "item.type.oranges": "Oranges",
+  "order.contractId": "Contract ID",
+  "order.item": "Item",
+  "order.amount": "Amount",
+  "order.status": "Status",
   "new-order": "New Order",
-  "title": "Supply Chain Inc",
   "role.auditor": "Auditor",
   "role.distributor": "Distributor",
   "role.farmer": "Farmer",
-  "role.storage": "Storage"
+  "role.storage": "Storage",
+  "title": "Supply Chain Inc"
 }

@@ -5,12 +5,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { OrderListComponent } from './order-list/order-list.component';
-import { HomeComponent } from './home.component';
+import { OrderListComponent } from './order-list.component';
 
-describe('HomeComponent', () => {
-  let component: HomeComponent;
-  let fixture: ComponentFixture<HomeComponent>;
+describe('OrderListComponent', () => {
+  let component: OrderListComponent;
+  let fixture: ComponentFixture<OrderListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -18,16 +17,13 @@ describe('HomeComponent', () => {
         ClarityModule,
         TranslateModule.forRoot()
       ],
-      declarations: [
-        HomeComponent,
-        OrderListComponent
-      ]
+      declarations: [ OrderListComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HomeComponent);
+    fixture = TestBed.createComponent(OrderListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

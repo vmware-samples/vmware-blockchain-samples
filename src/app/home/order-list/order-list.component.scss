@@ -1,0 +1,12 @@
+clr-datagrid {
+  height: 150px;
+  padding-top: 0px;
+  clr-dg-cell {
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+}
+
+.order-column-contract-id {
+  width: 5rem;
+}
