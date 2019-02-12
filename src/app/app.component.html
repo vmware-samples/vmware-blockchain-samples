@@ -1,28 +1,25 @@
 <!-- Copyright 2018 VMware, all rights reserved. -->
 
 <clr-main-container>
-  <clr-header class="header-farmer">
+  <clr-header class="header-{{currentRole}}">
     <div class="branding">
       <a href="/" class="nav-link nav-icon">
         <clr-icon shape="link"></clr-icon>
         <span class="title">{{ 'title' | translate }}</span>
       </a>
     </div>
-    <div class="header-nav">
-      <a href="..." class="nav-link nav-icon">
-        <clr-icon shape="plus"></clr-icon>
+    <div id="nav-new-order" class="header-nav">
+      <a class="nav-link">
+        <clr-icon shape="plus"></clr-icon> 
+        <span class="nav-text">{{ 'new-order' | translate }}</span>
       </a>
     </div>
     <div class="header-actions">
       <clr-dropdown>
         <button class="nav-text" clrDropdownTrigger>
-          Farmer
-          <clr-icon shape="caret down"></clr-icon>
+          <clr-icon shape="user"></clr-icon>
+          {{ 'role.' + currentRole | translate }}
         </button>
-        <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
-          <a href="..." clrDropdownItem>Preferences</a>
-          <a href="..." clrDropdownItem>Log out</a>
-        </clr-dropdown-menu>
       </clr-dropdown>
     </div>
   </clr-header>
