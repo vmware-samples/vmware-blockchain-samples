@@ -12,16 +12,5 @@ import { UserService } from '../core/user/user.service';
   ],
   declarations: []
 })
-export class SharedModule {
 
-    static forRoot() {
-        return {
-            ngModule: SharedModule,
-            providers: [
-                UserService
-            ]
-        };
-    }
-
-
-}
+export class SharedModule { }
