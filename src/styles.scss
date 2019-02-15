@@ -7,13 +7,20 @@
 
 @import "../node_modules/@clr/ui/src/color/utils/_colors.clarity.scss";
 
+$color-pending: $clr-yellow;
+$color-success: $clr-green-dark-midtone;
+
 $roles:(
   auditor: $clr-action-blue-light-midtone,
   farmer: #00AB9A,
   distributor: $clr-red-light-midtone,
-  storage: $clr-yellow-light-midtone
+  storage: $clr-yellow-light-midtone,
+  super_market: $clr-action-purple-light-midtone
 );
 
 @each $role, $color in $roles {
-  .header-#{$role} { background-color: $color; }
+  .header-#{$role} {
+    background-color: $color;
+    color: white;
+  }
 }

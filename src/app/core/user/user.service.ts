@@ -12,7 +12,7 @@ import { User } from './user';
 export class UserService {
 
   // TODO: get User, including role, from back end service
-  readonly roles = ['auditor', 'farmer', 'distributor', 'storage' ];
+  public readonly roles = ['farmer', 'auditor', 'storage', 'distributor', 'super_market' ];
   _currentUser: User;
 
   constructor() { }

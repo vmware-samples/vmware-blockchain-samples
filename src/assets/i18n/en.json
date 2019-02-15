@@ -1,4 +1,7 @@
 {
+  "blockchain.status.approved": "Approved",
+  "blockchain.status.pending": "Pending",
+  "blockchain.status.waiting": "Waiting",
   "item.quantity.bushel": "Bushel",
   "item.quantity.bushels": "Bushels",
   "item.status.pending_audit": "Pending Audit",
@@ -16,5 +19,6 @@
   "role.distributor": "Distributor",
   "role.farmer": "Farmer",
   "role.storage": "Storage",
+  "role.super_market": "Super Market",
   "title": "Supply Chain Inc"
 }

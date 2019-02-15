@@ -1,0 +1,77 @@
+/*
+ * Copyright 2019 VMware, all rights reserved.
+ */
+
+@import '~bootstrap/scss/_variables.scss';
+@import '~bootstrap/scss/mixins/_breakpoints.scss';
+@import '../../../styles.scss';
+
+.blockchain-status-card {
+  display: flex;
+  padding-left: 0.2rem;
+  padding-right: 0.2rem;
+}
+
+.blockchain-status-card-approved {
+  .blockchain-status-card-icon-check {
+    color: $color-success;
+    display: inline-block;
+  }
+}
+
+.blockchain-status-card-pending {
+  .blockchain-status-card-icon-circle {
+    color: $color-pending;
+  }
+}
+
+.blockchain-status-card-pending, .blockchain-status-card-waiting {
+  .blockchain-status-card-icon-circle {
+    display: inline-block;
+  }
+}
+
+.blockchain-status-card-status {
+  font-size: 0.38rem;
+}
+
+.card {
+  margin-top: 0;
+  max-width: 100px;
+}
+
+.card-block {
+  padding: .15rem .2rem;
+}
+
+.card-header {
+  font-size: 0.45rem;
+  padding: 0.08rem;
+  text-align: center;
+}
+
+.card-text {
+  text-align: center;
+}
+
+clr-icon {
+  display: none;
+  height: 32px;
+  width: 32px;
+}
+
+@include media-breakpoint-down(lg) {
+  .card-header {
+    font-size: 0.4rem;
+  }
+}
+
+@include media-breakpoint-down(xs) {
+  .blockchain-status-card-status {
+    font-size: 0.3rem;
+  }
+  .card-header {
+    font-size: 0.25rem;
+    padding: 0.05rem;
+  }
+}

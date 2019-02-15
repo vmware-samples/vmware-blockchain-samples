@@ -1,0 +1,11 @@
+<!-- Copyright 2018 VMware, all rights reserved. -->
+<div class="clr-row clr-align-items-center">
+  <ng-container *ngFor="let role of roles; let i=index">
+    <div class="clr-col blockchain-status-card-wrapper">
+      <vmw-sc-blockchain-status-card [status]="statuses[i]" [role]="role"> </vmw-sc-blockchain-status-card>
+    </div>
+    <div class="clr-col blockchain-status-connector-wrapper" *ngIf="i != roles.length - 1">
+      <vmw-sc-blockchain-status-connector [active]="connectorActive[i]"> </vmw-sc-blockchain-status-connector>
+    </div>
+  </ng-container>
+</div>
