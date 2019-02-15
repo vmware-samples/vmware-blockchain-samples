@@ -1,0 +1,8 @@
+<!-- Copyright 2018 VMware, all rights reserved. -->
+<svg #linesSvg id="svg" (window:resize)="onResize($event)">
+  <path *ngFor="let path of paths" [id]="path.id" [attr.d]="path.route"/>
+</svg>
+<div class="clr-row blockchain-visualization-cards">
+  <vmw-sc-blockchain-status-card class="standard uppercase-status" [id]="'blockchain-visualization-card-' + roles.length + '-' + i" *ngFor="let role of roles; let i = index"
+    [status]="statuses[i]" [role]="role"> </vmw-sc-blockchain-status-card>
+</div>
