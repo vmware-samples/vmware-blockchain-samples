@@ -6,6 +6,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { BlockchainStatusComponent } from './blockchain-status/blockchain-status.component';
+import { BlockchainStatusCardComponent } from './blockchain-status/blockchain-status-card.component';
+import { BlockchainStatusConnectorComponent } from './blockchain-status/blockchain-status-connector.component';
 import { HomeComponent } from './home.component';
 import { HomeRoutingModule } from './home-routing.module';
 import { OrderListComponent } from './order-list/order-list.component';
@@ -18,6 +21,9 @@ import { OrderListComponent } from './order-list/order-list.component';
     TranslateModule
   ],
   declarations: [
+    BlockchainStatusCardComponent,
+    BlockchainStatusComponent,
+    BlockchainStatusConnectorComponent,
     HomeComponent,
     OrderListComponent
   ]
