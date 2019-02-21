@@ -1,5 +1,7 @@
 {
   "blockchain.status.approved": "Approved",
+  "blockchain.status.healthy": "Healthy",
+  "blockchain.status.healthy-check": "Healthy",
   "blockchain.status.pending": "Pending",
   "blockchain.status.waiting": "Waiting",
   "item.quantity.bushel": "Bushel",
@@ -20,5 +22,7 @@
   "role.farmer": "Farmer",
   "role.storage": "Storage",
   "role.super_market": "Super Market",
+  "section.header.blockchain.status": "Blockchain Node Status",
+  "section.header.orders": "Orders",
   "title": "Supply Chain Inc"
 }

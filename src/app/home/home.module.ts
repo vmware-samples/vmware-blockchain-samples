@@ -9,6 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { BlockchainStatusComponent } from './blockchain-status/blockchain-status.component';
 import { BlockchainStatusCardComponent } from './blockchain-status/blockchain-status-card.component';
 import { BlockchainStatusConnectorComponent } from './blockchain-status/blockchain-status-connector.component';
+import { BlockchainVisualizationComponent } from './blockchain-visualization/blockchain-visualization.component';
 import { HomeComponent } from './home.component';
 import { HomeRoutingModule } from './home-routing.module';
 import { OrderListComponent } from './order-list/order-list.component';
@@ -24,6 +25,7 @@ import { OrderListComponent } from './order-list/order-list.component';
     BlockchainStatusCardComponent,
     BlockchainStatusComponent,
     BlockchainStatusConnectorComponent,
+    BlockchainVisualizationComponent,
     HomeComponent,
     OrderListComponent
   ]

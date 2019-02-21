@@ -6,15 +6,42 @@
 @import '~bootstrap/scss/mixins/_breakpoints.scss';
 @import '../../../styles.scss';
 
-.blockchain-status-card {
-  display: flex;
-  padding-left: 0.2rem;
-  padding-right: 0.2rem;
+:host {
+  display: block;
 }
 
-.blockchain-status-card-approved {
+:host(.uppercase-status) {
+  .blockchain-status-card-status {
+    text-transform: uppercase;
+  }
+}
+
+:host(.compact) {
+  .card {
+    width: 55px;
+  }
+}
+
+:host(.standard) {
+  .card {
+    width: 90px;
+  }
+}
+
+.blockchain-status-card {
+  display: flex;
+  padding: 0;
+}
+
+.blockchain-status-card-approved, .blockchain-status-card-healthy-check {
   .blockchain-status-card-icon-check {
     color: $color-success;
+    display: inline-block;
+  }
+}
+
+.blockchain-status-card-healthy {
+  .blockchain-status-card-icon-blocks {
     display: inline-block;
   }
 }
@@ -36,8 +63,9 @@
 }
 
 .card {
+  height: 95px;
   margin-top: 0;
-  max-width: 100px;
+  max-width: 90px;
 }
 
 .card-block {
@@ -63,6 +91,12 @@ clr-icon {
 @include media-breakpoint-down(lg) {
   .card-header {
     font-size: 0.4rem;
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  .card-header {
+    font-size: 0.33rem;
   }
 }
 

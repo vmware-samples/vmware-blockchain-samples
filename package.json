@@ -26,7 +26,7 @@
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
     "@webcomponents/custom-elements": "^1.0.0",
-    "core-js": "^2.5.4",
+    "core-js": "^2.6.5",
     "rxjs": "~6.2.0",
     "zone.js": "~0.8.26"
   },
