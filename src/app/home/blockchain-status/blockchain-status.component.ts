@@ -30,7 +30,6 @@ export class BlockchainStatusComponent implements OnInit {
     this.statuses[pendingNode - 1] = 'pending';
     this.statuses.fill('approved', 0, pendingNode - 1);
     this.connectorActive.fill(false, pendingNode - 1);
-    console.log(this.connectorActive);
   }
 
 }

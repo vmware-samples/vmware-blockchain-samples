@@ -12,6 +12,7 @@
   "item.type.apples": "Apples",
   "item.type.bananas": "Bananas",
   "item.type.oranges": "Oranges",
+  "modal.create.order.title": "Create Order",
   "order.contractId": "Contract ID",
   "order.item": "Item",
   "order.amount": "Amount",

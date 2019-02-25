@@ -5,6 +5,7 @@
  */
 
 import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { UserService } from './core/user/user.service';
 
@@ -15,15 +16,25 @@ import { UserService } from './core/user/user.service';
 })
 export class AppComponent {
 
+  createOrderVisible = false;
   currentRole: string;
 
-  constructor(translate: TranslateService,
+  constructor(private route: ActivatedRoute,
+              private router: Router,
+              translate: TranslateService,
               userService: UserService) {
     // this language will be used as a fallback when a translation isn't found in the current language
     translate.setDefaultLang('en');
 
     // the lang to use, if the lang isn't available, it will use the current loader to get them
     translate.use('en');
+    this.route.fragment.subscribe((fragment: string) => {
+      this.createOrderVisible = (fragment === 'create');
+    });
     this.currentRole = userService.currentUser.role;
+  }
+
+  onClose() {
+    this.router.navigate([''], {fragment: null});
   }
 }

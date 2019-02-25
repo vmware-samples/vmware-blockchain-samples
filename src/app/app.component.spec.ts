@@ -6,19 +6,26 @@
 
 import { ClarityModule } from '@clr/angular';
 import { HttpClientModule } from '@angular/common/http';
-import { MockTranslateModule } from './mocks/mock-translate.module';
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { AppComponent } from './app.component';
+import { CoreModule } from './core/core.module';
+import { HomeModule } from './home/home.module';
+import { MockTranslateModule } from './mocks/mock-translate.module';
+
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule,
         ClarityModule,
+        CoreModule,
+        HomeModule,
         HttpClientModule,
-        MockTranslateModule
+        MockTranslateModule,
+        RouterTestingModule,
+        TranslateModule.forRoot()
       ],
       declarations: [
         AppComponent

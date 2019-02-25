@@ -11,11 +11,11 @@ import { HomeComponent } from './home/home.component';
 const routes: Routes = [
   {
     path: 'home',
-    loadChildren: './home/home.module#HomeModule'
+    component: HomeComponent
   },
   {
     path: '',
-    redirectTo: '/',
+    redirectTo: '/home',
     pathMatch: 'full'
   }
 ];
