@@ -42,4 +42,21 @@ describe('BlockchainVisualizationComponent', () => {
      expect(spyOnResize).toHaveBeenCalled();
    });
 
+   describe('drawPaths()', () => {
+     beforeEach(() => {
+       component.roles = ['a', 'b', 'c', 'd'];
+     });
+
+     it('should draw double paths between nodes', () => {
+       expect(component.paths.length).toBe(12);
+     });
+
+     it('should give unique path names', () => {
+       expect(Array.from(new Set(component.paths.map(c => c.id))).length).toBe(12);
+     });
+
+     it('should name paths based on node ids', () => {
+       expect(component.paths[0].id).toBe('path-0-1');
+     });
+   });
 });

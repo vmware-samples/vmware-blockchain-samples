@@ -27,6 +27,13 @@ export class BlockchainVisualizationComponent implements AfterViewInit, OnInit {
     this.statuses[random(4) - 1] = 'healthy-check';
   }
 
+  ngOnInit() {}
+
+  ngAfterViewInit() {
+    // Set up lines between cards
+    this.drawPaths();
+  }
+
   drawPaths() {
     this.cards.forEach((currentCard, currentCardIndex) => {
       this.cards.forEach((targetCard, targetCardIndex) => {
@@ -39,17 +46,6 @@ export class BlockchainVisualizationComponent implements AfterViewInit, OnInit {
         }
       });
     });
-  }
-
-  ngOnInit() {}
-
-  ngAfterViewInit() {
-    // Set up lines between cards
-    this.drawPaths();
-  }
-
-  dummy() {
-
   }
 
   onResize(event) {
