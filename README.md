@@ -4,6 +4,68 @@
 
 This is a demonstration of a supply chain dApp on VMware Blockchain or other ethereum based blockchain.
 
+
+## Deploy and interact with our contracts.
+
+Please refer to the [truffle documentation](https://truffleframework.com/docs/truffle/overview) for more info.
+
+First update your the truffle-config.js file to point at a deployed blockchain instance
+
+Then deploy the supply chain contracts:
+
+```shell
+npm install
+
+truffle migrate
+```
+
+Now lets interact with the contracts:
+
+```shell
+truffle console
+```
+
+In the console:
+```shell
+
+# Get our deployed contract
+let contract;
+Orders.deployed().then(function(c){ contract = c});
+
+# Create an order
+contract.create(web3.fromAscii("Apples"), 100);
+
+# Get the order address we just created
+contract.orders.call(0)
+'0xf0de5c223985434b12b8c858ccfa9b9a309a0251'
+
+# Initialize the order into our ABI
+let order = Order.at('0xf0de5c223985434b12b8c858ccfa9b9a309a0251');
+
+# Lets set our owners
+order.setOwners.sendTransaction('0xfa1a4c33aa682d34eda15bf772f672edddac13aa', '0xfa1a4c33aa682d34eda15bf772f672edddac13aa', '0xfa1a4c33aa682d34eda15bf772f672edddac13aa', '0xfa1a4c33aa682d34eda15bf772f672edddac13aa', '0xfa1a4c33aa682d34eda15bf772f672edddac13aa');
+'0x221030d0af4734a7e8c8dade5cdd945e9940efa35725daaee3315ff908dd108b'
+
+# Approve transaction
+order.approve.sendTransaction();
+'0xdef210546df026c422f7e1c01785abbf147ec2ae95a7d2a96bf8b8e6edfa345e'
+
+# Get meta data
+order.meta.call();
+[ '0x4170706c65730000000000000000000000000000000000000000000000000000',
+  BigNumber { s: 1, e: 2, c: [ 100 ] },
+  false ]
+
+# Make the meta data more readable
+ web3.toAscii('0x4170706c65730000000000000000000000000000000000000000000000000000');
+'Apples\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000'
+
+# Even more readable
+web3.toUtf8('0x4170706c65730000000000000000000000000000000000000000000000000000');
+'Apples'
+
+```
+
 ## Development
 
 ### Dev Server
