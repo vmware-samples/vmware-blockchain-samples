@@ -10,7 +10,7 @@ import "./Order.sol";
  * @title Parent contract for each order
  */
 contract Orders {
-  address[] public orders;
+  Order[] public orders;
 
   /**
    * @dev Create a new order
@@ -20,9 +20,9 @@ contract Orders {
   function create(bytes32 product, uint amount)
     public
     payable
-    returns (address)
+    returns (Order)
   {
-    address newOrder = new Order(product, amount);
+    Order newOrder = new Order(product, amount);
 
     orders.push(newOrder);
     return newOrder;

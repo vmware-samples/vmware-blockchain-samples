@@ -204,7 +204,7 @@ contract Order is OrderAccessControl {
    */
   function getRecord(uint index)
     public
-    constant
+    view
     returns(address, bytes32, uint32)
   {
     return (history[index].who, history[index].action, history[index].when);
@@ -235,7 +235,7 @@ contract Order is OrderAccessControl {
    */
   function getLocation(uint index)
     public
-    constant
+    view
     returns(bytes32, bytes32, address)
   {
     return (locationHistory[index].latitude, locationHistory[index].longitude, locationHistory[index].who);
