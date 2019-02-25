@@ -3,6 +3,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { BlockchainService } from '../shared/blockchain.service';
 
 @Component({
   selector: 'vmw-sc-home',
@@ -11,7 +12,26 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+    constructor(private blockchain: BlockchainService) { }
 
-  ngOnInit() {}
-}
+    ngOnInit() {
+      this.testConnection();
+    }
+
+    testConnection() {
+      this.blockchain.ordersContract.methods.create(
+        this.blockchain.web3.utils.fromAscii('Apples'),
+        32
+      )
+      .send({ from: 'CHANGE ME WITH ACCOUNT FOUND IN GANACHE', 'gas': '4400000' })
+      .then(transaction => {
+        console.log('transaction', transaction);
+
+        this.blockchain.web3.eth
+          .getTransaction(transaction.transactionHash).then(data => {
+          console.log(data);
+        }, error => console.log('error', error));
+
+      });
+    }
+  }
