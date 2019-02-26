@@ -13,7 +13,10 @@
   ],
   "include": [
     "**/*.spec.ts",
-    "**/*.d.ts",
-    "**/*.json"
+    "**/*.d.ts"
+  ],
+  "exclude": [
+    "test.ts",
+    "**/*.spec.ts"
   ]
 }

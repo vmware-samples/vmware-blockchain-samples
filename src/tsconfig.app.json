@@ -6,7 +6,6 @@
   },
   "exclude": [
     "test.ts",
-    "**/*.spec.ts",
-    "**/*.json"
+    "**/*.spec.ts"
   ]
 }
