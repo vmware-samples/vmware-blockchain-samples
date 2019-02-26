@@ -17,7 +17,7 @@
     "eofline": true,
     "file-header": [
       true,
-      "Copyright \\d{4}(-\\d{4})? VMware, all rights reserved."
+      "Copyright \\d{4}(-\\d{4})? VMware, all rights reserved.\n[ *]*This software is released under MIT license.\n[ *]*The full license information can be found in LICENSE in the root directory of this project."
     ],
     "forin": true,
     "import-blacklist": [
