@@ -66,6 +66,16 @@ web3.toUtf8('0x4170706c65730000000000000000000000000000000000000000000000000000'
 
 ```
 
+## Test Contracts
+
+First, make sure ganache is up and running.  Download [here](https://truffleframework.com/ganache) if you don't already have setup.
+
+Then to test, go to the command line and run:
+
+```shell
+truffle test
+```
+
 ## Development
 
 ### Dev Server
