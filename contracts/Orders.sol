@@ -24,10 +24,21 @@ contract Orders {
     payable
     returns (Order)
   {
-    Order newOrder = new Order(product, amount);
+    Order newOrder = new Order(product, amount, msg.sender);
 
     orders.push(newOrder);
     return newOrder;
+  }
+
+  /**
+   * @dev Returns how many orders have been created
+   */
+  function getAmount()
+    public
+    view
+    returns(uint)
+  {
+    return (orders.length);
   }
 
 }

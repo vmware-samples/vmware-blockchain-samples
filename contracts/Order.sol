@@ -63,9 +63,9 @@ contract Order is OrderAccessControl {
   }
 
   constructor(
-    bytes32 product, uint amount
+    bytes32 product, uint amount, address creator
   ) public {
-    contractCreator = msg.sender;
+    contractCreator = creator;
     meta.product = product;
     meta.amount = amount;
     meta.revoked = false;
@@ -89,7 +89,6 @@ contract Order is OrderAccessControl {
   {
     addRecord(bytes32("Approved"));
     state = State.Approved;
-
   }
 
   /**
@@ -156,7 +155,7 @@ contract Order is OrderAccessControl {
   function delivered()
     public
     onlyDistributor
-    inState(State.AtWarehouse)
+    inState(State.InTransit)
   {
     addRecord(bytes32("Delivered"));
     state = State.Delivered;
@@ -201,15 +200,14 @@ contract Order is OrderAccessControl {
   }
 
   /**
-   * @dev Get order history
-   * @param index The array index for retrieving an order record
+   * @dev Get order history length
    */
-  function getRecord(uint index)
+  function getHistoryLength()
     public
     view
-    returns(address, bytes32, uint32)
+    returns(uint)
   {
-    return (history[index].who, history[index].action, history[index].when);
+    return (history.length);
   }
 
 
@@ -232,16 +230,14 @@ contract Order is OrderAccessControl {
   }
 
   /**
-   * @dev Get location history
-   * @param index The array index for retrieving a location
+   * @dev Get location history length
    */
-  function getLocation(uint index)
+  function getLocationLength()
     public
     view
-    returns(bytes32, bytes32, address)
+    returns(uint)
   {
-    return (locationHistory[index].latitude, locationHistory[index].longitude, locationHistory[index].who);
+    return (locationHistory.length);
   }
-
 
 }
