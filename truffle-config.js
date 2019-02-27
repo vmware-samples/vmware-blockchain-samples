@@ -1,4 +1,10 @@
-Web3 = require('web3');
+/*
+ * Copyright 2019 VMware, all rights reserved.
+ * This software is released under MIT license.
+ * The full license information can be found in LICENSE in the root directory of this project.
+ */
+
+const Web3 = require('web3');
 
 /**
  * Use this file to configure your truffle project. It's seeded with some
