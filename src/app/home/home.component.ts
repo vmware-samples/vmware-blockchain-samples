@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit {
         this.blockchain.web3.utils.fromAscii('Apples'),
         32
       )
-      .send({ from: 'CHANGE ME WITH ACCOUNT FOUND IN GANACHE', 'gas': '4400000' })
+      .send({ from: this.blockchain.from, 'gas': '4400000' })
       .then(transaction => {
         console.log('transaction', transaction);
 
