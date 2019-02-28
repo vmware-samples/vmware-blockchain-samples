@@ -20,6 +20,7 @@ export class BlockchainService {
   address: string = 'ws://127.0.0.1:7545';
   web3: Web3;
   ordersContract: any;
+  from: string;
 
   constructor() {
     this.initConnection();
@@ -28,7 +29,7 @@ export class BlockchainService {
   initConnection() {
     const provider = new HttpHeaderProvider(this.address);
     this.web3 = new Web3(this.address);
-
+    this.from = this.web3.eth.accounts.create().address;
     this.ordersContract = new this.web3.eth.Contract(
       this.ordersABI, this.ordersAddress
     );
