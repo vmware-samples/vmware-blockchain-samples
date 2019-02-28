@@ -7,15 +7,16 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import * as HttpHeaderProvider from 'httpheaderprovider';
-import * as Orders from '../../../assets/contracts/Orders.json';
+import * as Orders from '../../../assets/contracts/OrdersProxy.json';
+import * as OrdersV1 from '../../../assets/contracts/OrdersV1.json';
 import * as Order from '../../../assets/contracts/Order.json';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BlockchainService {
-  ordersABI: any = Orders.abi;
   ordersAddress: any = Orders.networks['5777'].address;
+  ordersABI: any = OrdersV1.abi;
   orderABI: any = Order.abi;
   address: string = 'ws://127.0.0.1:7545';
   web3: Web3;

@@ -29,11 +29,12 @@
     "@ngx-translate/http-loader": "^4.0.0",
     "@webcomponents/custom-elements": "^1.0.0",
     "core-js": "^2.6.5",
-    "rxjs": "~6.4.0",
-    "web3": "^1.0.0-beta.46",
     "httpheaderprovider": "^0.3.4",
+    "rxjs": "~6.4.0",
     "tslib": "^1.9.0",
-    "zone.js": "~0.8.26"
+    "web3": "^1.0.0-beta.46",
+    "zone.js": "~0.8.26",
+    "zos-lib": "1.4.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.13.0",

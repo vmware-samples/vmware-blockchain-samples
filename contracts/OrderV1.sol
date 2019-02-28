@@ -9,9 +9,9 @@ pragma solidity >=0.4.21 <0.6.0;
 import "./OrderAccessControl.sol";
 
 /**
- * @title Order
+ * @title OrderV1
  */
-contract Order is OrderAccessControl {
+contract OrderV1 is OrderAccessControl {
 
   // Order meta data
   struct Meta {
@@ -89,6 +89,7 @@ contract Order is OrderAccessControl {
   {
     addRecord(bytes32("Approved"));
     state = State.Approved;
+
   }
 
   /**
@@ -155,7 +156,7 @@ contract Order is OrderAccessControl {
   function delivered()
     public
     onlyDistributor
-    inState(State.InTransit)
+    inState(State.AtWarehouse)
   {
     addRecord(bytes32("Delivered"));
     state = State.Delivered;
