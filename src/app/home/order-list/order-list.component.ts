@@ -25,7 +25,11 @@ export class OrderListComponent implements OnInit {
     this.orderService = orderService;
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.orderService.newOrder.subscribe(newOrder => {
+      this.orders.unshift(newOrder);
+    });
+  }
 
   refresh(state: ClrDatagridStateInterface) {
     this.loading = true;
@@ -33,6 +37,6 @@ export class OrderListComponent implements OnInit {
     setTimeout(() => {
       this.orders = this.orderService.generateRandomOrders(fetchCount);
       this.loading = false;
-    }, 1000);
+    }, 700);
   }
 }

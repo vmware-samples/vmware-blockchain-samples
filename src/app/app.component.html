@@ -6,30 +6,13 @@ The full license information can be found in LICENSE in the root directory of th
 
  <clr-main-container>
   <clr-header class="header-{{currentRole}}">
-    <div class="branding">
-      <a href="/" class="nav-link nav-icon">
-        <clr-icon shape="link"></clr-icon>
-        <span class="title">{{ 'title' | translate }}</span>
-      </a>
-    </div>
-    <div id="nav-new-order" class="header-nav">
-      <a class="nav-link">
-        <clr-icon shape="plus"></clr-icon>
-        <span class="nav-text">{{ 'new-order' | translate }}</span>
-      </a>
-    </div>
-    <div class="header-actions">
-      <clr-dropdown>
-        <button class="nav-text" clrDropdownTrigger>
-          <clr-icon shape="user"></clr-icon>
-          {{ 'role.' + currentRole | translate }}
-        </button>
-      </clr-dropdown>
-    </div>
+    <!-- clr-header must be a direct child of clr-main-container -->
+    <vmw-sc-header> </vmw-sc-header>
   </clr-header>
   <div class="content-container">
     <main class="content-area">
       <router-outlet></router-outlet>
     </main>
   </div>
+  <vmw-sc-create-order (close)="onClose()" [(visible)]="createOrderVisible"> </vmw-sc-create-order>
 </clr-main-container>

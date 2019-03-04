@@ -7,8 +7,8 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import * as HttpHeaderProvider from 'httpheaderprovider';
-import * as Orders from '../../assets/contracts/Orders.json';
-import * as Order from '../../assets/contracts/Order.json';
+import * as Orders from '../../../assets/contracts/Orders.json';
+import * as Order from '../../../assets/contracts/Order.json';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +22,11 @@ export class BlockchainService {
   ordersContract: any;
   from: string;
   accounts: string[];
+
+  // TODO: items come from blockchain?
+  public readonly items = ['apples', 'bananas', 'oranges'];
+  // TODO: statuses come from blockchain?
+  public readonly statuses = ['received', 'pending_audit', 'shipped'];
 
   constructor() {
     this.initConnection();
@@ -38,4 +43,12 @@ export class BlockchainService {
     );
   }
 
+  createOrder(productType: string, quantity: number): Promise<any> {
+    return this.ordersContract.methods.create(
+      this.web3.utils.fromAscii(productType),
+      quantity
+    )
+    // TODO - get the address from user session
+    .send({ from: this.from, 'gas': '4400000' });
+  }
 }
