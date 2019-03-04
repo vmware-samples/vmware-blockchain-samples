@@ -17,7 +17,9 @@ export class HomeComponent implements OnInit {
     constructor(private blockchain: BlockchainService) { }
 
     ngOnInit() {
-      this.testConnection();
+      setTimeout(() => {
+        this.testConnection();
+      }, 1000);
     }
 
     testConnection() {

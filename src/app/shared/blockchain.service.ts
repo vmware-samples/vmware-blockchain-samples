@@ -21,27 +21,21 @@ export class BlockchainService {
   web3: Web3;
   ordersContract: any;
   from: string;
+  accounts: string[];
 
   constructor() {
     this.initConnection();
   }
 
-  initConnection() {
+  async initConnection() {
     const provider = new HttpHeaderProvider(this.address);
     this.web3 = new Web3(this.address);
-    this.from = this.web3.eth.accounts.create().address;
+    this.accounts = await this.web3.eth.personal.getAccounts();
+    this.from = this.accounts[3];
+
     this.ordersContract = new this.web3.eth.Contract(
       this.ordersABI, this.ordersAddress
     );
-  }
-
-  initOrdersContract() {
-
-  }
-
-  basicAuthEncode(username, pass): string {
-    const header = username + ':' + pass;
-    return 'Basic ' + btoa(header);
   }
 
 }
