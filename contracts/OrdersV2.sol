@@ -6,13 +6,20 @@
 
 pragma solidity >=0.4.21 <0.6.0;
 
-import "./Order.sol";
+import "./OrderProxy.sol";
+import "./OrdersV1.sol";
+import "./OrdersV2.sol";
+import "./OrderV2.sol";
 
 /**
  * @title Parent contract for each order
  */
-contract Orders {
-  Order[] public orders;
+contract OrdersV2 is OrdersV1 {
+
+  constructor()
+    public
+    OrdersV1()
+  {}
 
   /**
    * @dev Create a new order
@@ -22,23 +29,18 @@ contract Orders {
   function create(bytes32 product, uint amount)
     public
     payable
-    returns (Order)
+    returns (OrderProxy)
   {
-    Order newOrder = new Order(product, amount, msg.sender);
+    OrderV2 newOrder = new OrderV2(product, amount, msg.sender);
+    OrderProxy newOrderProxy = new OrderProxy(newOrder);
 
-    orders.push(newOrder);
-    return newOrder;
+    orders.push(newOrderProxy);
+    return newOrderProxy;
   }
 
-  /**
-   * @dev Returns how many orders have been created
-   */
-  function getAmount()
-    public
-    view
-    returns(uint)
-  {
-    return (orders.length);
-  }
+  function getVersion()
+    public pure returns(string) {
+      return("2.0");
+    }
 
 }
