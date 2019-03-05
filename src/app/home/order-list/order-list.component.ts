@@ -4,9 +4,10 @@
  * The full license information can be found in LICENSE in the root directory of this project.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import { Order } from '../../core/order/order';
+import { BlockchainService } from '../../core/blockchain/blockchain.service';
 import { OrderService } from '../../core/order/order.service';
 
 @Component({
@@ -16,27 +17,26 @@ import { OrderService } from '../../core/order/order.service';
 })
 export class OrderListComponent implements OnInit {
 
-  orders: Order[];
-  orderService: OrderService;
-  total: number = 10 + Math.floor(Math.random() * 100);
+  pageSize = 20;
+  orders;
+  total;
   loading = true;
 
-  constructor( orderService: OrderService ) {
-    this.orderService = orderService;
+  constructor( private blockchainService: BlockchainService,
+               private changeDetectorRef: ChangeDetectorRef,
+               private orderService: OrderService ) {
   }
 
   ngOnInit() {
-    this.orderService.newOrder.subscribe(newOrder => {
-      this.orders.unshift(newOrder);
-    });
+
   }
 
   refresh(state: ClrDatagridStateInterface) {
     this.loading = true;
-    const fetchCount = Math.min(state.page.size, (this.total - state.page.from));
-    setTimeout(() => {
-      this.orders = this.orderService.generateRandomOrders(fetchCount);
+    this.blockchainService.orders().then((response) => {
+      this.total = response.total;
+      this.orders = response.orders;
       this.loading = false;
-    }, 700);
+    });
   }
 }

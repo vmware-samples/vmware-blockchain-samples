@@ -4,17 +4,10 @@
  * The full license information can be found in LICENSE in the root directory of this project.
  */
 
-.card-order-detail {
-  padding: 0;
-  .card-block {
-    padding: 0;
-  }
+button {
+  text-transform: uppercase;
 }
 
-.card-orders {
-  margin-top: 0;
-}
-
-.home-module {
-  margin-bottom: 20px;
+.order-detail-options .clr-row {
+  margin: 0.75rem 0;
 }

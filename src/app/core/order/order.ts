@@ -5,16 +5,29 @@
  */
 
 import { random, randomHexString } from '../../shared/utils';
+import { BlockchainService } from '../blockchain/blockchain.service';
 
-export class Order {
+export enum OrderStatus {
+  Ordered,
+  Approved,
+  Audited,
+  AtWarehouse,
+  InTransit,
+  Delivered,
+  Revoked
+}
 
+export interface Order {
+  contract;
   id: string; // Format: 0x304a554a310C7e546dfe434669C62820b7D83490
-  item: string;
+  amount: string;
+  product: string;
   quantity: number;
   status: string;
+  statusLabel: string;
+}
 
-  constructor() {
-    this.id = randomHexString(30);
-    this.quantity = random(10);
-  }
+export interface OrdersResponse {
+  orders: Order[];
+  total: number;
 }

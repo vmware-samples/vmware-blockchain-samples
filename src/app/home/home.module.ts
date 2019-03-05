@@ -8,8 +8,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ClarityModule, ClrFormsNextModule } from '@clr/angular';
+import { ClarityModule, ClrButtonModule, ClrFormsNextModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { SharedModule } from '../shared/shared.module';
 import { BlockchainStatusComponent } from './blockchain-status/blockchain-status.component';
 import { BlockchainStatusCardComponent } from './blockchain-status/blockchain-status-card.component';
 import { BlockchainStatusConnectorComponent } from './blockchain-status/blockchain-status-connector.component';
@@ -17,17 +18,20 @@ import { BlockchainVisualizationComponent } from './blockchain-visualization/blo
 import { CreateOrderComponent } from './create-order/create-order.component';
 import { HomeComponent } from './home.component';
 import { HomeRoutingModule } from './home-routing.module';
+import { OrderDetailComponent } from './order-detail/order-detail.component';
 import { OrderListComponent } from './order-list/order-list.component';
 
 @NgModule({
   imports: [
     BrowserAnimationsModule,
     ClarityModule,
+    ClrButtonModule,
     CommonModule,
     ClrFormsNextModule,
     FormsModule,
     HomeRoutingModule,
     ReactiveFormsModule,
+    SharedModule,
     TranslateModule
   ],
   declarations: [
@@ -37,6 +41,7 @@ import { OrderListComponent } from './order-list/order-list.component';
     BlockchainVisualizationComponent,
     CreateOrderComponent,
     HomeComponent,
+    OrderDetailComponent,
     OrderListComponent
   ],
   exports: [

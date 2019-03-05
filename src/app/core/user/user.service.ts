@@ -26,4 +26,8 @@ export class UserService {
     }
     return this._currentUser;
   }
+
+  hasRole(...roles: string[]): boolean {
+    return this._currentUser && roles.indexOf(this._currentUser.role) >= 0;
+  }
 }
