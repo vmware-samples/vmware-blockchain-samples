@@ -9,7 +9,7 @@ const Orders = artifacts.require("OrdersV1");
 const OrdersUpgrade = artifacts.require("OrdersV2");
 const OrderUpgrade = artifacts.require("OrderV2");
 
-contract("Order Test", async accounts => {
+contract("Upgrade Test", async accounts => {
   let orders, ordersUpgraded, orderUpgraded, ordersProxy;
 
   it("should upgrade to version 2", async () => {

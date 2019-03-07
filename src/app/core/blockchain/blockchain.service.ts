@@ -9,7 +9,8 @@ import Web3 from 'web3';
 import * as HttpHeaderProvider from 'httpheaderprovider';
 import * as Orders from '../../../assets/contracts/OrdersProxy.json';
 import * as OrdersV1 from '../../../assets/contracts/OrdersV1.json';
-import * as Order from '../../../assets/contracts/Order.json';
+import * as Order from '../../../assets/contracts/OrderV1.json';
+
 
 @Injectable({
   providedIn: 'root'

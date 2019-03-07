@@ -7,7 +7,7 @@ const Orders = artifacts.require("OrdersV1");
 const OrderProxy = artifacts.require("OrderProxy");
 const Order = artifacts.require("OrderV1");
 
-contract("Orders Test", async accounts => {
+contract("Order Test", async accounts => {
   let orders, order, orderAddress, ordersProxy;
   const states = [
     'Ordered',
@@ -20,7 +20,7 @@ contract("Orders Test", async accounts => {
   ];
 
 
-  it("should confirm we are using proxy contract and admin doens't have fallback rights", async () => {
+  it("should confirm we are using proxy contract and admin doesn't have fallback rights", async () => {
     let errorMessage;
 
     ordersProxy = await OrdersProxy.deployed();

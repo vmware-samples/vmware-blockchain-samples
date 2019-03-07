@@ -5,7 +5,7 @@
 const OrdersProxy = artifacts.require("OrdersProxy");
 const Orders = artifacts.require("OrdersV1");
 
-contract("Order Test", async accounts => {
+contract("Orders Test", async accounts => {
   let orders, ordersProxy;
 
   it("should store and create an order", async () => {
