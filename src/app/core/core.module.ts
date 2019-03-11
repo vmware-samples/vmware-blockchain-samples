@@ -6,6 +6,7 @@
 
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
@@ -19,7 +20,9 @@ import { UserService } from './user/user.service';
     ClarityModule,
     CommonModule,
     RouterModule,
-    TranslateModule
+    TranslateModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [
     BlockchainService,

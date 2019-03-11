@@ -35,9 +35,11 @@ export class CreateOrderComponent implements OnInit {
     }
   }
 
-  constructor(private formBuilder: FormBuilder,
-              private blockchainService: BlockchainService) {
-    this.items = blockchainService.items;
+  constructor(
+    private formBuilder: FormBuilder,
+    private blockchainService: BlockchainService
+  ) {
+    this.items = this.blockchainService.items;
   }
 
   ngOnInit() {

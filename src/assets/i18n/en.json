@@ -1,4 +1,9 @@
 {
+  "auth.welcome": "Welcome to",
+  "auth.title": "Supply Chain dApp",
+  "auth.description": "Demo application for VMware Blockchain",
+  "auth.error": "Invalid user name or password",
+  "auth.submit": "NEXT",
   "blockchain.status.approved": "Approved",
   "blockchain.status.healthy": "Healthy",
   "blockchain.status.healthy-check": "Healthy",

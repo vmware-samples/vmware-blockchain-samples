@@ -5,10 +5,7 @@
  */
 
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { User } from './core/user/user';
-import { UserService } from './core/user/user.service';
 
 @Component({
   selector: 'vmw-sc-root',
@@ -17,25 +14,12 @@ import { UserService } from './core/user/user.service';
 })
 export class AppComponent {
 
-  createOrderVisible = false;
-  currentUser: User;
-
-  constructor(private route: ActivatedRoute,
-              private router: Router,
-              translate: TranslateService,
-              userService: UserService) {
+  constructor(translate: TranslateService) {
     // this language will be used as a fallback when a translation isn't found in the current language
     translate.setDefaultLang('en');
 
     // the lang to use, if the lang isn't available, it will use the current loader to get them
     translate.use('en');
-    this.route.fragment.subscribe((fragment: string) => {
-      this.createOrderVisible = (fragment === 'create');
-    });
-    this.currentUser = userService.currentUser;
   }
 
-  onClose() {
-    this.router.navigate([''], {fragment: null});
-  }
 }

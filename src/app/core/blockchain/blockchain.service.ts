@@ -8,7 +8,6 @@ import { Injectable } from '@angular/core';
 import { from as fromPromise, Subject } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import Web3 from 'web3';
-import { toUtf8 } from 'web3-utils';
 import * as HttpHeaderProvider from 'httpheaderprovider';
 import * as Order from '../../../assets/contracts/OrderV1.json';
 import * as Orders from '../../../assets/contracts/OrdersProxy.json';
@@ -88,7 +87,7 @@ export class BlockchainService {
   getHistoryRecord(order: OrderModel, index: number): Promise<OrderHistory> {
     return order.contract.methods.history(index).call().then((record) => {
       return {
-        action: toUtf8(record.action),
+        action: this.web3.utils.toUtf8(record.action),
         owner: record.who,
         transactionId: '0x4534534534abec533' // TODO - where to get this?
       } as OrderHistory;
@@ -177,7 +176,7 @@ export class BlockchainService {
     });
     const loadMeta = contract.methods.meta.call().then(meta => {
       order.amount = meta.amount;
-      order.product = toUtf8(meta.product);
+      order.product = this.web3.utils.toUtf8(meta.product);
       return order;
     });
     const loadStatus = contract.methods.state.call().then(status => {
@@ -196,7 +195,7 @@ export class BlockchainService {
   }
 
   private getAccounts(): Promise<any> {
-    return this.web3.eth.personal.getAccounts().then((accounts) => {
+    return this.web3.eth.getAccounts().then((accounts) => {
       this.accounts = accounts;
       this.from = this.accounts[3];
       this.web3.eth.defaultAccount = this.from;
@@ -223,4 +222,5 @@ export class BlockchainService {
     return order.contract.methods.setOwners(...(new Array(5).fill(userAddress)))
       .send({ from: this.from, 'gas': '4400000' });
   }
+
 }
