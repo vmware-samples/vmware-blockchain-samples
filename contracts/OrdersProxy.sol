@@ -9,8 +9,8 @@ pragma solidity >=0.4.21 <0.6.0;
 import "zos-lib/contracts/upgradeability/AdminUpgradeabilityProxy.sol";
 
 /**
- * @title FiatTokenProxy
- * @dev This contract proxies FiatToken calls and enables FiatToken upgrades
+ * @title OrdersProxy
+ * @dev This contract proxies Orders
 */
 contract OrdersProxy is AdminUpgradeabilityProxy {
 

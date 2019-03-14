@@ -74,7 +74,6 @@ contract OrderV1 is OrderAccessControl {
     subState = SubState.None;
   }
 
-
   //
   // Order Form
   //
@@ -156,7 +155,7 @@ contract OrderV1 is OrderAccessControl {
   function delivered()
     public
     onlyDistributor
-    inState(State.AtWarehouse)
+    inState(State.InTransit)
   {
     addRecord(bytes32("Delivered"));
     state = State.Delivered;

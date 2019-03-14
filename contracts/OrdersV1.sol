@@ -6,14 +6,13 @@
 
 pragma solidity >=0.4.21 <0.6.0;
 
-import "./OrderProxy.sol";
 import "./OrderV1.sol";
 
 /**
  * @title Parent contract for each order
  */
 contract OrdersV1 {
-  OrderProxy[] public orders;
+  address[] public orders;
 
   /**
    * @dev Create a new order
@@ -23,13 +22,12 @@ contract OrdersV1 {
   function create(bytes32 product, uint amount)
     public
     payable
-    returns (OrderProxy)
+    returns (address)
   {
     OrderV1 newOrder = new OrderV1(product, amount, msg.sender);
-    OrderProxy newOrderProxy = new OrderProxy(newOrder);
 
-    orders.push(newOrderProxy);
-    return newOrderProxy;
+    orders.push(newOrder);
+    return newOrder;
   }
 
   /**
