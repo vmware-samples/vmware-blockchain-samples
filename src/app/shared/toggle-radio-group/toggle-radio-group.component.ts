@@ -20,7 +20,7 @@ export class ToggleRadioGroupComponent {
   @Input() values: string[] = ['yes', 'no'];
 
   @Output()
-  valueChange = new EventEmitter<string>();
+  selectedValueChange = new EventEmitter<string>();
 
   @Input()
   get selectedValue() {
@@ -29,7 +29,7 @@ export class ToggleRadioGroupComponent {
 
   set selectedValue(val) {
     this.selectedValueData = val;
-    this.valueChange.emit(this.selectedValueData);
+    this.selectedValueChange.emit(this.selectedValueData);
   }
 
   constructor() { }
@@ -43,5 +43,9 @@ export class ToggleRadioGroupComponent {
         this.selectedValue = null;
       }
     }
+  }
+
+  reset() {
+    this.selectedValue = null;
   }
 }

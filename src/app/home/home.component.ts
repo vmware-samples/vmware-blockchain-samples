@@ -4,7 +4,9 @@
  * The full license information can be found in LICENSE in the root directory of this project.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
+import { BlockchainService } from '../core/blockchain/blockchain.service';
+import { Order } from '../core/order/order';
 
 @Component({
   selector: 'vmw-sc-home',
@@ -13,8 +15,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-    constructor() { }
+  _selectedOrder: Order;
 
-    ngOnInit() {
-    }
+  get selectedOrder() {
+    return this._selectedOrder;
+  }
+
+  set selectedOrder(value) {
+    this._selectedOrder = value;
+  }
+
+  constructor(private blockchainService: BlockchainService) { }
+
+  ngOnInit() {
+    this.blockchainService.getOrder(0).then((order) => {
+      this.selectedOrder = order;
+    });
+  }
 }

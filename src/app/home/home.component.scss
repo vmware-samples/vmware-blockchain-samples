@@ -11,6 +11,19 @@
   }
 }
 
+.card-order-detail-id {
+  display: block;
+  width: 15em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card-order-detail-id-wrapper {
+  display: inline-flex;
+}
+
+
 .card-orders {
   margin-top: 0;
 }

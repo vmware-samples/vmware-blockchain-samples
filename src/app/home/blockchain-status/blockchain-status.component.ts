@@ -4,7 +4,8 @@
  * The full license information can be found in LICENSE in the root directory of this project.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { OrderStatus } from '../../core/order/order';
 import { UserService } from '../../core/user/user.service';
 import { random } from '../../shared/utils';
 
@@ -13,23 +14,46 @@ import { random } from '../../shared/utils';
   templateUrl: './blockchain-status.component.html',
   styleUrls: ['./blockchain-status.component.scss']
 })
-export class BlockchainStatusComponent implements OnInit {
+export class BlockchainStatusComponent {
 
+  _order;
   roles: string[];
 
+  @Input()
+  set order(value) {
+    let pendingNode;
+    if (value) {
+      if (value.status === OrderStatus.Ordered) {
+        pendingNode = 1;
+      } else if (value.status === OrderStatus.Approved) {
+        pendingNode = 2;
+      } else if ([OrderStatus.Audited, OrderStatus.AtWarehouse].includes(value.status)) {
+        pendingNode = 3;
+      } else if (value.status === OrderStatus.WarehouseReleased) {
+        pendingNode = 4;
+      } else if (value.status === OrderStatus.InTransit) {
+        pendingNode = 5;
+      } else if (value.status === OrderStatus.Delivered) {
+        pendingNode = 6;
+      }
+    }
+    this.connectorActive = Array(4).fill(true);
+    this.statuses = Array(5).fill('waiting');
+    this.statuses[pendingNode - 1] = 'pending';
+    this.statuses.fill('approved', 0, pendingNode - 1);
+    this.connectorActive.fill(false, pendingNode - 1);
+    this._order = value;
+  }
+
+  get order() {
+    return this._order;
+  }
+
   // TODO - remove these arrays - they're just for demo data
-  statuses: string[] = Array(5).fill('waiting');
-  connectorActive: boolean[] = Array(4).fill(true);
+  statuses: string[];
+  connectorActive: boolean[];
 
   constructor(userService: UserService) {
     this.roles = userService.roles;
   }
-
-  ngOnInit() {
-    const pendingNode = random(5);
-    this.statuses[pendingNode - 1] = 'pending';
-    this.statuses.fill('approved', 0, pendingNode - 1);
-    this.connectorActive.fill(false, pendingNode - 1);
-  }
-
 }

@@ -12,24 +12,28 @@
       </div>
       <div class="card-block">
         <div class="card-text">
-          <vmw-sc-order-list> </vmw-sc-order-list>
+          <vmw-sc-order-list [(selectedOrder)]="selectedOrder"> </vmw-sc-order-list>
         </div>
       </div>
     </div>
-    <div class="card card-order-detail home-module">
+    <div *ngIf="selectedOrder" class="card card-order-detail home-module">
       <div class="card-header">
-        Order #1234 - Apple 2 Bushels
+        {{ 'order' | translate }} <div class="card-order-detail-id-wrapper"><div class="card-order-detail-id">{{ selectedOrder.id }}</div></div> - {{ selectedOrder.product }} {{ selectedOrder.amount }}
+        <ng-container [ngPlural]="selectedOrder.amount">
+          <ng-template ngPluralCase="=1">{{'item.quantity.bushel' | translate}}</ng-template>
+          <ng-template ngPluralCase="other">{{'item.quantity.bushels' | translate}}</ng-template>
+        </ng-container>
       </div>
       <div class="card-block">
         <div class="card-text">
-          <vmw-sc-order-detail> </vmw-sc-order-detail>
+          <vmw-sc-order-detail [order]="selectedOrder"> </vmw-sc-order-detail>
         </div>
       </div>
     </div>
   </div>
   <div class="clr-col-md-12 clr-col-lg-6">
     <div class="clr-row"><div class="clr-col home-module">
-      <vmw-sc-blockchain-status> </vmw-sc-blockchain-status>
+      <vmw-sc-blockchain-status [order]="selectedOrder"> </vmw-sc-blockchain-status>
     </div></div>
     <div class="clr-row"><div class="clr-col home-module">
       <div class="card card-orders">

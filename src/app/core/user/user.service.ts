@@ -28,6 +28,12 @@ export class UserService {
   }
 
   hasRole(...roles: string[]): boolean {
-    return this._currentUser && roles.indexOf(this._currentUser.role) >= 0;
+    return this._currentUser && (roles.indexOf(this._currentUser.role) >= 0);
+  }
+
+  nextRole() {
+    let nextRoleIndex = 1 + this.roles.indexOf(this._currentUser.role);
+    nextRoleIndex = (nextRoleIndex < this.roles.length) ? nextRoleIndex : 0;
+    this._currentUser.role = this.roles[nextRoleIndex];
   }
 }

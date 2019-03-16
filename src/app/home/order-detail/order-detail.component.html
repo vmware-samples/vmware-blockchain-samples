@@ -3,143 +3,138 @@ Copyright 2019 VMware, all rights reserved.
 This software is released under MIT license.
 The full license information can be found in LICENSE in the root directory of this project.
  -->
-<div class="card-block">
-  <table class="table table-vertical">
-    <tbody>
-      <tr>
-        <td>Item</td>
-        <td>Apples</td>
-      </tr>
-      <tr>
-        <td>Amount</td>
-        <td>2 Bushels</td>
-      </tr>
-      <tr>
-        <td>Contract Meta</td>
-        <td>0x123789012384757366389992882</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-<div class="card-block order-detail-options">
-  <div class="clr-row">
-    <div class="clr-col-4">
-      Approve Order
+<ng-container *ngIf="order">
+  <div class="card-block">
+    <table class="table table-vertical">
+      <tbody>
+        <tr>
+          <td>{{ 'order.item' | translate }}</td>
+          <td>{{ order.product }}</td>
+        </tr>
+        <tr>
+          <td>{{ 'order.amount' | translate }}</td>
+          <td [ngPlural]="order.amount">
+            <ng-template ngPluralCase="=1">1 {{'item.quantity.bushel' | translate}}</ng-template>
+            <ng-template ngPluralCase="other">{{ order.amount }} {{'item.quantity.bushels' | translate}}</ng-template>
+          </td>
+        </tr>
+        <tr>
+          <td>Contract Meta</td>
+          <td>{{ order.id }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card-block order-detail-options">
+    <div class="clr-row">
+      <div class="clr-col-4">
+        {{ 'detail.approve.label' | translate }}
+      </div>
+      <div (click)="approveOrder()" class="clr-col-8">
+        <vmw-sc-toggle-radio-group name="detail-approve-order" [disabled]="!canApproveOrder()"
+          [values]="['approve', 'deny']"> </vmw-sc-toggle-radio-group>
+        <span class="clr-subtext">{{ 'detail.approve.hint' | translate }}</span>
+      </div>
     </div>
-    <div class="clr-col-8">
-      <vmw-sc-toggle-radio-group name="detail-approve-order" [disabled]="!userService.hasRole('farmer')"
-        [values]="['approve', 'deny']"> </vmw-sc-toggle-radio-group>
-      <span class="clr-subtext">Only the farmer can approve the order</span>
+    <div class="clr-row">
+      <div class="clr-col-4">
+        {{ 'detail.validate.label' | translate }}
+      </div>
+      <div class="clr-col-8">
+        <vmw-sc-toggle-radio-group name="detail-validate-order" [disabled]="!canValidateOrder()"
+          [values]="['organic', 'not-organic']" (selectedValueChange)="toggleSelect('validate', $event)"> </vmw-sc-toggle-radio-group>
+        <span class="clr-subtext">{{ 'detail.validate.hint' | translate }}</span>
+      </div>
+    </div>
+    <div class="clr-row">
+      <div class="clr-col-4">
+        {{ 'detail.audit.label' | translate }}
+      </div>
+      <div class="clr-col-8">
+        <vmw-sc-toggle-radio-group name="detail-audit-document" [disabled]="!canAuditOrder()"
+          [values]="['upload']"> </vmw-sc-toggle-radio-group>
+        <span class="clr-subtext">{{ 'detail.audit.hint' | translate }}</span>
+      </div>
+    </div>
+    <div class="clr-row">
+      <div class="clr-col-4">
+        {{ 'detail.storage.label' | translate }}
+      </div>
+      <div class="clr-col-8">
+        <vmw-sc-toggle-radio-group name="detail-storage-received" [disabled]="!canReceiveStorageOrder()"
+          [values]="['received', 'never-received']" (selectedValueChange)="toggleSelect('storageReceived', $event)"> </vmw-sc-toggle-radio-group>
+        <span class="clr-subtext">{{ 'detail.storage.hint' | translate }}</span>
+      </div>
+    </div>
+    <div class="clr-row">
+      <div class="clr-col-4">
+        {{ 'detail.storage.processing.label' | translate }}
+      </div>
+      <div class="clr-col-8">
+        <vmw-sc-toggle-radio-group name="detail-storage-processing" [disabled]="!canProcessStorageOrder()"
+          [values]="['finished', 'issue-received']"> </vmw-sc-toggle-radio-group>
+        <span class="clr-subtext">{{ 'detail.storage.processing.hint' | translate }}</span>
+      </div>
+    </div>
+    <div class="clr-row">
+      <div class="clr-col-4">
+        {{ 'detail.storage.released.label' | translate }}
+      </div>
+      <div class="clr-col-8">
+        <vmw-sc-toggle-radio-group name="detail-storage-released" [disabled]="!canReleaseStorageOrder()"
+          [values]="['released', 'issue-arose']" (selectedValueChange)="toggleSelect('storageReleased', $event)"> </vmw-sc-toggle-radio-group>
+        <span class="clr-subtext">{{ 'detail.storage.released.hint' | translate }}</span>
+      </div>
+    </div>
+    <div class="clr-row">
+      <div class="clr-col-4">
+        {{ 'detail.shipped.label' | translate }}
+      </div>
+      <div class="clr-col-8">
+        <vmw-sc-toggle-radio-group name="detail-is-shipped" [disabled]="!canShipOrder()"
+          [values]="['in-transit', 'never-received']" (selectedValueChange)="toggleSelect('shipped', $event)"> </vmw-sc-toggle-radio-group>
+        <span class="clr-subtext">{{ 'detail.shipped.hint' | translate }}</span>
+      </div>
+    </div>
+    <div class="clr-row">
+      <div class="clr-col-4">
+        {{ 'detail.received.label' | translate }}
+      </div>
+      <div class="clr-col-8">
+        <vmw-sc-toggle-radio-group name="detail-order-received" [disabled]="!canReceiveOrder()"
+          [values]="['received', 'never-received']" (selectedValueChange)="toggleSelect('received', $event)"> </vmw-sc-toggle-radio-group>
+        <span class="clr-subtext">{{ 'detail.received.hint' | translate }}</span>
+      </div>
     </div>
   </div>
-  <div class="clr-row">
-    <div class="clr-col-4">
-      Validate Order
-    </div>
-    <div class="clr-col-8">
-      <vmw-sc-toggle-radio-group name="detail-validate-order" [disabled]="!userService.hasRole('auditor')"
-        [values]="['organic', 'not-organic']"> </vmw-sc-toggle-radio-group>
-      <span class="clr-subtext">Only the auditor can validate the order</span>
-    </div>
-  </div>
-  <div class="clr-row">
-    <div class="clr-col-4">
-      Audit Document
-    </div>
-    <div class="clr-col-8">
-      <vmw-sc-toggle-radio-group name="detail-audit-document" [disabled]="!userService.hasRole('auditor')"
-        [values]="['upload']"> </vmw-sc-toggle-radio-group>
-      <span class="clr-subtext">Only the auditor can upload the document</span>
+  <div class="card-block order-detail-recall">
+    <div class="clr-row">
+      <div class="clr-col-4">
+        {{ 'detail.recall.label' | translate }}
+      </div>
+      <div class="clr-col-8">
+        <vmw-sc-toggle-radio-group name="detail-recall" [disabled]="!canRecallOrder()"
+          [values]="['recall', 'never-received']" (selectedValueChange)="toggleSelect('recall', $event)"> </vmw-sc-toggle-radio-group>
+        <span class="clr-subtext">{{ 'detail.recall.hint' | translate }}</span>
+      </div>
     </div>
   </div>
-  <div class="clr-row">
-    <div class="clr-col-4">
-      Storage
-    </div>
-    <div class="clr-col-8">
-      <vmw-sc-toggle-radio-group name="detail-storage-received" [disabled]="!userService.hasRole('storage')"
-        [values]="['received', 'never-received']"> </vmw-sc-toggle-radio-group>
-      <span class="clr-subtext">Only the storage facility can verify the order has been received</span>
-    </div>
+  <div class="card-block">
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="left">Owner</th>
+          <th class="left">Action</th>
+          <th class="left">Contract Transactions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let history of order.history">
+          <td class="left col-owner">{{ history.owner }}</td>
+          <td class="left">{{ history.action }}</td>
+          <td class="left">{{ history.transactionId }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-  <div class="clr-row">
-    <div class="clr-col-4">
-      Storage Processing
-    </div>
-    <div class="clr-col-8">
-      <vmw-sc-toggle-radio-group name="detail-storage-processing" [disabled]="!userService.hasRole('storage')"
-        [values]="['finished', 'issue-received']"> </vmw-sc-toggle-radio-group>
-      <span class="clr-subtext">Only the storage facility can process an order</span>
-    </div>
-  </div>
-  <div class="clr-row">
-    <div class="clr-col-4">
-      Storage Released
-    </div>
-    <div class="clr-col-8">
-      <vmw-sc-toggle-radio-group name="detail-storage-released" [disabled]="!userService.hasRole('storage')"
-        [values]="['released', 'issue-arose']"> </vmw-sc-toggle-radio-group>
-      <span class="clr-subtext">Only the storage facility can release an order</span>
-    </div>
-  </div>
-  <div class="clr-row">
-    <div class="clr-col-4">
-      Item is shipped
-    </div>
-    <div class="clr-col-8">
-      <vmw-sc-toggle-radio-group name="detail-is-shipped" [disabled]="!userService.hasRole('distributor')"
-        [values]="['in-transit', 'never-received']"> </vmw-sc-toggle-radio-group>
-      <span class="clr-subtext">Only the distributor can verify item has been shipped</span>
-    </div>
-  </div>
-  <div class="clr-row" *ngIf="userService.hasRole('super_market')">
-    <div class="clr-col-4">
-      Order Received
-    </div>
-    <div class="clr-col-8">
-      <vmw-sc-toggle-radio-group name="detail-order-received" [disabled]="!userService.hasRole('super_market')"
-        [values]="['received', 'never-received']"> </vmw-sc-toggle-radio-group>
-      <span class="clr-subtext">Only the super market can recall an order</span>
-    </div>
-  </div>
-</div>
-<div class="card-block">
-  <div class="clr-row">
-    <div class="clr-col-4">
-      Recall Order
-    </div>
-    <div class="clr-col-8">
-      <vmw-sc-toggle-radio-group name="detail-recall" [disabled]="!userService.hasRole('auditor', 'farmer')"
-        [values]="['recall', 'never-received']"> </vmw-sc-toggle-radio-group>
-      <span class="clr-subtext">Only the auditor or farmer verify the order has been received</span>
-    </div>
-  </div>
-</div>
-<div class="card-block">
-  <table class="table">
-    <thead>
-      <tr>
-        <th class="left">Owner</th>
-        <th class="left">Action</th>
-        <th class="left">Contract Transactions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="left">Shipper</td>
-        <td class="left">Ordered Apples</td>
-        <td class="left">0x784398598349587398759783597843987</td>
-      </tr>
-      <tr>
-        <td class="left">Farmer</td>
-        <td class="left">Approved Order</td>
-        <td class="left">0x098324759823759823749836732987320</td>
-      </tr>
-      <tr>
-        <td class="left">Auditor</td>
-        <td class="left">Pending</td>
-        <td class="left">Pending...</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+</ng-container>

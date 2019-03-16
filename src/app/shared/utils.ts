@@ -25,3 +25,7 @@ export function randomHex(length) {
 export function randomHexString(length) {
   return '0x' + randomHex(length);
 }
+
+export function sequentialArray(start: number, count: number): number[] {
+  return Array.from({length: count}, (val, index) => index + start);
+}

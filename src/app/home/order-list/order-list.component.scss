@@ -4,10 +4,17 @@
  * The full license information can be found in LICENSE in the root directory of this project.
  */
 
+:host {
+  .datagrid-select {
+    color: green;
+    display: none;
+  }
+}
+
 clr-datagrid {
   height: 210px;
   padding-top: 0px;
-  clr-dg-cell {
+  clr-dg-cell.order-id {
     text-overflow: ellipsis;
     overflow: hidden;
   }

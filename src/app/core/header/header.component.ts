@@ -5,6 +5,7 @@
  */
 
 import { Component } from '@angular/core';
+import { User } from '../user/user';
 import { UserService } from '../user/user.service';
 
 @Component({
@@ -14,10 +15,14 @@ import { UserService } from '../user/user.service';
 })
 export class HeaderComponent {
 
-  currentRole: string;
+  currentUser: User;
 
-  constructor(userService: UserService) {
-    this.currentRole = userService.currentUser.role;
+  constructor(private userService: UserService) {
+    this.currentUser = userService.currentUser;
+  }
+
+  nextRole() {
+    this.userService.nextRole();
   }
 
 }

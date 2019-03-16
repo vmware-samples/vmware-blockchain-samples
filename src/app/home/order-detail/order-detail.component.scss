@@ -8,6 +8,15 @@ button {
   text-transform: uppercase;
 }
 
-.order-detail-options .clr-row {
-  margin: 0.75rem 0;
+.col-owner {
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.order-detail-options, .order-detail-recall {
+  .clr-row {
+    margin: 0.75rem 0;
+  }
 }
