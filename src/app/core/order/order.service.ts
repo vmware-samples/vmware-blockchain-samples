@@ -29,15 +29,4 @@ export class OrderService {
     });
     return promise;
   }
-
-  generateRandomOrder(): Order {
-    const order = new Order();
-    order.item = randomElement(this.blockchainService.items);
-    order.status = randomElement(this.blockchainService.statuses);
-    return order;
-  }
-
-  generateRandomOrders(size): Order[] {
-    return Array.from({length: size}, () => this.generateRandomOrder());
-  }
 }

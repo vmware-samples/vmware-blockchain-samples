@@ -30,16 +30,16 @@ The full license information can be found in LICENSE in the root directory of th
         {{order.id}}
       </a>
     </clr-dg-cell>
-    <clr-dg-cell>{{ 'item.type.' + order.item | translate }}</clr-dg-cell>
-    <clr-dg-cell [ngPlural]="order.quantity">
+    <clr-dg-cell *ngIf="order.product">{{ order.product }}</clr-dg-cell>
+    <clr-dg-cell *ngIf="order.amount" [ngPlural]="order.amount">
       <ng-template ngPluralCase="=1">1 {{'item.quantity.bushel' | translate}}</ng-template>
-      <ng-template ngPluralCase="other">{{ order.quantity }} {{'item.quantity.bushels' | translate}}</ng-template>
+      <ng-template ngPluralCase="other">{{ order.amount }} {{'item.quantity.bushels' | translate}}</ng-template>
     </clr-dg-cell>
-    <clr-dg-cell>{{ 'item.status.' + order.status | translate }}</clr-dg-cell>
+    <clr-dg-cell>{{ order.statusLabel }}</clr-dg-cell>
   </clr-dg-row>
 
   <clr-dg-footer>
     {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}} of {{total}} items
-    <clr-dg-pagination #pagination [clrDgPageSize]="20" [clrDgTotalItems]="total"></clr-dg-pagination>
+    <clr-dg-pagination #pagination [clrDgPageSize]="pageSize"></clr-dg-pagination>
   </clr-dg-footer>
 </clr-datagrid>

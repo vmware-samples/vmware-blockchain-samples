@@ -16,6 +16,7 @@ import { BlockchainService } from '../../core/blockchain/blockchain.service';
 export class CreateOrderComponent implements OnInit {
 
   item: string;
+  items: string[];
   orderForm: FormGroup;
   quantity: number;
   visibleValue = true;
@@ -36,7 +37,7 @@ export class CreateOrderComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
               private blockchainService: BlockchainService) {
-
+    this.items = blockchainService.items;
   }
 
   ngOnInit() {

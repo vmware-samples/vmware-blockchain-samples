@@ -6,13 +6,23 @@
 
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { UserService } from '../core/user/user.service';
+import { ToggleRadioGroupComponent } from './toggle-radio-group/toggle-radio-group.component';
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule,
+    TranslateModule
   ],
-  declarations: []
+  declarations: [
+    ToggleRadioGroupComponent
+  ],
+  exports: [
+    ToggleRadioGroupComponent
+  ]
 })
 
 export class SharedModule { }
