@@ -4,8 +4,8 @@ This software is released under MIT license.
 The full license information can be found in LICENSE in the root directory of this project.
  -->
 
-<clr-datagrid class="datagrid-compact" (clrDgRefresh)="refresh($event)" [clrDgLoading]="loading">
-  <clr-dg-column class="datagrid-fixed-column"><clr-icon shape="angle right"></clr-icon></clr-dg-column>
+<clr-datagrid class="datagrid-compact" (clrDgRefresh)="refresh($event)" [clrDgLoading]="loading"
+  [(clrDgSingleSelected)]="gridSelectedOrder" [clDgRowSelection]="true">
   <clr-dg-column class="order-column-contract-id">
     <clr-dg-string-filter [clrDgStringFilter]="contractFilter"></clr-dg-string-filter>
     {{ 'order.contractId' | translate }}
@@ -23,12 +23,9 @@ The full license information can be found in LICENSE in the root directory of th
     {{ 'order.status' | translate }}
   </clr-dg-column>
 
-  <clr-dg-row *ngFor="let order of orders">
-    <clr-dg-cell class="column-angle datagrid-fixed-column"><clr-icon shape="angle right"></clr-icon></clr-dg-cell>
-    <clr-dg-cell>
-      <a href="#">
-        {{order.id}}
-      </a>
+  <clr-dg-row *ngFor="let order of orders" [clrDgItem]="order">
+    <clr-dg-cell class="order-id">
+      {{order.id}}
     </clr-dg-cell>
     <clr-dg-cell *ngIf="order.product">{{ order.product }}</clr-dg-cell>
     <clr-dg-cell *ngIf="order.amount" [ngPlural]="order.amount">

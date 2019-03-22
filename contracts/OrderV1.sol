@@ -39,6 +39,7 @@ contract OrderV1 is OrderAccessControl {
     Approved,
     Audited,
     AtWarehouse,
+    WarehouseReleased,
     InTransit,
     Delivered,
     Revoked
@@ -134,6 +135,7 @@ contract OrderV1 is OrderAccessControl {
     onlyWarehouse
     inState(State.AtWarehouse)
   {
+    state = State.WarehouseReleased;
     addRecord(bytes32("Released"));
   }
 
@@ -143,22 +145,10 @@ contract OrderV1 is OrderAccessControl {
   function receivedAndInTransit()
     public
     onlyDistributor
-    inState(State.AtWarehouse)
+    inState(State.WarehouseReleased)
   {
     addRecord(bytes32("In Transit"));
     state = State.InTransit;
-  }
-
-  /**
-   * @dev Distributor delivers order
-   */
-  function delivered()
-    public
-    onlyDistributor
-    inState(State.InTransit)
-  {
-    addRecord(bytes32("Delivered"));
-    state = State.Delivered;
   }
 
   /**
@@ -167,9 +157,10 @@ contract OrderV1 is OrderAccessControl {
   function confirmDelivery()
     public
     onlySupermarket
-    inState(State.Delivered)
+    inState(State.InTransit)
   {
     addRecord(bytes32("Confirmed Delivery"));
+    state = State.Delivered;
   }
 
   /**

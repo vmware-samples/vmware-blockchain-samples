@@ -4,7 +4,6 @@
 
 const OrdersProxy = artifacts.require("OrdersProxy");
 const Orders = artifacts.require("OrdersV1");
-const OrderProxy = artifacts.require("OrderProxy");
 const Order = artifacts.require("OrderV1");
 
 contract("Order Test", async accounts => {
@@ -14,6 +13,7 @@ contract("Order Test", async accounts => {
     'Approved',
     'Audited',
     'AtWarehouse',
+    'WarehouseReleased',
     'InTransit',
     'Delivered',
     'Revoked'
@@ -128,15 +128,11 @@ contract("Order Test", async accounts => {
 
     const warehouseReleasedOrder = await order.warehouseReleasedOrder.sendTransaction();
     state = await order.state.call();
-    expect(states[state]).to.equal('AtWarehouse');
+    expect(states[state]).to.equal('WarehouseReleased');
 
     const receivedAndInTransit = await order.receivedAndInTransit.sendTransaction();
     state = await order.state.call();
     expect(states[state]).to.equal('InTransit');
-
-    const delivered = await order.delivered.sendTransaction();
-    state = await order.state.call();
-    expect(states[state]).to.equal('Delivered');
 
     const confirmDelivery = await order.confirmDelivery.sendTransaction();
     state = await order.state.call();
@@ -149,9 +145,8 @@ contract("Order Test", async accounts => {
     expect(warehouseReceivedOrder.receipt.status).to.equal(true);
     expect(warehouseReleasedOrder.receipt.status).to.equal(true);
     expect(receivedAndInTransit.receipt.status).to.equal(true);
-    expect(delivered.receipt.status).to.equal(true);
     expect(confirmDelivery.receipt.status).to.equal(true);
-    expect(web3.utils.BN(historyLength).toString()).to.equal('8');
+    expect(web3.utils.BN(historyLength).toString()).to.equal('7');
   });
 
   it("should revoke order", async () => {

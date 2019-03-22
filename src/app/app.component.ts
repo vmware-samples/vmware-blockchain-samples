@@ -7,6 +7,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { User } from './core/user/user';
 import { UserService } from './core/user/user.service';
 
 @Component({
@@ -17,7 +18,7 @@ import { UserService } from './core/user/user.service';
 export class AppComponent {
 
   createOrderVisible = false;
-  currentRole: string;
+  currentUser: User;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -31,7 +32,7 @@ export class AppComponent {
     this.route.fragment.subscribe((fragment: string) => {
       this.createOrderVisible = (fragment === 'create');
     });
-    this.currentRole = userService.currentUser.role;
+    this.currentUser = userService.currentUser;
   }
 
   onClose() {

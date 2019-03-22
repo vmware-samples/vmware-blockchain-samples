@@ -39,7 +39,7 @@ describe('ToggleRadioGroupComponent', () => {
     expect(component.selectedValue).toBe(undefined);
   });
 
-  describe('Evaluate Uncheck', () => {
+  describe('Button State', () => {
     let button;
 
     beforeEach(() => {
@@ -60,6 +60,11 @@ describe('ToggleRadioGroupComponent', () => {
       const button2 = fixture.debugElement.queryAll(By.css('input'))[1];
       button2.nativeElement.click();
       expect(component.selectedValue).toBe(component.values[1]);
+    });
+
+    it('should deselect the value when reset', () => {
+      component.reset();
+      expect(component.selectedValue).toBe(null);
     });
 
   });

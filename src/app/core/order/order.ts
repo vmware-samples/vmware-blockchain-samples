@@ -12,6 +12,7 @@ export enum OrderStatus {
   Approved,
   Audited,
   AtWarehouse,
+  WarehouseReleased,
   InTransit,
   Delivered,
   Revoked
@@ -23,8 +24,15 @@ export interface Order {
   amount: string;
   product: string;
   quantity: number;
-  status: string;
+  status: number;
   statusLabel: string;
+  history: OrderHistory[];
+}
+
+export interface OrderHistory {
+  action: string;
+  owner: string;
+  transactionId: string;
 }
 
 export interface OrdersResponse {

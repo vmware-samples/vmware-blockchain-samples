@@ -13,7 +13,8 @@ import * as HttpHeaderProvider from 'httpheaderprovider';
 import * as Order from '../../../assets/contracts/OrderV1.json';
 import * as Orders from '../../../assets/contracts/OrdersProxy.json';
 import * as OrdersV1 from '../../../assets/contracts/OrdersV1.json';
-import { Order as OrderModel, OrdersResponse, OrderStatus } from '../order/order';
+import { sequentialArray } from '../../shared/utils';
+import { Order as OrderModel, OrderHistory, OrdersResponse, OrderStatus } from '../order/order';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +29,6 @@ export class BlockchainService {
   from: string;
   accounts: string[];
 
-  // TODO: items come from blockchain?
   public readonly items = ['Apples', 'Bananas', 'Oranges'];
   private servicePromise: Promise<any>;
 
@@ -38,14 +38,54 @@ export class BlockchainService {
     this.servicePromise = this.getAccounts();
   }
 
+  approveOrder(order: OrderModel): Promise<any> {
+    return this.sendOrder(order, 'approve');
+  }
+
+  confirmDeliveryOrder(order: OrderModel): Promise<any> {
+    return this.sendOrder(order, 'confirmDelivery');
+  }
+
   createOrder(productType: string, quantity: number): Promise<any> {
     return fromPromise(this.servicePromise).pipe(mergeMap(() => {
       return this.ordersContract.methods.create(
         this.web3.utils.fromAscii(productType),
         quantity
       )
-      .send({ from: this.from, 'gas': '4400000' });
+      .send({ from: this.from, 'gas': '4400000' }).then((address) => {
+        return address;
+      });
     })).toPromise();
+  }
+
+  deliveredOrder(order: OrderModel): Promise<any> {
+    return this.sendOrder(order, 'delivered');
+  }
+
+  getHistory(order: OrderModel): Promise<any> {
+    return this.getHistoryLength(order).then((historyLength) => {
+      if (historyLength > 0) {
+        const historyIndices = sequentialArray(0, historyLength);
+        const historyPromises = historyIndices.map(i => this.getHistoryRecord(order, i));
+        return Promise.all(historyPromises);
+      } else {
+        return Promise.resolve([]);
+      }
+    });
+  }
+
+  getHistoryLength(order: OrderModel): Promise<any> {
+    return order.contract.methods.getHistoryLength().call();
+  }
+
+  getHistoryRecord(order: OrderModel, index: number): Promise<OrderHistory> {
+    return order.contract.methods.history(index).call().then((record) => {
+      return {
+        action: toUtf8(record.action),
+        owner: record.who,
+        transactionId: '0x4534534534abec533' // TODO - where to get this?
+      } as OrderHistory;
+    });
   }
 
   getOrder(index: number): Promise<any> {
@@ -60,16 +100,14 @@ export class BlockchainService {
   }
 
   order(index: number): Promise<any> {
-    return fromPromise(this.servicePromise).pipe(mergeMap(() => {
-      return this.ordersContract.methods.orders(index).call({ from: this.from });
-    })).toPromise();
+    return this.callWithPromise( 'orders', index );
   }
 
   orders(startIndex: number = 0, pageSize: number = 20): Promise<OrdersResponse> {
     return this.orderCount().then((total) => {
       if (total > 0) {
         const maxIndex = Math.min( total as number, startIndex + pageSize );
-        const indices = Array.from(new Array(maxIndex - startIndex), (val, index) => index + startIndex);
+        const indices = sequentialArray(startIndex, maxIndex - startIndex);
         const orderPromises = indices.map(i => this.getOrder(i));
         return Promise.all(orderPromises).then(orders => {
           return {
@@ -82,9 +120,35 @@ export class BlockchainService {
   }
 
   orderCount(): Promise<any> {
-    return fromPromise(this.servicePromise).pipe(mergeMap(() => {
-      return this.ordersContract.methods.getAmount().call({ from: this.from });
-    })).toPromise();
+    return this.callWithPromise('getAmount');
+  }
+
+  receivedAndInTransitOrder(order: OrderModel): Promise<any> {
+    return this.sendOrder(order, 'receivedAndInTransit');
+  }
+
+  revokeOrder(order: OrderModel): Promise<any> {
+    return this.sendOrder(order, 'revoke');
+  }
+
+  storeAuditDocumentOrder(order: OrderModel): Promise<any> {
+    return this.sendOrder(order, 'storeAuditDocument');
+  }
+
+  validatedOrder(order: OrderModel): Promise<any> {
+    return this.sendOrder(order, 'validated');
+  }
+
+  verifyInTransitOrder(order: OrderModel): Promise<any> {
+    return this.sendOrder(order, 'verifyInTransit');
+  }
+
+  warehouseReceivedOrder(order: OrderModel): Promise<any> {
+    return this.sendOrder(order, 'warehouseReceivedOrder');
+  }
+
+  warehouseReleasedOrder(order: OrderModel): Promise<any> {
+    return this.sendOrder(order, 'warehouseReleasedOrder');
   }
 
   private buildOrder(contract): Promise<OrderModel> {
@@ -92,19 +156,27 @@ export class BlockchainService {
       id: contract.options.address,
       contract: contract
     } as OrderModel;
-
+    const loadHistory = this.getHistory(order).then((history) => {
+      order.history = history;
+    });
     const loadMeta = contract.methods.meta.call().then(meta => {
       order.amount = meta.amount;
       order.product = toUtf8(meta.product);
       return order;
     });
     const loadStatus = contract.methods.state.call().then(status => {
-      order.status = status;
+      order.status = parseInt(status, 10);
       order.statusLabel = OrderStatus[status];
     });
-    return Promise.all([loadMeta, loadStatus]).then(() => {
+    return Promise.all([loadHistory, loadMeta, loadStatus]).then(() => {
       return order;
     });
+  }
+
+  private callWithPromise(methodName: string, ...args: any[]): Promise<any> {
+    return fromPromise(this.servicePromise).pipe(mergeMap(() => {
+      return this.ordersContract.methods[methodName](...args).call({ from: this.from });
+    })).toPromise();
   }
 
   private getAccounts(): Promise<any> {
@@ -115,6 +187,20 @@ export class BlockchainService {
       this.ordersContract = new this.web3.eth.Contract(
         this.ordersABI, this.ordersAddress
       );
+    });
+  }
+
+  private sendOrder(order, methodName, ...args: any[]): Promise<any> {
+    // setOwners is temporary until we have a more robust approach to roles
+    return this.setOwners(order, this.from).then(() => {
+      return order.contract.methods[methodName](...args)
+        .send({ from: this.from, 'gas': '4400000' });
+    });
+  }
+
+  private setOwners(order, userAddress: string): Promise<any> {
+    return order.contract.methods.setOwners(...(new Array(5).fill(userAddress)))
+      .send({ from: this.from, 'gas': '4400000' }).then((orderContract) => {
     });
   }
 }
