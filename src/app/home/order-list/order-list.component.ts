@@ -4,7 +4,8 @@
  * The full license information can be found in LICENSE in the root directory of this project.
  */
 
-import { ChangeDetectorRef, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, OnDestroy, Output } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import { Order } from '../../core/order/order';
 import { BlockchainService } from '../../core/blockchain/blockchain.service';
@@ -15,7 +16,11 @@ import { OrderService } from '../../core/order/order.service';
   templateUrl: './order-list.component.html',
   styleUrls: ['./order-list.component.scss']
 })
-export class OrderListComponent {
+export class OrderListComponent implements OnDestroy, OnInit {
+
+  private datagridState: ClrDatagridStateInterface;
+  private newOrderRef: Subscription;
+  private updatedOrderRef: Subscription;
 
   pageSize = 20;
   orders;
@@ -51,14 +56,39 @@ export class OrderListComponent {
     this.blockchainService.orderCount().then((result) => this.total = result);
   }
 
+  ngOnDestroy() {
+    this.newOrderRef.unsubscribe();
+    this.updatedOrderRef.unsubscribe();
+  }
+
+  ngOnInit() {
+    this.newOrderRef = this.blockchainService.newOrder.subscribe((order) => {
+      this.refresh(this.datagridState);
+    });
+    this.updatedOrderRef = this.blockchainService.updatedOrder.subscribe((order) => {
+      this.replaceOrder(order);
+    });
+  }
+
   refresh(state: ClrDatagridStateInterface) {
+    this.datagridState = state;
     this.loading = true;
     this.blockchainService.orders().then((response) => {
       this.total = response.total;
       this.orders = response.orders;
       this.syncGridSelection();
       this.loading = false;
+      if (!this.selectedOrder && this.total > 0) {
+        this.gridSelectedOrder = this.orders[0];
+      }
     });
+  }
+
+  private replaceOrder(order: Order) {
+    const orderIndex = this.orders.map((o) => o.id).indexOf(order.id);
+    if (orderIndex >= 0) {
+      this.orders.splice(orderIndex, 1, order);
+    }
   }
 
   private syncGridSelection() {

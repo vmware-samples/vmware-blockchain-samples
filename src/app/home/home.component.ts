@@ -4,7 +4,8 @@
  * The full license information can be found in LICENSE in the root directory of this project.
  */
 
-import { Component, OnInit, Output } from '@angular/core';
+import { Component, OnDestroy, OnInit, Output } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { BlockchainService } from '../core/blockchain/blockchain.service';
 import { Order } from '../core/order/order';
 
@@ -13,9 +14,10 @@ import { Order } from '../core/order/order';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnDestroy, OnInit {
 
   _selectedOrder: Order;
+  private updatedOrderRef: Subscription;
 
   get selectedOrder() {
     return this._selectedOrder;
@@ -25,11 +27,19 @@ export class HomeComponent implements OnInit {
     this._selectedOrder = value;
   }
 
-  constructor(private blockchainService: BlockchainService) { }
+  constructor(private blockchainService: BlockchainService) {
+
+  }
+
+  ngOnDestroy() {
+    this.updatedOrderRef.unsubscribe();
+  }
 
   ngOnInit() {
-    this.blockchainService.getOrder(0).then((order) => {
-      this.selectedOrder = order;
+    this.updatedOrderRef = this.blockchainService.updatedOrder.subscribe((order) => {
+      if (this.selectedOrder.id === order.id) {
+        this.selectedOrder = order;
+      }
     });
   }
 }
