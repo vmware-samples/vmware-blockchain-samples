@@ -12,7 +12,6 @@ import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { BlockchainService } from './blockchain/blockchain.service';
 import { HeaderComponent } from './header/header.component';
-import { OrderService } from './order/order.service';
 import { UserService } from './user/user.service';
 
 @NgModule({
@@ -26,7 +25,6 @@ import { UserService } from './user/user.service';
   ],
   providers: [
     BlockchainService,
-    OrderService,
     UserService
   ],
   declarations: [

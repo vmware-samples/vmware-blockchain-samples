@@ -4,12 +4,11 @@
  * The full license information can be found in LICENSE in the root directory of this project.
  */
 
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, OnDestroy, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, OnDestroy, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import { Order } from '../../core/order/order';
 import { BlockchainService } from '../../core/blockchain/blockchain.service';
-import { OrderService } from '../../core/order/order.service';
 
 @Component({
   selector: 'vmw-sc-order-list',
@@ -50,9 +49,7 @@ export class OrderListComponent implements OnDestroy, OnInit {
     this.selectedOrderChange.emit(value);
   }
 
-  constructor( private blockchainService: BlockchainService,
-               private changeDetectorRef: ChangeDetectorRef,
-               private orderService: OrderService ) {
+  constructor( private blockchainService: BlockchainService ) {
     this.blockchainService.orderCount().then((result) => this.total = result);
   }
 

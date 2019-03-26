@@ -7,20 +7,25 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ClarityModule, ClrButtonModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { UserService } from '../core/user/user.service';
+import { SimpleConfirmationComponent } from './simple-confirmation/simple-confirmation.component';
 import { ToggleRadioGroupComponent } from './toggle-radio-group/toggle-radio-group.component';
 
 @NgModule({
   imports: [
+    ClarityModule,
     CommonModule,
     FormsModule,
     TranslateModule
   ],
   declarations: [
+    SimpleConfirmationComponent,
     ToggleRadioGroupComponent
   ],
   exports: [
+    SimpleConfirmationComponent,
     ToggleRadioGroupComponent
   ]
 })

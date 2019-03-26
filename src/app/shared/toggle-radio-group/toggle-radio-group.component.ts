@@ -4,7 +4,8 @@
  * The full license information can be found in LICENSE in the root directory of this project.
  */
 
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { SimpleConfirmationComponent } from '../simple-confirmation/simple-confirmation.component';
 
 @Component({
   selector: 'vmw-sc-toggle-radio-group',
@@ -13,7 +14,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class ToggleRadioGroupComponent {
 
-  selectedValueData: string;
+  @ViewChild(SimpleConfirmationComponent) confirmation;
+  _selectedValue: string;
 
   @Input() disabled = false;
   @Input() name: string;
@@ -23,29 +25,43 @@ export class ToggleRadioGroupComponent {
   selectedValueChange = new EventEmitter<string>();
 
   @Input()
-  get selectedValue() {
-    return this.selectedValueData;
+  set selectedValue(val) {
+    this._selectedValue = val;
   }
 
-  set selectedValue(val) {
-    this.selectedValueData = val;
-    this.selectedValueChange.emit(this.selectedValueData);
+  get selectedValue(): string {
+    return this._selectedValue;
   }
+
+  private pendingValue;
 
   constructor() { }
 
+  closeConfirmation(confirmed: boolean) {
+    if (confirmed) {
+      this.evaluateUncheck(this.pendingValue);
+      this.selectedValueChange.emit(this.selectedValue);
+    }
+    this.pendingValue = null;
+  }
+
   evaluateUncheck( clickValue ) {
-    if (this.disabled) {
-      // Block input when the group is disabled
-      event.preventDefault();
+    if (clickValue === this.selectedValue) {
+      this.selectedValue = null;
     } else {
-      if (clickValue === this.selectedValue) {
-        this.selectedValue = null;
-      }
+      this.selectedValue = clickValue;
     }
   }
 
   reset() {
     this.selectedValue = null;
+  }
+
+  selectValue(value) {
+    event.preventDefault(); // Prevent Radio button behavior
+    if (! this.disabled) {
+      this.pendingValue = value;
+      this.confirmation.open();
+    }
   }
 }
