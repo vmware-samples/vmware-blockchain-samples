@@ -1,0 +1,53 @@
+<clr-wizard #wizardmd [(clrWizardOpen)]="open" clrWizardSize="md" [clrWizardClosable]="false"
+    (clrWizardCurrentPageChanged)="pageChanged($event)" (clrWizardOnFinish)="finish()">
+  <clr-wizard-title>{{ 'onboarding.title' | translate }}</clr-wizard-title>
+
+  <clr-wizard-button [type]="'previous'">Back</clr-wizard-button>
+  <clr-wizard-button [type]="'next'">Next</clr-wizard-button>
+  <clr-wizard-button [type]="'finish'">Finish</clr-wizard-button>
+
+  <clr-wizard-page>
+    <ng-template clrPageTitle>
+      {{ 'onboarding.page-1.title' | translate }}
+    </ng-template>
+    <ng-template clrPageNavTitle>
+      {{ 'onboarding.page-1.nav-title' | translate }}
+    </ng-template>
+    {{ 'onboarding.page-1.description' | translate }}
+  </clr-wizard-page>
+
+  <clr-wizard-page>
+    <ng-template clrPageTitle>
+      {{ 'onboarding.page-2.title.' + role  | translate }}
+    </ng-template>
+    <ng-template clrPageNavTitle>
+      {{ 'onboarding.page-2.nav-title' | translate }}
+    </ng-template>
+    {{ 'onboarding.page-2.description.' + role | translate }}
+  </clr-wizard-page>
+
+  <clr-wizard-page class="other-roles-page" [clrWizardPageNextDisabled]="!userTimerComplete">
+    <ng-template clrPageTitle>
+      {{ 'onboarding.page-3.title' | translate }}
+    </ng-template>
+    <ng-template clrPageNavTitle>
+      {{ 'onboarding.page-3.nav-title' | translate }}
+    </ng-template>
+
+    <ng-container *ngIf="!userTimerComplete">
+      <h5>{{ 'onboarding.page-3.waiting' | translate }}</h5>
+      <span class="spinner"></span>
+    </ng-container>
+
+    <ng-container *ngIf="userTimerComplete">
+      <div class="clr-row">
+        <div class="clr-col-12">
+          <h5>{{ 'onboarding.page-3.continue-title' | translate }}</h5>
+        </div>
+        <div class="clr-col-12">
+          {{ 'onboarding.page-3.continue-body' | translate }}
+        </div>
+      </div>
+    </ng-container>
+  </clr-wizard-page>
+</clr-wizard>

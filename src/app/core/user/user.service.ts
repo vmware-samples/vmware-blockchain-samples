@@ -14,7 +14,13 @@ import { User } from './user';
 export class UserService {
 
   // TODO: get User, including role, from back end service
-  public readonly roles = ['farmer', 'auditor', 'storage', 'distributor', 'super_market' ];
+  public readonly ROLE_AUDITOR = 'auditor';
+  public readonly ROLE_DISTRIBUTOR = 'distributor';
+  public readonly ROLE_FARMER = 'farmer';
+  public readonly ROLE_STORAGE = 'storage';
+  public readonly ROLE_SUPER_MARKET = 'super_market';
+  public readonly roles = [this.ROLE_FARMER, this.ROLE_AUDITOR, this.ROLE_STORAGE, this.ROLE_DISTRIBUTOR, this.ROLE_SUPER_MARKET ];
+
   _currentUser: User;
 
   constructor() { }

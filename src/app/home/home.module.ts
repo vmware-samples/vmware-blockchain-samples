@@ -22,6 +22,7 @@ import { HomeComponent } from './home.component';
 import { HomeRoutingModule } from './home-routing.module';
 import { OrderDetailComponent } from './order-detail/order-detail.component';
 import { OrderListComponent } from './order-list/order-list.component';
+import { OnboardingWizardComponent } from './onboarding-wizard/onboarding-wizard.component';
 
 @NgModule({
   imports: [
@@ -42,7 +43,8 @@ import { OrderListComponent } from './order-list/order-list.component';
     CreateOrderComponent,
     HomeComponent,
     OrderDetailComponent,
-    OrderListComponent
+    OrderListComponent,
+    OnboardingWizardComponent
   ],
   exports: [
     CreateOrderComponent

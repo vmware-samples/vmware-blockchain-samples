@@ -58,6 +58,27 @@
   "label.upload": "Upload",
   "modal.create.order.title": "Create Order",
   "new-order": "New Order",
+  "onboarding": {
+    "page-1": {
+      "nav-title": "Welcome",
+      "title": "Welcoming page",
+      "description": "This application is to demonstrate the abilities of ethereum smart contracts and supply chain on a vmware blockchain or other ethereum based blockchain."
+    },
+    "page-2": {
+      "nav-title": "Your Role",
+      "title.super_market": "You will be the Super Market",
+      "description.super_market": "The Super Market receives final delivery of the order"
+    },
+    "page-3": {
+      "continue-body": "Not all personas have been claimed. You can keep waiting, or click \"Finish\" to continue.",
+      "continue-title": "Continue, or keep waiting?",
+      "description": "You can continue waiting for other personas to join, or continue with those roles simulated",
+      "nav-title": "Other Roles",
+      "title": "Populating Other Personas",
+      "waiting": "  Waiting for all personas to populate"
+    },
+    "title": "Supply Chain dApp Setup"
+  },
   "order": "Order",
   "order.action": "Action",
   "order.amount": "Amount",

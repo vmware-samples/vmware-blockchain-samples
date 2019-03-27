@@ -18,6 +18,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ErrorAlertService } from '../shared/global-alert.service';
 import { BlockchainService } from '../core/blockchain/blockchain.service';
 import { Order } from '../core/order/order';
+import { User } from '../core/user/user';
 import { UserService } from '../core/user/user.service';
 import { NotifierService } from '../shared/notifier.service';
 import { BlockchainVisualizationComponent } from './blockchain-visualization/blockchain-visualization.component';
@@ -30,8 +31,10 @@ import { BlockchainVisualizationComponent } from './blockchain-visualization/blo
 export class HomeComponent implements OnDestroy, OnInit {
   @ViewChild('nodes') nodes: BlockchainVisualizationComponent;
   createOrderVisible = false;
-  currentUser: any;
   alerts: any[] = [];
+  currentUser: any;
+  showOnboarding = false;
+
   _selectedOrder: Order;
   transaction: string;
   private updatedOrderRef: Subscription;
@@ -69,6 +72,11 @@ export class HomeComponent implements OnDestroy, OnInit {
     this.notifierService.notify
       .subscribe(notfication => this.update(notfication));
 
+    this.blockchainService.orderCount().then((amount) => {
+      if (amount < 1) {
+        this.showOnboarding = true;
+      }
+    });
   }
 
   ngOnInit() {

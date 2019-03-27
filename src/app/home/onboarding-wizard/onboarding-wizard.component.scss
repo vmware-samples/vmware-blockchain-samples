@@ -1,0 +1,18 @@
+/*
+ * Copyright 2019 VMware, all rights reserved.
+ * This software is released under MIT license.
+ * The full license information can be found in LICENSE in the root directory of this project.
+ */
+.other-roles-page.active {
+  display: flex;
+  justify-content: center;
+  .spinner {
+    left: auto;
+  }
+  h5 {
+    margin-bottom: 1em;
+  }
+  .clr-col-12 {
+    text-align: center;
+  }
+}
