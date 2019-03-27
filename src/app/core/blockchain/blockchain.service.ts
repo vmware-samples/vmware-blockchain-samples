@@ -5,7 +5,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { from as fromPromise } from 'rxjs';
+import { from as fromPromise, Subject } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import Web3 from 'web3';
 import { toUtf8 } from 'web3-utils';
@@ -28,6 +28,12 @@ export class BlockchainService {
   ordersContract: any;
   from: string;
   accounts: string[];
+
+  private newOrderSource = new Subject<any>();
+  public newOrder = this.newOrderSource.asObservable();
+
+  private updatedOrderSource = new Subject<OrderModel>();
+  public updatedOrder = this.updatedOrderSource.asObservable();
 
   public readonly items = ['Apples', 'Bananas', 'Oranges'];
   private servicePromise: Promise<any>;
@@ -53,6 +59,7 @@ export class BlockchainService {
         quantity
       )
       .send({ from: this.from, 'gas': '4400000' }).then((address) => {
+        this.newOrderSource.next();
         return address;
       });
     })).toPromise();
@@ -88,15 +95,19 @@ export class BlockchainService {
     });
   }
 
-  getOrder(index: number): Promise<any> {
+  getOrder(index: number): Promise<OrderModel> {
     return fromPromise(this.servicePromise).pipe(mergeMap(() => {
       return this.order(index).then((address) => {
-        const contract = new this.web3.eth.Contract(this.orderABI, address as string);
-        return this.buildOrder(contract).then(order => {
-          return order;
-        });
+        return this.getOrderByAddress(address);
       });
     })).toPromise();
+  }
+
+  getOrderByAddress(address: string): Promise<OrderModel> {
+    const contract = new this.web3.eth.Contract(this.orderABI, address);
+    return this.buildOrder(contract).then(order => {
+      return order;
+    });
   }
 
   order(index: number): Promise<any> {
@@ -115,6 +126,11 @@ export class BlockchainService {
             total: total
           } as OrdersResponse;
         });
+      } else {
+        return {
+          orders: [],
+          total: 0
+        } as OrdersResponse;
       }
     });
   }
@@ -194,13 +210,17 @@ export class BlockchainService {
     // setOwners is temporary until we have a more robust approach to roles
     return this.setOwners(order, this.from).then(() => {
       return order.contract.methods[methodName](...args)
-        .send({ from: this.from, 'gas': '4400000' });
+        .send({ from: this.from, 'gas': '4400000' }).then((resp) => {
+          return this.getOrderByAddress(order.id).then((updatedOrder) => {
+            this.updatedOrderSource.next(updatedOrder);
+            return updatedOrder;
+          });
+        }).catch(err => console.error(err));
     });
   }
 
   private setOwners(order, userAddress: string): Promise<any> {
     return order.contract.methods.setOwners(...(new Array(5).fill(userAddress)))
-      .send({ from: this.from, 'gas': '4400000' }).then((orderContract) => {
-    });
+      .send({ from: this.from, 'gas': '4400000' });
   }
 }
