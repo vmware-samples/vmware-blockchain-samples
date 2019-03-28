@@ -13,6 +13,7 @@ import {
 } from '@angular/router';
 
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -23,17 +24,19 @@ export class AuthGuard implements CanActivate {
     private router: Router
   ) {}
 
-  canActivate(
+  async canActivate(
     next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): boolean {
+    state: RouterStateSnapshot): Promise<boolean> {
     let url: string = state.url;
 
-    return this.checkLogin(url);
+    return await this.checkLogin(url);
   }
 
-  checkLogin(url: string): boolean {
+  async checkLogin(url: string): Promise<boolean> {
+    // Don't need to login with ganache
+    if (environment.blockchainType === 'ganache') { return true; }
     if (this.authService.isLoggedIn) { return true; }
-    if (this.authService.loginCheck()) { return true; }
+    if (await this.authService.loginCheck()) { return true; }
 
     // Store the attempted URL for redirecting
     this.authService.redirectUrl = url;

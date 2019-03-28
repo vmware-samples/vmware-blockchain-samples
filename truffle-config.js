@@ -5,10 +5,7 @@
  */
 
 const Web3 = require('web3');
-const HttpHeaderProvider = require('httpheaderprovider');
-const authValues = require('./server/config');
 
-console.log('authValues', authValues);
 
 /**
  * Use this file to configure your truffle project. It's seeded with some
@@ -29,8 +26,7 @@ console.log('authValues', authValues);
  * phrase from a file you've .gitignored so it doesn't accidentally become public.
  *
  */
-// console.log('authValues');
-// console.log(authValues);
+
 // const HDWalletProvider = require('truffle-hdwallet-provider');
 // const infuraKey = "fj4jll3k.....";
 //
@@ -62,30 +58,10 @@ module.exports = {
       timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
       skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
     },
-    vmware: {
-      network_id: "*",
-      // provider: () => {
-      //   console.log('authValues')
-      //   console.log(authValues)
-      //   console.log(authValues.jwt)
-      //   console.log(authValues.getJwt())
-      //   const headers = {
-      //     Authorization: `Bearer ${authValues.getJwt()}`
-      //   }
-
-      //   return new HttpHeaderProvider('http://helen:8080/api/concord/eth/', headers)
-      // },
-      provider: () => new Web3.providers.HttpProvider(
-        "http://admin@blockchain.local:T3sting!@helen:8080/api/concord/eth/"
-      ),
-      timeoutBlocks: 200,
-      websockets: false,
-      skipDryRun: true
-    },
     vmwareLocal: {
       network_id: "*",
       provider: () => new Web3.providers.HttpProvider(
-        "http://admin@blockchain.local:T3sting!@localhost:8080/api/concord/eth/"
+        "http://<username>:<password>@localhost:8080/api/concord/eth/"
       ),
       timeoutBlocks: 200,
       websockets: false,

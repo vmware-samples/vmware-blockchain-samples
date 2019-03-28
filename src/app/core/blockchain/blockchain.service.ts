@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2019 VMware, all rights reserved.
  * This software is released under MIT license.
@@ -7,13 +8,24 @@
 import { Injectable } from '@angular/core';
 import { from as fromPromise, Subject } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
+
 import Web3 from 'web3';
 import * as HttpHeaderProvider from 'httpheaderprovider';
+
+import { environment } from '../../../environments/environment';
+import { AuthService } from '../../auth/auth.service';
+
 import * as Order from '../../../assets/contracts/OrderV1.json';
 import * as Orders from '../../../assets/contracts/OrdersProxy.json';
 import * as OrdersV1 from '../../../assets/contracts/OrdersV1.json';
 import { sequentialArray } from '../../shared/utils';
-import { Order as OrderModel, OrderHistory, OrdersResponse, OrderStatus } from '../order/order';
+import {
+  Order as OrderModel,
+  OrderHistory,
+  OrdersResponse,
+  OrderStatus
+} from '../order/order';
+
 
 @Injectable({
   providedIn: 'root'
@@ -22,11 +34,12 @@ export class BlockchainService {
   ordersAddress: any = Orders.networks['5777'].address;
   ordersABI: any = OrdersV1.abi;
   orderABI: any = Order.abi;
-  address: string = 'ws://127.0.0.1:7545';
+  address: string = environment.path;
   web3: Web3;
   ordersContract: any;
   from: string;
   accounts: string[];
+  sendDefaults = { from: undefined, 'gas': '4400000' };
 
   private newOrderSource = new Subject<any>();
   public newOrder = this.newOrderSource.asObservable();
@@ -37,10 +50,22 @@ export class BlockchainService {
   public readonly items = ['Apples', 'Bananas', 'Oranges'];
   private servicePromise: Promise<any>;
 
-  constructor() {
-    const provider = new HttpHeaderProvider(this.address);
-    this.web3 = new Web3(this.address);
+  constructor(private authService: AuthService) {
+    if (environment.blockchainType === 'vmware') {
+      this.web3 = this.vmwareBlockchain();
+    } else {
+      this.web3 = this.ganache();
+    }
+
     this.servicePromise = this.getAccounts();
+  }
+
+  vmwareBlockchain(): Web3 {
+    return new Web3(this.authService.getVmwareBlockChainProvider());
+  }
+
+  ganache(): Web3 {
+    return new Web3(new Web3.providers.HttpProvider(this.address));
   }
 
   approveOrder(order: OrderModel): Promise<any> {
@@ -53,11 +78,14 @@ export class BlockchainService {
 
   createOrder(productType: string, quantity: number): Promise<any> {
     return fromPromise(this.servicePromise).pipe(mergeMap(() => {
-      return this.ordersContract.methods.create(
-        this.web3.utils.fromAscii(productType),
-        quantity
-      )
-      .send({ from: this.from, 'gas': '4400000' }).then((address) => {
+      return new Promise((resolve, reject) => {
+        return this.ordersContract.create(
+          this.web3.fromUtf8(productType),
+          quantity,
+          this.sendDefaults,
+          this.callbackToResolve(resolve, reject)
+        );
+      }).then((address) => {
         this.newOrderSource.next();
         return address;
       });
@@ -81,14 +109,18 @@ export class BlockchainService {
   }
 
   getHistoryLength(order: OrderModel): Promise<any> {
-    return order.contract.methods.getHistoryLength().call();
+    return new Promise((resolve, reject) => {
+      return order.contract.getHistoryLength(this.callbackToResolve(resolve, reject));
+    });
   }
 
   getHistoryRecord(order: OrderModel, index: number): Promise<OrderHistory> {
-    return order.contract.methods.history(index).call().then((record) => {
+    return new Promise((resolve, reject) => {
+      return order.contract.history(index, this.callbackToResolve(resolve, reject));
+    }).then((record) => {
       return {
-        action: this.web3.utils.toUtf8(record.action),
-        owner: record.who,
+        action: this.web3.toUtf8(record[1]),
+        owner: record[0],
         transactionId: '0x4534534534abec533' // TODO - where to get this?
       } as OrderHistory;
     });
@@ -103,20 +135,20 @@ export class BlockchainService {
   }
 
   getOrderByAddress(address: string): Promise<OrderModel> {
-    const contract = new this.web3.eth.Contract(this.orderABI, address);
-    return this.buildOrder(contract).then(order => {
+    const contract = this.web3.eth.contract(this.orderABI).at(address);
+    return this.buildOrder(contract, address).then(order => {
       return order;
     });
   }
 
   order(index: number): Promise<any> {
-    return this.callWithPromise( 'orders', index );
+    return this.callWithPromise('orders', index);
   }
 
   orders(startIndex: number = 0, pageSize: number = 20): Promise<OrdersResponse> {
     return this.orderCount().then((total) => {
       if (total > 0) {
-        const maxIndex = Math.min( total as number, startIndex + pageSize );
+        const maxIndex = Math.min(total as number, startIndex + pageSize);
         const indices = sequentialArray(startIndex, maxIndex - startIndex);
         const orderPromises = indices.map(i => this.getOrder(i));
         return Promise.all(orderPromises).then(orders => {
@@ -128,7 +160,7 @@ export class BlockchainService {
       } else {
         return {
           orders: [],
-          total: 0
+          total: total
         } as OrdersResponse;
       }
     });
@@ -166,22 +198,26 @@ export class BlockchainService {
     return this.sendOrder(order, 'warehouseReleasedOrder');
   }
 
-  private buildOrder(contract): Promise<OrderModel> {
+  private buildOrder(contract, address: string): Promise<OrderModel> {
     const order = {
-      id: contract.options.address,
+      id: address,
       contract: contract
     } as OrderModel;
     const loadHistory = this.getHistory(order).then((history) => {
       order.history = history;
     });
-    const loadMeta = contract.methods.meta.call().then(meta => {
-      order.amount = meta.amount;
-      order.product = this.web3.utils.toUtf8(meta.product);
+    const loadMeta = new Promise((resolve, reject) => {
+      return contract.meta(this.callbackToResolve(resolve, reject));
+    }).then(meta => {
+      order.amount = meta[1];
+      order.product = this.web3.toUtf8(meta[0]);
       return order;
     });
-    const loadStatus = contract.methods.state.call().then(status => {
-      order.status = parseInt(status, 10);
-      order.statusLabel = OrderStatus[status];
+    const loadStatus = new Promise((resolve, reject) => {
+      return contract.state(this.callbackToResolve(resolve, reject))
+    }).then(status => {
+      order.status = parseInt(status as string, 10);
+      order.statusLabel = OrderStatus[status as string];
     });
     return Promise.all([loadHistory, loadMeta, loadStatus]).then(() => {
       return order;
@@ -190,37 +226,63 @@ export class BlockchainService {
 
   private callWithPromise(methodName: string, ...args: any[]): Promise<any> {
     return fromPromise(this.servicePromise).pipe(mergeMap(() => {
-      return this.ordersContract.methods[methodName](...args).call({ from: this.from });
+      return new Promise((resolve, reject) => {
+        if (args.length === 0) {
+          return this.ordersContract[methodName](this.callbackToResolve(resolve, reject));
+        } else {
+          return this.ordersContract[methodName](...args, this.callbackToResolve(resolve, reject));
+        }
+      });
     })).toPromise();
   }
 
   private getAccounts(): Promise<any> {
-    return this.web3.eth.getAccounts().then((accounts) => {
+    return new Promise((resolve, reject) => {
+      return this.web3.eth.getAccounts(this.callbackToResolve(resolve, reject));
+    }).then(accounts => {
+      // @ts-ignore
       this.accounts = accounts;
-      this.from = this.accounts[3];
+      this.from = this.accounts[1];
+      this.sendDefaults.from = this.from;
       this.web3.eth.defaultAccount = this.from;
-      this.ordersContract = new this.web3.eth.Contract(
-        this.ordersABI, this.ordersAddress
-      );
+      this.ordersContract = this.web3.eth.contract(this.ordersABI).at(this.ordersAddress);
     });
+
   }
 
   private sendOrder(order, methodName, ...args: any[]): Promise<any> {
     // setOwners is temporary until we have a more robust approach to roles
-    return this.setOwners(order, this.from).then(() => {
-      return order.contract.methods[methodName](...args)
-        .send({ from: this.from, 'gas': '4400000' }).then((resp) => {
-          return this.getOrderByAddress(order.id).then((updatedOrder) => {
-            this.updatedOrderSource.next(updatedOrder);
-            return updatedOrder;
-          });
-        }).catch(err => console.error(err));
-    });
+    return new Promise((resolve, reject) => {
+      return this.setOwners(order, this.from).then(() => {
+        return order.contract[methodName](
+          ...args, this.sendDefaults, this.callbackToResolve(resolve, reject)
+        );
+      });
+    }).then((resp) => {
+      return this.getOrderByAddress(order.id).then((updatedOrder) => {
+        this.updatedOrderSource.next(updatedOrder);
+        return updatedOrder;
+      });
+    }).catch(err => console.error(err));
   }
 
   private setOwners(order, userAddress: string): Promise<any> {
-    return order.contract.methods.setOwners(...(new Array(5).fill(userAddress)))
-      .send({ from: this.from, 'gas': '4400000' });
+    return new Promise((resolve, reject) => {
+      return order.contract.setOwners(
+        ...(new Array(5).fill(userAddress)),
+        this.sendDefaults,
+        this.callbackToResolve(resolve, reject))
+    });
+  }
+
+  private callbackToResolve(resolve, reject) {
+    return function(error, value) {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(value);
+      }
+    };
   }
 
 }

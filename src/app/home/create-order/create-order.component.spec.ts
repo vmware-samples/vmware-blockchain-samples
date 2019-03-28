@@ -9,6 +9,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { HttpClient, HttpHandler } from '@angular/common/http';
+
 import { CreateOrderComponent } from './create-order.component';
 
 describe('CreateOrderComponent', () => {
@@ -26,7 +28,9 @@ describe('CreateOrderComponent', () => {
       ],
       declarations: [
         CreateOrderComponent
-      ]
+      ],
+      providers: [HttpClient, HttpHandler]
+
     })
     .compileComponents();
   }));

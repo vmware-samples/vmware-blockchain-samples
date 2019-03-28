@@ -10,5 +10,13 @@
     "pathRewrite": {
       "^/blockchain": ""
     }
+  },
+  "/ganache": {
+    "target": "http://127.0.0.1:7545",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/ganache": ""
+    }
   }
 }
