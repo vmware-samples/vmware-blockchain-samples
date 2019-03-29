@@ -40,7 +40,6 @@ export class LoginComponent implements OnInit {
     this.authService
       .loginLocally(this.loginForm.get('username').value, this.loginForm.get('password').value)
       .subscribe(response => {
-        console.log(response);
         this.logginIn = false;
         this.router.navigate(['/home']);
     }, error => {

@@ -37,7 +37,6 @@ export class AuthService {
     }  else {
       authKey = 'Basic ' + btoa(username + ':' + password);
     }
-
     const provider = this.getVmwareBlockChainProvider(authKey);
     const web3 = new Web3();
     web3.setProvider(provider);

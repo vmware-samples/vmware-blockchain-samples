@@ -27,12 +27,12 @@ import { OrderListComponent } from './order-list/order-list.component';
   imports: [
     BrowserAnimationsModule,
     ClarityModule,
+    CoreModule,
     FormsModule,
     HomeRoutingModule,
     ReactiveFormsModule,
     SharedModule,
     TranslateModule,
-    CoreModule
   ],
   declarations: [
     BlockchainStatusCardComponent,

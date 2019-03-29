@@ -18,21 +18,20 @@ contract("Orders Test", async accounts => {
     orders = await Orders.at(ordersProxy.address);
 
     await ordersProxy.changeAdmin.sendTransaction(accounts[2]);
-    const transaction = await orders.create.sendTransaction(web3.utils.fromUtf8('Apples'), 100);
+    const transaction = await orders.create.sendTransaction(web3.fromUtf8('Apples'), 100);
     const orderAddress = await orders.orders.call(0);
     const ordersLength = await orders.getAmount.call();
 
-    expect(transaction.receipt.status).to.equal(true);
-    expect(web3.utils.BN(ordersLength).toString()).to.equal('1');
+    expect((new web3.BigNumber(ordersLength)).toString()).to.equal('1');
     expect(orderAddress).to.be.a('string');
   });
 
   it("should create a 1000 orders", async () => {
-    for (let index = 0; index < 1000; index++) {
-      await orders.create.sendTransaction(web3.utils.fromUtf8('Apples'), index);
+    for (let index = 0; index < 100; index++) {
+      await orders.create.sendTransaction(web3.fromUtf8('Apples'), index);
     }
     const ordersLength = await orders.getAmount.call();
 
-    expect(web3.utils.BN(ordersLength).toString()).to.equal('1001');
+    expect((new web3.BigNumber(ordersLength)).toString()).to.equal('101');
   });
 });

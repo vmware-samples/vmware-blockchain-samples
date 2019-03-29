@@ -214,7 +214,7 @@ export class BlockchainService {
       return order;
     });
     const loadStatus = new Promise((resolve, reject) => {
-      return contract.state(this.callbackToResolve(resolve, reject))
+      return contract.state(this.callbackToResolve(resolve, reject));
     }).then(status => {
       order.status = parseInt(status as string, 10);
       order.statusLabel = OrderStatus[status as string];
@@ -271,7 +271,7 @@ export class BlockchainService {
       return order.contract.setOwners(
         ...(new Array(5).fill(userAddress)),
         this.sendDefaults,
-        this.callbackToResolve(resolve, reject))
+        this.callbackToResolve(resolve, reject));
     });
   }
 
