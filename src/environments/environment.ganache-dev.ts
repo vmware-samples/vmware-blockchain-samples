@@ -7,5 +7,6 @@
 export const environment = {
   production: false,
   blockchainType: 'ganache',
-  path: 'http://localhost:4200/ganache'
+  path: 'http://localhost:4200/ganache',
+  network: '5777',
 };

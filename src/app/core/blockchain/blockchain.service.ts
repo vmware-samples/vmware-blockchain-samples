@@ -31,7 +31,7 @@ import {
   providedIn: 'root'
 })
 export class BlockchainService {
-  ordersAddress: any = Orders.networks['5777'].address;
+  ordersAddress: any = Orders.networks[environment.network].address;
   ordersABI: any = OrdersV1.abi;
   orderABI: any = Order.abi;
   address: string = environment.path;
