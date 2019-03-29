@@ -199,10 +199,9 @@ export class BlockchainService {
   }
 
   private buildOrder(contract, address: string): Promise<OrderModel> {
-    const order = {
-      id: address,
-      contract: contract
-    } as OrderModel;
+    const order = new OrderModel();
+    order.id = address;
+    order.contract = contract;
     const loadHistory = this.getHistory(order).then((history) => {
       order.history = history;
     });

@@ -7,7 +7,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { SimpleConfirmationComponent } from '../simple-confirmation/simple-confirmation.component';
 import { ToggleRadioGroupComponent } from './toggle-radio-group.component';
 
 describe('ToggleRadioGroupComponent', () => {
@@ -16,8 +18,12 @@ describe('ToggleRadioGroupComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ToggleRadioGroupComponent ],
+      declarations: [
+        SimpleConfirmationComponent,
+        ToggleRadioGroupComponent
+      ],
       imports: [
+        ClarityModule,
         FormsModule,
         TranslateModule.forRoot()
       ]
@@ -39,12 +45,10 @@ describe('ToggleRadioGroupComponent', () => {
     expect(component.selectedValue).toBe(undefined);
   });
 
-  describe('Button State', () => {
-    let button;
+  describe('evaluateUncheck()', () => {
 
     beforeEach(() => {
-      button = fixture.debugElement.query(By.css('input'));
-      button.nativeElement.click();
+      component.evaluateUncheck(component.values[0]);
     });
 
     it('should select a value when selected', () => {
@@ -52,13 +56,12 @@ describe('ToggleRadioGroupComponent', () => {
     });
 
     it('should deselect the value when selected again', () => {
-      button.nativeElement.click();
+      component.evaluateUncheck(component.values[0]);
       expect(component.selectedValue).toBe(null);
     });
 
-    it('should change selections when another button is clicked', () => {
-      const button2 = fixture.debugElement.queryAll(By.css('input'))[1];
-      button2.nativeElement.click();
+    it('should change selections when another button is selected', () => {
+      component.evaluateUncheck(component.values[1]);
       expect(component.selectedValue).toBe(component.values[1]);
     });
 
