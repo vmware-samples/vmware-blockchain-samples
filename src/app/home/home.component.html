@@ -3,49 +3,66 @@
  This software is released under MIT license.
  The full license information can be found in LICENSE in the root directory of this project.
 -->
-
-<div class="clr-row">
-  <div class="clr-col-md-12 clr-col-lg-6">
-    <div class="card card-orders home-module">
-      <div class="card-header">
-        {{ 'section.header.orders' | translate }}
-      </div>
-      <div class="card-block">
-        <div class="card-text">
-          <vmw-sc-order-list [(selectedOrder)]="selectedOrder"> </vmw-sc-order-list>
+<clr-main-container>
+  <clr-header class="header-{{currentRole}}">
+    <!-- clr-header must be a direct child of clr-main-container -->
+    <vmw-sc-header> </vmw-sc-header>
+  </clr-header>
+  <div class="content-container">
+    <main class="content-area">
+      <div class="clr-row">
+        <div class="clr-col-md-12 clr-col-lg-6">
+          <div class="card card-orders home-module">
+            <div class="card-header">
+              {{ 'section.header.orders' | translate }}
+            </div>
+            <div class="card-block">
+              <div class="card-text">
+                <vmw-sc-order-list [(selectedOrder)]="selectedOrder"> </vmw-sc-order-list>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="selectedOrder" class="card card-order-detail home-module">
+            <div class="card-header">
+              {{ 'order' | translate }}
+              <div class="card-order-detail-id-wrapper">
+                <div class="card-order-detail-id">{{ selectedOrder.id }}</div>
+              </div> - {{ selectedOrder.product }} {{ selectedOrder.amount }}
+              <ng-container [ngPlural]="selectedOrder.amount">
+                <ng-template ngPluralCase="=1">{{'item.quantity.bushel' | translate}}</ng-template>
+                <ng-template ngPluralCase="other">{{'item.quantity.bushels' | translate}}</ng-template>
+              </ng-container>
+            </div>
+            <div class="card-block">
+              <div class="card-text">
+                <vmw-sc-order-detail [order]="selectedOrder"> </vmw-sc-order-detail>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    <div *ngIf="selectedOrder" class="card card-order-detail home-module">
-      <div class="card-header">
-        {{ 'order' | translate }} <div class="card-order-detail-id-wrapper"><div class="card-order-detail-id">{{ selectedOrder.id }}</div></div> - {{ selectedOrder.product }} {{ selectedOrder.amount }}
-        <ng-container [ngPlural]="selectedOrder.amount">
-          <ng-template ngPluralCase="=1">{{'item.quantity.bushel' | translate}}</ng-template>
-          <ng-template ngPluralCase="other">{{'item.quantity.bushels' | translate}}</ng-template>
-        </ng-container>
-      </div>
-      <div class="card-block">
-        <div class="card-text">
-          <vmw-sc-order-detail [order]="selectedOrder"> </vmw-sc-order-detail>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="clr-col-md-12 clr-col-lg-6">
-    <div class="clr-row"><div class="clr-col home-module">
-      <vmw-sc-blockchain-status [order]="selectedOrder"> </vmw-sc-blockchain-status>
-    </div></div>
-    <div class="clr-row"><div class="clr-col home-module">
-      <div class="card card-orders">
-        <div class="card-header">
-          {{ 'section.header.blockchain.status' | translate }}
-        </div>
-        <div class="card-block">
-          <div class="card-text">
-            <vmw-sc-blockchain-visualization> </vmw-sc-blockchain-visualization>
+        <div class="clr-col-md-12 clr-col-lg-6">
+          <div class="clr-row">
+            <div class="clr-col home-module">
+              <vmw-sc-blockchain-status [order]="selectedOrder"> </vmw-sc-blockchain-status>
+            </div>
+          </div>
+          <div class="clr-row">
+            <div class="clr-col home-module">
+              <div class="card card-orders">
+                <div class="card-header">
+                  {{ 'section.header.blockchain.status' | translate }}
+                </div>
+                <div class="card-block">
+                  <div class="card-text">
+                    <vmw-sc-blockchain-visualization> </vmw-sc-blockchain-visualization>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div></div>
+    </main>
   </div>
-</div>
+</clr-main-container>
+<vmw-sc-create-order (close)="onClose()" [(visible)]="createOrderVisible"> </vmw-sc-create-order>

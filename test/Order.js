@@ -28,24 +28,24 @@ contract("Order Test", async accounts => {
     orders = await Orders.at(ordersProxy.address);
 
     try {
-      await orders.create.sendTransaction(web3.utils.fromUtf8('Apples'), 100);
+      await orders.create.sendTransaction(web3.fromUtf8('Apples'), 100);
     } catch (error) {
       errorMessage = error;
     }
 
-    expect(errorMessage.reason).to.equal('Cannot call fallback function from the proxy admin');
+    expect(errorMessage.toString()).to.contain('Cannot call fallback function from the proxy admin');
   });
 
   it("should be owned by the creator and not the contract", async () => {
     // Proxy admin can't use fallback function. so we must use a different
-    // defaault account
+    // default account
     await Orders.defaults({ from: accounts[1] });
     await Order.defaults({ from: accounts[1] });
     // Create an order for testing
     ordersProxy = await OrdersProxy.deployed();
     // Using order proxy address/contract with orders ABI
     orders = await Orders.at(ordersProxy.address);
-    await orders.create.sendTransaction(web3.utils.fromUtf8('Apples'), 100);
+    await orders.create.sendTransaction(web3.fromUtf8('Apples'), 100);
     orderAddress = await orders.orders.call(0);
     order = await Order.at(orderAddress);
 
@@ -54,7 +54,7 @@ contract("Order Test", async accounts => {
     expect(creator).to.equal(accounts[1]);
   });
 
-  it("should set owners, approve order with status and history updated correctly", async () => {
+    it("should set owners, approve order with status and history updated correctly", async () => {
     const setOwners = await order.setOwners.sendTransaction(
       accounts[1], accounts[1], accounts[1], accounts[1], accounts[1]
     );
@@ -63,16 +63,11 @@ contract("Order Test", async accounts => {
     const state = await order.state.call();
     const meta = await order.meta.call();
 
-    expect(setOwners.receipt.status).to.equal(true);
-    expect(approve.receipt.status).to.equal(true);
-    expect(states[state]).to.equal('Approved');
-    expect(web3.utils.toUtf8(meta['product'])).to.equal('Apples')
-    expect(web3.utils.BN(meta['amount']).toString()).to.equal('100');
-    expect(record['who']).to.equal(accounts[1]);
-    expect(web3.utils.toUtf8(record['action'])).to.equal('Approved');
-    expect(web3.utils.toUtf8(record['action'])).to.equal('Approved');
-    expect(web3.utils.isBN(record['when'])).to.equal(true);
-    expect(new Date(web3.utils.isBN(record['when']).toString())).to.be.a('date');
+    expect(states[Number(state.toString())]).to.equal('Approved');
+    expect(web3.toUtf8(meta[0])).to.equal('Apples')
+    expect(record[0]).to.equal(accounts[1]);
+    expect(web3.toUtf8(record[1])).to.equal('Approved');
+    expect(new Date((new web3.BigNumber(record[2])).toString())).to.be.a('date');
   });
 
   it("should set owners, but not allow approval because we don't have access", async () => {
@@ -87,9 +82,8 @@ contract("Order Test", async accounts => {
       errorMessage = error;
     }
 
-    expect(setOwners.receipt.status).to.equal(true);
     expect(approve).to.equal(undefined);
-    expect(errorMessage.reason).to.equal('Only the Farmer has access.');
+    expect(errorMessage.toString()).to.contain('Only the Farmer has access.');
   });
 
   it("should not allow the order to be approved again", async () => {
@@ -104,8 +98,7 @@ contract("Order Test", async accounts => {
       errorMessage = error;
     }
 
-    expect(setOwners.receipt.status).to.equal(true);
-    expect(errorMessage.reason).to.equal('Invalid state.');
+    expect(errorMessage.toString()).to.contain('Invalid state.');
   });
 
   it("should go through the whole contract flow", async () => {
@@ -134,26 +127,19 @@ contract("Order Test", async accounts => {
     state = await order.state.call();
     expect(states[state]).to.equal('InTransit');
 
-    const confirmDelivery = await order.confirmDelivery.sendTransaction();
+    const delivered = await order.confirmDelivery.sendTransaction();
     state = await order.state.call();
     expect(states[state]).to.equal('Delivered');
 
     const historyLength = await order.getHistoryLength.call();
 
-    expect(validated.receipt.status).to.equal(true);
-    expect(storeAuditDocument.receipt.status).to.equal(true);
-    expect(warehouseReceivedOrder.receipt.status).to.equal(true);
-    expect(warehouseReleasedOrder.receipt.status).to.equal(true);
-    expect(receivedAndInTransit.receipt.status).to.equal(true);
-    expect(confirmDelivery.receipt.status).to.equal(true);
-    expect(web3.utils.BN(historyLength).toString()).to.equal('7');
+    expect((new web3.BigNumber(historyLength)).toString()).to.equal('7');
   });
 
   it("should revoke order", async () => {
     const revoke = await order.revoke.sendTransaction();
     const state = await order.state.call();
 
-    expect(revoke.receipt.status).to.equal(true);
     expect(states[state]).to.equal('Revoked');
   });
 
@@ -164,18 +150,17 @@ contract("Order Test", async accounts => {
       ['51.5074 N', '0.1278 W'] // London
     ];
 
-    locations.forEach(async loc => {
-      await order.updateLocation.sendTransaction(
-        web3.utils.fromUtf8(loc[0]), web3.utils.fromUtf8(loc[1])
-      );
-    });
+    for (i = 0; i < locations.length; i++) {
+        await order.updateLocation.sendTransaction(
+            web3.fromUtf8(locations[i][0]), web3.fromUtf8(locations[i][1]));
+    }
 
     const locationLength = await order.getLocationLength.call();
     const currentLocation = await order.locationHistory.call(locationLength - 1);
 
-    expect(web3.utils.BN(locationLength).toString()).to.equal('3');
-    expect(web3.utils.toUtf8(currentLocation['latitude'])).to.equal(locations[locations.length - 1][0]);
-    expect(web3.utils.toUtf8(currentLocation['longitude'])).to.equal(locations[locations.length - 1][1]);
+    expect((new web3.BigNumber(locationLength)).toString()).to.equal('3');
+    expect(web3.toUtf8(currentLocation[0])).to.equal(locations[locations.length - 1][0]);
+    expect(web3.toUtf8(currentLocation[1])).to.equal(locations[locations.length - 1][1]);
   });
 
 });

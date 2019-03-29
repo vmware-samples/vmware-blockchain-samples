@@ -6,8 +6,11 @@
 
 import { Component, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+
 import { BlockchainService } from '../core/blockchain/blockchain.service';
 import { Order } from '../core/order/order';
+import { UserService } from '../core/user/user.service';
 
 @Component({
   selector: 'vmw-sc-home',
@@ -15,6 +18,8 @@ import { Order } from '../core/order/order';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnDestroy, OnInit {
+  createOrderVisible = false;
+  currentRole: string;
 
   _selectedOrder: Order;
   private updatedOrderRef: Subscription;
@@ -27,12 +32,21 @@ export class HomeComponent implements OnDestroy, OnInit {
     this._selectedOrder = value;
   }
 
-  constructor(private blockchainService: BlockchainService) {
-
-  }
 
   ngOnDestroy() {
     this.updatedOrderRef.unsubscribe();
+  }
+
+  constructor(
+    private blockchainService: BlockchainService,
+    private route: ActivatedRoute,
+    private router: Router,
+    userService: UserService
+  ) {
+    this.currentRole = userService.currentUser.role;
+    this.route.fragment.subscribe((fragment: string) => {
+      this.createOrderVisible = (fragment === 'create');
+    });
   }
 
   ngOnInit() {
@@ -42,4 +56,9 @@ export class HomeComponent implements OnDestroy, OnInit {
       }
     });
   }
+
+  onClose() {
+    this.router.navigate([''], { fragment: null });
+  }
+
 }

@@ -5,6 +5,7 @@
  */
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClient, HttpHandler } from '@angular/common/http';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from '../../shared/shared.module';
@@ -21,7 +22,8 @@ describe('OrderDetailComponent', () => {
         SharedModule,
         TranslateModule.forRoot()
       ],
-      declarations: [ OrderDetailComponent ]
+      declarations: [ OrderDetailComponent ],
+      providers: [HttpClient, HttpHandler]
     })
     .compileComponents();
   }));

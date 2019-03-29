@@ -5,6 +5,7 @@
  */
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClient, HttpHandler } from '@angular/common/http';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { OrderListComponent } from './order-list.component';
@@ -19,7 +20,8 @@ describe('OrderListComponent', () => {
         ClarityModule,
         TranslateModule.forRoot()
       ],
-      declarations: [ OrderListComponent ]
+      declarations: [ OrderListComponent ],
+      providers: [HttpClient, HttpHandler]
     })
     .compileComponents();
   }));

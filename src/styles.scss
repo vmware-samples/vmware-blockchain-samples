@@ -7,7 +7,8 @@
 /* You can add global styles to this file, and also import other style files */
 
 
-@import "../node_modules/@clr/ui/src/color/utils/_colors.clarity.scss";
+@import "../node_modules/@clr/ui/src/utils/dependencies.clarity";
+
 
 $color-pending: $clr-yellow;
 $color-success: $clr-green-dark-midtone;
@@ -24,5 +25,18 @@ $roles:(
   .header-#{$role} {
     background-color: $color;
     color: white;
+  }
+}
+
+.login {
+  .clr-control-label {
+    display: none;
+  }
+  .clr-control-container.clr-col-md-10.clr-col-12 {
+    max-width: 100% !important;
+    width: 100% !important;
+    flex: 100%;
+    padding-right: 0;
+    padding-left: 0;
   }
 }

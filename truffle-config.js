@@ -6,6 +6,7 @@
 
 const Web3 = require('web3');
 
+
 /**
  * Use this file to configure your truffle project. It's seeded with some
  * common settings for different networks and features like migrations,
@@ -57,7 +58,15 @@ module.exports = {
       timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
       skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
     },
-
+    vmwareLocal: {
+      network_id: "*",
+      provider: () => new Web3.providers.HttpProvider(
+        "http://<username>:<password>@localhost:8080/api/concord/eth/"
+      ),
+      timeoutBlocks: 200,
+      websockets: false,
+      skipDryRun: true
+    },
     // Another network with more advanced options...
     // advanced: {
       // port: 8777,             // Custom port

@@ -30,7 +30,7 @@ contract("Upgrade Test", async accounts => {
   });
 
   it("the newly created order should be the upgraded order contract", async () => {
-    await ordersUpgraded.create.sendTransaction(web3.utils.fromUtf8('Apples'), 100);
+    await ordersUpgraded.create.sendTransaction(web3.fromUtf8('Apples'), 100);
     orderAddress = await ordersUpgraded.orders.call(0);
     orderUpgraded = await OrderUpgrade.at(orderAddress);
 

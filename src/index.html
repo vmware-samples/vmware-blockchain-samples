@@ -1,15 +1,21 @@
-<!--
-Copyright 2019 VMware, all rights reserved.
-This software is released under MIT license.
-The full license information can be found in LICENSE in the root directory of this project.
- -->
 
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <title>Supply Chain dApp</title>
-  <base href="/">
+  <base id="bh" href="/">
+  <script>
+    // To work with VMware Blockchain dApp deployments
+    (function() {
+      const baseEl = document.getElementById('bh');
+      const pathArray = window.location.pathname.split('/');
+      if (pathArray[1] === 'blockchains') {
+        const baseHref = pathArray.splice(0, 5).join('/') + '/';
+        baseEl.setAttribute('href', baseHref);
+      }
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.png">
 </head>

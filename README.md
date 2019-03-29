@@ -76,7 +76,21 @@ Then to test, go to the command line and run:
 truffle test
 ```
 
-## Development
+## Angular Development
+
+Two flavors for development:
+
+Ganache
+```
+npm run start:ganache
+```
+
+VMware Blockchain
+```
+npm run start:vmware
+```
+
+Before running these servers make sure to update the `proxy.conf.json` file with the path to either ganache or vmware blockchain.
 
 ### Dev Server
 
