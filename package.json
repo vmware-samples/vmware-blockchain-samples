@@ -9,6 +9,8 @@
     "deploy:dev": "truffle migrate --reset --network=development && npm run copy-contract-build",
     "copy-contract-build": "rm -rf ./src/assets/contracts && cp -r ./build/contracts ./src/assets/contracts",
     "test": "ng test",
+    "truffle:test:ganache": "truffle test",
+    "truffle:test:vmware": "truffle test ./test/Orders.js --network=vmwareLocal && truffle test ./test/Order.js --network=vmwareLocal && truffle test ./test/Upgrade.js --network=vmwareLocal",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "compile:server": "webpack --config webpack.server.config.js --progress --colors",

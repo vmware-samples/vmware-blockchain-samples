@@ -11,7 +11,8 @@
 export const environment = {
   production: false,
   blockchainType: undefined,
-  path: undefined
+  path: undefined,
+  network: undefined,
 };
 
 /*
