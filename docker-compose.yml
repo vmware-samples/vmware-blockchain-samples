@@ -1,0 +1,29 @@
+# Copyright 2019 VMware, all rights reserved.
+# This software is released under MIT license.
+# The full license information can be found in LICENSE in the root directory of this project.
+
+
+version: '3'
+services:
+  supply-chain:
+    image: "supply-chain:latest"
+    build:
+      context: .
+    command: "npm run start:vmware"
+    networks:
+      - default
+    ports:
+      - 4200:4200
+    volumes:
+      - ./build:/app/build
+      - ./truffle-config.js:/app/truffle-config.js
+    environment:
+      # Example
+      # - BC_URL=http://localhost/blockchains/local/api/concord/eth
+      - BC_URL=<change-me>
+
+# Connect to existing docker default network for local development
+networks:
+  default:
+    external:
+      name: docker_default
