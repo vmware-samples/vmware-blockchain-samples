@@ -20,6 +20,7 @@ export enum OrderStatus {
   Ordered,
   Approved,
   Audited,
+  AuditDocUploaded,
   AtWarehouse,
   WarehouseReleased,
   InTransit,
@@ -31,6 +32,7 @@ export class Order {
   contract;
   id: string; // Format: 0x304a554a310C7e546dfe434669C62820b7D83490
   amount: string;
+  document: string;
   product: string;
   quantity: number;
   status: number;

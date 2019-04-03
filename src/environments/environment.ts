@@ -10,9 +10,9 @@
 
 export const environment = {
   production: false,
-  blockchainType: undefined,
-  path: undefined,
-  network: undefined,
+  blockchainType: 'vmware',
+  path: '/vmware',
+  network: '5000',
 };
 
 /*
