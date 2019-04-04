@@ -3,7 +3,7 @@
     "target": "http://localhost:4000",
     "secure": false
   },
-  "/blockchain": {
+  "/vmware": {
     "target": "http://localhost/api/concord/eth",
     "secure": false,
     "changeOrigin": true,

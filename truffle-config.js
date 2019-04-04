@@ -58,14 +58,12 @@ module.exports = {
       timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
       skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
     },
-    vmwareLocal: {
+
+    vmware: {
       network_id: "*",
       provider: () => new Web3.providers.HttpProvider(
-        "http://<username>:<password>@localhost:8080/api/concord/eth/"
-      ),
-      timeoutBlocks: 200,
-      websockets: false,
-      skipDryRun: true
+        "http://<username>:<password>@vmware.blockchain/blockchains/change/api/concord/eth/"
+      )
     },
     // Another network with more advanced options...
     // advanced: {
