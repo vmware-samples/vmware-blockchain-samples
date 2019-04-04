@@ -8,13 +8,10 @@ LABEL Description="Supply Chain dApp"
 
 WORKDIR /app
 
-COPY package-lock.json /app/
-COPY package.json /app/
-
-RUN npm install
-RUN npm install -g truffle@4.1.14
-
 COPY ./ /app/
+
+RUN yarn install
+RUN yarn global add truffle@4.1.14
 
 ARG env=prod
 
