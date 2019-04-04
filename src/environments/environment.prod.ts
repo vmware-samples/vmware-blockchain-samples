@@ -5,5 +5,7 @@
  */
 
 export const environment = {
-  production: true
+  production: true,
+  blockchainType: undefined,
+  path: undefined
 };

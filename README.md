@@ -6,8 +6,54 @@ Blockchain is a platform that contains blocks of data about transactions between
 
 One use case of blockchain is to track different types of transactions in a supply chain in a secure and transparent manner. Starting from the manufacturer to the sale of the product every transaction in the supply chain is documented to reduce costs and minimize human error. The supply chain decentralized application (dApp) uses smart contracts, which are self-executing contractual promises, stored on the blockchain that no one controls, and everyone can trust. The supply chain dApp can be used on VMware Blockchain or other Ethereum-based blockchain.
 
+## Quick Setup with Docker
 
-## Configure and Deploy Supply Chain Smart Contracts
+First build the container:
+
+```shell
+docker-compose build
+```
+
+Update the `truffle-config.js` with the correct url, username and password.
+
+```shell
+  vmwareLocal: {
+    network_id: "*",
+    provider: () => new Web3.providers.HttpProvider(
+      "http://<username>:<password>@localhost:8080/api/concord/eth/"
+    ),
+    timeoutBlocks: 200,
+    websockets: false,
+    skipDryRun: true
+  },
+```
+
+Run truffle migrate by using our container
+```
+dco run supply-chain truffle migrate --reset --network=vmwareLocal
+```
+
+Update the environment BC_URL endpoint in the `docker-compose.yml` file to point at your ETH RPC instance.
+
+```shell
+    volumes:
+      - ./build:/app/build
+    environment:
+      # Example
+      # - BC_URL=http://localhost/blockchains/local/api/concord/eth
+      - BC_URL=<change-me>
+
+```
+
+
+Then start the server and go to `localhost:4200` once its built.
+
+```shell
+docker-compose up
+```
+
+
+## Configure and Deploy Without Docker
 
 ### Prerequisites
 

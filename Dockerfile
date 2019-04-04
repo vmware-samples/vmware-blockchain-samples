@@ -3,7 +3,7 @@
 # The full license information can be found in LICENSE in the root directory of this project.
 
 
-FROM node:8.9.4 as node
+FROM node:8.15.1 as node
 LABEL Description="Supply Chain dApp"
 
 WORKDIR /app
@@ -18,8 +18,5 @@ COPY ./ /app/
 
 ARG env=prod
 
-RUN npm run build:ssr
+EXPOSE 4200
 
-EXPOSE 4000
-
-CMD [ "npm", "run", "serve:ssr" ]
