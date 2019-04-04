@@ -17,20 +17,17 @@ docker-compose build
 Update the `truffle-config.js` with the correct url, username and password.
 
 ```shell
-  vmwareLocal: {
+  vmware: {
     network_id: "*",
     provider: () => new Web3.providers.HttpProvider(
-      "http://<username>:<password>@localhost:8080/api/concord/eth/"
-    ),
-    timeoutBlocks: 200,
-    websockets: false,
-    skipDryRun: true
+      "https://<username>:<password>@<url>"
+    )
   },
 ```
 
-Run truffle migrate by using our container
+Deploy contracts by running truffle migrate by using our container
 ```
-dco run supply-chain truffle migrate --reset --network=vmwareLocal
+docker-compose run supply-chain truffle migrate --reset --network=vmware
 ```
 
 Update the environment BC_URL endpoint in the `docker-compose.yml` file to point at your ETH RPC instance.

@@ -23,7 +23,7 @@ services:
       - BC_URL=<change-me>
 
 # Connect to existing docker default network for local development
-networks:
-  default:
-    external:
-      name: docker_default
+# networks:
+#   default:
+#     external:
+#       name: docker_default
