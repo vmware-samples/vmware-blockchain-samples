@@ -6,9 +6,13 @@ Blockchain is a platform that contains blocks of data about transactions between
 
 One use case of blockchain is to track different types of transactions in a supply chain in a secure and transparent manner. Starting from the manufacturer to the sale of the product every transaction in the supply chain is documented to reduce costs and minimize human error. The supply chain decentralized application (dApp) uses smart contracts, which are self-executing contractual promises, stored on the blockchain that no one controls, and everyone can trust. The supply chain dApp can be used on VMware Blockchain or other Ethereum-based blockchain.
 
-## Quick Setup with Docker
+## Setup with Docker
 
-First build the container:
+Clone the VMware Blockchain sample repository.
+
+git clone https://<url>
+
+Build the Docker container.
 
 ```shell
 docker-compose build
@@ -25,12 +29,15 @@ Update the `truffle-config.js` with the correct url, username and password.
   },
 ```
 
-Deploy contracts by running truffle migrate by using our container
+Use the Docker container to run truffle migrate and deploy contracts.
+
 ```
 docker-compose run supply-chain truffle migrate --reset --network=vmware
 ```
 
-Update the environment BC_URL endpoint in the `docker-compose.yml` file to point at your ETH RPC instance.
+Open the `docker-compose.yml` file.
+
+Update the environment BC_URL endpoint in the `docker-compose.yml` file to point to your ETH RPC instance.
 
 ```shell
     volumes:
@@ -42,19 +49,19 @@ Update the environment BC_URL endpoint in the `docker-compose.yml` file to point
 
 ```
 
-
-Then start the server and go to `localhost:4200` once its built.
+Start the server.
 
 ```shell
 docker-compose up
 ```
 
+Open `localhost:4200` in a web browser.
 
 ## Configure and Deploy Without Docker
 
 ### Prerequisites
 
-- Verify that you have Git, Docker, Node 8.9+ and npm installed.
+- Verify that you have Git, Node 8.9+ and npm installed.
 - Verify that you have installed and configured Truffle v4 suite framework for smart contracts in your environment. See the Truffle [suite installation](https://truffleframework.com/docs/truffle/overview).
 ```
 npm install -g truffle@4.1.15
@@ -64,37 +71,37 @@ npm install -g truffle@4.1.15
 
 ### Setup
 
-Install application dependencies
+Install the application dependencies.
 
 ```shell
 npm install
 ```
 
-Deploy contracts on ganache
+Deploy the contracts on Ganache.
 
 ```shell
 truffle migrate --reset --network=development 
 ```
 
-Deploy contracts on VMware blockchain
+Deploy the contracts on VMware blockchain.
 
-First go to `truffle-config.js` and update the username, password and path under the vmwware network:
+Open `truffle-config.js` and update the username, password, and path under the VMwware network.
 
 ```shell
     vmware: {
       network_id: "*",
       provider: () => new Web3.providers.HttpProvider(
-        "http://<username>:<password>@vmware.blockchain/blockchains/change/api/concord/eth/"
+        "http://<username>:<password>@vmware.blockchain/blockchains/<change>/api/concord/eth/"
       )
     },
 ```
-Then deploy the contracts
+Deploy the contracts.
 
 ```shell
 truffle migrate --reset --network=vmware 
 ```
 
-Run tests to verify everything is working correctly
+Run tests to verify that everything is working correctly.
 
 ```shell
 # On ganache
@@ -104,13 +111,14 @@ npm run truffle:test:ganache
 npm run truffle:test:vmware
 ```
 
-Now lets interact with the contracts, by using the truffle console.
+Interact with the contracts, by using the truffle console.
 
 ```shell
 truffle console
 ```
 
-In the console
+In the console, run the following commands.
+
 ```shell
 
 # Get the deployed contract
@@ -152,7 +160,7 @@ web3.toUtf8('0x4170706c65730000000000000000000000000000000000000000000000000000'
 
 ```
 
-## Startup Dev Server
+## Startup the Development Server
 
 
 Ganache
@@ -168,11 +176,11 @@ Update the `proxy.conf.json` file with the correct target path to your vmware bl
 npm run start:vmware
 ```
 
-### Code scaffolding
+### Code Scaffolding
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-### Running unit tests
+### Running Unit Tests
 
 Run `npm run test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
