@@ -8,9 +8,13 @@ One use case of blockchain is to track different types of transactions in a supp
 
 ## Quick Setup with Docker
 
-First build the container:
+Install docker [here](https://docs.docker.com/install/)
+
+First lets clone and  build the container.
 
 ```shell
+git clone git@github.com:vmware-samples/vmware-blockchain-samples.git
+
 docker-compose build
 ```
 
@@ -25,16 +29,21 @@ Update the `truffle-config.js` with the correct url, username and password.
   },
 ```
 
-Deploy contracts by running truffle migrate by using our container
+Deploy contracts by running truffle migrate by using our container.
+
 ```
-docker-compose run supply-chain truffle migrate --reset --network=vmware
+docker-compose run supply-chain truffle migrate --network=vmware  
 ```
+
 
 Update the environment BC_URL endpoint in the `docker-compose.yml` file to point at your ETH RPC instance.
 
 ```shell
     volumes:
+      - ./contracts:/app/contracts
+      - ./migrations:/app/migrations
       - ./build:/app/build
+      - ./truffle-config.js:/app/truffle-config.js
     environment:
       # Example
       # - BC_URL=http://localhost/blockchains/local/api/concord/eth

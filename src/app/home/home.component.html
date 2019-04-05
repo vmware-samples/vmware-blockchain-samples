@@ -4,7 +4,16 @@
  The full license information can be found in LICENSE in the root directory of this project.
 -->
 <clr-main-container>
-  <clr-header class="header-{{currentRole}}">
+    <clr-alerts>
+        <clr-alert *ngFor="let alert of alerts" [clrAlertType]="'danger'" [clrAlertAppLevel]="true">
+            <clr-alert-item>
+            <span class="alert-text">
+                {{ alert.message }}
+            </span>
+        </clr-alert-item>
+    </clr-alert>
+  </clr-alerts>
+  <clr-header class="header header-{{currentUser.role}}">
     <!-- clr-header must be a direct child of clr-main-container -->
     <vmw-sc-header> </vmw-sc-header>
   </clr-header>
@@ -12,6 +21,18 @@
     <main class="content-area">
       <div class="clr-row">
         <div class="clr-col-md-12 clr-col-lg-6">
+          <div class="home-module">
+            <div class="card card-orders">
+              <div class="card-header">
+                {{ 'section.header.blockchain.status' | translate }}
+              </div>
+              <div class="card-block">
+                <div class="card-text">
+                  <vmw-sc-blockchain-visualization> </vmw-sc-blockchain-visualization>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="card card-orders home-module">
             <div class="card-header">
               {{ 'section.header.orders' | translate }}
@@ -22,6 +43,14 @@
               </div>
             </div>
           </div>
+        </div>
+        <div class="clr-col-md-12 clr-col-lg-6">
+          <div class="clr-row">
+            <div class="clr-col home-module">
+              <vmw-sc-blockchain-status [order]="selectedOrder"> </vmw-sc-blockchain-status>
+            </div>
+          </div>
+          <div class="clr-row">
           <div *ngIf="selectedOrder" class="card card-order-detail home-module">
             <div class="card-header">
               {{ 'order' | translate }}
@@ -39,26 +68,7 @@
               </div>
             </div>
           </div>
-        </div>
-        <div class="clr-col-md-12 clr-col-lg-6">
-          <div class="clr-row">
-            <div class="clr-col home-module">
-              <vmw-sc-blockchain-status [order]="selectedOrder"> </vmw-sc-blockchain-status>
-            </div>
-          </div>
-          <div class="clr-row">
-            <div class="clr-col home-module">
-              <div class="card card-orders">
-                <div class="card-header">
-                  {{ 'section.header.blockchain.status' | translate }}
-                </div>
-                <div class="card-block">
-                  <div class="card-text">
-                    <vmw-sc-blockchain-visualization> </vmw-sc-blockchain-visualization>
-                  </div>
-                </div>
-              </div>
-            </div>
+
           </div>
         </div>
       </div>

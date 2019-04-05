@@ -16,6 +16,7 @@ import * as pako from 'pako';
 
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../auth/auth.service';
+import { ErrorAlertService } from '../../shared/global-alert.service';
 
 import * as Order from '../../../assets/contracts/OrderV1.json';
 import * as Orders from '../../../assets/contracts/OrdersProxy.json';
@@ -55,7 +56,10 @@ export class BlockchainService {
   public readonly items = ['Apples', 'Bananas', 'Oranges'];
   private servicePromise: Promise<any>;
 
-  constructor(private authService: AuthService) {
+  constructor(
+    private authService: AuthService,
+    private alertService: ErrorAlertService,
+  ) {
     if (environment.blockchainType === 'metamask' && window['web3']) {
       this.web3 = this.metaMask();
     } else if (environment.blockchainType === 'vmware') {
@@ -323,7 +327,10 @@ export class BlockchainService {
         this.updatedOrderSource.next(updatedOrder);
         return updatedOrder;
       });
-    }).catch(err => console.error(err));
+    }).catch(err => {
+      this.alertService.add(err);
+      console.error(err)
+    });
   }
 
   private setOwners(order, userAddress: string): Promise<any> {

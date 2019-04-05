@@ -25,9 +25,9 @@ export class BlockchainStatusComponent {
     if (value) {
       if (value.status === OrderStatus.Ordered) {
         pendingNode = 1;
-      } else if (value.status === OrderStatus.Approved) {
+      } else if ([OrderStatus.Approved, OrderStatus.Audited].includes(value.status)) {
         pendingNode = 2;
-      } else if ([OrderStatus.Audited, OrderStatus.AtWarehouse].includes(value.status)) {
+      } else if ([OrderStatus.AuditDocUploaded, OrderStatus.AtWarehouse].includes(value.status)) {
         pendingNode = 3;
       } else if (value.status === OrderStatus.WarehouseReleased) {
         pendingNode = 4;

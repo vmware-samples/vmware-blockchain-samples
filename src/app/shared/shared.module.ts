@@ -12,6 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { UserService } from '../core/user/user.service';
 import { SimpleConfirmationComponent } from './simple-confirmation/simple-confirmation.component';
 import { ToggleRadioGroupComponent } from './toggle-radio-group/toggle-radio-group.component';
+import { ErrorAlertService } from './global-alert.service';
 
 @NgModule({
   imports: [
@@ -23,6 +24,9 @@ import { ToggleRadioGroupComponent } from './toggle-radio-group/toggle-radio-gro
   declarations: [
     SimpleConfirmationComponent,
     ToggleRadioGroupComponent
+  ],
+  providers: [
+   ErrorAlertService
   ],
   exports: [
     SimpleConfirmationComponent,
