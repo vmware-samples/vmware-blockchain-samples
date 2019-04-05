@@ -182,11 +182,13 @@ export class OrderDetailComponent {
 
   storeDocument(event: Event) {
     this.uploadError = false;
-    if (event.target['files'][0].size > 220000) {
+    this.uploading = true;
+
+    if (event.target['files'][0].size > 210000) {
+      this.uploading = false;
       this.uploadError = true;
       return;
     }
-    this.uploading = true;
     this.blockchainService.storeDocument(this.order, event)
       .then(() => {
         this.uploading = false;

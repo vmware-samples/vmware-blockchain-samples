@@ -14,7 +14,6 @@ import "./OrderV2.sol";
  * @title Parent contract for each order
  */
 contract OrdersV2 is OrdersV1 {
-  // OrderV2[] public orders;
 
   constructor()
     public

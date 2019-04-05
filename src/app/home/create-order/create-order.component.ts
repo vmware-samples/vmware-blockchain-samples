@@ -45,7 +45,7 @@ export class CreateOrderComponent implements OnInit {
   ngOnInit() {
     this.orderForm = this.formBuilder.group({
       item: ['', Validators.required],
-      quantity: ['', Validators.required]
+      quantity: ['', [Validators.required, Validators.min(1)]]
     });
   }
 

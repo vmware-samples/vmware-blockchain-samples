@@ -60,7 +60,7 @@ The full license information can be found in LICENSE in the root directory of th
       <div class="clr-col-8">
         <div class="form-group">
           <input type="file" id="file" hidden accept=".json" (change)="storeDocument($event)" #fileUpload>
-          <button class="btn btn-sm" [ngClass]="{'btn-ouline': !canDownloadDoc(), 'btn-primary': canDownloadDoc()}" [clrLoading]="uploading" (click)="upload()" [disabled]="!canAuditOrder()">
+          <button class="btn btn-sm btn-outline" [clrLoading]="uploading" (click)="upload()" [disabled]="!canAuditOrder()">
             {{ 'detail.audit.button' | translate }}
           </button>
         </div>

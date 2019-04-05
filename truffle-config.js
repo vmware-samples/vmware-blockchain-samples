@@ -62,7 +62,7 @@ module.exports = {
     vmware: {
       network_id: "*",
       provider: () => new Web3.providers.HttpProvider(
-        "http://<username>:<password>@vmware.blockchain/blockchains/change/api/concord/eth/"
+        "http://<username>:<password>@<url>"
       )
     },
     // Another network with more advanced options...

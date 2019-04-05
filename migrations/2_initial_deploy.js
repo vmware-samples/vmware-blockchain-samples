@@ -6,7 +6,6 @@
 
 var OrdersProxy = artifacts.require("./OrdersProxy.sol");
 var Orders = artifacts.require("./OrdersV1.sol");
-var Document = artifacts.require("./Document.sol");
 
 module.exports = function(deployer, network, accounts) {
   let proxyContract;
