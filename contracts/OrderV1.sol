@@ -38,6 +38,7 @@ contract OrderV1 is OrderAccessControl {
     Ordered,
     Approved,
     Audited,
+    AuditDocUploaded,
     AtWarehouse,
     WarehouseReleased,
     InTransit,
@@ -50,6 +51,7 @@ contract OrderV1 is OrderAccessControl {
   }
 
   Meta public meta;
+  address public auditDocument;
   Record[] public history;
   Location[] public locationHistory;
   State public state;
@@ -107,12 +109,14 @@ contract OrderV1 is OrderAccessControl {
   /**
    * @dev Auditor will store the audit document
    */
-  function storeAuditDocument()
+  function storeAuditDocument(address document)
     public
     onlyAuditor
     inState(State.Audited)
   {
+    auditDocument = document;
     addRecord(bytes32("Stored document"));
+    state = State.AuditDocUploaded;
   }
 
   /**
@@ -121,7 +125,7 @@ contract OrderV1 is OrderAccessControl {
   function warehouseReceivedOrder()
     public
     onlyWarehouse
-    inState(State.Audited)
+    inState(State.AuditDocUploaded)
   {
     state = State.AtWarehouse;
     addRecord(bytes32("Received"));

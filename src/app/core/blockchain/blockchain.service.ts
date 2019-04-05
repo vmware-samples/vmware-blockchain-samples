@@ -11,6 +11,8 @@ import { mergeMap } from 'rxjs/operators';
 
 import Web3 from 'web3';
 import * as HttpHeaderProvider from 'httpheaderprovider';
+import * as contract from 'truffle-contract';
+import * as pako from 'pako';
 
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../auth/auth.service';
@@ -18,6 +20,7 @@ import { AuthService } from '../../auth/auth.service';
 import * as Order from '../../../assets/contracts/OrderV1.json';
 import * as Orders from '../../../assets/contracts/OrdersProxy.json';
 import * as OrdersV1 from '../../../assets/contracts/OrdersV1.json';
+import * as DocumentMeta from '../../../assets/contracts/Document.json';
 import { sequentialArray } from '../../shared/utils';
 import {
   Order as OrderModel,
@@ -37,9 +40,11 @@ export class BlockchainService {
   address: string = environment.path;
   web3: Web3;
   ordersContract: any;
+  docContract: any;
   from: string;
   accounts: string[];
   sendDefaults = { from: undefined, 'gas': '4400000' };
+  Doc: any;
 
   private newOrderSource = new Subject<any>();
   public newOrder = this.newOrderSource.asObservable();
@@ -51,13 +56,19 @@ export class BlockchainService {
   private servicePromise: Promise<any>;
 
   constructor(private authService: AuthService) {
-    if (environment.blockchainType === 'vmware') {
+    if (environment.blockchainType === 'metamask' && window['web3']) {
+      this.web3 = this.metaMask();
+    } else if (environment.blockchainType === 'vmware') {
       this.web3 = this.vmwareBlockchain();
     } else {
       this.web3 = this.ganache();
     }
 
     this.servicePromise = this.getAccounts();
+  }
+
+  metaMask(): Web3 {
+    return new Web3(window['web3'].currentProvider);
   }
 
   vmwareBlockchain(): Web3 {
@@ -135,8 +146,8 @@ export class BlockchainService {
   }
 
   getOrderByAddress(address: string): Promise<OrderModel> {
-    const contract = this.web3.eth.contract(this.orderABI).at(address);
-    return this.buildOrder(contract, address).then(order => {
+    const orderContract = this.web3.eth.contract(this.orderABI).at(address);
+    return this.buildOrder(orderContract, address).then(order => {
       return order;
     });
   }
@@ -178,8 +189,8 @@ export class BlockchainService {
     return this.sendOrder(order, 'revoke');
   }
 
-  storeAuditDocumentOrder(order: OrderModel): Promise<any> {
-    return this.sendOrder(order, 'storeAuditDocument');
+  storeAuditDocumentOrder(order: OrderModel, address: string): Promise<any> {
+    return this.sendOrder(order, 'storeAuditDocument', address);
   }
 
   validatedOrder(order: OrderModel): Promise<any> {
@@ -198,13 +209,45 @@ export class BlockchainService {
     return this.sendOrder(order, 'warehouseReleasedOrder');
   }
 
+  async getDocument(docAddress: string): Promise<any> {
+    this.docContract = await this.Doc.at(docAddress);
+
+    return this.docContract.getPastEvents('DocumentEvent', { fromBlock: 0, toBlock: 'latest' })
+      .then(events => {
+        if (events && events[0] && events[0].returnValues[0]) {
+          return pako.inflate(
+            events[0].returnValues[0],
+            { to: 'string' }
+          );
+        } else {
+          throw Error('Event or document not present');
+        }
+      });
+  }
+
+  async storeDocument(order, event) {
+    if (event.target.files.length === 0) {
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      return this.inEventStore(order, reader.result);
+    };
+    reader.readAsText(event.target.files[0]);
+
+  }
+
   private buildOrder(contract, address: string): Promise<OrderModel> {
     const order = new OrderModel();
     order.id = address;
     order.contract = contract;
+
     const loadHistory = this.getHistory(order).then((history) => {
       order.history = history;
     });
+
     const loadMeta = new Promise((resolve, reject) => {
       return contract.meta(this.callbackToResolve(resolve, reject));
     }).then(meta => {
@@ -212,13 +255,23 @@ export class BlockchainService {
       order.product = this.web3.toUtf8(meta[0]);
       return order;
     });
+
+    const loadDocument = new Promise((resolve, reject) => {
+      return contract.auditDocument(this.callbackToResolve(resolve, reject));
+    }).then((docAddress) => {
+      // @ts-ignore
+      order.document = docAddress;
+      return order;
+    });
+
     const loadStatus = new Promise((resolve, reject) => {
       return contract.state(this.callbackToResolve(resolve, reject));
     }).then(status => {
       order.status = parseInt(status as string, 10);
       order.statusLabel = OrderStatus[status as string];
     });
-    return Promise.all([loadHistory, loadMeta, loadStatus]).then(() => {
+
+    return Promise.all([loadHistory, loadMeta, loadDocument, loadStatus]).then(() => {
       return order;
     });
   }
@@ -238,13 +291,21 @@ export class BlockchainService {
   private getAccounts(): Promise<any> {
     return new Promise((resolve, reject) => {
       return this.web3.eth.getAccounts(this.callbackToResolve(resolve, reject));
-    }).then(accounts => {
+    }).then(async accounts => {
       // @ts-ignore
       this.accounts = accounts;
       this.from = this.accounts[1];
       this.sendDefaults.from = this.from;
       this.web3.eth.defaultAccount = this.from;
       this.ordersContract = this.web3.eth.contract(this.ordersABI).at(this.ordersAddress);
+      // Instantiate our doc provider
+      this.Doc = contract({
+        abi: DocumentMeta.abi
+      });
+      this.Doc.bytecode = DocumentMeta.bytecode;
+      this.Doc.setProvider(this.authService.getVmwareBlockChainProvider());
+      this.Doc.defaults(this.sendDefaults);
+
     });
 
   }
@@ -282,6 +343,15 @@ export class BlockchainService {
         resolve(value);
       }
     };
+  }
+
+
+  private async inEventStore(order, file) {
+    const deflated = pako.deflate(file, { to: 'string' });
+
+    this.docContract = await this.Doc.new();
+    await this.docContract.inEvent(deflated);
+    return this.storeAuditDocumentOrder(order, this.docContract.address);
   }
 
 }

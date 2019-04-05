@@ -5,6 +5,7 @@
 const OrdersProxy = artifacts.require("OrdersProxy");
 const Orders = artifacts.require("OrdersV1");
 const Order = artifacts.require("OrderV1");
+const Document = artifacts.require("Document");
 
 contract("Order Test", async accounts => {
   let orders, order, orderAddress, ordersProxy;
@@ -12,6 +13,7 @@ contract("Order Test", async accounts => {
     'Ordered',
     'Approved',
     'Audited',
+    'AuditDocUploaded',
     'AtWarehouse',
     'WarehouseReleased',
     'InTransit',
@@ -111,9 +113,11 @@ contract("Order Test", async accounts => {
     state = await order.state.call();
     expect(states[state]).to.equal('Audited');
 
-    const storeAuditDocument = await order.storeAuditDocument.sendTransaction();
+    const document = await Document.new();
+    document.inEvent.sendTransaction('store some data');
+    const storeAuditDocument = await order.storeAuditDocument.sendTransaction(document.address);
     state = await order.state.call();
-    expect(states[state]).to.equal('Audited');
+    expect(states[state]).to.equal('AuditDocUploaded');
 
     const warehouseReceivedOrder = await order.warehouseReceivedOrder.sendTransaction();
     state = await order.state.call();

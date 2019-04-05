@@ -4,7 +4,7 @@
  * The full license information can be found in LICENSE in the root directory of this project.
  */
 
-import { Component, Input, ViewChildren } from '@angular/core';
+import { Component, Input, ViewChildren, ElementRef } from '@angular/core';
 import { Order, OrderHistoryAction, OrderStatus } from '../../core/order/order';
 import { BlockchainService } from '../../core/blockchain/blockchain.service';
 import { UserService } from '../../core/user/user.service';
@@ -17,6 +17,7 @@ import { ToggleRadioGroupComponent } from '../../shared/toggle-radio-group/toggl
 })
 export class OrderDetailComponent {
   @ViewChildren(ToggleRadioGroupComponent) controls;
+  @ViewChildren('fileUpload') fileUpload: ElementRef;
   @Input()
   set order(value: Order) {
     this._order = value;
@@ -26,7 +27,8 @@ export class OrderDetailComponent {
   get order() {
     return this._order;
   }
-
+  uploading: boolean;
+  uploadError: boolean;
   _order;
 
   readonly ACTION_APPROVED = 'approved';
@@ -54,8 +56,8 @@ export class OrderDetailComponent {
   // Todo - calculate this order state from the contract
   selectedValues;
 
-  constructor( private blockchainService: BlockchainService,
-               private userService: UserService ) {
+  constructor(private blockchainService: BlockchainService,
+    private userService: UserService) {
 
   }
 
@@ -63,28 +65,24 @@ export class OrderDetailComponent {
     return this.blockchainService.approveOrder(this.order);
   }
 
-  auditOrder(): Promise<any> {
-    return this.blockchainService.storeAuditDocumentOrder(this.order);
-  }
-
   buildSelectedValues() {
     const values = {};
-    if ( this.order.hasHistory(OrderHistoryAction.Approved) ) {
+    if (this.order.hasHistory(OrderHistoryAction.Approved)) {
       values[this.ACTION_APPROVED] = this.VALUE_APPROVE;
     }
-    if ( this.order.hasHistory(OrderHistoryAction.Audited) ) {
+    if (this.order.hasHistory(OrderHistoryAction.Audited)) {
       values[this.ACTION_VALIDATED] = this.VALUE_ORGANIC;
     }
-    if ( this.order.hasHistory(OrderHistoryAction.Received) ) {
+    if (this.order.hasHistory(OrderHistoryAction.Received)) {
       values[this.ACTION_STORAGE_RECEIVED] = this.VALUE_RECEIVED;
     }
-    if ( this.order.hasHistory(OrderHistoryAction.Released) ) {
+    if (this.order.hasHistory(OrderHistoryAction.Released)) {
       values[this.ACTION_STORAGE_RELEASED] = this.VALUE_RELEASED;
     }
-    if ( this.order.hasHistory(OrderHistoryAction.InTransit) ) {
+    if (this.order.hasHistory(OrderHistoryAction.InTransit)) {
       values[this.ACTION_SHIPPED] = this.VALUE_IN_TRANSIT;
     }
-    if ( this.order.hasHistory(OrderHistoryAction.ConfirmedDelivery) ) {
+    if (this.order.hasHistory(OrderHistoryAction.ConfirmedDelivery)) {
       values[this.ACTION_RECEIVED] = this.VALUE_RECEIVED;
     }
     this.selectedValues = values;
@@ -123,11 +121,15 @@ export class OrderDetailComponent {
   }
 
   canAuditOrder() {
-    return this.order.status === OrderStatus.Approved  && this.userService.hasRole('auditor');
+    return this.order.status === OrderStatus.Audited && this.userService.hasRole('auditor');
   }
 
   canProcessStorageOrder() {
     return this.order.status === OrderStatus.AtWarehouse && this.userService.hasRole('storage');
+  }
+
+  canDownloadDoc() {
+    return this.order.document !== '0x0000000000000000000000000000000000000000';
   }
 
   canRecallOrder() {
@@ -143,7 +145,7 @@ export class OrderDetailComponent {
   }
 
   canReceiveStorageOrder() {
-    return this.order.status === OrderStatus.Audited && this.userService.hasRole('storage');
+    return this.order.status === OrderStatus.AuditDocUploaded && this.userService.hasRole('storage');
   }
 
   canShipOrder() {
@@ -172,5 +174,36 @@ export class OrderDetailComponent {
     } else {
       return Promise.resolve();
     }
+  }
+
+  upload() {
+    this.fileUpload['first'].nativeElement.click();
+  }
+
+  storeDocument(event: Event) {
+    this.uploadError = false;
+    if (event.target['files'][0].size > 220000) {
+      this.uploadError = true;
+      return;
+    }
+    this.uploading = true;
+    this.blockchainService.storeDocument(this.order, event)
+      .then(() => {
+        this.uploading = false;
+      }, error => {
+        this.uploading = false;
+      });
+  }
+
+  async downloadDocument() {
+    const doc = await this.blockchainService.getDocument(this.order.document);
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(doc);
+    const dlAnchorElem = document.createElement('a');
+
+    dlAnchorElem.setAttribute('href', dataStr);
+    dlAnchorElem.setAttribute('download', 'supply_chain_audit_document.json');
+    document.body.appendChild(dlAnchorElem);
+    dlAnchorElem.click();
+    dlAnchorElem.remove();
   }
 }

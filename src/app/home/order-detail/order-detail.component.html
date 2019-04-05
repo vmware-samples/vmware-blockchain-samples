@@ -22,6 +22,14 @@ The full license information can be found in LICENSE in the root directory of th
           <td>{{ 'order.contract.meta' | translate }}</td>
           <td>{{ order.id }}</td>
         </tr>
+        <tr>
+          <td>{{ 'order.contract.auditDoc' | translate }}</td>
+          <td>
+            <button [disabled]="!canDownloadDoc()" class="btn btn-sm btn-outline" (click)="downloadDocument()">
+              <clr-icon shape="download"></clr-icon>
+            </button>
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -31,10 +39,7 @@ The full license information can be found in LICENSE in the root directory of th
         {{ 'detail.approve.label' | translate }}
       </div>
       <div class="clr-col-8">
-        <vmw-sc-toggle-radio-group name="detail-approve-order" [disabled]="!canApproveOrder()"
-          [values]="[VALUE_APPROVE, VALUE_DENY]"
-          [selectedValue]="selectedValues[ACTION_APPROVED]"
-          (selectedValueChange)="processAction(ACTION_APPROVED, $event)">
+        <vmw-sc-toggle-radio-group name="detail-approve-order" [disabled]="!canApproveOrder()" [values]="[VALUE_APPROVE, VALUE_DENY]" [selectedValue]="selectedValues[ACTION_APPROVED]" (selectedValueChange)="processAction(ACTION_APPROVED, $event)">
         </vmw-sc-toggle-radio-group>
         <span class="clr-subtext">{{ 'detail.approve.hint' | translate }}</span>
       </div>
@@ -44,10 +49,7 @@ The full license information can be found in LICENSE in the root directory of th
         {{ 'detail.validate.label' | translate }}
       </div>
       <div class="clr-col-8">
-        <vmw-sc-toggle-radio-group name="detail-validate-order" [disabled]="!canValidateOrder()"
-          [values]="[VALUE_ORGANIC, VALUE_NOT_ORGANIC]"
-          [selectedValue]="selectedValues[ACTION_VALIDATED]"
-          (selectedValueChange)="processAction(ACTION_VALIDATED, $event)"> </vmw-sc-toggle-radio-group>
+        <vmw-sc-toggle-radio-group name="detail-validate-order" [disabled]="!canValidateOrder()" [values]="[VALUE_ORGANIC, VALUE_NOT_ORGANIC]" [selectedValue]="selectedValues[ACTION_VALIDATED]" (selectedValueChange)="processAction(ACTION_VALIDATED, $event)"> </vmw-sc-toggle-radio-group>
         <span class="clr-subtext">{{ 'detail.validate.hint' | translate }}</span>
       </div>
     </div>
@@ -56,8 +58,23 @@ The full license information can be found in LICENSE in the root directory of th
         {{ 'detail.audit.label' | translate }}
       </div>
       <div class="clr-col-8">
-        <vmw-sc-toggle-radio-group name="detail-audit-document" [disabled]="!canAuditOrder()"
-          [values]="[VALUE_UPLOAD]"> </vmw-sc-toggle-radio-group>
+        <div class="form-group">
+          <input type="file" id="file" hidden accept=".json" (change)="storeDocument($event)" #fileUpload>
+          <button class="btn btn-sm" [ngClass]="{'btn-ouline': !canDownloadDoc(), 'btn-primary': canDownloadDoc()}" [clrLoading]="uploading" (click)="upload()" [disabled]="!canAuditOrder()">
+            {{ 'detail.audit.button' | translate }}
+          </button>
+        </div>
+        <vmw-sc-simple-confirmation #uploadAlert message="alert.fileToLarge"> </vmw-sc-simple-confirmation>
+        <div *ngIf="uploadError" class="alert alert-danger" role="alert">
+          <div class="alert-items">
+            <div class="alert-item static alert-compact compact">
+              <div class="alert-icon-wrapper">
+                <clr-icon class="alert-icon" shape="exclamation-circle"></clr-icon>
+              </div>
+              <span class="alert-text">{{ 'detail.audit.error' | translate }}</span>
+            </div>
+          </div>
+        </div>
         <span class="clr-subtext">{{ 'detail.audit.hint' | translate }}</span>
       </div>
     </div>
@@ -66,10 +83,7 @@ The full license information can be found in LICENSE in the root directory of th
         {{ 'detail.storage.label' | translate }}
       </div>
       <div class="clr-col-8">
-        <vmw-sc-toggle-radio-group name="detail-storage-received" [disabled]="!canReceiveStorageOrder()"
-          [values]="[VALUE_RECEIVED, VALUE_NEVER_RECEIVED]"
-          [selectedValue]="selectedValues[ACTION_STORAGE_RECEIVED]"
-          (selectedValueChange)="processAction(ACTION_STORAGE_RECEIVED, $event)"> </vmw-sc-toggle-radio-group>
+        <vmw-sc-toggle-radio-group name="detail-storage-received" [disabled]="!canReceiveStorageOrder()" [values]="[VALUE_RECEIVED, VALUE_NEVER_RECEIVED]" [selectedValue]="selectedValues[ACTION_STORAGE_RECEIVED]" (selectedValueChange)="processAction(ACTION_STORAGE_RECEIVED, $event)"> </vmw-sc-toggle-radio-group>
         <span class="clr-subtext">{{ 'detail.storage.hint' | translate }}</span>
       </div>
     </div>
@@ -78,8 +92,7 @@ The full license information can be found in LICENSE in the root directory of th
         {{ 'detail.storage.processing.label' | translate }}
       </div>
       <div class="clr-col-8">
-        <vmw-sc-toggle-radio-group name="detail-storage-processing" [disabled]="!canProcessStorageOrder()"
-          [values]="[VALUE_FINISHED, VALUE_ISSUE_RECEIVED]"> </vmw-sc-toggle-radio-group>
+        <vmw-sc-toggle-radio-group name="detail-storage-processing" [disabled]="!canProcessStorageOrder()" [values]="[VALUE_FINISHED, VALUE_ISSUE_RECEIVED]"> </vmw-sc-toggle-radio-group>
         <span class="clr-subtext">{{ 'detail.storage.processing.hint' | translate }}</span>
       </div>
     </div>
@@ -88,10 +101,7 @@ The full license information can be found in LICENSE in the root directory of th
         {{ 'detail.storage.released.label' | translate }}
       </div>
       <div class="clr-col-8">
-        <vmw-sc-toggle-radio-group name="detail-storage-released" [disabled]="!canReleaseStorageOrder()"
-          [values]="[VALUE_RELEASED, VALUE_ISSUE_AROSE]"
-          [selectedValue]="selectedValues[ACTION_STORAGE_RELEASED]"
-          (selectedValueChange)="processAction(ACTION_STORAGE_RELEASED, $event)"> </vmw-sc-toggle-radio-group>
+        <vmw-sc-toggle-radio-group name="detail-storage-released" [disabled]="!canReleaseStorageOrder()" [values]="[VALUE_RELEASED, VALUE_ISSUE_AROSE]" [selectedValue]="selectedValues[ACTION_STORAGE_RELEASED]" (selectedValueChange)="processAction(ACTION_STORAGE_RELEASED, $event)"> </vmw-sc-toggle-radio-group>
         <span class="clr-subtext">{{ 'detail.storage.released.hint' | translate }}</span>
       </div>
     </div>
@@ -100,10 +110,7 @@ The full license information can be found in LICENSE in the root directory of th
         {{ 'detail.shipped.label' | translate }}
       </div>
       <div class="clr-col-8">
-        <vmw-sc-toggle-radio-group name="detail-is-shipped" [disabled]="!canShipOrder()"
-          [values]="[VALUE_IN_TRANSIT, VALUE_NEVER_RECEIVED]"
-          [selectedValue]="selectedValues[ACTION_SHIPPED]"
-          (selectedValueChange)="processAction(ACTION_SHIPPED, $event)"> </vmw-sc-toggle-radio-group>
+        <vmw-sc-toggle-radio-group name="detail-is-shipped" [disabled]="!canShipOrder()" [values]="[VALUE_IN_TRANSIT, VALUE_NEVER_RECEIVED]" [selectedValue]="selectedValues[ACTION_SHIPPED]" (selectedValueChange)="processAction(ACTION_SHIPPED, $event)"> </vmw-sc-toggle-radio-group>
         <span class="clr-subtext">{{ 'detail.shipped.hint' | translate }}</span>
       </div>
     </div>
@@ -112,10 +119,7 @@ The full license information can be found in LICENSE in the root directory of th
         {{ 'detail.received.label' | translate }}
       </div>
       <div class="clr-col-8">
-        <vmw-sc-toggle-radio-group name="detail-order-received" [disabled]="!canReceiveOrder()"
-          [values]="[VALUE_RECEIVED, VALUE_NEVER_RECEIVED]"
-          [selectedValue]="selectedValues[ACTION_RECEIVED]"
-          (selectedValueChange)="processAction(ACTION_RECEIVED, $event)"> </vmw-sc-toggle-radio-group>
+        <vmw-sc-toggle-radio-group name="detail-order-received" [disabled]="!canReceiveOrder()" [values]="[VALUE_RECEIVED, VALUE_NEVER_RECEIVED]" [selectedValue]="selectedValues[ACTION_RECEIVED]" (selectedValueChange)="processAction(ACTION_RECEIVED, $event)"> </vmw-sc-toggle-radio-group>
         <span class="clr-subtext">{{ 'detail.received.hint' | translate }}</span>
       </div>
     </div>
@@ -126,10 +130,7 @@ The full license information can be found in LICENSE in the root directory of th
         {{ 'detail.recall.label' | translate }}
       </div>
       <div class="clr-col-8">
-        <vmw-sc-toggle-radio-group name="detail-recall" [disabled]="!canRecallOrder()"
-          [values]="[VALUE_RECALL, VALUE_NEVER_RECEIVED]"
-          [selectedValue]="selectedValues[ACTION_RECALL]"
-          (selectedValueChange)="processAction(ACTION_RECALL, $event)"> </vmw-sc-toggle-radio-group>
+        <vmw-sc-toggle-radio-group name="detail-recall" [disabled]="!canRecallOrder()" [values]="[VALUE_RECALL, VALUE_NEVER_RECEIVED]" [selectedValue]="selectedValues[ACTION_RECALL]" (selectedValueChange)="processAction(ACTION_RECALL, $event)"> </vmw-sc-toggle-radio-group>
         <span class="clr-subtext">{{ 'detail.recall.hint' | translate }}</span>
       </div>
     </div>
