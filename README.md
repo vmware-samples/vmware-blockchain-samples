@@ -1,6 +1,6 @@
-# Supply Chain Decentralized Application
+# Supply Chain Decentralized Application [![Build Status](https://travis-ci.org/vmware-samples/vmware-blockchain-samples.svg?branch=master)](https://travis-ci.org/vmware-samples/vmware-blockchain-samples)
 
-Blockchain is a platform that contains blocks of data about transactions between parties. The data structure within blockchain links these blocks of data to create a ledger of all the transactions. The data is cryptographically authenticated to prevent alteration and spread of any corrupt entry. Blockchain has several participant nodes that have full or partial copies of the blockchain. The participant nodes act as validators and consumers of the blockchain. A consensus algorithm allows all the participating nodes in the blockchain to agree on what data needs to be added to the ledger and verified as accurate.
+Blockchain is a platform that contains blocks of data about transactions between parties. The data structure within blockchain links these blocks of data to create a ledger of all the transactions. The data is cryptographically authenticated to prevent alteration and spread of any corrupt entry. <BLOCKQUOTE></BLOCKQUOTE>ockchain has several participant nodes that have full or partial copies of the blockchain. The participant nodes act as validators and consumers of the blockchain. A consensus algorithm allows all the participating nodes in the blockchain to agree on what data needs to be added to the ledger and verified as accurate.
 
 ![Supply Chain Use Case](./static/supply-chain.png "Supply Chain Use Case")
 
@@ -10,15 +10,17 @@ One use case of blockchain is to track different types of transactions in a supp
 
 Install docker [here](https://docs.docker.com/install/)
 
-First lets clone and  build the container.
+First lets clone the repo and build the container.
 
 ```shell
 git clone git@github.com:vmware-samples/vmware-blockchain-samples.git
 
+cd vmware-blockchain-samples
+
 docker-compose build
 ```
 
-Update the `truffle-config.js` with the correct url, username and password.
+Update the `truffle-config.js` with the correct url with the basic auth username and password.
 
 ```shell
   vmware: {
@@ -34,7 +36,7 @@ Deploy contracts by running truffle migrate by using our container.
 ```
 docker-compose run supply-chain truffle migrate --network=vmware  
 ```
-
+![Migrate Contracts](./static/contract-migrations.png "Migrate Contracts")
 
 Update the environment BC_URL endpoint in the `docker-compose.yml` file to point at your ETH RPC instance.
 
@@ -52,18 +54,20 @@ Update the environment BC_URL endpoint in the `docker-compose.yml` file to point
 ```
 
 
-Then start the server and go to `localhost:4200` once its built.
+Then start the server.
 
 ```shell
 docker-compose up
 ```
+![Docker Up](./static/docker-compose-up.png "Docker Up")
 
+Finally, open [localhost:4200](http://localhost:4200) in your browser.
 
 ## Configure and Deploy Without Docker
 
 ### Prerequisites
 
-- Verify that you have Git, Docker, Node 8.9+ and npm installed.
+- Verify that you have Git, Node 8.9+ and npm installed.
 - Verify that you have installed and configured Truffle v4 suite framework for smart contracts in your environment. See the Truffle [suite installation](https://truffleframework.com/docs/truffle/overview).
 ```
 npm install -g truffle@4.1.15
