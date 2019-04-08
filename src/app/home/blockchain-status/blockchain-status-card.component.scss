@@ -40,6 +40,15 @@
   }
 }
 
+.blockchain-status-card-healthy-check-animate {
+  .blockchain-status-card-icon-check {
+    color: $color-success;
+    display: inline-block;
+    animation: flip-horizontal-bottom 0.5s cubic-bezier(0.455, 0.030, 0.515, 0.955) both;
+    transform: rotateX(180deg);
+  }
+}
+
 .blockchain-status-card-healthy {
   .blockchain-status-card-icon-blocks {
     display: inline-block;
@@ -108,4 +117,53 @@ clr-icon {
     font-size: 0.25rem;
     padding: 0.05rem;
   }
+}
+
+/**
+ * ----------------------------------------
+ * animation flip-horizontal-bottom
+ * ----------------------------------------
+ */
+@-webkit-keyframes flip-horizontal-bottom {
+    0% {
+        -webkit-transform: rotateX(180deg);
+                transform: rotateX(180deg);
+    }
+    100% {
+        -webkit-transform: rotateX(0);
+                transform: rotateX(0);
+    }
+}
+
+@keyframes flip-horizontal-bottom {
+    0% {
+        -webkit-transform: rotateX(180deg);
+                transform: rotateX(180deg);
+    }
+    100% {
+        -webkit-transform: rotateX(0);
+                transform: rotateX(0);
+    }
+}
+
+@-webkit-keyframes flip-horizontal-reverse {
+    0% {
+        -webkit-transform: rotateX(0);
+                transform: rotateX(0);
+    }
+    100% {
+        -webkit-transform: rotateX(180deg);
+                transform: rotateX(180deg);
+    }
+}
+
+@keyframes flip-horizontal-reverse {
+    0% {
+        -webkit-transform: rotateX(0);
+                transform: rotateX(0);
+    }
+    100% {
+        -webkit-transform: rotateX(0);
+                transform: rotateX(0);
+    }
 }

@@ -9,10 +9,11 @@ import { HttpClient, HttpHandler } from '@angular/common/http';
 
 import { BlockchainService } from './blockchain.service';
 import { AuthService } from './../../auth/auth.service';
+import { ErrorAlertService } from './../../shared/global-alert.service';
 
 describe('BlockchainService', () => {
   beforeEach(() => TestBed.configureTestingModule({
-    providers: [AuthService, HttpClient, HttpHandler]
+    providers: [AuthService, HttpClient, HttpHandler, ErrorAlertService]
   }));
 
   it('should be created', () => {

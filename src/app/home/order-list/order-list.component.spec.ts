@@ -9,6 +9,7 @@ import { HttpClient, HttpHandler } from '@angular/common/http';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { OrderListComponent } from './order-list.component';
+import { ErrorAlertService } from './../../shared/global-alert.service';
 
 describe('OrderListComponent', () => {
   let component: OrderListComponent;
@@ -21,7 +22,7 @@ describe('OrderListComponent', () => {
         TranslateModule.forRoot()
       ],
       declarations: [ OrderListComponent ],
-      providers: [HttpClient, HttpHandler]
+      providers: [HttpClient, HttpHandler, ErrorAlertService]
     })
     .compileComponents();
   }));

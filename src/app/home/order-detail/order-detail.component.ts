@@ -29,6 +29,9 @@ export class OrderDetailComponent {
   }
   uploading: boolean;
   uploadError: boolean;
+  orderStatus = OrderStatus;
+  methodsValueMapping = {};
+
   _order;
 
   readonly ACTION_APPROVED = 'approved';
@@ -45,10 +48,13 @@ export class OrderDetailComponent {
   readonly VALUE_ISSUE_AROSE = 'issue-arose';
   readonly VALUE_ISSUE_RECEIVED = 'issue-received';
   readonly VALUE_NEVER_RECEIVED = 'never-received';
+  readonly VALUE_WH_NEVER_RECEIVED = 'wh-never-received';
+  readonly VALUE_NOT_DELIVERED = 'not-delivered';
   readonly VALUE_NOT_ORGANIC = 'not-organic';
   readonly VALUE_ORGANIC = 'organic';
   readonly VALUE_RECALL = 'recall';
   readonly VALUE_RECEIVED = 'received';
+  readonly VALUE_DELIVERED = 'delivered';
   readonly VALUE_RELEASED = 'released';
   readonly VALUE_UPLOAD = 'upload';
 
@@ -58,11 +64,7 @@ export class OrderDetailComponent {
 
   constructor(private blockchainService: BlockchainService,
     private userService: UserService) {
-
-  }
-
-  approveOrder(): Promise<any> {
-    return this.blockchainService.approveOrder(this.order);
+    this.setMethodsMapping();
   }
 
   buildSelectedValues() {
@@ -70,50 +72,46 @@ export class OrderDetailComponent {
     if (this.order.hasHistory(OrderHistoryAction.Approved)) {
       values[this.ACTION_APPROVED] = this.VALUE_APPROVE;
     }
+    if (this.order.hasHistory(OrderHistoryAction.NotApproved)) {
+      values[this.ACTION_APPROVED] = this.VALUE_DENY;
+    }
     if (this.order.hasHistory(OrderHistoryAction.Audited)) {
       values[this.ACTION_VALIDATED] = this.VALUE_ORGANIC;
+    }
+    if (this.order.hasHistory(OrderHistoryAction.AuditFailed)) {
+      values[this.ACTION_VALIDATED] = this.VALUE_NOT_ORGANIC;
     }
     if (this.order.hasHistory(OrderHistoryAction.Received)) {
       values[this.ACTION_STORAGE_RECEIVED] = this.VALUE_RECEIVED;
     }
+    if (this.order.hasHistory(OrderHistoryAction.NotAtWarehouse)) {
+      values[this.ACTION_STORAGE_RECEIVED] = this.VALUE_WH_NEVER_RECEIVED;
+    }
     if (this.order.hasHistory(OrderHistoryAction.Released)) {
       values[this.ACTION_STORAGE_RELEASED] = this.VALUE_RELEASED;
+    }
+    if (this.order.hasHistory(OrderHistoryAction.WarehouseIssue)) {
+      values[this.ACTION_STORAGE_RELEASED] = this.VALUE_ISSUE_AROSE;
     }
     if (this.order.hasHistory(OrderHistoryAction.InTransit)) {
       values[this.ACTION_SHIPPED] = this.VALUE_IN_TRANSIT;
     }
+    if (this.order.hasHistory(OrderHistoryAction.DistributorNeverReceived)) {
+      values[this.ACTION_SHIPPED] = this.VALUE_NEVER_RECEIVED;
+    }
     if (this.order.hasHistory(OrderHistoryAction.ConfirmedDelivery)) {
-      values[this.ACTION_RECEIVED] = this.VALUE_RECEIVED;
+      values[this.ACTION_RECEIVED] = this.VALUE_DELIVERED;
+    }
+    if (this.order.hasHistory(OrderHistoryAction.NotDelivered)) {
+      values[this.ACTION_RECEIVED] = this.VALUE_NOT_DELIVERED;
+    }
+    if (this.order.hasHistory(OrderHistoryAction.NotDelivered)) {
+      values[this.ACTION_RECEIVED] = this.VALUE_NOT_DELIVERED;
+    }
+    if (this.order.hasHistory(OrderHistoryAction.Recalled)) {
+      values[this.ACTION_RECALL] = this.VALUE_RECALL;
     }
     this.selectedValues = values;
-  }
-
-  processStorageOrder() {
-    // this.blockchainService.approve(this.order);
-  }
-
-  recallOrder(): Promise<any> {
-    return this.blockchainService.revokeOrder(this.order);
-  }
-
-  receiveSupermarketOrder(): Promise<any> {
-    return this.blockchainService.confirmDeliveryOrder(this.order);
-  }
-
-  receiveStorageOrder(): Promise<any> {
-    return this.blockchainService.warehouseReceivedOrder(this.order);
-  }
-
-  releaseStorageOrder(): Promise<any> {
-    return this.blockchainService.warehouseReleasedOrder(this.order);
-  }
-
-  shipOrder(): Promise<any> {
-    return this.blockchainService.receivedAndInTransitOrder(this.order);
-  }
-
-  validateOrder(): Promise<any> {
-    return this.blockchainService.validatedOrder(this.order);
   }
 
   canApproveOrder() {
@@ -121,7 +119,9 @@ export class OrderDetailComponent {
   }
 
   canAuditOrder() {
-    return this.order.status === OrderStatus.Audited && this.userService.hasRole('auditor');
+    const canAuditOrder = this.order.status === OrderStatus.Audited && this.userService.hasRole('auditor');
+    if (!canAuditOrder) { this.uploading = false; }
+    return canAuditOrder;
   }
 
   canProcessStorageOrder() {
@@ -157,23 +157,9 @@ export class OrderDetailComponent {
   }
 
   processAction(action, value): Promise<any> {
-    if (action === this.ACTION_APPROVED && value === this.VALUE_APPROVE) {
-      return this.approveOrder();
-    } else if (action === this.ACTION_VALIDATED && value === this.VALUE_ORGANIC) {
-      return this.validateOrder();
-    } else if (action === this.ACTION_STORAGE_RECEIVED && value === this.VALUE_RECEIVED) {
-      return this.receiveStorageOrder();
-    } else if (action === this.ACTION_STORAGE_RELEASED && value === this.VALUE_RELEASED) {
-      return this.releaseStorageOrder();
-    } else if (action === this.ACTION_SHIPPED && value === this.VALUE_IN_TRANSIT) {
-      return this.shipOrder();
-    } else if (action === this.ACTION_RECEIVED && value === this.VALUE_RECEIVED) {
-      return this.receiveSupermarketOrder();
-    } else if (action === this.ACTION_RECALL && value === this.VALUE_RECALL) {
-      return this.recallOrder();
-    } else {
-      return Promise.resolve();
-    }
+    return this.blockchainService.sendOrder(
+      this.order, this.methodsValueMapping[value]
+    );
   }
 
   upload() {
@@ -189,9 +175,9 @@ export class OrderDetailComponent {
       this.uploadError = true;
       return;
     }
+
     this.blockchainService.storeDocument(this.order, event)
       .then(() => {
-        this.uploading = false;
       }, error => {
         this.uploading = false;
       });
@@ -207,5 +193,23 @@ export class OrderDetailComponent {
     document.body.appendChild(dlAnchorElem);
     dlAnchorElem.click();
     dlAnchorElem.remove();
+  }
+
+  private setMethodsMapping() {
+    this.methodsValueMapping[this.VALUE_APPROVE] = 'approve';
+    this.methodsValueMapping[this.VALUE_ORGANIC] = 'validated';
+    this.methodsValueMapping[this.VALUE_RECEIVED] = 'warehouseReceivedOrder';
+    this.methodsValueMapping[this.VALUE_RELEASED] = 'warehouseReleasedOrder';
+    this.methodsValueMapping[this.VALUE_IN_TRANSIT] = 'receivedAndInTransit';
+    this.methodsValueMapping[this.VALUE_DELIVERED] = 'confirmDelivery';
+
+    this.methodsValueMapping[this.VALUE_DENY] = 'notApprove';
+    this.methodsValueMapping[this.VALUE_NOT_ORGANIC] = 'invalid';
+    this.methodsValueMapping[this.VALUE_WH_NEVER_RECEIVED] = 'warehouseNotReceivedOrder';
+    this.methodsValueMapping[this.VALUE_ISSUE_AROSE] = 'warehouseIssueOrder';
+    this.methodsValueMapping[this.VALUE_NEVER_RECEIVED] = 'neverReceived';
+    this.methodsValueMapping[this.VALUE_NOT_DELIVERED] = 'notDelivered';
+
+    this.methodsValueMapping[this.VALUE_RECALL] = 'revoke';
   }
 }

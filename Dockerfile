@@ -10,8 +10,9 @@ WORKDIR /app
 
 COPY ./ /app/
 
-RUN yarn install
-RUN yarn global add truffle@4.1.14
+RUN npm install --silent
+RUN npm install -g truffle@4.1.14
+RUN node patch.js
 
 ARG env=prod
 

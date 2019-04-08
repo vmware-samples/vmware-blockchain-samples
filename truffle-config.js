@@ -61,6 +61,7 @@ module.exports = {
 
     vmware: {
       network_id: "*",
+      quiet: true,
       provider: () => new Web3.providers.HttpProvider(
         "http://<username>:<password>@<url>"
       )

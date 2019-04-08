@@ -12,6 +12,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 
 import { CreateOrderComponent } from './create-order.component';
+import { BlockchainService } from './../../core/blockchain/blockchain.service';
+import { ErrorAlertService } from './../../shared/global-alert.service';
 
 describe('CreateOrderComponent', () => {
   let component: CreateOrderComponent;
@@ -29,7 +31,7 @@ describe('CreateOrderComponent', () => {
       declarations: [
         CreateOrderComponent
       ],
-      providers: [HttpClient, HttpHandler]
+      providers: [HttpClient, HttpHandler, BlockchainService, ErrorAlertService]
 
     })
     .compileComponents();

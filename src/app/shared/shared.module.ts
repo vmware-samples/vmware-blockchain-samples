@@ -13,6 +13,7 @@ import { UserService } from '../core/user/user.service';
 import { SimpleConfirmationComponent } from './simple-confirmation/simple-confirmation.component';
 import { ToggleRadioGroupComponent } from './toggle-radio-group/toggle-radio-group.component';
 import { ErrorAlertService } from './global-alert.service';
+import { NotifierService } from './notifier.service';
 
 @NgModule({
   imports: [
@@ -26,7 +27,8 @@ import { ErrorAlertService } from './global-alert.service';
     ToggleRadioGroupComponent
   ],
   providers: [
-   ErrorAlertService
+   ErrorAlertService,
+   NotifierService
   ],
   exports: [
     SimpleConfirmationComponent,

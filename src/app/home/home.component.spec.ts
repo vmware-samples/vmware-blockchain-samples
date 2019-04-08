@@ -10,10 +10,13 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
+
 import { BlockchainStatusComponent } from './blockchain-status/blockchain-status.component';
 import { OrderListComponent } from './order-list/order-list.component';
 import { HomeComponent } from './home.component';
 import { HomeModule } from './home.module';
+import { ErrorAlertService } from '../shared/global-alert.service';
+
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
@@ -30,6 +33,7 @@ describe('HomeComponent', () => {
       providers: [
         HttpClient,
         HttpHandler,
+        ErrorAlertService,
         {
           provide: ActivatedRoute,
           useValue: {

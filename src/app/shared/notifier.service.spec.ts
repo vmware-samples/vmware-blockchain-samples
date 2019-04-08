@@ -6,13 +6,13 @@
 
 import { TestBed } from '@angular/core/testing';
 
-import { GlobalAlertService } from './global-alert.service';
+import { NotifierService } from './notifier.service';
 
-describe('GlobalAlertService', () => {
+describe('NotifierService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: GlobalAlertService = TestBed.get(GlobalAlertService);
+    const service: NotifierService = TestBed.get(NotifierService);
     expect(service).toBeTruthy();
   });
 });

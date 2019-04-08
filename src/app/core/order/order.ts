@@ -13,10 +13,19 @@ export enum OrderHistoryAction {
   Received = 'Received',
   Released = 'Released',
   InTransit = 'In Transit',
-  ConfirmedDelivery = 'Confirmed Delivery'
+  ConfirmedDelivery = 'Confirmed Delivery',
+  NotApproved = 'Not Approved',
+  AuditFailed = 'Audit Failed',
+  NotAtWarehouse = 'Did not receive',
+  WarehouseIssue = 'Issue at warehouse',
+  DistributorNeverReceived = 'Never Received',
+  NotDelivered = 'Not Delivered',
+  // Order Revoked
+  Recalled = 'Recalled'
 }
 
 export enum OrderStatus {
+  // Positive states
   Ordered,
   Approved,
   Audited,
@@ -25,7 +34,15 @@ export enum OrderStatus {
   WarehouseReleased,
   InTransit,
   Delivered,
-  Revoked
+  // Negative states
+  NotApproved,
+  AuditFailed,
+  NotAtWarehouse,
+  WarehouseIssue,
+  DistributorNeverReceived,
+  NotDelivered,
+  // Order Recalled
+  Recalled
 }
 
 export class Order {

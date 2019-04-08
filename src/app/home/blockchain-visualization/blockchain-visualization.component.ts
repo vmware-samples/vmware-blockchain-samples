@@ -4,10 +4,20 @@
  * The full license information can be found in LICENSE in the root directory of this project.
  */
 
-import { AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+  Input
+} from '@angular/core';
 import { BlockchainStatusCardComponent } from '../blockchain-status/blockchain-status-card.component';
 import { UserService } from '../../core/user/user.service';
 import { random } from '../../shared/utils';
+import { NotifierService } from '../../shared/notifier.service';
 
 @Component({
   selector: 'vmw-sc-blockchain-visualization',
@@ -22,11 +32,14 @@ export class BlockchainVisualizationComponent implements AfterViewInit, OnInit {
   statuses: string[];
   paths: Array<{ id: string, route: string }> = [];
 
-  constructor(userService: UserService) {
+  constructor(
+    userService: UserService,
+    private notifierService: NotifierService
+
+  ) {
     // TODO - get the roles from back end
     this.roles = userService.roles.slice(0, 4);
     this.statuses = Array(4).fill('healthy');
-    this.statuses[random(4) - 1] = 'healthy-check';
   }
 
   ngOnInit() {}
@@ -69,5 +82,15 @@ export class BlockchainVisualizationComponent implements AfterViewInit, OnInit {
     } else {
       return `M${x1} ${y1} V ${y2} H ${x2}`;
     }
+  }
+
+  update(notification: any): void {
+    if (!notification) { return null; }
+
+    this.statuses = Array(4).fill('healthy-check-animate');
+    setTimeout(() => {
+      this.statuses = Array(4).fill('healthy');
+    }, 2500);
+
   }
 }

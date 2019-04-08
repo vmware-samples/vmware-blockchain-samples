@@ -4,7 +4,14 @@
  * The full license information can be found in LICENSE in the root directory of this project.
  */
 
-import { Component, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -12,6 +19,8 @@ import { ErrorAlertService } from '../shared/global-alert.service';
 import { BlockchainService } from '../core/blockchain/blockchain.service';
 import { Order } from '../core/order/order';
 import { UserService } from '../core/user/user.service';
+import { NotifierService } from '../shared/notifier.service';
+import { BlockchainVisualizationComponent } from './blockchain-visualization/blockchain-visualization.component';
 
 @Component({
   selector: 'vmw-sc-home',
@@ -19,10 +28,12 @@ import { UserService } from '../core/user/user.service';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnDestroy, OnInit {
+  @ViewChild('nodes') nodes: BlockchainVisualizationComponent;
   createOrderVisible = false;
   currentUser: any;
   alerts: any[] = [];
   _selectedOrder: Order;
+  transaction: string;
   private updatedOrderRef: Subscription;
 
   get selectedOrder() {
@@ -43,9 +54,8 @@ export class HomeComponent implements OnDestroy, OnInit {
     private route: ActivatedRoute,
     private router: Router,
     public zone: NgZone,
-
     private alertService: ErrorAlertService,
-
+    private notifierService: NotifierService,
     userService: UserService
   ) {
     this.currentUser = userService.currentUser;
@@ -55,6 +65,9 @@ export class HomeComponent implements OnDestroy, OnInit {
 
     this.alertService.notify
       .subscribe(error => this.addAlert(error));
+
+    this.notifierService.notify
+      .subscribe(notfication => this.update(notfication));
 
   }
 
@@ -71,14 +84,18 @@ export class HomeComponent implements OnDestroy, OnInit {
   }
 
   private addAlert(alert: any): void {
-    console.log(alert);
-    console.log(String(alert));
     if (alert) {
       const alertItem = {
         message: String(alert)
       };
        this.zone.run(() => this.alerts.push(alertItem));
     }
+  }
+
+  private update(notification: any): void {
+    if (!notification) { return; }
+    this.transaction = notification;
+    this.nodes.update(notification);
   }
 
 }
