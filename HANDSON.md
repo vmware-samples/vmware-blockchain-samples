@@ -73,28 +73,18 @@ module.exports = function(deployer, network, accounts) {
   let ordersProx,
     ordV2;
 
-  OrdersProxy.deployed()
-    .then(orders => {
-        ordersProx = orders;
-        return deployer.deploy(OrdersV2);
+  deployer.deploy(OrdersV2)
+    .then(o => {
+        ordV2 = o;
+        return OrdersProxy.deployed()
       })
-    .then(ordersV2 => {
-      ordV2 = ordersV2
-      // Upgrading our contract
-      return ordersProx.upgradeTo.sendTransaction(ordersUpgraded.address);
-      })
-    .then(() => {
-      // Going to use 
-      return OrdersV2.at(ordersProx.address)
-      })
-    .then(orderV2 => {
-        return orderV2.getVersion.call();
-      })
-    .then(version => {
-      console.log(`Our current version is ${version}`);
-      });
+    .then(proxy => {
+      ordersProx = proxy
+      // Upgrading our contract to version 2
+      return ordersProx.upgradeTo.sendTransaction(ordV2.address);
+    });
+}
 
-};
 ```
 
 Then run our truffle migrate.
@@ -103,6 +93,18 @@ docker-compose run supply-chain truffle migrate --network=vmware
 ```
 
 We get our deployed proxy contract and deploy the order version 2 contract. Then do a trick to use our truffle ABI interface, set the `OrdersV2` artifact to our `OrderProxy` address so that we can access the methods, such as `getVersion`.
+
+Open up truffle console and test our new upgraded proxy.
+```
+docker-compose run supply-chain truffle console  --network=vmware
+
+> let ordersV2, proxy, accounts;
+> web3.eth.getAccounts((err, res) => accounts = res);
+> OrdersProxy.deployed().then(p => proxy = p);
+> OrdersV2.defaults({from: accounts[1]});
+> OrdersV2.at(proxy.address).then(o => ordersV2 = o);
+> ordersV2.getVersion.call();
+```
 
 ### Storage
 
