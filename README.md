@@ -1,6 +1,6 @@
 # Supply Chain Decentralized Application [![Build Status](https://travis-ci.org/vmware-samples/vmware-blockchain-samples.svg?branch=master)](https://travis-ci.org/vmware-samples/vmware-blockchain-samples)
 
-Blockchain is a platform that contains blocks of data about transactions between parties. The data structure within blockchain links these blocks of data to create a ledger of all the transactions. The data is cryptographically authenticated to prevent alteration and spread of any corrupt entry. <BLOCKQUOTE></BLOCKQUOTE>ockchain has several participant nodes that have full or partial copies of the blockchain. The participant nodes act as validators and consumers of the blockchain. A consensus algorithm allows all the participating nodes in the blockchain to agree on what data needs to be added to the ledger and verified as accurate.
+Blockchain is a platform that contains blocks of data about transactions between parties. The data structure within blockchain links these blocks of data to create a ledger of all the transactions. The data is cryptographically authenticated to prevent alteration and spread of any corrupt entry. <BLOCKQUOTE></BLOCKQUOTE>Blockchain has several participant nodes that have full or partial copies of the blockchain. The participant nodes act as validators and consumers of the blockchain. A consensus algorithm allows all the participating nodes in the blockchain to agree on what data needs to be added to the ledger and verified as accurate.
 
 ![Supply Chain Use Case](./static/supply-chain.png "Supply Chain Use Case")
 
@@ -8,7 +8,11 @@ One use case of blockchain is to track different types of transactions in a supp
 
 ## Quick Setup with Docker
 
+### Prerequisites
+
 Install docker [here](https://docs.docker.com/install/)
+
+### Setup
 
 First lets clone the repo and build the container.
 
@@ -89,7 +93,7 @@ Deploy contracts on ganache
 truffle migrate --reset --network=development 
 ```
 
-Deploy contracts on VMware blockchain
+Deploy contracts on VMware Blockchain
 
 First go to `truffle-config.js` and update the username, password and path under the vmwware network:
 
@@ -164,6 +168,24 @@ web3.toUtf8('0x4170706c65730000000000000000000000000000000000000000000000000000'
 'Apples'
 
 ```
+
+## Create and Configure an Order Contract
+### Steps
+- Login to the Supply Chain UI.
+- Click New Order.
+- Select an item from the drop-down menu and assign a value to the item.
+- In the top left corner, set the user role to Farmer.
+- Click Approve.
+- In the top left corner, set the user role to Auditor.
+- Click Organic.
+- Click Upload and navigate to vmware-blockchain-samples > build > contracts.
+- Upload a JSON contract file less than 200KB.
+- In the top left corner, set the user role to Storage.    
+- Click Received and Finished.
+- In the top left corner, set the user role to Distributor.
+- Click In Transit.
+- In the top left corner, set the user role to Super Market.
+- Click Received.
 
 ## Startup Dev Server
 

@@ -1,13 +1,14 @@
-# Hands on with blockchain
+# Hands On with VMware Blockchain
 
-### Intro
-This is for someone new to smart contracts, solidity, web3 and ethereum technologies to familiarize them self with common patterns for development practices or to get a better understanding of how blockchain and smart contracts work.
+### Introduction
+
+This is for someone to familiarize themselves with smart contracts, solidity, web3, and Ethereum technologies and understand the common patterns for development practices and learn how Blockchain and smart contracts work.
 
 ## Reference
 
-Main section of the code we will be referring to today is the `./contracts` folder.
+The main section of the code we will be referring to today is the `./contracts` folder.
 
-[Truffle](https://truffleframework.com/docs/truffle/overview) is a smart contract framework for deploying and migrating contracts
+[Truffle](https://truffleframework.com/docs/truffle/overview) is a smart contract framework for deploying and migrating contracts.
 
 ## Setup
 
@@ -15,13 +16,15 @@ Please follow the quick setup with docker setup in the [readme](https://github.c
 
 ## Lessons
 
+The exercises for this session include, defining access control, proxying a smart contract for versioning, and configuring storage.
+
 ### Access Control
 
-Access control is one of the most common coding patterns because blockchain smart contracts are open to the world and need and the right authority needs to be delegated to the appropriate user.
+Access control is one of the most common coding patterns because Blockchain smart contracts are open source and need and the right authority to be delegated to the appropriate user.
 
-Lets go and modify the access control by going to the the file `./contracts/OrderAccessControl.sol`
+Let's modify the access control the file `./contracts/OrderAccessControl.sol`.
 
-Set the `onlyAuditor` modifier to a 0x address, `address(0)`.  Basically setting it to null.
+Set the `onlyAuditor` modifier from `auditor` to `address(0)`, which sets the modifier to null.
 
 ```
   modifier onlyAuditor() {
@@ -33,13 +36,15 @@ Set the `onlyAuditor` modifier to a 0x address, `address(0)`.  Basically setting
   }
 ```
 
-Now lets reset our contracts again using our docker container
+Now let's reset our contracts using our docker container.
 
 ```
 docker-compose run supply-chain truffle migrate --reset --network=vmware
 ```
 
-Now if we go to the UI, create an order, switch to auditor persona, click approve, you will notice there is an error.
+Now if we go to the UI, create an order, switch to the Auditor persona.
+
+Click Approve and you notice an error message.
 
 ```
 Error: �y� Only the Auditor has access
@@ -48,15 +53,18 @@ Error: �y� Only the Auditor has access
 
 ### Versioning
 
-Versioning is very important in software development, but not so apparent with contracts because they are stateful and immutable.  The truffle framework we are using today allows you to migrate contracts from one to the next but then new contract addresses are created, which becomes problematic because you need to broadcast the new contract address to everyone using it with the newly created contract update.
+Versioning is very important in software development, but not so apparent with smart contracts because they are stateful and immutable.  The truffle framework we are using today allows you to migrate smart contracts from one to the next. However, new contract addresses are created, which become problematic because you need to broadcast the new smart contract address to everyone using it with the newly updated smart contract information.
 
-Proxying a contract is the preferred way to go for contract versioning.  Lets review how to do this.
+Proxying a contract is the preferred way to go for smart contract versioning.  Let's review how to do this.
 
-In the contracts folder we have `OrdersV1.sol` and `OrdersV2.sol`.  `OrdersV1.sol` is already deployed and is being proxied by the `OrdersProxy.sol` contract, but we are going to update it with `OrdersV2.sol`.
+In the contracts folder we have `OrdersV1.sol` and `OrdersV2.sol`.  `OrdersV1.sol` is already deployed and is being proxied by the `OrdersProxy.sol` smart contract, now we are going to update it with `OrdersV2.sol`.
 
-Lets go to our `./migrations` folder and create a new file and call it `3_order_update.js`. Now lets point the `OrdersProxy.sol` contract at `OrdersV2.sol`.
+Open the `./migrations` folder and create a new file called `3_order_update.js`. 
 
-Add this to our newly created migrations file.
+Now let's point the `OrdersProxy.sol` contract at `OrdersV2.sol`.
+
+Add this code to your newly created migrations file.
+
 ```
 var OrdersProxy = artifacts.require("./OrdersProxy.sol");
 var OrdersV2 = artifacts.require("./OrdersV2.sol");
@@ -94,11 +102,11 @@ Then run our truffle migrate.
 docker-compose run supply-chain truffle migrate --network=vmware
 ```
 
-So what happens here, we get our deployed proxy contract, then deploy the order version 2 contract. Then do a trick to use our truffle abi interface, set the `OrdersV2` artifact to our `OrderProxy` address so that we can access it's methods, such as `getVersion`.
+We get our deployed proxy contract and deploy the order version 2 contract. Then do a trick to use our truffle ABI interface, set the `OrdersV2` artifact to our `OrderProxy` address so that we can access the methods, such as `getVersion`.
 
 ### Storage
 
-Document storage is usually frowned upon on public blockchains because it is expensive.  But we will review here how to store a `200kb` json document on our `32kb` block, that isn't very compute intensive.
+Document storage is usually frowned upon on public blockchains because it is expensive.  But we will review how to store a `200kb` json document on our `32kb` block, that isn't very compute intensive.
 
 Store document
 ```
