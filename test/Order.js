@@ -18,7 +18,13 @@ contract("Order Test", async accounts => {
     'WarehouseReleased',
     'InTransit',
     'Delivered',
-    'Revoked'
+    'NotApproved',
+    'AuditFailed',
+    'NotAtWarehouse',
+    'WarehouseIssue',
+    'DistributorNeverReceived',
+    'NotDelivered',
+    'Recalled'
   ];
 
 

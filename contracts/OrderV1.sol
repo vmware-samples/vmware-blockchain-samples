@@ -35,6 +35,7 @@ contract OrderV1 is OrderAccessControl {
   }
 
   enum State {
+    // Positive states
     Ordered,
     Approved,
     Audited,
@@ -43,7 +44,15 @@ contract OrderV1 is OrderAccessControl {
     WarehouseReleased,
     InTransit,
     Delivered,
-    Revoked
+    // Negative States
+    NotApproved,
+    AuditFailed,
+    NotAtWarehouse,
+    WarehouseIssue,
+    DistributorNeverReceived,
+    NotDelivered,
+    Recalled
+
   }
 
   enum SubState {
@@ -95,6 +104,19 @@ contract OrderV1 is OrderAccessControl {
   }
 
   /**
+   * @dev Farmer doesn't approve the order
+   */
+  function notApprove()
+    public
+    onlyFarmer
+    inState(State.Ordered)
+  {
+    addRecord(bytes32("Not Approved"));
+    state = State.NotApproved;
+
+  }
+
+  /**
    * @dev Auditor will validate if order is organic
    */
   function validated()
@@ -104,6 +126,18 @@ contract OrderV1 is OrderAccessControl {
   {
     addRecord(bytes32("Audited"));
     state = State.Audited;
+  }
+
+  /**
+   * @dev Auditor failed the audit
+   */
+  function invalid()
+    public
+    onlyAuditor
+    inState(State.Approved)
+  {
+    addRecord(bytes32("Audit Failed"));
+    state = State.AuditFailed;
   }
 
   /**
@@ -132,6 +166,18 @@ contract OrderV1 is OrderAccessControl {
   }
 
   /**
+   * @dev Warehouse didn't receive the order
+   */
+  function warehouseNotReceivedOrder()
+    public
+    onlyWarehouse
+    inState(State.AuditDocUploaded)
+  {
+    state = State.NotAtWarehouse;
+    addRecord(bytes32("Did not receive"));
+  }
+
+  /**
    * @dev Warehouse releases order to distributor
    */
   function warehouseReleasedOrder()
@@ -141,6 +187,18 @@ contract OrderV1 is OrderAccessControl {
   {
     state = State.WarehouseReleased;
     addRecord(bytes32("Released"));
+  }
+
+  /**
+   * @dev Warehouse has issue with order
+   */
+  function warehouseIssueOrder()
+    public
+    onlyWarehouse
+    inState(State.AtWarehouse)
+  {
+    state = State.WarehouseIssue;
+    addRecord(bytes32("Issue at warehouse"));
   }
 
   /**
@@ -156,6 +214,18 @@ contract OrderV1 is OrderAccessControl {
   }
 
   /**
+   * @dev Distributor never received order
+   */
+  function neverReceived()
+    public
+    onlyDistributor
+    inState(State.WarehouseReleased)
+  {
+    addRecord(bytes32("Never Received"));
+    state = State.DistributorNeverReceived;
+  }
+
+  /**
    * @dev SuperMarket confirms delivery of order
    */
   function confirmDelivery()
@@ -168,13 +238,26 @@ contract OrderV1 is OrderAccessControl {
   }
 
   /**
+   * @dev SuperMarket didn't receive order
+   */
+  function notDelivered()
+    public
+    onlySupermarket
+    inState(State.InTransit)
+  {
+    addRecord(bytes32("Not Delivered"));
+    state = State.NotDelivered;
+  }
+
+  /**
    * @dev Farmer or auditor revokes order due to compliance or issues with order
    */
   function revoke()
     public
     onlyFarmerOrAuditor
   {
-    state = State.Revoked;
+    state = State.Recalled;
+    addRecord(bytes32("Recalled"));
     meta.revoked = true;
   }
 

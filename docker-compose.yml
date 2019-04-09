@@ -10,8 +10,6 @@ services:
     build:
       context: .
     command: "npm run start:vmware"
-    networks:
-      - default
     ports:
       - 4200:4200
     volumes:
@@ -23,8 +21,10 @@ services:
       # Example
       # - BC_URL=http://localhost/blockchains/local/api/concord/eth
       - BC_URL=<change-me>
-
 # Connect to existing docker default network for local development
+    # networks:
+    #   - default
+
 # networks:
 #   default:
 #     external:

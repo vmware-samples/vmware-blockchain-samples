@@ -21,7 +21,7 @@ export class ErrorAlertService {
 }
 
 @Injectable()
-export class GlobalErrorHandlerService implements ErrorHandler {
+export class GlobalAlertService implements ErrorHandler {
 
   constructor(
     private alert: ErrorAlertService

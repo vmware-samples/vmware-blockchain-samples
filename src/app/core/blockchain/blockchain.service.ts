@@ -17,6 +17,7 @@ import * as pako from 'pako';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../auth/auth.service';
 import { ErrorAlertService } from '../../shared/global-alert.service';
+import { NotifierService } from '../../shared/notifier.service';
 
 import * as Order from '../../../assets/contracts/OrderV1.json';
 import * as Orders from '../../../assets/contracts/OrdersProxy.json';
@@ -59,6 +60,7 @@ export class BlockchainService {
   constructor(
     private authService: AuthService,
     private alertService: ErrorAlertService,
+    private notifierService: NotifierService,
   ) {
     if (environment.blockchainType === 'metamask' && window['web3']) {
       this.web3 = this.metaMask();
@@ -243,17 +245,17 @@ export class BlockchainService {
 
   }
 
-  private buildOrder(contract, address: string): Promise<OrderModel> {
+  private buildOrder(orderContract, address: string): Promise<OrderModel> {
     const order = new OrderModel();
     order.id = address;
-    order.contract = contract;
+    order.contract = orderContract;
 
     const loadHistory = this.getHistory(order).then((history) => {
       order.history = history;
     });
 
     const loadMeta = new Promise((resolve, reject) => {
-      return contract.meta(this.callbackToResolve(resolve, reject));
+      return orderContract.meta(this.callbackToResolve(resolve, reject));
     }).then(meta => {
       order.amount = meta[1];
       order.product = this.web3.toUtf8(meta[0]);
@@ -261,7 +263,7 @@ export class BlockchainService {
     });
 
     const loadDocument = new Promise((resolve, reject) => {
-      return contract.auditDocument(this.callbackToResolve(resolve, reject));
+      return orderContract.auditDocument(this.callbackToResolve(resolve, reject));
     }).then((docAddress) => {
       // @ts-ignore
       order.document = docAddress;
@@ -269,7 +271,7 @@ export class BlockchainService {
     });
 
     const loadStatus = new Promise((resolve, reject) => {
-      return contract.state(this.callbackToResolve(resolve, reject));
+      return orderContract.state(this.callbackToResolve(resolve, reject));
     }).then(status => {
       order.status = parseInt(status as string, 10);
       order.statusLabel = OrderStatus[status as string];
@@ -314,7 +316,7 @@ export class BlockchainService {
 
   }
 
-  private sendOrder(order, methodName, ...args: any[]): Promise<any> {
+  sendOrder(order, methodName, ...args: any[]): Promise<any> {
     // setOwners is temporary until we have a more robust approach to roles
     return new Promise((resolve, reject) => {
       return this.setOwners(order, this.from).then(() => {
@@ -323,13 +325,13 @@ export class BlockchainService {
         );
       });
     }).then((resp) => {
+      this.notifierService.update(resp);
       return this.getOrderByAddress(order.id).then((updatedOrder) => {
         this.updatedOrderSource.next(updatedOrder);
         return updatedOrder;
       });
     }).catch(err => {
       this.alertService.add(err);
-      console.error(err)
     });
   }
 
