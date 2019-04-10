@@ -108,35 +108,40 @@ docker-compose run supply-chain truffle console  --network=vmware
 
 ### Storage
 
-Document storage is usually frowned upon on public blockchains because it is expensive.  But we will review how to store a `200kb` json document on our `32kb` block, that isn't very compute intensive.
+Document storage is usually frowned upon on public blockchains because it is expensive.  But even though it is frowned upon it is necessary for consortium blockchains have documents included in the trustless model. We currently are uploading a file using an event.  Go to the `blockchain.service.ts` file and review how we are storing a `200kb` json document on our `32kb` block in the `inEventStore`.
 
-Store document
+Now lets switch the `inEventStore` from an event to a string storage.
+
 ```
   private async inEventStore(order, file) {
     const deflated = pako.deflate(file, { to: 'string' });
 
     this.docContract = await this.Doc.new();
-    await this.docContract.inEvent(deflated);
-    return this.storeAuditDocumentOrder(order, this.docContract.address);
+    // await this.docContract.inEvent(deflated);
+    await this.docContract.inString(deflated);
+    return this.storeAuditDocumentOrder(order, this.docContract.address)
+      .then(
+        response => console.log(response),
+        error => console.log(error)
+      );
   }
+
 ```
 
-Get Document
+Now lets switch the `getDocument` from an event to string
+
 ```
-  async getDocument(docAddress: string): Promise<any> {
+   async getDocument(docAddress: string): Promise<any> {
     this.docContract = await this.Doc.at(docAddress);
 
-    return this.docContract.getPastEvents('DocumentEvent', { fromBlock: 0, toBlock: 'latest' })
-      .then(events => {
-        if (events && events[0] && events[0].returnValues[0]) {
+    return this.docContract.docString()
+      .then(deflated => {
           return pako.inflate(
-            events[0].returnValues[0],
+            deflated,
             { to: 'string' }
           );
-        } else {
-          throw Error('Event or document not present');
-        }
       });
+
   }
 ```
 
