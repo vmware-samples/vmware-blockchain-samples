@@ -22,7 +22,7 @@ export class UserService {
   get currentUser(): User {
     if (! this._currentUser) {
       this._currentUser = new User();
-      this._currentUser.role = randomElement(this.roles);
+      this._currentUser.role = this.roles[0];
     }
     return this._currentUser;
   }

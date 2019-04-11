@@ -57,7 +57,7 @@ export class ToggleRadioGroupComponent {
     this.selectedValue = null;
   }
 
-  selectValue(value) {
+  selectValue(value, event) {
     event.preventDefault(); // Prevent Radio button behavior
     if (! this.disabled) {
       this.pendingValue = value;

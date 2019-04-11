@@ -67,6 +67,12 @@ docker-compose up
 
 Finally, open [localhost:4200](http://localhost:4200) in your browser.
 
+NOTE: You may need to open an ssh tunnel if you are running on a separate VM
+
+```ssh
+ssh -g -L 4200:localhost:4200 -f -N <VM_IP>
+```
+
 ## Configure and Deploy Without Docker
 
 ### Prerequisites

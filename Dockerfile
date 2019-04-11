@@ -10,7 +10,7 @@ WORKDIR /app
 
 COPY ./ /app/
 
-RUN npm install --silent
+RUN npm install
 RUN npm install -g truffle@4.1.14
 RUN node patch.js
 
