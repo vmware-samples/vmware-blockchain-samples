@@ -108,17 +108,25 @@ docker-compose run supply-chain truffle console  --network=vmware
 
 ### Storage
 
-Document storage is usually frowned upon on public blockchains because it is expensive.  But even though it is frowned upon it is necessary for consortium blockchains have documents included in the trustless model. We currently are uploading a file using an event.  Go to the `blockchain.service.ts` file and review how we are storing a `200kb` json document on our `32kb` block in the `inEventStore`.
+Before we start this lesson, revert the `onlyAuditor` in `OrderAccessControl` back to `auditor` and not `address(0)`. Then reset our contracts again:
 
-Now lets switch the `inEventStore` from an event to a string storage.
+```shell
+docker-compose run supply-chain truffle migrate --reset --network=vmware
+```
+
+Document storage is usually frowned upon on public blockchains because it is expensive.  But even though it is frowned upon it is necessary for consortium blockchains to have documents included in the trustless model. In order to do this we are going to store the document in a event.  Go to `blockchain.service.ts` file and review how we are storing a `json` document with the `inEventStore` method.
+
+Now lets switch the `inEventStore` from a string to an event storage.
 
 ```
   private async inEventStore(order, file) {
     const deflated = pako.deflate(file, { to: 'string' });
 
     this.docContract = await this.Doc.new();
-    // await this.docContract.inEvent(deflated);
-    await this.docContract.inString(deflated);
+    const txtReceipt = await this.docContract.inEvent(deflated);
+    // const txReceipt = await this.docContract.inString(deflated);
+    const receipt = await this.getReceipt(txReceipt.tx);
+    console.log(receipt);
     return this.storeAuditDocumentOrder(order, this.docContract.address)
       .then(
         response => console.log(response),
@@ -128,21 +136,33 @@ Now lets switch the `inEventStore` from an event to a string storage.
 
 ```
 
-Now lets switch the `getDocument` from an event to string
+Now lets switch the `getDocument` from a string to an event
 
 ```
-   async getDocument(docAddress: string): Promise<any> {
+  async getDocument(docAddress: string): Promise<any> {
     this.docContract = await this.Doc.at(docAddress);
 
-    return this.docContract.docString()
-      .then(deflated => {
+    // return this.docContract.docString()
+    //   .then(deflated => {
+    //       return pako.inflate(
+    //         deflated,
+    //         { to: 'string' }
+    //       );
+    //   });
+
+    return this.docContract.getPastEvents('DocumentEvent', { fromBlock: 0, toBlock: 'latest' })
+      .then(events => {
+        if (events && events[0] && events[0].returnValues[0]) {
           return pako.inflate(
-            deflated,
+            events[0].returnValues[0],
             { to: 'string' }
           );
+        } else {
+          throw Error('Event or document not present');
+        }
       });
-
   }
+
 ```
 
 
