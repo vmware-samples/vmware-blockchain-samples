@@ -376,7 +376,6 @@ export class BlockchainService {
     // const txtReceipt = await this.docContract.inEvent(deflated);
     const txReceipt = await this.docContract.inString(deflated);
     const receipt = await this.getReceipt(txReceipt.tx);
-    console.log(receipt);
     return this.storeAuditDocumentOrder(order, this.docContract.address)
       .then(
         response => console.log(response),
