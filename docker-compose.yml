@@ -6,14 +6,15 @@
 version: '3'
 services:
   supply-chain:
-    image: "supply-chain:latest"
-    build:
-      context: .
+    image: "mrharrison/supply-chain:latest"
+    # build:
+    #   context: .
     command: "npm run start:vmware"
     ports:
       - 4200:4200
     volumes:
       - ./contracts:/app/contracts
+      - ./src/app/core/blockchain/:/app/src/app/core/blockchain/
       - ./migrations:/app/migrations
       - ./build:/app/build
       - ./truffle-config.js:/app/truffle-config.js

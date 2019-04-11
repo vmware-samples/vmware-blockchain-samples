@@ -218,17 +218,25 @@ export class BlockchainService {
   async getDocument(docAddress: string): Promise<any> {
     this.docContract = await this.Doc.at(docAddress);
 
-    return this.docContract.getPastEvents('DocumentEvent', { fromBlock: 0, toBlock: 'latest' })
-      .then(events => {
-        if (events && events[0] && events[0].returnValues[0]) {
+    return this.docContract.docString()
+      .then(deflated => {
           return pako.inflate(
-            events[0].returnValues[0],
+            deflated,
             { to: 'string' }
           );
-        } else {
-          throw Error('Event or document not present');
-        }
       });
+
+    // return this.docContract.getPastEvents('DocumentEvent', { fromBlock: 0, toBlock: 'latest' })
+    //   .then(events => {
+    //     if (events && events[0] && events[0].returnValues[0]) {
+    //       return pako.inflate(
+    //         events[0].returnValues[0],
+    //         { to: 'string' }
+    //       );
+    //     } else {
+    //       throw Error('Event or document not present');
+    //     }
+    //   });
   }
 
   async storeDocument(order, event) {
@@ -335,6 +343,13 @@ export class BlockchainService {
     });
   }
 
+  private getReceipt(txReceipt: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.web3.eth.getTransactionReceipt(
+        txReceipt, this.callbackToResolve(resolve, reject));
+    });
+  }
+
   private setOwners(order, userAddress: string): Promise<any> {
     return new Promise((resolve, reject) => {
       return order.contract.setOwners(
@@ -354,13 +369,19 @@ export class BlockchainService {
     };
   }
 
-
   private async inEventStore(order, file) {
     const deflated = pako.deflate(file, { to: 'string' });
 
     this.docContract = await this.Doc.new();
-    await this.docContract.inEvent(deflated);
-    return this.storeAuditDocumentOrder(order, this.docContract.address);
+    // const txtReceipt = await this.docContract.inEvent(deflated);
+    const txReceipt = await this.docContract.inString(deflated);
+    const receipt = await this.getReceipt(txReceipt.tx);
+    console.log(receipt);
+    return this.storeAuditDocumentOrder(order, this.docContract.address)
+      .then(
+        response => console.log(response),
+        error => console.log(error)
+      );
   }
 
 }
