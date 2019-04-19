@@ -24,4 +24,4 @@ script:
 - truffle migrate --reset
 - npm run lint
 - npm run test:travis
-# - npm run truffle:test:ganache
+- npm run truffle:test:ganache
