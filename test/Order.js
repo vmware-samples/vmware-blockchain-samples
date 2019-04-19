@@ -146,11 +146,6 @@ contract("Order Test", async accounts => {
     expect((new web3.BigNumber(historyLength)).toString()).to.equal('7');
   });
 
-  /* ---------------------------------------------------------------------------------------------
-     Part that is failing
-     ---------------------------------------------------------------------------------------------
-  */
-
   it("should revoke order", async () => {
     const revoke = await order.revoke.sendTransaction();
     const state = await order.state.call();
