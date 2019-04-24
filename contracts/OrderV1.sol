@@ -51,7 +51,7 @@ contract OrderV1 is OrderAccessControl {
     WarehouseIssue,
     DistributorNeverReceived,
     NotDelivered,
-    Recalled
+    Revoked
 
   }
 
@@ -256,8 +256,8 @@ contract OrderV1 is OrderAccessControl {
     public
     onlyFarmerOrAuditor
   {
-    state = State.Recalled;
-    addRecord(bytes32("Recalled"));
+    state = State.Revoked;
+    addRecord(bytes32("Revoked"));
     meta.revoked = true;
   }
 
