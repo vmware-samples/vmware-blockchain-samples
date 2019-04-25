@@ -18,7 +18,9 @@
     "serve:ssr": "node dist/server",
     "build:ssr": "npm run build:client-and-server-bundles && npm run compile:server",
     "build:client-and-server-bundles": "ng build --prod  && ng run supply-chain-dapp:server:production",
-    "postinstall": "node patch.js"
+    "postinstall": [
+      "node patch.js"
+    ]
   },
   "private": true,
   "dependencies": {
@@ -40,6 +42,7 @@
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
     "@webcomponents/custom-elements": "^1.0.0",
+    "bitcore-lib": "^0.15.0",
     "core-js": "^2.6.5",
     "express": "^4.15.2",
     "httpheaderprovider": "^0.3.4",

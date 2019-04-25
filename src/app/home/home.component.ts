@@ -47,7 +47,6 @@ export class HomeComponent implements OnDestroy, OnInit {
     this._selectedOrder = value;
   }
 
-
   ngOnDestroy() {
     this.updatedOrderRef.unsubscribe();
   }
@@ -61,6 +60,7 @@ export class HomeComponent implements OnDestroy, OnInit {
     private notifierService: NotifierService,
     userService: UserService
   ) {
+    console.log("Initting home component");
     this.currentUser = userService.currentUser;
     this.route.fragment.subscribe((fragment: string) => {
       this.createOrderVisible = (fragment === 'create');
@@ -72,7 +72,10 @@ export class HomeComponent implements OnDestroy, OnInit {
     this.notifierService.notify
       .subscribe(notfication => this.update(notfication));
 
+    console.log("Getting order count?");
     this.blockchainService.orderCount().then((amount) => {
+      console.log("Order amount?");
+      console.log(amount);
       if (amount < 1) {
         this.showOnboarding = true;
       }

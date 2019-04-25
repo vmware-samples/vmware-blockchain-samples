@@ -6,13 +6,13 @@
  */
 
 import { Injectable } from '@angular/core';
+import Tx from 'ethereumjs-tx';
+import * as HttpHeaderProvider from 'httpheaderprovider';
+import * as pako from 'pako';
 import { from as fromPromise, Subject } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-
-import Web3 from 'web3';
-import * as HttpHeaderProvider from 'httpheaderprovider';
 import * as contract from 'truffle-contract';
-import * as pako from 'pako';
+import Web3 from 'web3';
 
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../auth/auth.service';
@@ -41,6 +41,7 @@ export class BlockchainService {
   orderABI: any = Order.abi;
   address: string = environment.path;
   web3: Web3;
+  web3Signing: Web3;
   ordersContract: any;
   docContract: any;
   from: string;
@@ -65,11 +66,13 @@ export class BlockchainService {
     if (environment.blockchainType === 'metamask' && window['web3']) {
       this.web3 = this.metaMask();
     } else if (environment.blockchainType === 'vmware') {
+      console.log("Getting a VMWare blockchain");
       this.web3 = this.vmwareBlockchain();
+      this.web3Signing = this.signingVmwareBlockchain();
+      console.log("Got a VMWare blockchain");
     } else {
       this.web3 = this.ganache();
     }
-
     this.servicePromise = this.getAccounts();
   }
 
@@ -79,6 +82,10 @@ export class BlockchainService {
 
   vmwareBlockchain(): Web3 {
     return new Web3(this.authService.getVmwareBlockChainProvider());
+  }
+
+  signingVmwareBlockchain(): Web3 {
+    return new Web3(this.authService.getSigningVmwareBlockChainProvider());
   }
 
   ganache(): Web3 {
@@ -96,18 +103,55 @@ export class BlockchainService {
   createOrder(productType: string, quantity: number): Promise<any> {
     return fromPromise(this.servicePromise).pipe(mergeMap(() => {
       return new Promise((resolve, reject) => {
-        return this.ordersContract.create(
-          this.web3.fromUtf8(productType),
-          quantity,
-          this.sendDefaults,
-          this.callbackToResolve(resolve, reject)
-        );
+
+        const tx = {
+          from: this.from,
+          data: this.ordersContract.create(
+                  this.web3Signing.fromUtf8(productType),
+                  quantity,
+                  this.sendDefaults,
+                  this.callbackToResolve(resolve, reject)
+                ).encodeABI();
       }).then((address) => {
+
         this.newOrderSource.next();
         return address;
       });
     })).toPromise();
   }
+
+  // createWallets(): Promise<any> {
+  //   return new Promise((resolve, reject) => {
+  //     lightwallet.keystore.createVault({
+  //       password: this.defaultPassword,
+  //       seedPhrase: this.defaultSeedPhrase,
+  //       hdPathString: this.defaultPathString
+  //     }, (err, ks)  => {
+  //       ks.keyFromPassword(this.defaultPassword, (err, pwDerivedKey) => {
+  //         if (err) reject (err);
+  //         // Just generate one account for now
+  //         ks.generateNewAddress(pwDerivedKey, 1);
+  //         this.accounts = ks.getAddresses();
+  //         ks.passwordProvider = (callback) => {
+  //           callback(null, this.defaultPassword);
+  //         };
+  //
+  //         this.from = this.accounts[0];
+  //         const provider = new HookedWeb3Provider({
+  //           host: 'https://admin@blockchain.local:T3sting!@mgmt-staging.blockchain.vmware.com/blockchains/6ddf8615-9500-45cb-b0a8-c6ca03c556ea/api/concord/eth',
+  //           transaction_signer: ks
+  //         });
+  //         this.web3.setProvider(provider);
+  //         this.web3.eth.defaultGasPrice = 0; // New wallets won't have gas
+  //         this.sendDefaults.from = this.from;
+  //         this.web3.eth.defaultAccount = this.from;
+  //         this.ordersContract = this.web3.eth.contract(this.ordersABI).at(this.ordersAddress);
+  //
+  //         resolve(this.from);
+  //       });
+  //     });
+  //   });
+  // }
 
   deliveredOrder(order: OrderModel): Promise<any> {
     return this.sendOrder(order, 'delivered');
@@ -265,6 +309,7 @@ export class BlockchainService {
     const loadMeta = new Promise((resolve, reject) => {
       return orderContract.meta(this.callbackToResolve(resolve, reject));
     }).then(meta => {
+      console.log(meta);
       order.amount = meta[1];
       order.product = this.web3.toUtf8(meta[0]);
       return order;
@@ -303,15 +348,19 @@ export class BlockchainService {
   }
 
   private getAccounts(): Promise<any> {
+
     return new Promise((resolve, reject) => {
+      console.log("Getting accounts?");
       return this.web3.eth.getAccounts(this.callbackToResolve(resolve, reject));
     }).then(async accounts => {
+      console.log("Got accounts");
       // @ts-ignore
       this.accounts = accounts;
       this.from = this.accounts[1];
       this.sendDefaults.from = this.from;
       this.web3.eth.defaultAccount = this.from;
       this.ordersContract = this.web3.eth.contract(this.ordersABI).at(this.ordersAddress);
+      this.ordersSigningContract = this.web3Signing.eth.contract(this.ordersABI).at(this.ordersAddress);
       // Instantiate our doc provider
       this.Doc = contract({
         abi: DocumentMeta.abi
@@ -319,7 +368,7 @@ export class BlockchainService {
       this.Doc.bytecode = DocumentMeta.bytecode;
       this.Doc.setProvider(this.authService.getVmwareBlockChainProvider());
       this.Doc.defaults(this.sendDefaults);
-
+      return;
     });
 
   }
