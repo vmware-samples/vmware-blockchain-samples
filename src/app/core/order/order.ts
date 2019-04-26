@@ -49,6 +49,7 @@ export class Order {
   contract;
   id: string; // Format: 0x304a554a310C7e546dfe434669C62820b7D83490
   amount: string;
+  detailsPopulated = false;
   document: string;
   product: string;
   quantity: number;

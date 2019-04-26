@@ -16,7 +16,7 @@ import { CoreModule } from '../core/core.module';
 import { BlockchainStatusComponent } from './blockchain-status/blockchain-status.component';
 import { BlockchainStatusCardComponent } from './blockchain-status/blockchain-status-card.component';
 import { BlockchainStatusConnectorComponent } from './blockchain-status/blockchain-status-connector.component';
-import { BlockchainVisualizationComponent } from './blockchain-visualization/blockchain-visualization.component';
+import { BlockchainVisualizationModule } from '../blockchain-visualization/blockchain-visualization.module';
 import { CreateOrderComponent } from './create-order/create-order.component';
 import { HomeComponent } from './home.component';
 import { HomeRoutingModule } from './home-routing.module';
@@ -25,6 +25,7 @@ import { OrderListComponent } from './order-list/order-list.component';
 
 @NgModule({
   imports: [
+    BlockchainVisualizationModule,
     BrowserAnimationsModule,
     ClarityModule,
     CoreModule,
@@ -38,7 +39,6 @@ import { OrderListComponent } from './order-list/order-list.component';
     BlockchainStatusCardComponent,
     BlockchainStatusComponent,
     BlockchainStatusConnectorComponent,
-    BlockchainVisualizationComponent,
     CreateOrderComponent,
     HomeComponent,
     OrderDetailComponent,

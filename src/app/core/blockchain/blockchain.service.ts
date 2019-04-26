@@ -5,6 +5,7 @@
  * The full license information can be found in LICENSE in the root directory of this project.
  */
 
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { from as fromPromise, Subject } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
@@ -30,7 +31,6 @@ import {
   OrdersResponse,
   OrderStatus
 } from '../order/order';
-
 
 @Injectable({
   providedIn: 'root'
@@ -60,6 +60,7 @@ export class BlockchainService {
   constructor(
     private authService: AuthService,
     private alertService: ErrorAlertService,
+    private http: HttpClient,
     private notifierService: NotifierService,
   ) {
     if (environment.blockchainType === 'metamask' && window['web3']) {
@@ -102,9 +103,9 @@ export class BlockchainService {
           this.sendDefaults,
           this.callbackToResolve(resolve, reject)
         );
-      }).then((address) => {
-        this.newOrderSource.next();
-        return address;
+      }).then((tx) => {
+        this.newOrderSource.next(tx);
+        return tx;
       });
     })).toPromise();
   }
@@ -143,6 +144,10 @@ export class BlockchainService {
     });
   }
 
+  getMembers(): Promise<any> {
+    return this.http.get('/api/concord/members', this.getHttpOptions()).toPromise();
+  }
+
   getOrder(index: number): Promise<OrderModel> {
     return fromPromise(this.servicePromise).pipe(mergeMap(() => {
       return this.order(index).then((address) => {
@@ -155,6 +160,13 @@ export class BlockchainService {
     const orderContract = this.web3.eth.contract(this.orderABI).at(address);
     return this.buildOrder(orderContract, address).then(order => {
       return order;
+    });
+  }
+
+  getReceipt(txReceipt: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.web3.eth.getTransactionReceipt(
+        txReceipt, this.callbackToResolve(resolve, reject));
     });
   }
 
@@ -185,6 +197,29 @@ export class BlockchainService {
 
   orderCount(): Promise<any> {
     return this.callWithPromise('getAmount');
+  }
+
+  populateOrderDetails(order: OrderModel): Promise<OrderModel> {
+    if (order.detailsPopulated) {
+      return Promise.resolve(order);
+    }
+
+    const loadHistory = this.getHistory(order).then((history) => {
+      order.history = history;
+    });
+
+    const loadDocument = new Promise((resolve, reject) => {
+      return order.contract.auditDocument(this.callbackToResolve(resolve, reject));
+    }).then((docAddress) => {
+      // @ts-ignore
+      order.document = docAddress;
+      return order;
+    });
+
+    return Promise.all([loadHistory, loadDocument]).then(() => {
+      order.detailsPopulated = true;
+      return order;
+    });
   }
 
   receivedAndInTransitOrder(order: OrderModel): Promise<any> {
@@ -258,23 +293,11 @@ export class BlockchainService {
     order.id = address;
     order.contract = orderContract;
 
-    const loadHistory = this.getHistory(order).then((history) => {
-      order.history = history;
-    });
-
     const loadMeta = new Promise((resolve, reject) => {
       return orderContract.meta(this.callbackToResolve(resolve, reject));
     }).then(meta => {
       order.amount = meta[1];
       order.product = this.web3.toUtf8(meta[0]);
-      return order;
-    });
-
-    const loadDocument = new Promise((resolve, reject) => {
-      return orderContract.auditDocument(this.callbackToResolve(resolve, reject));
-    }).then((docAddress) => {
-      // @ts-ignore
-      order.document = docAddress;
       return order;
     });
 
@@ -285,7 +308,7 @@ export class BlockchainService {
       order.statusLabel = OrderStatus[status as string];
     });
 
-    return Promise.all([loadHistory, loadMeta, loadDocument, loadStatus]).then(() => {
+    return Promise.all([loadMeta, loadStatus]).then(() => {
       return order;
     });
   }
@@ -319,9 +342,14 @@ export class BlockchainService {
       this.Doc.bytecode = DocumentMeta.bytecode;
       this.Doc.setProvider(this.authService.getVmwareBlockChainProvider());
       this.Doc.defaults(this.sendDefaults);
-
     });
 
+  }
+
+  private getHttpOptions(): any {
+    return {
+      headers: new HttpHeaders(this.authService.getAuthHeader())
+    };
   }
 
   sendOrder(order, methodName, ...args: any[]): Promise<any> {
@@ -340,13 +368,6 @@ export class BlockchainService {
       });
     }).catch(err => {
       this.alertService.add(err);
-    });
-  }
-
-  private getReceipt(txReceipt: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.web3.eth.getTransactionReceipt(
-        txReceipt, this.callbackToResolve(resolve, reject));
     });
   }
 

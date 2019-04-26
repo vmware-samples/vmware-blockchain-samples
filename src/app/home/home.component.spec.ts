@@ -4,14 +4,16 @@
  * The full license information can be found in LICENSE in the root directory of this project.
  */
 
+
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClient, HttpHandler } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { BlockchainStatusComponent } from './blockchain-status/blockchain-status.component';
+import { BlockchainVisualizationModule } from '../blockchain-visualization/blockchain-visualization.module';
 import { OrderListComponent } from './order-list/order-list.component';
 import { HomeComponent } from './home.component';
 import { HomeModule } from './home.module';
@@ -25,14 +27,15 @@ describe('HomeComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        HomeModule,
+        BlockchainVisualizationModule,
         ClarityModule,
+        HomeModule,
+        HttpClientTestingModule,
         TranslateModule.forRoot(),
         RouterTestingModule
       ],
       providers: [
         HttpClient,
-        HttpHandler,
         ErrorAlertService,
         {
           provide: ActivatedRoute,
