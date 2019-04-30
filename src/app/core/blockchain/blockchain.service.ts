@@ -373,8 +373,9 @@ export class BlockchainService {
     const deflated = pako.deflate(file, { to: 'string' });
 
     this.docContract = await this.Doc.new();
-    // const txtReceipt = await this.docContract.inEvent(deflated);
-    const txReceipt = await this.docContract.inString(deflated);
+    const txReceipt = await this.docContract.inEvent(deflated);
+    // This is commented out for the Hands On Section.
+    // const txReceipt = await this.docContract.inString(deflated);
     const receipt = await this.getReceipt(txReceipt.tx);
     return this.storeAuditDocumentOrder(order, this.docContract.address)
       .then(
