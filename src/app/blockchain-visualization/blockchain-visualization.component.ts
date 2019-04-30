@@ -83,7 +83,7 @@ export class BlockchainVisualizationComponent implements AfterViewInit, OnDestro
   drawPaths() {
     this.nodes.forEach((currentNode, currentNodeIndex) => {
       this.nodes.forEach((targetNode, targetNodeIndex) => {
-        if (currentNodeIndex !== targetNodeIndex) {
+        if (currentNode && currentNodeIndex !== targetNodeIndex) {
           const healthy = (currentNode.status === 'live' && targetNode.status === 'live');
           const invertPath = (targetNodeIndex < currentNodeIndex);
           const cardArray = this.cards.toArray();
@@ -110,8 +110,10 @@ export class BlockchainVisualizationComponent implements AfterViewInit, OnDestro
     }
     if (this.nodes.length) {
       latestNodes.forEach((node) => {
-        const match = this.nodes.find((n) => n.hostname === node.hostname);
-        match.status = node.status;
+          const match = this.nodes.find((n) => n.hostname === node.hostname);
+        if (match) {
+          match.status = node.status;
+        }
       });
     } else {
       this.nodes = latestNodes;
