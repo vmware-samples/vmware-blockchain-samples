@@ -16,12 +16,14 @@ import {
   Input
 } from '@angular/core';
 import { Subscription, timer } from 'rxjs';
+
 import { BlockchainNode, BlockchainNodeTransactionStates } from '../core/blockchain/blockchain-node';
 import { BlockchainService } from '../core/blockchain/blockchain.service';
 import { UserService } from '../core/user/user.service';
 import { NotifierService } from '../shared/notifier.service';
 import { random } from '../shared/utils';
 import { BlockchainVisualizationCardComponent } from './blockchain-visualization-card.component';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'vmw-sc-blockchain-visualization',
@@ -31,7 +33,7 @@ import { BlockchainVisualizationCardComponent } from './blockchain-visualization
 export class BlockchainVisualizationComponent implements AfterViewInit, OnDestroy, OnInit {
   @ViewChildren('animations') animations: QueryList<ElementRef>;
   @ViewChild('linesSvg') svg: ElementRef;
-  @ViewChildren(BlockchainVisualizationCardComponent, {read: ElementRef}) cards: QueryList<ElementRef>;
+  @ViewChildren(BlockchainVisualizationCardComponent, { read: ElementRef }) cards: QueryList<ElementRef>;
 
   readonly NODE_COMPLETION_RESET_TIME = 5000;
   readonly NODE_REFRESH_PERIOD = 30000;
@@ -96,8 +98,16 @@ export class BlockchainVisualizationComponent implements AfterViewInit, OnDestro
   }
 
   async refreshNodes() {
-    // TODO: Possibly handle new nodes or nodes going missing?
-    const latestNodes = await this.blockchainService.getMembers();
+    let latestNodes;
+
+    if (environment.blockchainType === 'vmware') {
+      latestNodes = await this.blockchainService.getMembers();
+    } else {
+      // Fake data for ganache or other blockchain
+      // tslint:disable-next-line:max-line-length
+      latestNodes = [{ 'rpc_url': 'https://127.0.0.1:8548/', 'hostname': 'replica3', 'address': '192.168.48.5:3501', 'millis_since_last_message': 1882, 'millis_since_last_message_threshold': 60000, 'status': 'live' }, { 'rpc_url': 'https://127.0.0.1:8547/', 'hostname': 'replica2', 'address': '192.168.48.11:3501', 'millis_since_last_message': 1904, 'millis_since_last_message_threshold': 60000, 'status': 'live' }, { 'rpc_url': 'https://127.0.0.1:8546/', 'hostname': 'replica1', 'address': '192.168.48.6:3501', 'millis_since_last_message': 2093, 'millis_since_last_message_threshold': 60000, 'status': 'live' }, { 'rpc_url': 'https://127.0.0.1:8545/', 'hostname': 'replica0', 'address': '192.168.48.13:3501', 'millis_since_last_message': 2367, 'millis_since_last_message_threshold': 60000, 'status': 'live' }]; // @ts-ignore
+
+    }
     if (this.nodes.length) {
       latestNodes.forEach((node) => {
         const match = this.nodes.find((n) => n.hostname === node.hostname);
@@ -165,7 +175,7 @@ export class BlockchainVisualizationComponent implements AfterViewInit, OnDestro
       this.animationPaths[i].route = this.pathBetween(cardArray[0], cardArray[i]);
       const node = document.getElementById(`circle-${i}`) as any;
       node.beginElement();
-      timer(this.TRANSACTION_CHECK_INTERVAL).subscribe(() => this.showAnimations = false );
+      timer(this.TRANSACTION_CHECK_INTERVAL).subscribe(() => this.showAnimations = false);
     });
   }
 }

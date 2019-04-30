@@ -51,7 +51,7 @@ export class BlockchainService {
   private newOrderSource = new Subject<any>();
   public newOrder = this.newOrderSource.asObservable();
 
-  private updatedOrderSource = new Subject<OrderModel>();
+  public updatedOrderSource = new Subject<OrderModel>();
   public updatedOrder = this.updatedOrderSource.asObservable();
 
   public readonly items = ['Apples', 'Bananas', 'Oranges'];
@@ -145,7 +145,7 @@ export class BlockchainService {
   }
 
   getMembers(): Promise<any> {
-    return this.http.get('/api/concord/members', this.getHttpOptions()).toPromise();
+    return this.http.get(`${environment.path}/api/concord/members`, this.getHttpOptions()).toPromise();
   }
 
   getOrder(index: number): Promise<OrderModel> {
@@ -253,25 +253,25 @@ export class BlockchainService {
   async getDocument(docAddress: string): Promise<any> {
     this.docContract = await this.Doc.at(docAddress);
 
-    return this.docContract.docString()
-      .then(deflated => {
-          return pako.inflate(
-            deflated,
-            { to: 'string' }
-          );
-      });
-
-    // return this.docContract.getPastEvents('DocumentEvent', { fromBlock: 0, toBlock: 'latest' })
-    //   .then(events => {
-    //     if (events && events[0] && events[0].returnValues[0]) {
+    // return this.docContract.docString()
+    //   .then(deflated => {
     //       return pako.inflate(
-    //         events[0].returnValues[0],
+    //         deflated,
     //         { to: 'string' }
     //       );
-    //     } else {
-    //       throw Error('Event or document not present');
-    //     }
     //   });
+
+    return this.docContract.getPastEvents('DocumentEvent', { fromBlock: 0, toBlock: 'latest' })
+      .then(events => {
+        if (events && events[0] && events[0].returnValues[0]) {
+          return pako.inflate(
+            events[0].returnValues[0],
+            { to: 'string' }
+          );
+        } else {
+          throw Error('Event or document not present');
+        }
+      });
   }
 
   async storeDocument(order, event) {

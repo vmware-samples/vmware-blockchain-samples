@@ -79,7 +79,7 @@ export class AuthService {
   }
 
   getVmwareBlockChainProvider(authKey?: string): HttpHeaderProvider {
-    return new HttpHeaderProvider(environment.path, this.getAuthHeader(authKey));
+    return new HttpHeaderProvider(`${environment.path}/api/concord/eth`, this.getAuthHeader(authKey));
   }
 
 }

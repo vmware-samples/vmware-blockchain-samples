@@ -58,6 +58,7 @@ export class Order {
   history: OrderHistory[];
 
   public hasHistory(...historyTypes: OrderHistoryAction[]): boolean {
+    if (!this.history) { return false; }
     return this.history.filter((h) => historyTypes.includes(h.action)).length > 0;
   }
 }

@@ -70,7 +70,7 @@ export class HomeComponent implements OnDestroy, OnInit {
 
   ngOnInit() {
     this.updatedOrderRef = this.blockchainService.updatedOrder.subscribe((order) => {
-      if (this.selectedOrder.id === order.id) {
+      if (this.selectedOrder && this.selectedOrder.id === order.id) {
         this.selectedOrder = order;
       }
     });
