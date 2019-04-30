@@ -7,6 +7,6 @@
 export const environment = {
   production: false,
   blockchainType: 'vmware',
-  path: 'http://localhost:4200/vmware',
+  path: '/vmware',
   network: '5000',
 };
