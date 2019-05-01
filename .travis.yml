@@ -21,8 +21,9 @@ before_install:
 
 script:
 - ganache-cli -p 7545 --networkId 5777 > /dev/null &
-- sleep 5
 - truffle migrate --reset
+- npm run start:ganache > /dev/null &
+- sleep 25
 - npm run lint
 - npm run test:travis
 - npm run truffle:test:ganache
