@@ -4,7 +4,7 @@
  * The full license information can be found in LICENSE in the root directory of this project.
  */
 
-@import '../../../styles.scss';
+@import '../../styles.scss';
 
 :host {
   display: block;
@@ -34,13 +34,6 @@
 }
 
 .blockchain-status-card-approved, .blockchain-status-card-healthy-check {
-  .blockchain-status-card-icon-check {
-    color: $color-success;
-    display: inline-block;
-  }
-}
-
-.blockchain-status-card-healthy-approved {
   .blockchain-status-card-icon-check {
     color: $color-success;
     display: inline-block;

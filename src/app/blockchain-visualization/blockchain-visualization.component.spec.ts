@@ -4,10 +4,14 @@
  * The full license information can be found in LICENSE in the root directory of this project.
  */
 
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { BlockchainStatusCardComponent } from '../blockchain-status/blockchain-status-card.component';
+import { BlockchainNodeTransactionStates } from '../core/blockchain/blockchain-node';
+import { ErrorAlertService } from '../shared/global-alert.service';
+import { BlockchainVisualizationCardComponent } from './blockchain-visualization-card.component';
 import { BlockchainVisualizationComponent } from './blockchain-visualization.component';
 
 describe('BlockchainVisualizationComponent', () => {
@@ -18,11 +22,16 @@ describe('BlockchainVisualizationComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         ClarityModule,
+        HttpClientTestingModule,
         TranslateModule.forRoot()
       ],
       declarations: [
-        BlockchainStatusCardComponent,
+        BlockchainVisualizationCardComponent,
         BlockchainVisualizationComponent
+      ],
+      providers: [
+        ErrorAlertService,
+        HttpClient
       ]
     })
     .compileComponents();
@@ -46,7 +55,13 @@ describe('BlockchainVisualizationComponent', () => {
 
    describe('drawPaths()', () => {
      beforeEach(() => {
-       component.roles = ['a', 'b', 'c', 'd'];
+       component.nodes = Array(4).fill({
+         address: '0x123098324908249abcfed1',
+         hostname: 'test',
+         status: 'live',
+         transactionState: BlockchainNodeTransactionStates.healthy
+       });
+       component.drawPaths();
      });
 
      it('should draw double paths between nodes', () => {

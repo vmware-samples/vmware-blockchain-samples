@@ -68,15 +68,18 @@ export class AuthService {
     return this.loginLocally().toPromise();
   }
 
-  getVmwareBlockChainProvider(authKey?: string): HttpHeaderProvider {
+  getAuthHeader(authKey?: string): any {
     if (!authKey) {
       authKey = localStorage.getItem('BA');
     }
-    const header = {
+    return {
       'authorization': authKey,
       'X-Requested-With': 'XMLHttpRequest' // Suppress basic auth pop up
     };
-    return new HttpHeaderProvider(environment.path, header);
+  }
+
+  getVmwareBlockChainProvider(authKey?: string): HttpHeaderProvider {
+    return new HttpHeaderProvider(`${environment.path}/api/concord/eth`, this.getAuthHeader(authKey));
   }
 
 }
