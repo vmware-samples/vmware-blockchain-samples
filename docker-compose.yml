@@ -7,8 +7,8 @@ version: '3'
 services:
   supply-chain:
     image: "mrharrison/supply-chain:latest"
-    # build:
-    #   context: .
+    build:
+      context: .
     command: "npm run start:vmware"
     ports:
       - 4200:4200
@@ -22,11 +22,3 @@ services:
       # Example
       # - BC_URL=http://localhost/blockchains/local/api/concord/eth
       - BC_URL=<change-me>
-# Connect to existing docker default network for local development
-    # networks:
-    #   - default
-
-# networks:
-#   default:
-#     external:
-#       name: docker_default
