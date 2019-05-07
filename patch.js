@@ -1,4 +1,10 @@
-// Fix dependency problems: https://github.com/ethereum/web3.js/issues/2260#issuecomment-458519127
+/*
+ * Copyright 2019 VMware, all rights reserved.
+ * This software is released under MIT license.
+ * The full license information can be found in LICENSE in the root directory of this project.
+ */
+
+
 const fs = require('fs');
 const f = 'node_modules/@angular-devkit/build-angular/src/angular-cli-files/models/webpack-configs/browser.js';
 

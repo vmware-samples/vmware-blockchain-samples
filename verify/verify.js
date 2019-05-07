@@ -1,5 +1,11 @@
+/*
+ * Copyright 2019 VMware, all rights reserved.
+ * This software is released under MIT license.
+ * The full license information can be found in LICENSE in the root directory of this project.
+ */
+
 const fs = require("fs");
-const http = require("http");
+const https = require("https");
 
 verifyMigrations();
 verifyOrdersV1();
@@ -12,8 +18,8 @@ function verify(data, address) {
 
   const options = {
     host: "localhost",
-    port: 8080,
-    path: "/api/concord/contracts/" + address,
+    port: 443,
+    path: "/blockchains/local/api/concord/contracts/" + address,
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -21,7 +27,7 @@ function verify(data, address) {
     }
   };
 
-  const req = http.request(options, (res) => {
+  const req = https.request(options, (res) => {
     console.log(`statusCode: ${res.statusCode}`);
   });
 

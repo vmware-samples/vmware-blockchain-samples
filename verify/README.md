@@ -1,18 +1,8 @@
+<!-- Copyright 2019 VMware, all rights reserved. -->
+<!-- This software is released under MIT license. -->
+<!-- The full license information can be found in LICENSE in the root directory of this project. -->
+
 ## Flatten Contracts and Upload to VMware blockchain
-
-Install truffle-flattener
-
-```
-npm install -g truffle-flattener
-```
-
-Flatten contracts
-
-```
-mkdir truffle-flattener
-truffle-flattener contracts/OrdersV1.sol > truffle-flattener/OrdersV1Flattened.sol
-truffle-flattener contracts/OrdersProxy.sol > truffle-flattener/OrdersProxyFlattened.sol
-```
 
 Update the configuration in verify.js with the correct host and basic authentication username and password.
 
@@ -34,6 +24,13 @@ Update the configuration in verify.js with the correct host and basic authentica
 ```
 
 Verify and upload contracts to Helen
-```
+
+```shell
 npm run verify_contracts:vmware
+```
+
+Or deploy and verify the contracts at the same time
+
+```shell
+npm run verify_and_deploy:vmware
 ```
