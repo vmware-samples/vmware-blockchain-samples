@@ -52,7 +52,7 @@ Update the environment BC_URL endpoint in the `docker-compose.yml` file to point
       - ./truffle-config.js:/app/truffle-config.js
     environment:
       # Example
-      # - BC_URL=http://localhost/blockchains/local/api/concord/eth
+      # - BC_URL=http://localhost/blockchains/local/
       - BC_URL=<change-me>
 
 ```
@@ -193,8 +193,19 @@ web3.toUtf8('0x4170706c65730000000000000000000000000000000000000000000000000000'
 - In the top left corner, set the user role to Super Market.
 - Click Received.
 
-## Startup Dev Server
+## Running Supply Chain Docker Image On Local Docker Network
 
+Update `docker-compose.yml` file to use helen path:
+```
+- BC_URL=http://helen:8080
+```
+
+Then use the local network yaml file to connect.
+```
+docker-compose -f docker-compose.yml -f docker-compose-local-network.yml up -d
+```
+
+## Startup Dev Server
 
 Ganache
 ```
