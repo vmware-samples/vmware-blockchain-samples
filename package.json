@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start:ganache": "npm run copy-contract-build && ng serve --proxy-config proxy.conf.js -c ganache-dev",
-    "start:vmware": "npm run copy-contract-build && ng serve --proxy-config proxy.conf.js -c vmware-dev --host 0.0.0.0",
+    "start:vmware": "npm run copy-contract-build && ng serve --proxy-config proxy.conf.js -c vmware-dev --host 0.0.0.0 --disableHostCheck",
     "build": "npm run copy-contract-build && ng build --prod",
     "deploy:dev": "truffle migrate --reset --network=development && npm run copy-contract-build",
     "deploy:vmware": "truffle migrate --reset --network=vmware && npm run copy-contract-build",
