@@ -20,7 +20,6 @@ import { BlockchainService } from '../core/blockchain/blockchain.service';
 import { Order } from '../core/order/order';
 import { UserService } from '../core/user/user.service';
 import { NotifierService } from '../shared/notifier.service';
-import { BlockchainVisualizationComponent } from './blockchain-visualization/blockchain-visualization.component';
 
 @Component({
   selector: 'vmw-sc-home',
@@ -28,7 +27,6 @@ import { BlockchainVisualizationComponent } from './blockchain-visualization/blo
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnDestroy, OnInit {
-  @ViewChild('nodes') nodes: BlockchainVisualizationComponent;
   createOrderVisible = false;
   currentUser: any;
   alerts: any[] = [];
@@ -43,7 +41,6 @@ export class HomeComponent implements OnDestroy, OnInit {
   set selectedOrder(value) {
     this._selectedOrder = value;
   }
-
 
   ngOnDestroy() {
     this.updatedOrderRef.unsubscribe();
@@ -73,7 +70,7 @@ export class HomeComponent implements OnDestroy, OnInit {
 
   ngOnInit() {
     this.updatedOrderRef = this.blockchainService.updatedOrder.subscribe((order) => {
-      if (this.selectedOrder.id === order.id) {
+      if (this.selectedOrder && this.selectedOrder.id === order.id) {
         this.selectedOrder = order;
       }
     });
@@ -95,7 +92,6 @@ export class HomeComponent implements OnDestroy, OnInit {
   private update(notification: any): void {
     if (!notification) { return; }
     this.transaction = notification;
-    this.nodes.update(notification);
   }
 
 }

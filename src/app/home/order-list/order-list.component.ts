@@ -45,8 +45,11 @@ export class OrderListComponent implements OnDestroy, OnInit {
   }
 
   set gridSelectedOrder(value) {
-    this._gridSelectedOrder = value;
-    this.selectedOrderChange.emit(value);
+    this.blockchainService.populateOrderDetails(value).then(() => {
+      this._gridSelectedOrder = value;
+      this.selectedOrderChange.emit(value);
+    });
+    this.blockchainService.updatedOrderSource.next(value);
   }
 
   constructor( private blockchainService: BlockchainService ) {

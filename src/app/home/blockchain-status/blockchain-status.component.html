@@ -7,8 +7,8 @@ The full license information can be found in LICENSE in the root directory of th
 <div *ngIf="order" class="clr-row clr-align-items-center blockchain-status">
   <ng-container *ngFor="let role of roles; let i=index">
     <div class="clr-col blockchain-status-card-wrapper">
-      <vmw-sc-blockchain-status-card class="hidden-xs-down" [status]="statuses[i]" [role]="role"> </vmw-sc-blockchain-status-card>
-      <vmw-sc-blockchain-status-card class="hidden-sm-up compact" [status]="statuses[i]" [role]="role"> </vmw-sc-blockchain-status-card>
+      <vmw-sc-blockchain-status-card class="hidden-xs-down" [status]="statuses[i]" [transactionState]="statuses[i]" [role]="role"> </vmw-sc-blockchain-status-card>
+      <vmw-sc-blockchain-status-card class="hidden-sm-up compact" [status]="statuses[i]" [transactionState]="statuses[i]" [role]="role"> </vmw-sc-blockchain-status-card>
     </div>
     <div class="clr-col blockchain-status-connector-wrapper" *ngIf="i != roles.length - 1">
       <vmw-sc-blockchain-status-connector [active]="connectorActive[i]"> </vmw-sc-blockchain-status-connector>

@@ -4,9 +4,6 @@
  * The full license information can be found in LICENSE in the root directory of this project.
  */
 
-export const environment = {
-  production: false,
-  blockchainType: 'vmware',
-  path: '/vmware',
-  network: '5000',
-};
+.node-visualization {
+  margin-top: 0;
+}

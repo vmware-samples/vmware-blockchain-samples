@@ -9,8 +9,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { HttpClient, HttpHandler } from '@angular/common/http';
-
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CreateOrderComponent } from './create-order.component';
 import { BlockchainService } from './../../core/blockchain/blockchain.service';
 import { ErrorAlertService } from './../../shared/global-alert.service';
@@ -25,14 +25,18 @@ describe('CreateOrderComponent', () => {
         BrowserAnimationsModule,
         ClarityModule,
         FormsModule,
+        HttpClientTestingModule,
         ReactiveFormsModule,
         TranslateModule.forRoot()
       ],
       declarations: [
         CreateOrderComponent
       ],
-      providers: [HttpClient, HttpHandler, BlockchainService, ErrorAlertService]
-
+      providers: [
+        BlockchainService,
+        ErrorAlertService,
+        HttpClient
+      ]
     })
     .compileComponents();
   }));

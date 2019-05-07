@@ -4,7 +4,7 @@
  * The full license information can be found in LICENSE in the root directory of this project.
  */
 
- @import '../../../styles.scss';
+ @import '../../styles.scss';
 
 :host {
   display: block;
@@ -24,9 +24,23 @@
   height: 33.33%;
 }
 
+circle {
+  visibility: hidden;
+}
+
 path {
   fill: transparent;
+  stroke: $color-failure;
+}
+
+path.healthy {
   stroke: $color-success;
+}
+
+.showAnimations {
+  circle {
+    visibility: visible;
+  }
 }
 
 svg {

@@ -21,19 +21,7 @@
     <main class="content-area">
       <div class="clr-row">
         <div class="clr-col-md-12 clr-col-lg-6">
-          <div class="home-module">
-            <div class="card card-orders">
-              <div class="card-header">
-                {{ 'section.header.blockchain.status' | translate }}
-                <!-- <span *ngIf="transaction" class="label label-success">TX {{ transaction }}</span> -->
-              </div>
-              <div class="card-block">
-                <div class="card-text">
-                  <vmw-sc-blockchain-visualization #nodes> </vmw-sc-blockchain-visualization>
-                </div>
-              </div>
-            </div>
-          </div>
+          <vmw-sc-blockchain-visualization-tile> </vmw-sc-blockchain-visualization-tile>
           <div class="card card-orders home-module">
             <div class="card-header">
               {{ 'section.header.orders' | translate }}

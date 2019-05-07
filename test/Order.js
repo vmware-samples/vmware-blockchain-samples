@@ -24,7 +24,7 @@ contract("Order Test", async accounts => {
     'WarehouseIssue',
     'DistributorNeverReceived',
     'NotDelivered',
-    'Recalled'
+    'Revoked'
   ];
 
 

@@ -10,7 +10,7 @@ const PROXY_CONFIG = {
     "secure": false
   },
   "/vmware": {
-    "target": process.env.BC_URL || "http://localhost/api/concord/eth",
+    "target": process.env.BC_URL || "http://localhost:8080",
     "secure": false,
     "changeOrigin": true,
     "pathRewrite": {
