@@ -13,6 +13,7 @@ services:
   - docker
 
 before_install:
+  cd supply-chain
 - docker-compose build
 - npm install -g ganache-cli
 - npm install -g truffle@4.1.15
