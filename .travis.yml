@@ -16,6 +16,7 @@ before_install:
 - docker-compose build
 - npm install -g ganache-cli
 - npm install -g truffle@4.1.15
+- npm install -g solc
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start
 
@@ -24,6 +25,9 @@ script:
 - truffle migrate --reset
 - npm run start:ganache > /dev/null &
 - sleep 25
+- cd supply-chain
 - npm run lint
 - npm run test:travis
 - npm run truffle:test:ganache
+- cd ../aset-transfer
+- npm run test

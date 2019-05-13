@@ -6,8 +6,8 @@
 /out-tsc
 
 # dependencies
-/node_modules
-
+/supply-chain/node_modules
+/asset-transfer/node_modules
 # IDEs and editors
 /.idea
 .project
