@@ -6,6 +6,7 @@
 
 const fs = require("fs");
 const https = require("https");
+const timestamp = new Date().getTime();
 
 verifyMigrations();
 verifyOrdersV1();
@@ -46,7 +47,7 @@ function verifyMigrations() {
   const address = jsonContent.networks[5000].address;
 
   const data = JSON.stringify({
-    "contract_id": "Migrations",
+    "contract_id": `Migrations-${timestamp}`,
     "compiler_version": "v0.4.25+commit.59dbf8f1",
     "sourcecode": sourcecode,
     "contract_name": "Migrations",
@@ -65,7 +66,7 @@ function verifyOrdersV1() {
   const address = jsonContent.networks[5000].address;
 
   const data = JSON.stringify({
-    "contract_id": "OrdersV1",
+    "contract_id": `OrdersV1-${timestamp}`,
     "compiler_version": "v0.4.25+commit.59dbf8f1",
     "sourcecode": sourcecode,
     "contract_name": "OrdersV1",
@@ -84,7 +85,7 @@ function verifyOrdersProxy() {
   const address = jsonContent.networks[5000].address;
 
   const data = JSON.stringify({
-    "contract_id": "OrdersProxy",
+    "contract_id": `OrdersProxy-${timestamp}`,
     "compiler_version": "v0.4.25+commit.59dbf8f1",
     "sourcecode": sourcecode,
     "contract_name": "OrdersProxy",
