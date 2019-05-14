@@ -16,9 +16,9 @@ const args = process.argv;
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
 
-deployment_address = 'ADDRESS_PLACEHOLDER';
-username = 'USER_PLACEHOLDER';
-pass = 'PASSWORD_PLACEHOLDER';
+const deployment_address = 'ADDRESS_PLACEHOLDER';
+const username = 'USER_PLACEHOLDER';
+const pass = 'PASSWORD_PLACEHOLDER';
 
 
 endpoint = deployment_address;
@@ -40,7 +40,7 @@ const header = {'authorization': basicAuth};
 const provider = new HttpHeaderProvider(endpoint, header);
 
 
-web3 = new Web3();
+const web3 = new Web3();
 web3.setProvider(provider);
 
 
