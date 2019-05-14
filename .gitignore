@@ -6,7 +6,12 @@
 /out-tsc
 
 # dependencies
-/node_modules
+/asset-transfer/node_modules
+/supply-chain//node_modules
+
+# artifacts
+/asset-transfer/AssetTransfer.bin
+/asset-transfer/AssetTransfer.abi
 
 # IDEs and editors
 /.idea
