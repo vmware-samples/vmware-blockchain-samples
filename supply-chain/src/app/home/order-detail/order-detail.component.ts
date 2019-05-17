@@ -157,6 +157,9 @@ export class OrderDetailComponent {
   }
 
   processAction(action, value): Promise<any> {
+    console.log('value')
+    console.log(value)
+    console.log(this.methodsValueMapping[value]);
     return this.blockchainService.sendOrder(
       this.order, this.methodsValueMapping[value]
     );

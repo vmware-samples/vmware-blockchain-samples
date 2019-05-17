@@ -7,8 +7,8 @@
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { from as fromPromise, Subject } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { from as fromPromise, Subject, pipe } from 'rxjs';
+import { mergeMap, map } from 'rxjs/operators';
 
 import Web3 from 'web3';
 import * as HttpHeaderProvider from 'httpheaderprovider';
@@ -144,8 +144,27 @@ export class BlockchainService {
     });
   }
 
-  getMembers(): Promise<any> {
-    return this.http.get(`${environment.path}/concord/members`, this.getHttpOptions()).toPromise();
+  getNodes(): Promise<any> {
+    const locations = [
+      [-80.294105, 38.5976], // West Virginia
+      [-119.692793, 45.836507], // Oregon
+      [151.21, -33.868], // Sydney
+      [8.67972, 45.836507] // Frankfurt
+    ];
+
+    return this.http.get(
+      `${environment.path}/api/concord/members`,
+      this.getHttpOptions()
+    ).pipe(
+      map(nodes => {
+
+        nodes.forEach((node, i) => {
+          node['location'] = locations[i];
+        });
+
+        return nodes;
+      })
+    ).toPromise();
   }
 
   getOrder(index: number): Promise<OrderModel> {
@@ -222,33 +241,33 @@ export class BlockchainService {
     });
   }
 
-  receivedAndInTransitOrder(order: OrderModel): Promise<any> {
-    return this.sendOrder(order, 'receivedAndInTransit');
-  }
+  // receivedAndInTransitOrder(order: OrderModel): Promise<any> {
+  //   return this.sendOrder(order, 'receivedAndInTransit');
+  // }
 
-  revokeOrder(order: OrderModel): Promise<any> {
-    return this.sendOrder(order, 'revoke');
-  }
+  // revokeOrder(order: OrderModel): Promise<any> {
+  //   return this.sendOrder(order, 'revoke');
+  // }
 
-  storeAuditDocumentOrder(order: OrderModel, address: string): Promise<any> {
-    return this.sendOrder(order, 'storeAuditDocument', address);
-  }
+  // storeAuditDocumentOrder(order: OrderModel, address: string): Promise<any> {
+  //   return this.sendOrder(order, 'storeAuditDocument', address);
+  // }
 
-  validatedOrder(order: OrderModel): Promise<any> {
-    return this.sendOrder(order, 'validated');
-  }
+  // validatedOrder(order: OrderModel): Promise<any> {
+  //   return this.sendOrder(order, 'validated');
+  // }
 
-  verifyInTransitOrder(order: OrderModel): Promise<any> {
-    return this.sendOrder(order, 'verifyInTransit');
-  }
+  // verifyInTransitOrder(order: OrderModel): Promise<any> {
+  //   return this.sendOrder(order, 'verifyInTransit');
+  // }
 
-  warehouseReceivedOrder(order: OrderModel): Promise<any> {
-    return this.sendOrder(order, 'warehouseReceivedOrder');
-  }
+  // warehouseReceivedOrder(order: OrderModel): Promise<any> {
+  //   return this.sendOrder(order, 'warehouseReceivedOrder');
+  // }
 
-  warehouseReleasedOrder(order: OrderModel): Promise<any> {
-    return this.sendOrder(order, 'warehouseReleasedOrder');
-  }
+  // warehouseReleasedOrder(order: OrderModel): Promise<any> {
+  //   return this.sendOrder(order, 'warehouseReleasedOrder');
+  // }
 
   async getDocument(docAddress: string): Promise<any> {
     this.docContract = await this.Doc.at(docAddress);
@@ -351,6 +370,8 @@ export class BlockchainService {
       headers: new HttpHeaders(this.authService.getAuthHeader())
     };
   }
+
+  updateLocation()
 
   sendOrder(order, methodName, ...args: any[]): Promise<any> {
     // setOwners is temporary until we have a more robust approach to roles

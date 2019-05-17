@@ -4,13 +4,13 @@
  The full license information can be found in LICENSE in the root directory of this project.
 -->
 <clr-main-container>
-    <clr-alerts>
-        <clr-alert *ngFor="let alert of alerts" [clrAlertType]="'danger'" [clrAlertAppLevel]="true">
-            <clr-alert-item>
-            <span class="alert-text">
-                {{ alert.message }}
-            </span>
-        </clr-alert-item>
+  <clr-alerts>
+    <clr-alert *ngFor="let alert of alerts" [clrAlertType]="'danger'" [clrAlertAppLevel]="true">
+      <clr-alert-item>
+        <span class="alert-text">
+          {{ alert.message }}
+        </span>
+      </clr-alert-item>
     </clr-alert>
   </clr-alerts>
   <clr-header class="header header-{{currentUser.role}}">
@@ -20,27 +20,25 @@
   <div class="content-container">
     <main class="content-area">
       <div class="clr-row">
-        <div class="clr-col-md-12 clr-col-lg-6">
-          <vmw-sc-blockchain-visualization-tile> </vmw-sc-blockchain-visualization-tile>
+        <div class="clr-col-md-12 clr-col-lg-7">
+          <!-- <vmw-sc-blockchain-visualization-tile> </vmw-sc-blockchain-visualization-tile> -->
+          <vmw-sc-world-map></vmw-sc-world-map>
+        </div>
+<!--       </div>
+      <div class="clr-row"> -->
+        <div class="clr-col-md-12 clr-col-lg-5">
           <div class="card card-orders home-module">
-            <div class="card-header">
+<!--             <div class="card-header">
               {{ 'section.header.orders' | translate }}
-            </div>
+            </div> -->
             <div class="card-block">
               <div class="card-text">
                 <vmw-sc-order-list [(selectedOrder)]="selectedOrder"> </vmw-sc-order-list>
               </div>
             </div>
           </div>
-        </div>
-        <div class="clr-col-md-12 clr-col-lg-6">
-<!--           <div class="clr-row">
-            <div class="clr-col home-module">
-              <vmw-sc-blockchain-status [order]="selectedOrder"> </vmw-sc-blockchain-status>
-            </div>
-          </div> -->
-          <vmw-sc-world-map></vmw-sc-world-map>
-          <div class="clr-row">
+<!--         </div>
+        <div class="clr-col-md-12 clr-col-lg-6"> -->
           <div *ngIf="selectedOrder" class="card card-order-detail home-module">
             <div class="card-header">
               {{ 'order' | translate }}
@@ -55,12 +53,9 @@
             <div class="card-block">
               <div class="card-text">
                 <vmw-sc-blockchain-status [order]="selectedOrder"> </vmw-sc-blockchain-status>
-
                 <vmw-sc-order-detail [order]="selectedOrder"> </vmw-sc-order-detail>
               </div>
             </div>
-          </div>
-
           </div>
         </div>
       </div>

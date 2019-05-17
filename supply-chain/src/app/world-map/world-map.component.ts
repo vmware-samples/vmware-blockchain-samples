@@ -18,6 +18,8 @@ import { HttpClient } from '@angular/common/http';
 
 import geojsonvt from 'geojson-vt';
 import { Map, View, Overlay, VectorTile, Collection } from 'ol';
+import Feature from 'ol/Feature';
+import Point from 'ol/geom/Point';
 import { Style, Fill, Stroke, Circle } from 'ol/style';
 import { Vector as VectorLayer, VectorTile as VectorTileLayer } from 'ol/layer';
 import VectorSource from 'ol/source/Vector';
@@ -33,6 +35,7 @@ import { unByKey } from 'ol/Observable';
 import { easeOut } from 'ol/easing';
 
 import { NodeProperties } from './world-map.model';
+import { BlockchainService } from '../core/blockchain/blockchain.service';
 
 @Component({
   selector: 'vmw-sc-world-map',
@@ -61,22 +64,30 @@ export class WorldMapComponent implements AfterViewInit, OnChanges, OnDestroy {
   // An observable collection of features for the map
   private featureCollection = new Collection();
 
-  constructor(private http: HttpClient, private ref: ChangeDetectorRef) {
+  constructor(
+    private http: HttpClient,
+    private ref: ChangeDetectorRef,
+    private blockchainService: BlockchainService,
+  ) {
   }
 
   ngAfterViewInit() {
     this.initMap();
+    this.setNodes();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.features) {
-      this.featureCollection.clear();
-      this.featureCollection.extend(new GeoJSON().readFeatures(changes.features.currentValue, {
-        dataProjection: null,
-        featureProjection: getProjection('EPSG:3857')
-      }));
-    }
-  }
+  // ngOnChanges(changes: SimpleChanges): void {
+  //   if (changes.features) {
+  //     this.featureCollection.clear();
+  //     this.featureCollection.extend(
+  //       new GeoJSON().readFeatures(changes.features.currentValue,
+  //       {
+  //         dataProjection: null,
+  //         featureProjection: getProjection('EPSG:3857')
+  //       }
+  //     ));
+  //   }
+  // }
 
   ngOnDestroy(): void {
     if (this.animationInterval) {
@@ -121,7 +132,7 @@ export class WorldMapComponent implements AfterViewInit, OnChanges, OnDestroy {
         wrapX: false,
         features: this.featureCollection
       }),
-      style: nodeFeatureStyle(nodeFeatureFill)
+      // style: nodeFeatureStyle(nodeFeatureFill)
     });
 
     // Set up a hover interaction with the node layer to show the overlay/tooltip
@@ -149,8 +160,8 @@ export class WorldMapComponent implements AfterViewInit, OnChanges, OnDestroy {
       overlays: [this.overlay],
       target: this.mapContainer.nativeElement,
       view: new View({
-        center: fromLonLat([0, 30]),
-        zoom: 2.75,
+        center: fromLonLat([0, 10]),
+        zoom: 2.4,
         zoomFactor: 1.75
       }),
       interactions: interactionDefaults({mouseWheelZoom: false})
@@ -201,6 +212,16 @@ export class WorldMapComponent implements AfterViewInit, OnChanges, OnDestroy {
     });
   }
 
+  private setNodes() {
+    this.blockchainService.getNodes().then(nodes => {
+      nodes.forEach(node => {
+        this.featureCollection.push(
+          new Feature(new Point(fromLonLat(node.location)))
+         );
+      });
+    });
+  }
+
   /**
    * Unset various properties to hide the active hovered tooltip/overlay
    */
@@ -214,10 +235,14 @@ export class WorldMapComponent implements AfterViewInit, OnChanges, OnDestroy {
    */
   private checkAndSchedulePulseAnimation() {
     this.featureCollection.forEach(feature => {
-      const isDeploying = (feature.getProperties() as NodeProperties).nodes.filter(node => node.status === 'Deploying');
-      if (isDeploying.length > 0) {
-        this.startPulseAnimation(feature);
-      }
+          this.startPulseAnimation(feature);
+      // const isDeploying = (feature.getProperties() as NodeProperties)
+      //   .nodes.filter(node => node.status === 'Deploying');
+
+      //   if (isDeploying.length > 0) {
+      //     this.startPulseAnimation(feature);
+      //   }
+
     });
   }
 
@@ -234,7 +259,7 @@ export class WorldMapComponent implements AfterViewInit, OnChanges, OnDestroy {
       const flashGeom = feature.getGeometry().clone();
       const elapsed = frameState.time - start;
       const elapsedRatio = elapsed / this.animationDuration;
-      const originalRadius = (feature.getProperties() as NodeProperties).nodes.length * 10;
+      const originalRadius = 10;
       const radius = originalRadius + easeOut(elapsedRatio) * originalRadius * 0.5;
       // Get opacity range based on elapsed time and convert to hex
       let opacity = clamp(Math.floor(easeOut(1 - elapsedRatio) * maxOpacity), minOpacity, maxOpacity).toString(16);
