@@ -11,6 +11,7 @@
 
 $color-failure: $clr-red;
 $color-pending: $clr-yellow;
+$color-none: #ccc;
 $color-success: $clr-green-dark-midtone;
 
 $roles:(
@@ -25,6 +26,13 @@ $roles:(
   .header-#{$role} {
     background-color: $color;
     color: white;
+  }
+  .text-#{$role} {
+    color: $color;
+    font-weight: 600;
+  }
+  .card-#{$role} {
+    border-color: $color;
   }
 }
 

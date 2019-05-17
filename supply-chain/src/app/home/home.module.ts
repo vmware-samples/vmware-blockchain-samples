@@ -12,11 +12,12 @@ import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from '../shared/shared.module';
 import { CoreModule } from '../core/core.module';
+import { BlockchainVisualizationModule } from '../blockchain-visualization/blockchain-visualization.module';
+import { WorldMapModule } from '../world-map/world-map.module';
 
 import { BlockchainStatusComponent } from './blockchain-status/blockchain-status.component';
 import { BlockchainStatusCardComponent } from './blockchain-status/blockchain-status-card.component';
 import { BlockchainStatusConnectorComponent } from './blockchain-status/blockchain-status-connector.component';
-import { BlockchainVisualizationModule } from '../blockchain-visualization/blockchain-visualization.module';
 import { CreateOrderComponent } from './create-order/create-order.component';
 import { HomeComponent } from './home.component';
 import { HomeRoutingModule } from './home-routing.module';
@@ -34,6 +35,7 @@ import { OrderListComponent } from './order-list/order-list.component';
     ReactiveFormsModule,
     SharedModule,
     TranslateModule,
+    WorldMapModule
   ],
   declarations: [
     BlockchainStatusCardComponent,

@@ -60,7 +60,9 @@
     color: $color-pending;
   }
 }
-
+.blockchain-status-card-icon-circle {
+  color: $color-none;
+}
 .blockchain-status-card-pending, .blockchain-status-card-waiting {
   .blockchain-status-card-icon-circle {
     display: inline-block;
@@ -75,6 +77,10 @@
   height: 95px;
   margin-top: 0;
   max-width: 90px;
+  // border-radius: 100%;
+  overflow: hidden;
+  border: 1px solid #eee;
+  box-shadow: none;
 }
 
 .card-block {

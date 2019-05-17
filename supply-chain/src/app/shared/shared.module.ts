@@ -6,6 +6,7 @@
 
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ClarityModule, ClrButtonModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
@@ -31,6 +32,11 @@ import { NotifierService } from './notifier.service';
    NotifierService
   ],
   exports: [
+    CommonModule,
+    ClarityModule,
+    FormsModule,
+    TranslateModule,
+    RouterModule,
     SimpleConfirmationComponent,
     ToggleRadioGroupComponent
   ]

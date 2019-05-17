@@ -1,0 +1,18 @@
+@import "~@clr/ui/src/color/utils/_colors.clarity.scss";
+
+.card {
+  margin-top: 0;
+}
+
+#map-container {
+  height: 350px;
+  background: darken($clr-action-blue-darkest, 4%);
+}
+
+#tooltip-container {
+  box-sizing: border-box;
+  background: $clr-black;
+  border-radius: 0.125rem;
+  padding: 10px;
+  color: white;
+}
