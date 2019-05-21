@@ -32,5 +32,5 @@ npm run verify_contracts:vmware
 Or deploy and verify the contracts at the same time
 
 ```shell
-npm run verify_and_deploy:vmware
+npm run deploy_and_verify:vmware
 ```
