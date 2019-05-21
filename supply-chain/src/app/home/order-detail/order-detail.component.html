@@ -47,7 +47,7 @@ The full license information can be found in LICENSE in the root directory of th
         {{ 'detail.approve.label' | translate }}
       </div>
       <div class="clr-col-8">
-        <vmw-sc-toggle-radio-group name="detail-approve-order" [disabled]="!canApproveOrder()" [values]="[VALUE_APPROVE, VALUE_DENY]" [selectedValue]="selectedValues[ACTION_APPROVED]" (selectedValueChange)="processAction(ACTION_APPROVED, $event)">
+        <vmw-sc-toggle-radio-group name="detail-approve-order" [disabled]="!canApproveOrder()" [values]="[actions.VALUE_APPROVE, actions.VALUE_DENY]" [selectedValue]="selectedValues[actions.ACTION_APPROVED]" (selectedValueChange)="processAction(actions.ACTION_APPROVED, $event)">
         </vmw-sc-toggle-radio-group>
         <span class="clr-subtext">{{ 'detail.approve.hint' | translate }}</span>
       </div>
@@ -57,7 +57,7 @@ The full license information can be found in LICENSE in the root directory of th
         {{ 'detail.validate.label' | translate }}
       </div>
       <div class="clr-col-8">
-        <vmw-sc-toggle-radio-group name="detail-validate-order" [disabled]="!canValidateOrder()" [values]="[VALUE_ORGANIC, VALUE_NOT_ORGANIC]" [selectedValue]="selectedValues[ACTION_VALIDATED]" (selectedValueChange)="processAction(ACTION_VALIDATED, $event)"> </vmw-sc-toggle-radio-group>
+        <vmw-sc-toggle-radio-group name="detail-validate-order" [disabled]="!canValidateOrder()" [values]="[actions.VALUE_ORGANIC, actions.VALUE_NOT_ORGANIC]" [selectedValue]="selectedValues[actions.ACTION_VALIDATED]" (selectedValueChange)="processAction(actions.ACTION_VALIDATED, $event)"> </vmw-sc-toggle-radio-group>
         <span class="clr-subtext">{{ 'detail.validate.hint' | translate }}</span>
       </div>
     </div>
@@ -91,7 +91,7 @@ The full license information can be found in LICENSE in the root directory of th
         {{ 'detail.storage.label' | translate }}
       </div>
       <div class="clr-col-8">
-        <vmw-sc-toggle-radio-group name="detail-storage-received" [disabled]="!canReceiveStorageOrder()" [values]="[VALUE_RECEIVED, VALUE_WH_NEVER_RECEIVED]" [selectedValue]="selectedValues[ACTION_STORAGE_RECEIVED]" (selectedValueChange)="processAction(ACTION_STORAGE_RECEIVED, $event)"> </vmw-sc-toggle-radio-group>
+        <vmw-sc-toggle-radio-group name="detail-storage-received" [disabled]="!canReceiveStorageOrder()" [values]="[actions.VALUE_RECEIVED, actions.VALUE_WH_NEVER_RECEIVED]" [selectedValue]="selectedValues[actions.ACTION_STORAGE_RECEIVED]" (selectedValueChange)="processAction(actions.ACTION_STORAGE_RECEIVED, $event)"> </vmw-sc-toggle-radio-group>
         <span class="clr-subtext">{{ 'detail.storage.hint' | translate }}</span>
       </div>
     </div>
@@ -100,7 +100,7 @@ The full license information can be found in LICENSE in the root directory of th
         {{ 'detail.storage.released.label' | translate }}
       </div>
       <div class="clr-col-8">
-        <vmw-sc-toggle-radio-group name="detail-storage-released" [disabled]="!canReleaseStorageOrder()" [values]="[VALUE_RELEASED, VALUE_ISSUE_AROSE]" [selectedValue]="selectedValues[ACTION_STORAGE_RELEASED]" (selectedValueChange)="processAction(ACTION_STORAGE_RELEASED, $event)"> </vmw-sc-toggle-radio-group>
+        <vmw-sc-toggle-radio-group name="detail-storage-released" [disabled]="!canReleaseStorageOrder()" [values]="[actions.VALUE_RELEASED, actions.VALUE_ISSUE_AROSE]" [selectedValue]="selectedValues[actions.ACTION_STORAGE_RELEASED]" (selectedValueChange)="processAction(actions.ACTION_STORAGE_RELEASED, $event)"> </vmw-sc-toggle-radio-group>
         <span class="clr-subtext">{{ 'detail.storage.released.hint' | translate }}</span>
       </div>
     </div>
@@ -109,7 +109,7 @@ The full license information can be found in LICENSE in the root directory of th
         {{ 'detail.shipped.label' | translate }}
       </div>
       <div class="clr-col-8">
-        <vmw-sc-toggle-radio-group name="detail-is-shipped" [disabled]="!canShipOrder()" [values]="[VALUE_IN_TRANSIT, VALUE_NEVER_RECEIVED]" [selectedValue]="selectedValues[ACTION_SHIPPED]" (selectedValueChange)="processAction(ACTION_SHIPPED, $event)"> </vmw-sc-toggle-radio-group>
+        <vmw-sc-toggle-radio-group name="detail-is-shipped" [disabled]="!canShipOrder()" [values]="[actions.VALUE_IN_TRANSIT, actions.VALUE_NEVER_RECEIVED]" [selectedValue]="selectedValues[actions.ACTION_SHIPPED]" (selectedValueChange)="processAction(actions.ACTION_SHIPPED, $event)"> </vmw-sc-toggle-radio-group>
         <span class="clr-subtext">{{ 'detail.shipped.hint' | translate }}</span>
       </div>
     </div>
@@ -118,7 +118,7 @@ The full license information can be found in LICENSE in the root directory of th
         {{ 'detail.received.label' | translate }}
       </div>
       <div class="clr-col-8">
-        <vmw-sc-toggle-radio-group name="detail-order-received" [disabled]="!canReceiveOrder()" [values]="[VALUE_DELIVERED, VALUE_NOT_DELIVERED]" [selectedValue]="selectedValues[ACTION_RECEIVED]" (selectedValueChange)="processAction(ACTION_RECEIVED, $event)"> </vmw-sc-toggle-radio-group>
+        <vmw-sc-toggle-radio-group name="detail-order-received" [disabled]="!canReceiveOrder()" [values]="[actions.VALUE_DELIVERED, actions.VALUE_NOT_DELIVERED]" [selectedValue]="selectedValues[actions.ACTION_RECEIVED]" (selectedValueChange)="processAction(actions.ACTION_RECEIVED, $event)"> </vmw-sc-toggle-radio-group>
         <span class="clr-subtext">{{ 'detail.received.hint' | translate }}</span>
       </div>
     </div>
@@ -129,7 +129,7 @@ The full license information can be found in LICENSE in the root directory of th
         {{ 'detail.recall.label' | translate }}
       </div>
       <div class="clr-col-8">
-        <vmw-sc-toggle-radio-group name="detail-recall" [disabled]="!canRecallOrder()" [values]="[VALUE_RECALL]" [selectedValue]="selectedValues[ACTION_RECALL]" (selectedValueChange)="processAction(ACTION_RECALL, $event)"> </vmw-sc-toggle-radio-group>
+        <vmw-sc-toggle-radio-group name="detail-recall" [disabled]="!canRecallOrder()" [values]="[actions.VALUE_RECALL]" [selectedValue]="selectedValues[actions.ACTION_RECALL]" (selectedValueChange)="processAction(actions.ACTION_RECALL, $event)"> </vmw-sc-toggle-radio-group>
         <span class="clr-subtext">{{ 'detail.recall.hint' | translate }}</span>
       </div>
     </div>

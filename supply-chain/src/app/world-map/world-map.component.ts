@@ -8,11 +8,10 @@ import {
   Component,
   Input,
   ViewChild,
-  OnChanges,
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  SimpleChanges, OnDestroy
+  OnDestroy
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
@@ -20,6 +19,7 @@ import geojsonvt from 'geojson-vt';
 import { Map, View, Overlay, VectorTile, Collection } from 'ol';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
+import LineString from 'ol/geom/LineString.js';
 import { Style, Fill, Stroke, Circle } from 'ol/style';
 import { Vector as VectorLayer, VectorTile as VectorTileLayer } from 'ol/layer';
 import VectorSource from 'ol/source/Vector';
@@ -36,6 +36,8 @@ import { easeOut } from 'ol/easing';
 
 import { NodeProperties } from './world-map.model';
 import { BlockchainService } from '../core/blockchain/blockchain.service';
+import { Order } from '../core/order/order';
+
 
 @Component({
   selector: 'vmw-sc-world-map',
@@ -43,9 +45,9 @@ import { BlockchainService } from '../core/blockchain/blockchain.service';
   styleUrls: ['./world-map.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WorldMapComponent implements AfterViewInit, OnChanges, OnDestroy {
+export class WorldMapComponent implements AfterViewInit, OnDestroy {
   // Takes GeoJSON FeatureCollection of Points as input.  Each feature should have properties that conform to NodeProperties.
-  @Input('features') features;
+  order: Order;
 
   @ViewChild('mapContainer') mapContainer;
   @ViewChild('tooltipContainer') tooltipContainer;
@@ -63,6 +65,8 @@ export class WorldMapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   // An observable collection of features for the map
   private featureCollection = new Collection();
+  private ordersSource: VectorSource;
+  private locations: any[] = [];
 
   constructor(
     private http: HttpClient,
@@ -73,26 +77,21 @@ export class WorldMapComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   ngAfterViewInit() {
     this.initMap();
+    this.initOrderLocationLayer();
     this.setNodes();
   }
-
-  // ngOnChanges(changes: SimpleChanges): void {
-  //   if (changes.features) {
-  //     this.featureCollection.clear();
-  //     this.featureCollection.extend(
-  //       new GeoJSON().readFeatures(changes.features.currentValue,
-  //       {
-  //         dataProjection: null,
-  //         featureProjection: getProjection('EPSG:3857')
-  //       }
-  //     ));
-  //   }
-  // }
 
   ngOnDestroy(): void {
     if (this.animationInterval) {
       clearInterval(this.animationInterval);
     }
+  }
+
+  setOrder(order: Order) {
+    console.log('order')
+    console.log(order)
+    this.order = order;
+    this.syncLocations();
   }
 
   private initMap() {
@@ -112,8 +111,8 @@ export class WorldMapComponent implements AfterViewInit, OnChanges, OnDestroy {
       })
     });
     // Fill color for feature bubbles
-    const nodeFeatureFill = new Fill({color: '#00ffffaa'});
-    const nodeFeatureFillSelected = new Fill({color: '#00ffff'});
+    const nodeFeatureFill = new Fill({ color: '#00ffffaa' });
+    const nodeFeatureFillSelected = new Fill({ color: '#00ffff' });
 
     // Overlay container for the tooltip on node hover
     this.overlay = new Overlay({
@@ -160,11 +159,11 @@ export class WorldMapComponent implements AfterViewInit, OnChanges, OnDestroy {
       overlays: [this.overlay],
       target: this.mapContainer.nativeElement,
       view: new View({
-        center: fromLonLat([0, 10]),
+        center: fromLonLat([15, 10]),
         zoom: 2.4,
         zoomFactor: 1.75
       }),
-      interactions: interactionDefaults({mouseWheelZoom: false})
+      interactions: interactionDefaults({ mouseWheelZoom: false })
     });
     this.map.addInteraction(nodeFeatureHoverInteraction);
 
@@ -217,9 +216,28 @@ export class WorldMapComponent implements AfterViewInit, OnChanges, OnDestroy {
       nodes.forEach(node => {
         this.featureCollection.push(
           new Feature(new Point(fromLonLat(node.location)))
-         );
+        );
       });
     });
+  }
+
+  private syncLocations() {
+    const web3 = this.blockchainService.web3;
+
+    this.blockchainService.call(this.order.contract, 'getLocationLength')
+      .then(lengthBN => {
+        const length = (new web3.BigNumber(lengthBN)).toNumber();
+        console.log(length);
+        for (let i = 0; i < length; ++i) {
+          // code...
+          this.blockchainService.call(this.order.contract, 'locationHistory', i).then(location => {
+            console.log(location);
+            const lat = Number(web3.toUtf8(location[0]));
+            const long = Number(web3.toUtf8(location[1]));
+            this.addLocation([long, lat], i);
+          });
+        }
+      });
   }
 
   /**
@@ -235,7 +253,7 @@ export class WorldMapComponent implements AfterViewInit, OnChanges, OnDestroy {
    */
   private checkAndSchedulePulseAnimation() {
     this.featureCollection.forEach(feature => {
-          this.startPulseAnimation(feature);
+      this.startPulseAnimation(feature);
       // const isDeploying = (feature.getProperties() as NodeProperties)
       //   .nodes.filter(node => node.status === 'Deploying');
 
@@ -288,6 +306,95 @@ export class WorldMapComponent implements AfterViewInit, OnChanges, OnDestroy {
     });
     this.map.render();
   }
+
+  addLocation(to: number[], idx: number = 0) {
+    let feature;
+
+    if (this.locations.length === 0) {
+      feature = new Feature(new Point(fromLonLat(to)));
+    } else {
+      const from = this.locations[this.locations.length - 1];
+      const line = new LineString([fromLonLat(from), fromLonLat(to)]);
+      feature = new Feature({
+        geometry: line,
+        finished: false
+      });
+    }
+
+    this.locations.push(to);
+
+    // // add the feature with a delay so that the animation
+    // // for all features does not start at the same time
+    this.addLater(feature, idx * 500);
+  }
+
+  private initOrderLocationLayer() {
+    const style = new Style({
+      stroke: new Stroke({
+        color: '#EAE911',
+        width: 2
+      })
+    });
+
+
+    this.ordersSource = new VectorSource({
+      wrapX: false,
+    });
+
+    const trackingLayer = new VectorLayer({
+      source: this.ordersSource,
+      style: function(feature) {
+        // if the animation is still active for a feature, do not
+        // render the feature with the layer style
+        if (feature.get('finished')) {
+          return style;
+        } else {
+          return null;
+        }
+      }
+    });
+
+    this.map.addLayer(trackingLayer);
+    this.map.on('postcompose', this.animateOrders.bind(this));
+  }
+
+  private animateOrders(event): void {
+    const style = new Style({
+      stroke: new Stroke({
+        color: '#EAE911',
+        width: 2
+      })
+    });
+    const pointsPerMs = 0.1;
+    const vectorContext = event.vectorContext;
+    const frameState = event.frameState;
+    vectorContext.setStyle(style);
+    const features = this.ordersSource.getFeatures();
+    for (let i = 0; i < features.length; i++) {
+      const feature = features[i];
+      if (!feature.get('finished')) {
+        // only draw the lines for which the animation has not finished yet
+        const coords = feature.getGeometry().getCoordinates();
+        const elapsedTime = 2000;
+
+        const maxIndex = Math.min(elapsedTime, coords.length);
+        const currentLine = new LineString(coords.slice(0, maxIndex));
+
+        // directly draw the line with the vector context
+        vectorContext.drawGeometry(currentLine);
+      }
+    }
+    // tell OpenLayers to continue the animation
+    this.map.render();
+  }
+
+  private addLater(feature, timeout) {
+    setTimeout(() => {
+      // feature.set('start', new Date().getTime());
+      this.ordersSource.addFeature(feature);
+    }, timeout);
+  }
+
 }
 
 /**

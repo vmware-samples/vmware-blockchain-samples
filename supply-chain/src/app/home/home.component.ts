@@ -20,6 +20,7 @@ import { BlockchainService } from '../core/blockchain/blockchain.service';
 import { Order } from '../core/order/order';
 import { UserService } from '../core/user/user.service';
 import { NotifierService } from '../shared/notifier.service';
+import { WorldMapComponent } from '../world-map/world-map.component';
 
 @Component({
   selector: 'vmw-sc-home',
@@ -27,6 +28,7 @@ import { NotifierService } from '../shared/notifier.service';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnDestroy, OnInit {
+  @ViewChild('worldMap') worldMap: WorldMapComponent;
   createOrderVisible = false;
   currentUser: any;
   alerts: any[] = [];
@@ -66,12 +68,20 @@ export class HomeComponent implements OnDestroy, OnInit {
     this.notifierService.notify
       .subscribe(notfication => this.update(notfication));
 
+    this.blockchainService.notify
+      .subscribe(notfication => this.process(notfication));
   }
 
   ngOnInit() {
     this.updatedOrderRef = this.blockchainService.updatedOrder.subscribe((order) => {
-      if (this.selectedOrder && this.selectedOrder.id === order.id) {
+      // if (this.selectedOrder && this.selectedOrder.id === order.id) {
+        console.log(order)
         this.selectedOrder = order;
+        this.worldMap.setOrder(order);
+      // }
+
+      if (order) {
+        // this.worldMap.setOrder(order);
       }
     });
   }
@@ -92,6 +102,20 @@ export class HomeComponent implements OnDestroy, OnInit {
   private update(notification: any): void {
     if (!notification) { return; }
     this.transaction = notification;
+  }
+
+  private process(notification: any): void {
+    if (!notification) { return; }
+
+    switch (notification.type) {
+      case 'locationUpdate':
+        this.worldMap.addLocation(notification.value, notification.value);
+        break;
+
+      default:
+        // code...
+        break;
+    }
   }
 
 }

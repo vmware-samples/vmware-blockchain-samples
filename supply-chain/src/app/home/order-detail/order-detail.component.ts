@@ -5,7 +5,7 @@
  */
 
 import { Component, Input, ViewChildren, ElementRef } from '@angular/core';
-import { Order, OrderHistoryAction, OrderStatus } from '../../core/order/order';
+import { Order, OrderHistoryAction, OrderStatus, OrderActions, OrderMethods } from '../../core/order/order';
 import { BlockchainService } from '../../core/blockchain/blockchain.service';
 import { UserService } from '../../core/user/user.service';
 import { ToggleRadioGroupComponent } from '../../shared/toggle-radio-group/toggle-radio-group.component';
@@ -20,6 +20,7 @@ export class OrderDetailComponent {
   @ViewChildren('fileUpload') fileUpload: ElementRef;
   @Input()
   set order(value: Order) {
+    console.log(value)
     this._order = value;
     this.buildSelectedValues(); // also handles resetting values
   }
@@ -31,33 +32,9 @@ export class OrderDetailComponent {
   uploadError: boolean;
   orderStatus = OrderStatus;
   methodsValueMapping = {};
-
+  fakeLocations: any;
   _order;
-
-  readonly ACTION_APPROVED = 'approved';
-  readonly ACTION_RECALL = 'recall';
-  readonly ACTION_RECEIVED = 'received';
-  readonly ACTION_SHIPPED = 'shipped';
-  readonly ACTION_STORAGE_RECEIVED = 'storageReceived';
-  readonly ACTION_STORAGE_RELEASED = 'storageReleased';
-  readonly ACTION_VALIDATED = 'validated';
-  readonly VALUE_APPROVE = 'approve';
-  readonly VALUE_DENY = 'deny';
-  readonly VALUE_FINISHED = 'finished';
-  readonly VALUE_IN_TRANSIT = 'in-transit';
-  readonly VALUE_ISSUE_AROSE = 'issue-arose';
-  readonly VALUE_ISSUE_RECEIVED = 'issue-received';
-  readonly VALUE_NEVER_RECEIVED = 'never-received';
-  readonly VALUE_WH_NEVER_RECEIVED = 'wh-never-received';
-  readonly VALUE_NOT_DELIVERED = 'not-delivered';
-  readonly VALUE_NOT_ORGANIC = 'not-organic';
-  readonly VALUE_ORGANIC = 'organic';
-  readonly VALUE_RECALL = 'recall';
-  readonly VALUE_RECEIVED = 'received';
-  readonly VALUE_DELIVERED = 'delivered';
-  readonly VALUE_RELEASED = 'released';
-  readonly VALUE_UPLOAD = 'upload';
-
+  actions = OrderActions;
 
   // Todo - calculate this order state from the contract
   selectedValues;
@@ -65,53 +42,7 @@ export class OrderDetailComponent {
   constructor(private blockchainService: BlockchainService,
     private userService: UserService) {
     this.setMethodsMapping();
-  }
-
-  buildSelectedValues() {
-    const values = {};
-    if (this.order.hasHistory(OrderHistoryAction.Approved)) {
-      values[this.ACTION_APPROVED] = this.VALUE_APPROVE;
-    }
-    if (this.order.hasHistory(OrderHistoryAction.NotApproved)) {
-      values[this.ACTION_APPROVED] = this.VALUE_DENY;
-    }
-    if (this.order.hasHistory(OrderHistoryAction.Audited)) {
-      values[this.ACTION_VALIDATED] = this.VALUE_ORGANIC;
-    }
-    if (this.order.hasHistory(OrderHistoryAction.AuditFailed)) {
-      values[this.ACTION_VALIDATED] = this.VALUE_NOT_ORGANIC;
-    }
-    if (this.order.hasHistory(OrderHistoryAction.Received)) {
-      values[this.ACTION_STORAGE_RECEIVED] = this.VALUE_RECEIVED;
-    }
-    if (this.order.hasHistory(OrderHistoryAction.NotAtWarehouse)) {
-      values[this.ACTION_STORAGE_RECEIVED] = this.VALUE_WH_NEVER_RECEIVED;
-    }
-    if (this.order.hasHistory(OrderHistoryAction.Released)) {
-      values[this.ACTION_STORAGE_RELEASED] = this.VALUE_RELEASED;
-    }
-    if (this.order.hasHistory(OrderHistoryAction.WarehouseIssue)) {
-      values[this.ACTION_STORAGE_RELEASED] = this.VALUE_ISSUE_AROSE;
-    }
-    if (this.order.hasHistory(OrderHistoryAction.InTransit)) {
-      values[this.ACTION_SHIPPED] = this.VALUE_IN_TRANSIT;
-    }
-    if (this.order.hasHistory(OrderHistoryAction.DistributorNeverReceived)) {
-      values[this.ACTION_SHIPPED] = this.VALUE_NEVER_RECEIVED;
-    }
-    if (this.order.hasHistory(OrderHistoryAction.ConfirmedDelivery)) {
-      values[this.ACTION_RECEIVED] = this.VALUE_DELIVERED;
-    }
-    if (this.order.hasHistory(OrderHistoryAction.NotDelivered)) {
-      values[this.ACTION_RECEIVED] = this.VALUE_NOT_DELIVERED;
-    }
-    if (this.order.hasHistory(OrderHistoryAction.NotDelivered)) {
-      values[this.ACTION_RECEIVED] = this.VALUE_NOT_DELIVERED;
-    }
-    if (this.order.hasHistory(OrderHistoryAction.Recalled)) {
-      values[this.ACTION_RECALL] = this.VALUE_RECALL;
-    }
-    this.selectedValues = values;
+    this.fakeLocations = this.blockchainService.genFakeLocations();
   }
 
   canApproveOrder() {
@@ -157,9 +88,7 @@ export class OrderDetailComponent {
   }
 
   processAction(action, value): Promise<any> {
-    console.log('value')
-    console.log(value)
-    console.log(this.methodsValueMapping[value]);
+    this.addLocation(action);
     return this.blockchainService.sendOrder(
       this.order, this.methodsValueMapping[value]
     );
@@ -198,21 +127,94 @@ export class OrderDetailComponent {
     dlAnchorElem.remove();
   }
 
-  private setMethodsMapping() {
-    this.methodsValueMapping[this.VALUE_APPROVE] = 'approve';
-    this.methodsValueMapping[this.VALUE_ORGANIC] = 'validated';
-    this.methodsValueMapping[this.VALUE_RECEIVED] = 'warehouseReceivedOrder';
-    this.methodsValueMapping[this.VALUE_RELEASED] = 'warehouseReleasedOrder';
-    this.methodsValueMapping[this.VALUE_IN_TRANSIT] = 'receivedAndInTransit';
-    this.methodsValueMapping[this.VALUE_DELIVERED] = 'confirmDelivery';
+  private addLocation(action: string) {
+    const locations = this.fakeLocations[action];
+    const web3 = this.blockchainService.web3;
+    // console.log('addLocation')
+    // console.log(action)
+    // console.log(this.fakeLocations)
+    // console.log(locations)
 
-    this.methodsValueMapping[this.VALUE_DENY] = 'notApprove';
-    this.methodsValueMapping[this.VALUE_NOT_ORGANIC] = 'invalid';
-    this.methodsValueMapping[this.VALUE_WH_NEVER_RECEIVED] = 'warehouseNotReceivedOrder';
-    this.methodsValueMapping[this.VALUE_ISSUE_AROSE] = 'warehouseIssueOrder';
-    this.methodsValueMapping[this.VALUE_NEVER_RECEIVED] = 'neverReceived';
-    this.methodsValueMapping[this.VALUE_NOT_DELIVERED] = 'notDelivered';
-
-    this.methodsValueMapping[this.VALUE_RECALL] = 'revoke';
+    locations.forEach(location => {
+      if (location) {
+        this.blockchainService.sendOrder(
+          this._order,
+          'updateLocation',
+          web3.fromAscii(location[1].toString()),
+          web3.fromAscii(location[0].toString())
+        ).then(() => {
+          this.blockchainService.notify.next({
+            type: 'locationUpdate',
+            value: location
+          });
+        });
+      }
+    });
   }
+
+  private buildSelectedValues() {
+    const values = {};
+    if (this.order.hasHistory(OrderHistoryAction.Approved)) {
+      values[this.actions.ACTION_APPROVED] = this.actions.VALUE_APPROVE;
+    }
+    if (this.order.hasHistory(OrderHistoryAction.NotApproved)) {
+      values[this.actions.ACTION_APPROVED] = this.actions.VALUE_DENY;
+    }
+    if (this.order.hasHistory(OrderHistoryAction.Audited)) {
+      values[this.actions.ACTION_VALIDATED] = this.actions.VALUE_ORGANIC;
+    }
+    if (this.order.hasHistory(OrderHistoryAction.AuditFailed)) {
+      values[this.actions.ACTION_VALIDATED] = this.actions.VALUE_NOT_ORGANIC;
+    }
+    if (this.order.hasHistory(OrderHistoryAction.Received)) {
+      values[this.actions.ACTION_STORAGE_RECEIVED] = this.actions.VALUE_RECEIVED;
+    }
+    if (this.order.hasHistory(OrderHistoryAction.NotAtWarehouse)) {
+      values[this.actions.ACTION_STORAGE_RECEIVED] = this.actions.VALUE_WH_NEVER_RECEIVED;
+    }
+    if (this.order.hasHistory(OrderHistoryAction.Released)) {
+      values[this.actions.ACTION_STORAGE_RELEASED] = this.actions.VALUE_RELEASED;
+    }
+    if (this.order.hasHistory(OrderHistoryAction.WarehouseIssue)) {
+      values[this.actions.ACTION_STORAGE_RELEASED] = this.actions.VALUE_ISSUE_AROSE;
+    }
+    if (this.order.hasHistory(OrderHistoryAction.InTransit)) {
+      values[this.actions.ACTION_SHIPPED] = this.actions.VALUE_IN_TRANSIT;
+    }
+    if (this.order.hasHistory(OrderHistoryAction.DistributorNeverReceived)) {
+      values[this.actions.ACTION_SHIPPED] = this.actions.VALUE_NEVER_RECEIVED;
+    }
+    if (this.order.hasHistory(OrderHistoryAction.ConfirmedDelivery)) {
+      values[this.actions.ACTION_RECEIVED] = this.actions.VALUE_DELIVERED;
+    }
+    if (this.order.hasHistory(OrderHistoryAction.NotDelivered)) {
+      values[this.actions.ACTION_RECEIVED] = this.actions.VALUE_NOT_DELIVERED;
+    }
+    if (this.order.hasHistory(OrderHistoryAction.NotDelivered)) {
+      values[this.actions.ACTION_RECEIVED] = this.actions.VALUE_NOT_DELIVERED;
+    }
+    if (this.order.hasHistory(OrderHistoryAction.Recalled)) {
+      values[this.actions.ACTION_RECALL] = this.actions.VALUE_RECALL;
+    }
+    this.selectedValues = values;
+  }
+
+  private setMethodsMapping() {
+    this.methodsValueMapping[this.actions.VALUE_APPROVE] = OrderMethods.approve;
+    this.methodsValueMapping[this.actions.VALUE_ORGANIC] = OrderMethods.validated;
+    this.methodsValueMapping[this.actions.VALUE_RECEIVED] = OrderMethods.warehouseReceivedOrder;
+    this.methodsValueMapping[this.actions.VALUE_RELEASED] = OrderMethods.warehouseReleasedOrder;
+    this.methodsValueMapping[this.actions.VALUE_IN_TRANSIT] = OrderMethods.receivedAndInTransit;
+    this.methodsValueMapping[this.actions.VALUE_DELIVERED] = OrderMethods.confirmDelivery;
+
+    this.methodsValueMapping[this.actions.VALUE_DENY] = OrderMethods.notApprove;
+    this.methodsValueMapping[this.actions.VALUE_NOT_ORGANIC] = OrderMethods.invalid;
+    this.methodsValueMapping[this.actions.VALUE_WH_NEVER_RECEIVED] = OrderMethods.warehouseNotReceivedOrder;
+    this.methodsValueMapping[this.actions.VALUE_ISSUE_AROSE] = OrderMethods.warehouseIssueOrder;
+    this.methodsValueMapping[this.actions.VALUE_NEVER_RECEIVED] = OrderMethods.neverReceived;
+    this.methodsValueMapping[this.actions.VALUE_NOT_DELIVERED] = OrderMethods.notDelivered;
+
+    this.methodsValueMapping[this.actions.VALUE_RECALL] = OrderMethods.revoke;
+  }
+
 }

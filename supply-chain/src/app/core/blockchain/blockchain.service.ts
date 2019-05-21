@@ -7,7 +7,7 @@
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { from as fromPromise, Subject, pipe } from 'rxjs';
+import { from as fromPromise, Subject, pipe, BehaviorSubject } from 'rxjs';
 import { mergeMap, map } from 'rxjs/operators';
 
 import Web3 from 'web3';
@@ -29,13 +29,16 @@ import {
   Order as OrderModel,
   OrderHistory,
   OrdersResponse,
-  OrderStatus
+  OrderStatus,
+  OrderActions
 } from '../order/order';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class BlockchainService {
+  notify: BehaviorSubject<any> = new BehaviorSubject(null);
   ordersAddress: any = Orders.networks[environment.network].address;
   ordersABI: any = OrdersV1.abi;
   orderABI: any = Order.abi;
@@ -158,6 +161,7 @@ export class BlockchainService {
     ).pipe(
       map(nodes => {
 
+        // @ts-ignore
         nodes.forEach((node, i) => {
           node['location'] = locations[i];
         });
@@ -241,33 +245,9 @@ export class BlockchainService {
     });
   }
 
-  // receivedAndInTransitOrder(order: OrderModel): Promise<any> {
-  //   return this.sendOrder(order, 'receivedAndInTransit');
-  // }
-
-  // revokeOrder(order: OrderModel): Promise<any> {
-  //   return this.sendOrder(order, 'revoke');
-  // }
-
-  // storeAuditDocumentOrder(order: OrderModel, address: string): Promise<any> {
-  //   return this.sendOrder(order, 'storeAuditDocument', address);
-  // }
-
-  // validatedOrder(order: OrderModel): Promise<any> {
-  //   return this.sendOrder(order, 'validated');
-  // }
-
-  // verifyInTransitOrder(order: OrderModel): Promise<any> {
-  //   return this.sendOrder(order, 'verifyInTransit');
-  // }
-
-  // warehouseReceivedOrder(order: OrderModel): Promise<any> {
-  //   return this.sendOrder(order, 'warehouseReceivedOrder');
-  // }
-
-  // warehouseReleasedOrder(order: OrderModel): Promise<any> {
-  //   return this.sendOrder(order, 'warehouseReleasedOrder');
-  // }
+  storeAuditDocumentOrder(order: OrderModel, address: string): Promise<any> {
+    return this.sendOrder(order, 'storeAuditDocument', address);
+  }
 
   async getDocument(docAddress: string): Promise<any> {
     this.docContract = await this.Doc.at(docAddress);
@@ -332,7 +312,7 @@ export class BlockchainService {
     });
   }
 
-  private callWithPromise(methodName: string, ...args: any[]): Promise<any> {
+  callWithPromise(methodName: string, ...args: any[]): Promise<any> {
     return fromPromise(this.servicePromise).pipe(mergeMap(() => {
       return new Promise((resolve, reject) => {
         if (args.length === 0) {
@@ -343,6 +323,19 @@ export class BlockchainService {
       });
     })).toPromise();
   }
+
+  call(contract: any, methodName: string, ...args: any[]): Promise<any> {
+    return fromPromise(this.servicePromise).pipe(mergeMap(() => {
+      return new Promise((resolve, reject) => {
+        if (args.length === 0) {
+          return contract[methodName](this.callbackToResolve(resolve, reject));
+        } else {
+          return contract[methodName](...args, this.callbackToResolve(resolve, reject));
+        }
+      });
+    })).toPromise();
+  }
+
 
   private getAccounts(): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -371,9 +364,9 @@ export class BlockchainService {
     };
   }
 
-  updateLocation()
-
   sendOrder(order, methodName, ...args: any[]): Promise<any> {
+    console.log('methodName')
+    console.log(methodName)
     // setOwners is temporary until we have a more robust approach to roles
     return new Promise((resolve, reject) => {
       return this.setOwners(order, this.from).then(() => {
@@ -384,6 +377,7 @@ export class BlockchainService {
     }).then((resp) => {
       this.notifierService.update(resp);
       return this.getOrderByAddress(order.id).then((updatedOrder) => {
+        updatedOrder['where'] = 'sendOrder';
         this.updatedOrderSource.next(updatedOrder);
         return updatedOrder;
       });
@@ -424,6 +418,27 @@ export class BlockchainService {
         response => console.log(response),
         error => console.log(error)
       );
+  }
+
+  genFakeLocations(): any {
+    const locations = {};
+    locations[OrderActions.ACTION_APPROVED] = [[-72.1279957, -36.604724]];
+    locations[OrderActions.ACTION_VALIDATED] = [[-70.7699144, -33.4727092]];
+    locations[OrderActions.ACTION_STORAGE_RECEIVED] = [[-73.1922875, -36.989655]];
+    locations[OrderActions.ACTION_STORAGE_RELEASED] = [[-73.1922875, -36.989655]];
+    locations[OrderActions.ACTION_SHIPPED] = [
+      [-73.1723565, -37.0936613],
+      [-73.2937571, -37.0347302],
+      [-75.8334716, -18.71571],
+      [-85.2449906, -5.4785062],
+      [-81.4745861, 3.647946],
+      [-79.8686006, 9.1437766],
+      [-73.7904787, 20.012401],
+      [-74.1197633, 40.6974034]
+    ];
+    locations[OrderActions.ACTION_RECEIVED] = [[-73.9944989, 40.7238246]];
+
+    return locations;
   }
 
 }

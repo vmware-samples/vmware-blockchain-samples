@@ -63,6 +63,48 @@ export class Order {
   }
 }
 
+export enum OrderMethods {
+  approve = 'approve',
+  validated = 'validated',
+  warehouseReceivedOrder = 'warehouseReceivedOrder',
+  warehouseReleasedOrder = 'warehouseReleasedOrder',
+  receivedAndInTransit = 'receivedAndInTransit',
+  confirmDelivery = 'confirmDelivery',
+  notApprove = 'notApprove',
+  invalid = 'invalid',
+  warehouseNotReceivedOrder = 'warehouseNotReceivedOrder',
+  warehouseIssueOrder = 'warehouseIssueOrder',
+  neverReceived = 'neverReceived',
+  notDelivered  = 'notDelivered',
+  revoke = 'revoke',
+}
+
+export enum OrderActions {
+  ACTION_APPROVED = 'approved',
+  ACTION_RECALL = 'recall',
+  ACTION_RECEIVED = 'received',
+  ACTION_SHIPPED = 'shipped',
+  ACTION_STORAGE_RECEIVED = 'storageReceived',
+  ACTION_STORAGE_RELEASED = 'storageReleased',
+  ACTION_VALIDATED = 'validated',
+  VALUE_APPROVE = 'approve',
+  VALUE_DENY = 'deny',
+  VALUE_FINISHED = 'finished',
+  VALUE_IN_TRANSIT = 'in-transit',
+  VALUE_ISSUE_AROSE = 'issue-arose',
+  VALUE_ISSUE_RECEIVED = 'issue-received',
+  VALUE_NEVER_RECEIVED = 'never-received',
+  VALUE_WH_NEVER_RECEIVED = 'wh-never-received',
+  VALUE_NOT_DELIVERED = 'not-delivered',
+  VALUE_NOT_ORGANIC = 'not-organic',
+  VALUE_ORGANIC = 'organic',
+  VALUE_RECALL = 'recall',
+  VALUE_RECEIVED = 'received',
+  VALUE_DELIVERED = 'delivered',
+  VALUE_RELEASED = 'released',
+  VALUE_UPLOAD = 'upload',
+}
+
 export interface OrderHistory {
   action: OrderHistoryAction;
   owner: string;

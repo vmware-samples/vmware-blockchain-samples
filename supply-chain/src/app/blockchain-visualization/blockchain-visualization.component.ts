@@ -101,7 +101,7 @@ export class BlockchainVisualizationComponent implements AfterViewInit, OnDestro
     let latestNodes;
 
     if (environment.blockchainType === 'vmware') {
-      latestNodes = await this.blockchainService.getMembers();
+      latestNodes = await this.blockchainService.getNodes();
     } else {
       // Fake data for ganache or other blockchain
       // tslint:disable-next-line:max-line-length
