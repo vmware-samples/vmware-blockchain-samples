@@ -15,6 +15,7 @@ services:
   - docker
 
 before_install:
+- docker run ethereum/solc:stable solc --version 0.5.0
 - cd supply-chain
 - npm install
 - docker-compose build
@@ -35,3 +36,5 @@ script:
 - npm run lint
 - npm run test:travis
 - npm run truffle:test:ganache
+- cd ../asset-transfer
+- npm test
