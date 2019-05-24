@@ -15,7 +15,6 @@ services:
   - docker
 
 before_install:
-- docker run ethereum/solc:stable solc --version 0.5.0
 - cd supply-chain
 - npm install
 - docker-compose build
