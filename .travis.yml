@@ -23,8 +23,6 @@ before_install:
 - npm install -g truffle@4.1.15
 - export DISPLAY=:99.0 
 - sh -e /etc/init.d/xvfb start
-- cd ../asset-transfer
-- npm install
 - cd ..
 
 script:
@@ -36,5 +34,3 @@ script:
 - npm run lint
 - npm run test:travis
 - npm run truffle:test:ganache
-- cd ../asset-transfer
-- npm test

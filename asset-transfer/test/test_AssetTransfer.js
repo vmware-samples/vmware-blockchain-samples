@@ -65,6 +65,25 @@ describe('Contract compilation', function() {
   });
 });
 
+describe('Contract deployment', function() {
+  this.timeout(20000);
+  it('Contract has been deployed', (done) => {
+    try{
+      helper.setupContract('AssetTransfer', ['alpha','bravo','charlie'], deployment_address, username, pass).then(function(data){
+        if(data === null) {
+          console.log('Address is null');
+        }
+        contract_address = data;
+        console.log('Contract address is ' + contract_address);
+        done();
+      });
+    }
+    catch(e) {
+      console.log(e);
+    }
+  });
+});
+
 
 describe('Load contract instance', function() {
   this.timeout(20000);
