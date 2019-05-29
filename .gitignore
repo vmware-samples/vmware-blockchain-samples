@@ -7,7 +7,11 @@
 
 # dependencies
 /asset-transfer/node_modules
-/supply-chain//node_modules
+/supply-chain/node_modules
+/supply-chain/build
+/supply-chain/truffle-flattener
+/supply-chain/dist
+/supply-chain/src/assets/contracts
 
 # artifacts
 /asset-transfer/AssetTransfer.bin
