@@ -12,7 +12,7 @@ COPY ./ /app/
 
 RUN npm install
 RUN npm install -g truffle@4.1.14
-RUN nom install -g truffle-flattener
+RUN npm install -g truffle-flattener
 RUN node patch.js
 
 ARG env=prod
