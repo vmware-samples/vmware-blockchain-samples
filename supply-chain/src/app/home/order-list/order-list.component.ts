@@ -4,7 +4,15 @@
  * The full license information can be found in LICENSE in the root directory of this project.
  */
 
-import { Component, EventEmitter, Input, OnInit, OnDestroy, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  OnDestroy,
+  Output,
+} from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ClrDatagridStateInterface } from '@clr/angular';
 import { Order } from '../../core/order/order';
@@ -27,34 +35,36 @@ export class OrderListComponent implements OnDestroy, OnInit {
   _selectedOrder;
   total;
   loading = true;
-
-  @Input()
-  get selectedOrder() {
-    return this._selectedOrder;
-  }
-
-  set selectedOrder(value) {
-    this._selectedOrder = value;
-    this.syncGridSelection();
-  }
-
-  @Output() selectedOrderChange = new EventEmitter();
+  contractId: string;
 
   get gridSelectedOrder() {
     return this._gridSelectedOrder;
   }
 
   set gridSelectedOrder(value) {
+    this.contractId = value.id;
+
+    if (value.id !== this.route.snapshot.params.order_id) {
+      this.router.navigate(['/orders', value.id]);
+    }
+
     this.blockchainService.populateOrderDetails(value).then(() => {
       this._gridSelectedOrder = value;
-      this.selectedOrderChange.emit(value);
     });
-    value['where'] = 'gridSelected';
+    value['where'] = 'orderList';
     this.blockchainService.updatedOrderSource.next(value);
+
   }
 
-  constructor( private blockchainService: BlockchainService ) {
-    this.blockchainService.orderCount().then((result) => this.total = result);
+  constructor(
+    private blockchainService: BlockchainService,
+    private route: ActivatedRoute,
+    private router: Router,
+  ) {
+    this.blockchainService.orderCount().then(result => this.total = result);
+
+    this.route.params.subscribe(params => this.handleRoutes(params));
+
   }
 
   ngOnDestroy() {
@@ -66,21 +76,28 @@ export class OrderListComponent implements OnDestroy, OnInit {
     this.newOrderRef = this.blockchainService.newOrder.subscribe((order) => {
       this.refresh(this.datagridState);
     });
+
     this.updatedOrderRef = this.blockchainService.updatedOrder.subscribe((order) => {
-      this.replaceOrder(order);
+      if (order['where'] && order['where'] !== 'orderList') {
+        this.replaceOrder(order);
+      }
     });
   }
 
-  refresh(state: ClrDatagridStateInterface) {
+  refresh(state: ClrDatagridStateInterface, lastOrder?: boolean) {
     this.datagridState = state;
+
     this.loading = true;
     this.blockchainService.orders().then((response) => {
       this.total = response.total;
       this.orders = response.orders;
-      this.syncGridSelection();
       this.loading = false;
-      if (!this.selectedOrder && this.total > 0) {
-        this.gridSelectedOrder = this.orders[0];
+      if (lastOrder && this.total > 0) {
+        const lastOrder = this.orders[this.orders.length - 1];
+        this.contractId = lastOrder.id;
+        this.gridSelectedOrder = lastOrder;
+      } else {
+        this.syncGridSelection();
       }
     });
   }
@@ -89,12 +106,33 @@ export class OrderListComponent implements OnDestroy, OnInit {
     const orderIndex = this.orders.map((o) => o.id).indexOf(order.id);
     if (orderIndex >= 0) {
       this.orders.splice(orderIndex, 1, order);
+      this._gridSelectedOrder = order;
     }
+
   }
 
   private syncGridSelection() {
-    if (this.selectedOrder && this.orders) {
-      this._gridSelectedOrder = this.orders.find(order => order.id === this.selectedOrder.id);
+    if (this.contractId && this.orders) {
+      this._gridSelectedOrder = this.orders.find(order => order.id === this.contractId);
+      setTimeout(() => {
+        const list = document.getElementsByClassName('datagrid')[0];
+        // Scroll to the bottom
+        list.scrollTop = list.scrollHeight;
+      }, 100);
+    }
+  }
+
+  private handleRoutes(params) {
+    const orderId = params.order_id;
+    const web3 = this.blockchainService.web3;
+
+    if (orderId && web3.isAddress(orderId)) {
+      this.contractId = orderId;
+    }
+
+    if (orderId
+        && orderId === 'last') {
+      this.refresh(this.datagridState, true);
     }
   }
 }

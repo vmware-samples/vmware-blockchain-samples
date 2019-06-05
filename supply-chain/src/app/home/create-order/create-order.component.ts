@@ -6,6 +6,7 @@
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { BlockchainService } from '../../core/blockchain/blockchain.service';
 
 @Component({
@@ -21,8 +22,6 @@ export class CreateOrderComponent implements OnInit {
   quantity: number;
   visibleValue = true;
 
-  @Output() close: EventEmitter<any> = new EventEmitter();
-
   @Input()
   get visible() {
     return this.visibleValue;
@@ -30,14 +29,12 @@ export class CreateOrderComponent implements OnInit {
 
   set visible(val) {
     this.visibleValue = val;
-    if (!val) {
-      this.close.emit();
-    }
   }
 
   constructor(
     private formBuilder: FormBuilder,
-    private blockchainService: BlockchainService
+    private blockchainService: BlockchainService,
+    private router: Router,
   ) {
     this.items = this.blockchainService.items;
   }
@@ -52,9 +49,9 @@ export class CreateOrderComponent implements OnInit {
   create() {
     const item = this.orderForm.get('item').value;
     const quantity = this.orderForm.get('quantity').value;
-    this.blockchainService.createOrder(item, quantity).then((result) => {
+    this.blockchainService.createOrder(item, quantity).then(order => {
       this.orderForm.reset();
-      this.close.emit();
+      this.router.navigate(['/orders', 'last']);
     });
   }
 }

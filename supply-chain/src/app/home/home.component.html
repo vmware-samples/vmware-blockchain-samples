@@ -20,7 +20,7 @@
     <main class="content-area">
       <div class="clr-row">
         <div class="clr-col-md-12 clr-col-lg-7">
-          <vmw-sc-world-map #worldMap></vmw-sc-world-map>
+          <vmw-sc-world-map #worldMap [nodes]="nodes" [orderTracking]="orderTracking"></vmw-sc-world-map>
         </div>
         <div class="clr-col-md-12 clr-col-lg-5">
           <div class="card card-orders home-module">
@@ -53,4 +53,4 @@
     </main>
   </div>
 </clr-main-container>
-<vmw-sc-create-order (close)="onClose()" [(visible)]="createOrderVisible"> </vmw-sc-create-order>
+<vmw-sc-create-order [(visible)]="createOrderVisible"> </vmw-sc-create-order>

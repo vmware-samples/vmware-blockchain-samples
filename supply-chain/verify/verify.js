@@ -13,8 +13,8 @@ verifyOrdersV1();
 verifyOrdersProxy()
 
 function verify(data, address) {
-  const username = '<username>';
-  const password = '<password>';
+  const username = 'admin@blockchain.local';
+  const password = 'T3sting!';
   const auth = 'Basic ' + Buffer.from(username + ':' + password).toString('base64');
 
   const options = {

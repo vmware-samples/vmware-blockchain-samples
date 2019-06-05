@@ -10,10 +10,11 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  ViewChild
+  ViewChild,
+  AfterViewInit
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 import { ErrorAlertService } from '../shared/global-alert.service';
 import { BlockchainService } from '../core/blockchain/blockchain.service';
@@ -27,12 +28,14 @@ import { WorldMapComponent } from '../world-map/world-map.component';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnDestroy, OnInit {
+export class HomeComponent implements OnDestroy, OnInit, AfterViewInit {
   @ViewChild('worldMap') worldMap: WorldMapComponent;
   createOrderVisible = false;
   currentUser: any;
   alerts: any[] = [];
   _selectedOrder: Order;
+  nodes: any[];
+  orderTracking: any[];
   transaction: string;
   private updatedOrderRef: Subscription;
 
@@ -51,7 +54,6 @@ export class HomeComponent implements OnDestroy, OnInit {
   constructor(
     private blockchainService: BlockchainService,
     private route: ActivatedRoute,
-    private router: Router,
     public zone: NgZone,
     private alertService: ErrorAlertService,
     private notifierService: NotifierService,
@@ -74,20 +76,13 @@ export class HomeComponent implements OnDestroy, OnInit {
 
   ngOnInit() {
     this.updatedOrderRef = this.blockchainService.updatedOrder.subscribe((order) => {
-      // if (this.selectedOrder && this.selectedOrder.id === order.id) {
-        console.log(order)
-        this.selectedOrder = order;
-        this.worldMap.setOrder(order);
-      // }
-
-      if (order) {
-        // this.worldMap.setOrder(order);
-      }
+      this.selectedOrder = order;
+      this.worldMap.setOrder(order);
     });
   }
 
-  onClose() {
-    this.router.navigate([''], { fragment: null });
+  ngAfterViewInit() {
+    this.setNodes();
   }
 
   private addAlert(alert: any): void {
@@ -95,7 +90,8 @@ export class HomeComponent implements OnDestroy, OnInit {
       const alertItem = {
         message: String(alert)
       };
-       this.zone.run(() => this.alerts.push(alertItem));
+
+      this.zone.run(() => this.alerts.push(alertItem));
     }
   }
 

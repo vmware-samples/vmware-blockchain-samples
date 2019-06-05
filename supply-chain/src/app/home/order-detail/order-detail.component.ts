@@ -20,7 +20,6 @@ export class OrderDetailComponent {
   @ViewChildren('fileUpload') fileUpload: ElementRef;
   @Input()
   set order(value: Order) {
-    console.log(value)
     this._order = value;
     this.buildSelectedValues(); // also handles resetting values
   }
@@ -39,10 +38,16 @@ export class OrderDetailComponent {
   // Todo - calculate this order state from the contract
   selectedValues;
 
-  constructor(private blockchainService: BlockchainService,
-    private userService: UserService) {
+  constructor(
+    private blockchainService: BlockchainService,
+    private userService: UserService
+  ) {
     this.setMethodsMapping();
     this.fakeLocations = this.blockchainService.genFakeLocations();
+
+    // this.blockchainService.updatedOrder.subscribe((order) => {
+    //   this._order = order;
+    // });
   }
 
   canApproveOrder() {
@@ -130,23 +135,18 @@ export class OrderDetailComponent {
   private addLocation(action: string) {
     const locations = this.fakeLocations[action];
     const web3 = this.blockchainService.web3;
-    // console.log('addLocation')
-    // console.log(action)
-    // console.log(this.fakeLocations)
-    // console.log(locations)
 
-    locations.forEach(location => {
+    locations.forEach(async location => {
       if (location) {
-        this.blockchainService.sendOrder(
+        await this.blockchainService.sendOrder(
           this._order,
           'updateLocation',
           web3.fromAscii(location[1].toString()),
           web3.fromAscii(location[0].toString())
-        ).then(() => {
-          this.blockchainService.notify.next({
-            type: 'locationUpdate',
-            value: location
-          });
+        );
+        this.blockchainService.notify.next({
+          type: 'locationUpdate',
+          value: location
         });
       }
     });
