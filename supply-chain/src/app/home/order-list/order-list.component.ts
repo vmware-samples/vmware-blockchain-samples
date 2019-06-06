@@ -42,18 +42,15 @@ export class OrderListComponent implements OnDestroy, OnInit {
   }
 
   set gridSelectedOrder(value) {
-    this.contractId = value.id;
-
-    if (value.id !== this.route.snapshot.params.order_id) {
+    if (value && (value.id !== this.route.snapshot.params.order_id || !this._gridSelectedOrder)) {
+      value['where'] = 'orderList';
+      this.contractId = value.id;
       this.router.navigate(['/orders', value.id]);
+      this.blockchainService.populateOrderDetails(value).then(() => {
+        this._gridSelectedOrder = value;
+        this.blockchainService.updatedOrderSource.next(value);
+      });
     }
-
-    this.blockchainService.populateOrderDetails(value).then(() => {
-      this._gridSelectedOrder = value;
-    });
-    value['where'] = 'orderList';
-    this.blockchainService.updatedOrderSource.next(value);
-
   }
 
   constructor(
@@ -62,9 +59,7 @@ export class OrderListComponent implements OnDestroy, OnInit {
     private router: Router,
   ) {
     this.blockchainService.orderCount().then(result => this.total = result);
-
     this.route.params.subscribe(params => this.handleRoutes(params));
-
   }
 
   ngOnDestroy() {
@@ -84,7 +79,7 @@ export class OrderListComponent implements OnDestroy, OnInit {
     });
   }
 
-  refresh(state: ClrDatagridStateInterface, lastOrder?: boolean) {
+  refresh(state: ClrDatagridStateInterface, getLast?: boolean) {
     this.datagridState = state;
 
     this.loading = true;
@@ -92,10 +87,10 @@ export class OrderListComponent implements OnDestroy, OnInit {
       this.total = response.total;
       this.orders = response.orders;
       this.loading = false;
-      if (lastOrder && this.total > 0) {
+      if (getLast && this.total > 0) {
         const lastOrder = this.orders[this.orders.length - 1];
         this.contractId = lastOrder.id;
-        this.gridSelectedOrder = lastOrder;
+        this._gridSelectedOrder = lastOrder;
       } else {
         this.syncGridSelection();
       }
@@ -113,7 +108,7 @@ export class OrderListComponent implements OnDestroy, OnInit {
 
   private syncGridSelection() {
     if (this.contractId && this.orders) {
-      this._gridSelectedOrder = this.orders.find(order => order.id === this.contractId);
+      this.gridSelectedOrder = this.orders.find(order => order.id === this.contractId);
       setTimeout(() => {
         const list = document.getElementsByClassName('datagrid')[0];
         // Scroll to the bottom
@@ -130,8 +125,7 @@ export class OrderListComponent implements OnDestroy, OnInit {
       this.contractId = orderId;
     }
 
-    if (orderId
-        && orderId === 'last') {
+    if (orderId && orderId === 'last') {
       this.refresh(this.datagridState, true);
     }
   }

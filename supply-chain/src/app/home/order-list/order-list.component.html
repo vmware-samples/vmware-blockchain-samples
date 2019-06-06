@@ -7,19 +7,15 @@ The full license information can be found in LICENSE in the root directory of th
 <clr-datagrid class="datagrid-compact" (clrDgRefresh)="refresh($event)" [clrDgLoading]="loading"
   [(clrDgSingleSelected)]="gridSelectedOrder" [clrDgRowSelection]="true">
   <clr-dg-column class="order-column-contract-id">
-    <clr-dg-string-filter></clr-dg-string-filter>
     {{ 'order.contractId' | translate }}
   </clr-dg-column>
   <clr-dg-column>
-    <clr-dg-string-filter></clr-dg-string-filter>
     {{ 'order.item' | translate }}
   </clr-dg-column>
   <clr-dg-column>
-    <clr-dg-string-filter></clr-dg-string-filter>
     {{ 'order.amount' | translate }}
   </clr-dg-column>
   <clr-dg-column>
-    <clr-dg-string-filter></clr-dg-string-filter>
     {{ 'order.status' | translate }}
   </clr-dg-column>
 

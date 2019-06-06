@@ -7,7 +7,11 @@
 /* You can add global styles to this file, and also import other style files */
 
 
+// OpenLayers CSS
+@import "../node_modules/ol/ol";
 @import "../node_modules/@clr/ui/src/utils/dependencies.clarity";
+
+
 
 $color-failure: $clr-red;
 $color-pending: $clr-yellow;
@@ -47,4 +51,11 @@ $roles:(
     padding-right: 0;
     padding-left: 0;
   }
+}
+
+.ol-zoom {
+  top: initial;
+  right: 0.5em;
+  bottom: 0.5em;
+  left: initial;
 }

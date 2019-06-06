@@ -4,7 +4,7 @@
  * The full license information can be found in LICENSE in the root directory of this project.
  */
 
-import { Component, Input, ViewChildren, ElementRef } from '@angular/core';
+import { Component, Input, ViewChildren, ElementRef, NgZone } from '@angular/core';
 import { Order, OrderHistoryAction, OrderStatus, OrderActions, OrderMethods } from '../../core/order/order';
 import { BlockchainService } from '../../core/blockchain/blockchain.service';
 import { UserService } from '../../core/user/user.service';
@@ -20,8 +20,11 @@ export class OrderDetailComponent {
   @ViewChildren('fileUpload') fileUpload: ElementRef;
   @Input()
   set order(value: Order) {
-    this._order = value;
-    this.buildSelectedValues(); // also handles resetting values
+    if (value) {
+      this._order = value;
+      this.buildSelectedValues(); // also handles resetting values
+    }
+
   }
 
   get order() {
@@ -40,14 +43,12 @@ export class OrderDetailComponent {
 
   constructor(
     private blockchainService: BlockchainService,
-    private userService: UserService
+    private userService: UserService,
+    private zone: NgZone
   ) {
     this.setMethodsMapping();
     this.fakeLocations = this.blockchainService.genFakeLocations();
 
-    // this.blockchainService.updatedOrder.subscribe((order) => {
-    //   this._order = order;
-    // });
   }
 
   canApproveOrder() {
@@ -132,11 +133,12 @@ export class OrderDetailComponent {
     dlAnchorElem.remove();
   }
 
-  private addLocation(action: string) {
+  private async addLocation(action: string) {
     const locations = this.fakeLocations[action];
     const web3 = this.blockchainService.web3;
 
-    locations.forEach(async location => {
+    for (let i = 0; i < locations.length; i++) {
+      const location = locations[i];
       if (location) {
         await this.blockchainService.sendOrder(
           this._order,
@@ -144,15 +146,13 @@ export class OrderDetailComponent {
           web3.fromAscii(location[1].toString()),
           web3.fromAscii(location[0].toString())
         );
-        this.blockchainService.notify.next({
-          type: 'locationUpdate',
-          value: location
-        });
       }
-    });
+    }
   }
 
   private buildSelectedValues() {
+    console.log('hello build selected values')
+    console.log(this.order.hasHistory(OrderHistoryAction.Approved))
     const values = {};
     if (this.order.hasHistory(OrderHistoryAction.Approved)) {
       values[this.actions.ACTION_APPROVED] = this.actions.VALUE_APPROVE;

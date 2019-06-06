@@ -7,13 +7,15 @@
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { from as fromPromise, Subject, pipe, BehaviorSubject } from 'rxjs';
-import { mergeMap, map } from 'rxjs/operators';
+import { from as fromPromise, Subject, pipe, BehaviorSubject, Observable } from 'rxjs';
+import { timer } from 'rxjs';
+import { mergeMap, map, debounce } from 'rxjs/operators';
 
 import Web3 from 'web3';
 import * as HttpHeaderProvider from 'httpheaderprovider';
 import * as contract from 'truffle-contract';
 import * as pako from 'pako';
+import { TranslateService } from '@ngx-translate/core';
 
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../auth/auth.service';
@@ -30,8 +32,14 @@ import {
   OrderHistory,
   OrdersResponse,
   OrderStatus,
-  OrderActions
+  OrderActions,
 } from '../order/order';
+
+import {
+  Node,
+  NodeProperties,
+  NodesResponse,
+} from './../../shared/node.model';
 
 
 @Injectable({
@@ -55,7 +63,7 @@ export class BlockchainService {
   public newOrder = this.newOrderSource.asObservable();
 
   public updatedOrderSource = new Subject<OrderModel>();
-  public updatedOrder = this.updatedOrderSource.asObservable();
+  public updatedOrder = this.updatedOrderSource.asObservable().pipe(debounce(() => timer(200)));
 
   public readonly items = ['Apples', 'Bananas', 'Oranges'];
   private servicePromise: Promise<any>;
@@ -65,6 +73,7 @@ export class BlockchainService {
     private alertService: ErrorAlertService,
     private http: HttpClient,
     private notifierService: NotifierService,
+    private translate: TranslateService
   ) {
     if (environment.blockchainType === 'metamask' && window['web3']) {
       this.web3 = this.metaMask();
@@ -147,12 +156,38 @@ export class BlockchainService {
     });
   }
 
-  getNodes(): Promise<any> {
+
+  getLocations(order: OrderModel): Promise<any> {
+    const locations = [];
+
+    return this.call(order.contract, 'getLocationLength')
+      .then(async lengthBN => {
+        const length = (new this.web3.BigNumber(lengthBN)).toNumber();
+
+        for (let i = 0; i < length; ++i) {
+          // code...
+          const location = await this.call(order.contract, 'locationHistory', i);
+
+          const lat = Number(this.web3.toUtf8(location[0]));
+          const long = Number(this.web3.toUtf8(location[1]));
+          locations.push([long, lat]);
+        }
+
+        return locations;
+      });
+
+  }
+
+  getNodes(): Observable<any> {
     const locations = [
-      [-80.294105, 38.5976], // West Virginia
-      [-119.692793, 45.836507], // Oregon
-      [151.21, -33.868], // Sydney
-      [8.67972, 45.836507] // Frankfurt
+      {geo: [-80.294105, 38.5976], region: 'West Virginia', organization: 'Acme Inc'},
+      {geo: [-119.692793, 45.836507], region: 'Oregon', organization: 'Acme Inc'},
+      {geo: [151.21, -33.868], region: 'Sydney', organization: 'On Time Dist LLC'},
+      {geo: [8.67972, 45.836507], region: 'Frankfurt', organization: 'NGO'},
+      {geo: [-80.294105, 38.5976], region: 'West Virginia', organization: 'Customs'},
+      {geo: [-119.692793, 45.836507], region: 'Oregon', organization: 'Supplier Corp'},
+      {geo: [151.21, -33.868], region: 'Sydney', organization: 'Supplier Corp'},
+      {geo: [8.67972, 45.836507], region: 'Frankfurt', organization: 'Customs'},
     ];
 
     return this.http.get(
@@ -160,15 +195,50 @@ export class BlockchainService {
       this.getHttpOptions()
     ).pipe(
       map(nodes => {
+        const groupedNodes: NodeProperties[] = [];
+        const tempNode = {};
 
         // @ts-ignore
         nodes.forEach((node, i) => {
-          node['location'] = locations[i];
+          node['geo'] = locations[i].geo;
+          node['location'] = locations[i].region;
+          node['organization'] = locations[i].organization;
+          let text = '';
+
+          if (node.millis_since_last_message < node.millis_since_last_message_threshold) {
+            // text = this.translate.instant('nodes.healthy');
+            text = 'Healthy';
+            node['healthy'] = true;
+            node['status'] = text;
+          } else {
+            // text = this.translate.instant('nodes.unhealthy');
+            text = 'Unhealthy';
+            node['healthy'] = false;
+            node['status'] = text;
+          }
+
+          //
+          // Cluster nodes
+          if (tempNode[node.location]) {
+            tempNode[node.location].push(node);
+          } else {
+            tempNode[node.location] = [node];
+          }
+
         });
 
-        return nodes;
+        Object.values(tempNode).forEach(temp => {
+          groupedNodes.push({
+            location: temp[0].location,
+            geo: temp[0].geo,
+            // @ts-ignore
+            nodes: temp
+          });
+        });
+
+        return { nodes: nodes, nodesByLocation: groupedNodes };
       })
-    ).toPromise();
+    );
   }
 
   getOrder(index: number): Promise<OrderModel> {
@@ -365,8 +435,6 @@ export class BlockchainService {
   }
 
   sendOrder(order, methodName, ...args: any[]): Promise<any> {
-    console.log('methodName')
-    console.log(methodName)
     // setOwners is temporary until we have a more robust approach to roles
     return new Promise((resolve, reject) => {
       return this.setOwners(order, this.from).then(() => {

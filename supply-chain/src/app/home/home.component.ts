@@ -47,10 +47,6 @@ export class HomeComponent implements OnDestroy, OnInit, AfterViewInit {
     this._selectedOrder = value;
   }
 
-  ngOnDestroy() {
-    this.updatedOrderRef.unsubscribe();
-  }
-
   constructor(
     private blockchainService: BlockchainService,
     private route: ActivatedRoute,
@@ -69,20 +65,32 @@ export class HomeComponent implements OnDestroy, OnInit, AfterViewInit {
 
     this.notifierService.notify
       .subscribe(notfication => this.update(notfication));
-
-    this.blockchainService.notify
-      .subscribe(notfication => this.process(notfication));
   }
 
   ngOnInit() {
     this.updatedOrderRef = this.blockchainService.updatedOrder.subscribe((order) => {
+      console.log('where', order['where']);
+      const previousOrder = this.selectedOrder;
+      const newOrder = previousOrder && previousOrder.id !== order.id;
+
       this.selectedOrder = order;
-      this.worldMap.setOrder(order);
+      this.blockchainService.getLocations(order).then(locations => {
+        this.worldMap.syncLocations(locations, newOrder);
+      });
+
+      if (order['where'] === 'sendOrder') {
+        this.worldMap.nodeConsensus();
+      }
     });
+
   }
 
   ngAfterViewInit() {
     this.setNodes();
+  }
+
+  ngOnDestroy() {
+    this.updatedOrderRef.unsubscribe();
   }
 
   private addAlert(alert: any): void {
@@ -100,18 +108,10 @@ export class HomeComponent implements OnDestroy, OnInit, AfterViewInit {
     this.transaction = notification;
   }
 
-  private process(notification: any): void {
-    if (!notification) { return; }
-
-    switch (notification.type) {
-      case 'locationUpdate':
-        this.worldMap.addLocation(notification.value, notification.value);
-        break;
-
-      default:
-        // code...
-        break;
-    }
+  private setNodes() {
+    this.blockchainService.getNodes().subscribe(nodes => {
+      this.nodes = nodes.nodesByLocation;
+    });
   }
 
 }

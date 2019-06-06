@@ -11,7 +11,10 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  OnDestroy
+  OnDestroy,
+  OnChanges,
+  HostListener,
+  SimpleChanges
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
@@ -33,6 +36,7 @@ import { getCenter } from 'ol/extent';
 import { defaults as interactionDefaults } from 'ol/interaction';
 import { unByKey } from 'ol/Observable';
 import { easeOut } from 'ol/easing';
+import { addCommon as addCommonProjections } from 'ol/proj.js';
 
 import { NodeProperties } from './world-map.model';
 import { BlockchainService } from '../core/blockchain/blockchain.service';
@@ -45,7 +49,9 @@ import { Order } from '../core/order/order';
   styleUrls: ['./world-map.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WorldMapComponent implements AfterViewInit, OnDestroy {
+export class WorldMapComponent implements AfterViewInit, OnDestroy, OnChanges {
+  @Input('nodes') nodes;
+  @Input('orderTracking') orderTracking;
   // Takes GeoJSON FeatureCollection of Points as input.  Each feature should have properties that conform to NodeProperties.
   order: Order;
 
@@ -53,11 +59,13 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
   @ViewChild('tooltipContainer') tooltipContainer;
 
   // The map and its map's tooltip/overlay layer
-  private map;
-  private overlay;
+  private map: Map;
+  private overlay: Overlay;
+  private view: View;
+  private vectorSource: VectorSource;
 
   // The pulse animation duration and its interval
-  private animationDuration = 3000;
+  private animationDuration = 1400;
   private animationInterval;
 
   // The current node properties used to generate the overlay/tooltip
@@ -65,8 +73,20 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
 
   // An observable collection of features for the map
   private featureCollection = new Collection();
-  private ordersSource: VectorSource;
+  private ordersTracking: VectorSource;
+  private ordersPoint: Collection = new Collection;
   private locations: any[] = [];
+
+  theme = {
+    countryFill: '#ECEAE6',
+    countryBorder: '#ECEAE6', // #DCDBD8
+    nodeFill: '#60B515',
+    unhealthyNode: '#4CB344',
+    nodeFillSelected: '#00ffff',
+    nodeAnimation: '#4CB344',
+    trackingPath: '#669DF6',
+    trackingPathBorder: '#1967D2'
+  };
 
   constructor(
     private http: HttpClient,
@@ -75,10 +95,26 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
   ) {
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+
+    if (changes.nodes && changes.nodes.currentValue) {
+      this.featureCollection.clear();
+
+      changes.nodes.currentValue.forEach(cluster => {
+        const feature = new Feature(new Point(fromLonLat(cluster.geo)));
+        feature.setProperties(cluster);
+        this.featureCollection.push(feature);
+      });
+    }
+  }
+
   ngAfterViewInit() {
+    // This is a patch for an angular build issue
+    // https://github.com/openlayers/openlayers/issues/9019#issuecomment-444441291
+    addCommonProjections();
+
     this.initMap();
     this.initOrderLocationLayer();
-    this.setNodes();
   }
 
   ngOnDestroy(): void {
@@ -87,11 +123,13 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.viewFit();
+  }
+
   setOrder(order: Order) {
-    console.log('order')
-    console.log(order)
     this.order = order;
-    this.syncLocations();
   }
 
   private initMap() {
@@ -103,16 +141,16 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
     // Styles for the country layer - same fill and stroke for flat earth look
     const countryStyle = new Style({
       fill: new Fill({
-        color: '#204454'
+        color: this.theme.countryFill
       }),
       stroke: new Stroke({
-        color: '#204454',
+        color: this.theme.countryBorder,
         width: 1
       })
     });
     // Fill color for feature bubbles
-    const nodeFeatureFill = new Fill({ color: '#00ffffaa' });
-    const nodeFeatureFillSelected = new Fill({ color: '#00ffff' });
+    const nodeFeatureFill = new Fill({ color: this.theme.nodeFill });
+    const nodeFeatureFillSelected = new Fill({ color: this.theme.nodeFill });
 
     // Overlay container for the tooltip on node hover
     this.overlay = new Overlay({
@@ -125,13 +163,14 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       }
     });
 
+    this.vectorSource = new VectorSource({
+      wrapX: false,
+      features: this.featureCollection
+    });
     // A layer to hold the nodes
     const nodeFeatureLayer = new VectorLayer({
-      source: new VectorSource({
-        wrapX: false,
-        features: this.featureCollection
-      }),
-      // style: nodeFeatureStyle(nodeFeatureFill)
+      source: this.vectorSource,
+      style: this.nodeFeatureStyle(nodeFeatureFill)
     });
 
     // Set up a hover interaction with the node layer to show the overlay/tooltip
@@ -139,7 +178,7 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       wrapX: false,
       layers: [nodeFeatureLayer],
       condition: pointerMove,
-      style: nodeFeatureStyle(nodeFeatureFillSelected)
+      style: this.nodeFeatureStyle(nodeFeatureFillSelected)
     });
 
     nodeFeatureHoverInteraction.on('select', (event: any) => {
@@ -154,22 +193,16 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       this.ref.markForCheck();
     });
 
+    this.view = new View();
+
     this.map = new Map({
       layers: [nodeFeatureLayer],
       overlays: [this.overlay],
       target: this.mapContainer.nativeElement,
-      view: new View({
-        center: fromLonLat([15, 10]),
-        zoom: 2.4,
-        zoomFactor: 1.75
-      }),
+      view: this.view,
       interactions: interactionDefaults({ mouseWheelZoom: false })
     });
     this.map.addInteraction(nodeFeatureHoverInteraction);
-
-    // Set up pulsing animation on map features
-    this.checkAndSchedulePulseAnimation();
-    this.animationInterval = setInterval(this.checkAndSchedulePulseAnimation.bind(this), this.animationDuration + 1000);
 
     // Fetch and set up GeoJSON backed country layer
     this.http.get('assets/countries-110m.json').subscribe(result => {
@@ -208,36 +241,8 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       // Insert this layer behind all other layers
       this.map.getLayers().insertAt(0, countryOutlineLayer);
       this.map.updateSize();
+      this.viewFit();
     });
-  }
-
-  private setNodes() {
-    this.blockchainService.getNodes().then(nodes => {
-      nodes.forEach(node => {
-        this.featureCollection.push(
-          new Feature(new Point(fromLonLat(node.location)))
-        );
-      });
-    });
-  }
-
-  private syncLocations() {
-    const web3 = this.blockchainService.web3;
-
-    this.blockchainService.call(this.order.contract, 'getLocationLength')
-      .then(lengthBN => {
-        const length = (new web3.BigNumber(lengthBN)).toNumber();
-        console.log(length);
-        for (let i = 0; i < length; ++i) {
-          // code...
-          this.blockchainService.call(this.order.contract, 'locationHistory', i).then(location => {
-            console.log(location);
-            const lat = Number(web3.toUtf8(location[0]));
-            const long = Number(web3.toUtf8(location[1]));
-            this.addLocation([long, lat], i);
-          });
-        }
-      });
   }
 
   /**
@@ -248,20 +253,10 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
     this.overlay.setPosition(undefined);
   }
 
-  /**
-   * Checks for any deploying nodes and schedules their animation. Meant to be called on an interval.
-   */
-  private checkAndSchedulePulseAnimation() {
-    this.featureCollection.forEach(feature => {
-      this.startPulseAnimation(feature);
-      // const isDeploying = (feature.getProperties() as NodeProperties)
-      //   .nodes.filter(node => node.status === 'Deploying');
-
-      //   if (isDeploying.length > 0) {
-      //     this.startPulseAnimation(feature);
-      //   }
-
-    });
+  nodeConsensus() {
+    this.featureCollection.forEach(
+      feature => this.startPulseAnimation(feature)
+    );
   }
 
   /**
@@ -278,9 +273,9 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       const elapsed = frameState.time - start;
       const elapsedRatio = elapsed / this.animationDuration;
       const originalRadius = 10;
-      const radius = originalRadius + easeOut(elapsedRatio) * originalRadius * 0.5;
+      const radius = originalRadius + easeOut(elapsedRatio) * originalRadius * 1;
       // Get opacity range based on elapsed time and convert to hex
-      let opacity = clamp(Math.floor(easeOut(1 - elapsedRatio) * maxOpacity), minOpacity, maxOpacity).toString(16);
+      let opacity = this.clamp(Math.floor(easeOut(1 - elapsedRatio) * maxOpacity), minOpacity, maxOpacity).toString(16);
       // Opacity in hex format must have 2 characters so pad with 0 if needed;
       if (opacity.length === 1) {
         opacity = `0${opacity}`;
@@ -290,8 +285,8 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
           radius: radius,
           snapToPixel: false,
           stroke: new Stroke({
-            color: `#00ffff${opacity}`,
-            width: 1
+            color: `${this.theme.nodeAnimation}${opacity}`,
+            width: 2
           })
         })
       });
@@ -304,78 +299,86 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
       }
       this.map.render();
     });
-    this.map.render();
   }
 
-  addLocation(to: number[], idx: number = 0) {
-    let feature;
+  syncLocations(orderLocations: any[], newOrder: boolean = false) {
+    this.ordersTracking.clear();
+    // this.ordersPoint.clear();
+    orderLocations.forEach((loc, i) => this.addLocation(orderLocations, loc, i));
+  }
 
-    if (this.locations.length === 0) {
-      feature = new Feature(new Point(fromLonLat(to)));
-    } else {
-      const from = this.locations[this.locations.length - 1];
+  addLocation(loc: any[], to: number[], idx: number = 0) {
+    const point = new Feature(new Point(fromLonLat(to)));
+    this.ordersPoint.push(point);
+
+    if (idx !== 0) {
+      const from = loc[idx - 1];
       const line = new LineString([fromLonLat(from), fromLonLat(to)]);
-      feature = new Feature({
+      const feature = new Feature({
         geometry: line,
-        finished: false
+        lonLat: to
       });
+      this.ordersTracking.addFeature(feature);
     }
-
-    this.locations.push(to);
-
-    // // add the feature with a delay so that the animation
-    // // for all features does not start at the same time
-    this.addLater(feature, idx * 500);
   }
 
   private initOrderLocationLayer() {
-    const style = new Style({
+    const style = [new Style({
       stroke: new Stroke({
-        color: '#EAE911',
-        width: 2
+        color: this.theme.trackingPath,
+        width: 1
+      })
+    }), new Style({
+      stroke: new Stroke({
+        color: this.theme.trackingPathBorder,
+        width: 3
+      })
+    })];
+
+    const pointFill = new Fill({ color: this.theme.unhealthyNode });
+    const pointStyle = new Style({
+      image: new Circle({
+        pointFill,
+        radius: 6
       })
     });
 
-
-    this.ordersSource = new VectorSource({
+    this.ordersTracking = new VectorSource({
       wrapX: false,
     });
 
     const trackingLayer = new VectorLayer({
-      source: this.ordersSource,
-      style: function(feature) {
-        // if the animation is still active for a feature, do not
-        // render the feature with the layer style
-        if (feature.get('finished')) {
-          return style;
-        } else {
-          return null;
-        }
-      }
+      source: this.ordersTracking,
+      style: style
     });
 
+    const orderPointSource = new VectorSource({
+      wrapX: false,
+      features: this.ordersPoint,
+    });
+
+    const pointLayer = new VectorLayer({
+      source: orderPointSource,
+      style: pointStyle
+    });
+
+    this.map.addLayer(pointLayer);
     this.map.addLayer(trackingLayer);
-    this.map.on('postcompose', this.animateOrders.bind(this));
+    this.map.render();
+    // this.map.on('postcompose', this.animateOrders.bind(this));
   }
 
   private animateOrders(event): void {
-    const style = new Style({
-      stroke: new Stroke({
-        color: '#EAE911',
-        width: 2
-      })
-    });
     const pointsPerMs = 0.1;
     const vectorContext = event.vectorContext;
     const frameState = event.frameState;
-    vectorContext.setStyle(style);
-    const features = this.ordersSource.getFeatures();
+    const features = this.ordersTracking.getFeatures();
     for (let i = 0; i < features.length; i++) {
       const feature = features[i];
       if (!feature.get('finished')) {
         // only draw the lines for which the animation has not finished yet
         const coords = feature.getGeometry().getCoordinates();
-        const elapsedTime = 2000;
+        const elapsedTime = 40000;
 
         const maxIndex = Math.min(elapsedTime, coords.length);
         const currentLine = new LineString(coords.slice(0, maxIndex));
@@ -388,88 +391,91 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy {
     this.map.render();
   }
 
-  private addLater(feature, timeout) {
-    setTimeout(() => {
-      // feature.set('start', new Date().getTime());
-      this.ordersSource.addFeature(feature);
-    }, timeout);
+
+  private viewFit() {
+    this.view.fit(
+      this.vectorSource.getExtent(),
+      { padding: [30, 60, 30, 40], constrainResolution: false }
+    );
   }
 
-}
-
-/**
- * Clamp a given number between two given ranges
- *
- * @param {number} value The value to clamp
- * @param {number} min The smallest value
- * @param {number} max The largest value
- * @returns {number} A value within the range of min and max
- */
-function clamp(value: number, min: number, max: number) {
-  return Math.max(min, Math.min(max, value));
-}
-
-/**
- * An ol.style.Style generating function. Needs to be generated per node to show difference in size according to how
- * many nodes at the location.
- *
- * @param fill ol.style.Fill A
- * @returns {(feature) => ol.style.Style} A per-node generating style function
- */
-function nodeFeatureStyle(fill) {
-  return function(feature) {
-    const nodeCount = (feature.getProperties() as NodeProperties).nodes.length;
-    const unhealthyNodes = (feature.getProperties() as NodeProperties).nodes.filter(node => node.status === 'Unhealthy').length > 0;
-    return new Style({
-      image: new Circle({
-        fill,
-        stroke: unhealthyNodes ? new Stroke({
-          color: '#e62700aa',
-          width: 3
-        }) : null,
-        radius: nodeCount * 10
-      })
-    });
-  };
-}
-
-/**
- * Convert a VectorTile feature to a GeoJSON feature
- * Adapted from https://openlayers.org/en/latest/examples/geojson-vt.html
- *
- * @param feature A VectorTile feature
- * @returns a GeoJSON feature
- */
-
-function vectorTileFeatureToGeoJsonFeature(feature) {
-  let type;
-  let coordinates = feature.geometry;
-
-  if (feature.type === 1) {
-    type = 'MultiPoint';
-    if (coordinates.length === 1) {
-      type = 'Point';
-      coordinates = coordinates[0];
-    }
-  } else if (feature.type === 2) {
-    type = 'MultiLineString';
-    if (coordinates.length === 1) {
-      type = 'LineString';
-      coordinates = coordinates[0];
-    }
-  } else if (feature.type === 3) {
-    type = 'Polygon';
-    if (coordinates.length > 1) {
-      type = 'MultiPolygon';
-      coordinates = [coordinates];
-    }
+  /**
+   * Clamp a given number between two given ranges
+   *
+   * @param {number} value The value to clamp
+   * @param {number} min The smallest value
+   * @param {number} max The largest value
+   * @returns {number} A value within the range of min and max
+   */
+  private clamp(value: number, min: number, max: number) {
+    return Math.max(min, Math.min(max, value));
   }
 
-  return {
-    type: 'Feature',
-    geometry: {
-      type,
-      coordinates
-    }
-  };
+  /**
+   * An ol.style.Style generating function. Needs to be generated per node to show difference in size according to how
+   * many nodes at the location.
+   *
+   * @param fill ol.style.Fill A
+   * @returns {(feature) => ol.style.Style} A per-node generating style function
+   */
+  private nodeFeatureStyle(fill) {
+    return (feature) => {
+      const nodeCount = (feature.getProperties() as NodeProperties).nodes.length;
+      const unhealthyNodes = (feature.getProperties() as NodeProperties).nodes.filter(node => node.status === 'Unhealthy').length > 0;
+      return new Style({
+        image: new Circle({
+          fill,
+          stroke: unhealthyNodes ? new Stroke({
+            color: this.theme.unhealthyNode,
+            width: 3
+          }) : null,
+          radius: 6
+        })
+      });
+    };
+  }
+
+
 }
+
+  /**
+   * Convert a VectorTile feature to a GeoJSON feature
+   * Adapted from https://openlayers.org/en/latest/examples/geojson-vt.html
+   *
+   * @param feature A VectorTile feature
+   * @returns a GeoJSON feature
+   */
+  function vectorTileFeatureToGeoJsonFeature(feature) {
+    let type;
+    let coordinates = feature.geometry;
+
+    if (feature.type === 1) {
+      type = 'MultiPoint';
+      if (coordinates.length === 1) {
+        type = 'Point';
+        coordinates = coordinates[0];
+      }
+    } else if (feature.type === 2) {
+      type = 'MultiLineString';
+      if (coordinates.length === 1) {
+        type = 'LineString';
+        coordinates = coordinates[0];
+      }
+    } else if (feature.type === 3) {
+      type = 'Polygon';
+      if (coordinates.length > 1) {
+        type = 'MultiPolygon';
+        coordinates = [coordinates];
+      }
+    }
+
+    return {
+      type: 'Feature',
+      geometry: {
+        type,
+        coordinates
+      }
+    };
+  }
+
+
