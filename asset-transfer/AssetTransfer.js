@@ -5,7 +5,7 @@
  */
 
 var helper_methods = {
-  setupContract: function(contract, nameList, address, username, pass) {
+  setupContract: function(contract, nameList, endpoint, username, pass) {
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
     const toBase64 = function(data) {
       const buff = new Buffer(data);
@@ -25,9 +25,7 @@ var helper_methods = {
 
       const basicAuth = basicAuthEncode(username, pass);
       const header = {'authorization': basicAuth};
-      const provider = new HttpHeaderProvider(address, header);
-
-      var endpoint = address;
+      const provider = new HttpHeaderProvider(endpoint, header);
       
 
       web3 = new Web3();
