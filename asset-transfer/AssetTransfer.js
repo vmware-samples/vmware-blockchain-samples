@@ -25,7 +25,7 @@ var helper_methods = {
 
       const basicAuth = basicAuthEncode(username, pass);
       const header = {'authorization': basicAuth};
-      const provider = new HttpHeaderProvider(address, header);
+      const provider = new HttpHeaderProvider(endpoint, header);
       
 
       web3 = new Web3();
