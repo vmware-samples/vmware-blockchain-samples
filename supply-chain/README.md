@@ -19,7 +19,7 @@ First lets clone the repo and build the container.
 ```shell
 git clone git@github.com:vmware-samples/vmware-blockchain-samples.git
 
-cd vmware-blockchain-samples
+cd vmware-blockchain-samples/supply-chain
 
 docker-compose build
 ```
