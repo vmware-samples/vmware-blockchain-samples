@@ -102,7 +102,7 @@ describe('Verify contract is deployed at the address', function() {
 });
 
 
-describe('Verify contract instance by sending a transaction', function() {
+describe('Verify contract instance by getting number of assets owned by alpha', function() {
   this.timeout(20000);
   it('Contract instance verified', (done) => {
     try{
