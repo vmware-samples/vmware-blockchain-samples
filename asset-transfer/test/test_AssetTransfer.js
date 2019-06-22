@@ -16,9 +16,9 @@ const args = process.argv;
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
 
-const deployment_address = 'ADDRESS_PLACEHOLDER';
-const username = 'USER_PLACEHOLDER';
-const pass = 'PASSWORD_PLACEHOLDER';
+const deployment_address = 'http://localhost/api/concord/eth';
+const username = 'admin@blockchain.local';
+const pass = 'T3sting!';
 
 
 endpoint = deployment_address;
@@ -89,7 +89,7 @@ describe('Load contract instance', function() {
   this.timeout(20000);
   it('Contract instance loaded', (done) => {
     try{
-      contract_instance = web3.eth.contract(JSON.parse(fs.readFileSync('AssetTransfer.abi').toString())).at("http://localhost:7545");
+      contract_instance = web3.eth.contract(JSON.parse(fs.readFileSync('AssetTransfer.abi').toString())).at(contract_addresss);
       done();
     }
     catch(e){
