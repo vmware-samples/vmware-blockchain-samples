@@ -10,7 +10,6 @@ const HttpHeaderProvider = require('httpheaderprovider');
 const assert = require('assert');
 const helper = require('../AssetTransfer.js');
 const exec = require('child_process').exec;
-const assert = require('assert');
 
 
 const args = process.argv;
