@@ -19,6 +19,7 @@ services:
       - ./build:/app/build
       - ./truffle-config.js:/app/truffle-config.js
       - ./package.json:/app/package.json
+      - ./verify:/app/verify
     environment:
       # Example
       # - BC_URL=http://localhost/blockchains/local/api/concord/eth
