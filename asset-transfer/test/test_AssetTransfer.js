@@ -85,11 +85,29 @@ describe('Contract deployment', function() {
 });
 
 
-describe('Load contract instance', function() {
+describe('Verify contract is deployed at the address', function() {
   this.timeout(20000);
-  it('Contract instance loaded', (done) => {
+  it('Contract is present at the address', (done) => {
     try{
-      contract_instance = web3.eth.contract(JSON.parse(fs.readFileSync('AssetTransfer.abi').toString())).at("http://localhost:7545");
+      // web3.eth.getCode returns bytecode at the contract address specified.
+      // Errors out otherwise
+
+      deployed_contract = web3.eth.getCode(contract_address);
+      done();
+    }
+    catch(e){
+      console.log(e);
+    }
+  });
+});
+
+
+describe('Verify contract instance by getting number of assets owned by alpha', function() {
+  this.timeout(20000);
+  it('Contract instance verified', (done) => {
+    try{
+      contract_instance = web3.eth.contract(JSON.parse(fs.readFileSync('AssetTransfer.abi').toString())).at(contract_address);
+      assert(helper.getNumberOfAssets(contract_instance, 'alpha') == 0);
       done();
     }
     catch(e){
