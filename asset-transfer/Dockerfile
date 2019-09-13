@@ -15,6 +15,7 @@ RUN git submodule update --init --recursive
 RUN git checkout 1df8f40cd2fd7b47698d847907b8ca7b47eb488d
 RUN ./scripts/install_deps.sh
 RUN ./scripts/build.sh
+
 WORKDIR /source
 COPY . /source
 RUN apt-get -y update
