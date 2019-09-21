@@ -11,6 +11,9 @@ One use case of blockchain is to track different types of transactions in a supp
 ### Prerequisites
 
 Install docker [here](https://docs.docker.com/install/)
+In the case of VMware Blockchain:
+* Note the ID of the blockchain, referred to as <blockchain-id> throughout the documentation
+* Generate an API token in the CSP console, referred to as <api-token> throughout the documentation
 
 ### Setup
 
@@ -21,7 +24,6 @@ git clone git@github.com:vmware-samples/vmware-blockchain-samples.git
 
 cd vmware-blockchain-samples
 
-docker-compose build
 ```
 
 Update the `truffle-config.js` with the correct url with the basic auth username and password.
@@ -30,10 +32,12 @@ Update the `truffle-config.js` with the correct url with the basic auth username
   vmware: {
     network_id: "*",
     provider: () => new Web3.providers.HttpProvider(
-      "https://<username>:<password>@<url>"
+      "https://<username>:<api-token>@<hostname-fqdn>/api/blockchains/<blockchain-id>/concord/eth"
     )
   },
 ```
+
+docker-compose build
 
 Deploy contracts by running truffle migrate by using our container.
 
@@ -51,8 +55,8 @@ Update the environment BC_URL endpoint in the `docker-compose.yml` file to point
       - ./build:/app/build
       - ./truffle-config.js:/app/truffle-config.js
     environment:
-      # Example
-      # - BC_URL=http://localhost/blockchains/local/
+      # Example for VMware Blockchain
+      # - BC_URL=http://localhost.vmware.com/api/blockchains/<blockchain-id>
       - BC_URL=<change-me>
 
 ```
