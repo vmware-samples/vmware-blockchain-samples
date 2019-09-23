@@ -145,7 +145,7 @@ export class BlockchainService {
   }
 
   getMembers(): Promise<any> {
-    return this.http.get(`${environment.path}/concord/members`, this.getHttpOptions()).toPromise();
+    return this.http.get(`${environment.path}/api/concord/members`, this.getHttpOptions()).toPromise();
   }
 
   getOrder(index: number): Promise<OrderModel> {
