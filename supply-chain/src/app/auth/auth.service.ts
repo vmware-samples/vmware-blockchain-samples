@@ -11,7 +11,7 @@ import * as HttpHeaderProvider from 'httpheaderprovider';
 import * as Web3 from 'web3';
 
 import { Observable, of, bindCallback } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, flatMap } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 
@@ -31,34 +31,57 @@ export class AuthService {
   }
 
   loginLocally(username?: string, password?: string): Observable<boolean> {
-    let authKey;
+    let accessToken;
+
     if (!username) {
-      authKey = localStorage.getItem('BA');
-    }  else {
-      authKey = 'Basic ' + btoa(username + ':' + password);
+      accessToken = localStorage.getItem('Access');
+      return this.completeAuth(accessToken);
     }
-    const provider = this.getVmwareBlockChainProvider(authKey);
-    const web3 = new Web3();
-    web3.setProvider(provider);
 
-    const getBlock = bindCallback(web3.eth.getBlock);
-
-    // @ts-ignore
-    return getBlock(0)
-      .pipe(
-        map(res => {
-          localStorage.setItem('BA', authKey);
-          if (res[0]) {
-            return false;
-          } else if (res[1] && res[1].number === 0) {
-            this.isLoggedIn = true;
-
-            return true;
+    return this.http.post('https://console-stg.cloud.vmware.com/csp/gateway/am/api/auth/api-tokens/authorize', `refresh_token=${password}`,
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'accept': 'application/json'
           }
+        }
+      ).pipe(
+        map(authResponse => authResponse['access_token']),
+        flatMap((token) => this.completeAuth(token)),
+        map(isLoggedIn => {
+          if (isLoggedIn) {
+            localStorage.setItem('Refresh', password);
+          }
+
+          return isLoggedIn;
         })
-      );
+    );
+
   }
 
+  completeAuth(accessToken: string): Observable<boolean> {
+        const provider = this.getVmwareBlockChainProvider(accessToken);
+        const web3 = new Web3();
+        web3.setProvider(provider);
+
+        const getBlock = bindCallback(web3.eth.getBlock);
+
+        // @ts-ignore
+        return getBlock(0)
+          .pipe(
+            map(res => {
+              localStorage.setItem('Access', accessToken);
+              if (res[0]) {
+                return false;
+              } else if (res[1] && res[1].number === 0) {
+                this.isLoggedIn = true;
+
+                return true;
+              }
+            })
+          );
+
+  }
   logout(): void {
     this.isLoggedIn = false;
     localStorage.removeItem('BA');
@@ -68,18 +91,19 @@ export class AuthService {
     return this.loginLocally().toPromise();
   }
 
-  getAuthHeader(authKey?: string): any {
-    if (!authKey) {
-      authKey = localStorage.getItem('BA');
+  getAuthHeader(accessToken?: string): any {
+    if (!accessToken) {
+      accessToken = localStorage.getItem('Access');
     }
+
     return {
-      'authorization': authKey,
-      'X-Requested-With': 'XMLHttpRequest' // Suppress basic auth pop up
+      'Authorization': `Bearer ${accessToken}`,
     };
   }
 
-  getVmwareBlockChainProvider(authKey?: string): HttpHeaderProvider {
-    return new HttpHeaderProvider(`${environment.path}/concord/eth`, this.getAuthHeader(authKey));
+  getVmwareBlockChainProvider(accessToken?: string): HttpHeaderProvider {
+    const header = {'Authorization': `Bearer ${accessToken}`};
+    return new HttpHeaderProvider(`${environment.path}/concord/eth`, this.getAuthHeader(accessToken));
   }
 
 }
