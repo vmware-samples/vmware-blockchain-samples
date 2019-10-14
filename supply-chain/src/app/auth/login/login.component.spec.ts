@@ -5,7 +5,7 @@
  */
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ClarityModule } from '@clr/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -22,7 +22,7 @@ describe('LoginComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         ClarityModule,
-        HttpClientModule,
+        HttpClientTestingModule,
         TranslateModule.forRoot(),
         FormsModule,
         ReactiveFormsModule,

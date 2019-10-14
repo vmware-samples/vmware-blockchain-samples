@@ -59,3 +59,7 @@ $roles:(
   bottom: 0.5em;
   left: initial;
 }
+
+div[class^="clr-col-"] .card-orders:first-child {
+  margin-top: 0;
+}

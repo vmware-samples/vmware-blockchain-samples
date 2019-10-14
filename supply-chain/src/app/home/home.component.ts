@@ -18,7 +18,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { ErrorAlertService } from '../shared/global-alert.service';
 import { BlockchainService } from '../core/blockchain/blockchain.service';
-import { Order } from '../core/order/order';
+import { Order } from '../order/shared/order';
 import { UserService } from '../core/user/user.service';
 import { NotifierService } from '../shared/notifier.service';
 import { WorldMapComponent } from '../world-map/world-map.component';
@@ -65,24 +65,32 @@ export class HomeComponent implements OnDestroy, OnInit, AfterViewInit {
 
     this.notifierService.notify
       .subscribe(notfication => this.update(notfication));
+
+    this.route.firstChild.params.subscribe(params => {
+      const orderId = params['order_id'];
+      if (orderId) {
+        this.blockchainService.getOrderByAddress(orderId).then(order => {
+          this.blockchainService.getLocations(order).then(locations => {
+            this.worldMap.syncLocations(locations);
+          });
+        });
+      }
+    });
   }
 
   ngOnInit() {
     this.updatedOrderRef = this.blockchainService.updatedOrder.subscribe((order) => {
-      console.log('where', order['where']);
       const previousOrder = this.selectedOrder;
-      const newOrder = previousOrder && previousOrder.id !== order.id;
 
       this.selectedOrder = order;
       this.blockchainService.getLocations(order).then(locations => {
-        this.worldMap.syncLocations(locations, newOrder);
+        this.worldMap.syncLocations(locations);
       });
 
       if (order['where'] === 'sendOrder') {
         this.worldMap.nodeConsensus();
       }
     });
-
   }
 
   ngAfterViewInit() {

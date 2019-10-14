@@ -5,8 +5,11 @@
  */
 
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+
 import { User } from '../user/user';
 import { UserService } from '../user/user.service';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'vmw-sc-header',
@@ -17,12 +20,21 @@ export class HeaderComponent {
 
   currentUser: User;
 
-  constructor(private userService: UserService) {
+  constructor(
+    private userService: UserService,
+    private authService: AuthService,
+    private router: Router,
+  ) {
     this.currentUser = userService.currentUser;
   }
 
   nextRole() {
     this.userService.nextRole();
+  }
+
+  logOut() {
+    this.authService.logout();
+    this.router.navigate(['login']);
   }
 
 }

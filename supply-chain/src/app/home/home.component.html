@@ -14,7 +14,7 @@
     </clr-alert>
   </clr-alerts>
   <clr-header class="header header-{{currentUser.role}}">
-    <vmw-sc-header> </vmw-sc-header>
+    <vmw-sc-header></vmw-sc-header>
   </clr-header>
   <div class="content-container">
     <main class="content-area">
@@ -23,31 +23,8 @@
           <vmw-sc-world-map #worldMap [nodes]="nodes" [orderTracking]="orderTracking"></vmw-sc-world-map>
         </div>
         <div class="clr-col-md-12 clr-col-lg-5">
-          <div class="card card-orders home-module">
-            <div class="card-block">
-              <div class="card-text">
-                <vmw-sc-order-list> </vmw-sc-order-list>
-              </div>
-            </div>
-          </div>
-          <div *ngIf="selectedOrder" class="card card-order-detail home-module">
-            <div class="card-header">
-              {{ 'order' | translate }}
-              <div class="card-order-detail-id-wrapper">
-                <div class="card-order-detail-id">{{ selectedOrder.id }}</div>
-              </div> - {{ selectedOrder.product }} {{ selectedOrder.amount }}
-              <ng-container [ngPlural]="selectedOrder.amount">
-                <ng-template ngPluralCase="=1">{{'item.quantity.bushel' | translate}}</ng-template>
-                <ng-template ngPluralCase="other">{{'item.quantity.bushels' | translate}}</ng-template>
-              </ng-container>
-            </div>
-            <div class="card-block">
-              <div class="card-text">
-                <vmw-sc-blockchain-status [order]="selectedOrder"> </vmw-sc-blockchain-status>
-                <vmw-sc-order-detail [order]="selectedOrder"> </vmw-sc-order-detail>
-              </div>
-            </div>
-          </div>
+          <vmw-sc-order-list> </vmw-sc-order-list>
+          <router-outlet></router-outlet>
         </div>
       </div>
     </main>

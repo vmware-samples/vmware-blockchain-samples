@@ -6,5 +6,13 @@
 
 export class User {
   id: number;
-  role: string;
+  role: UserRole;
+}
+
+export enum UserRole {
+  farmer = 'farmer',
+  auditor = 'auditor',
+  storage = 'storage',
+  distributor = 'distributor',
+  super_market = 'super_market',
 }

@@ -111,7 +111,25 @@
             "assets": [
               "src/favicon.png",
               "src/assets"
-            ]
+            ],
+          },
+          "configurations": {
+            "ganache-dev": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.ganache-dev.ts"
+                }
+              ]
+            },
+            "vmware-dev": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.vmware-dev.ts"
+                }
+              ]
+            }
           }
         },
         "lint": {

@@ -5,8 +5,9 @@
  */
 
 import { TestBed } from '@angular/core/testing';
-import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { MockTranslateModule } from '../../mocks/mock-translate.module';
+
 import { BlockchainService } from './blockchain.service';
 import { AuthService } from './../../auth/auth.service';
 import { ErrorAlertService } from './../../shared/global-alert.service';
@@ -14,11 +15,11 @@ import { ErrorAlertService } from './../../shared/global-alert.service';
 describe('BlockchainService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
-      HttpClientTestingModule
+      HttpClientTestingModule,
+      MockTranslateModule
     ],
     providers: [
       AuthService,
-      HttpClient,
       ErrorAlertService
     ]
   }));

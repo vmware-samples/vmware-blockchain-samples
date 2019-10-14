@@ -25,7 +25,7 @@ import { UserService } from './user/user.service';
   ],
   providers: [
     BlockchainService,
-    UserService
+    UserService,
   ],
   declarations: [
     HeaderComponent

@@ -40,7 +40,7 @@ import { addCommon as addCommonProjections } from 'ol/proj.js';
 
 import { NodeProperties } from './world-map.model';
 import { BlockchainService } from '../core/blockchain/blockchain.service';
-import { Order } from '../core/order/order';
+import { Order } from '../order/shared/order';
 
 
 @Component({
@@ -105,6 +105,10 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy, OnChanges {
         feature.setProperties(cluster);
         this.featureCollection.push(feature);
       });
+
+      if (changes.nodes && !changes.nodes.previousValue) {
+        this.viewFit();
+      }
     }
   }
 
@@ -206,6 +210,7 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy, OnChanges {
 
     // Fetch and set up GeoJSON backed country layer
     this.http.get('assets/countries-110m.json').subscribe(result => {
+
       // Convert GeoJSON source to vector tiles
       const tileSource = geojsonvt(result, {
         extent: 4096,
@@ -301,9 +306,8 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy, OnChanges {
     });
   }
 
-  syncLocations(orderLocations: any[], newOrder: boolean = false) {
+  syncLocations(orderLocations: any[]) {
     this.ordersTracking.clear();
-    // this.ordersPoint.clear();
     orderLocations.forEach((loc, i) => this.addLocation(orderLocations, loc, i));
   }
 
@@ -393,20 +397,17 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy, OnChanges {
 
 
   private viewFit() {
-    this.view.fit(
-      this.vectorSource.getExtent(),
-      { padding: [30, 60, 30, 40], constrainResolution: false }
-    );
+    if (this.featureCollection && this.featureCollection.getLength() === 0) {
+      this.view.setCenter([0, 0]);
+      this.view.setZoom(1.7);
+    } else {
+      this.view.fit(
+        this.vectorSource.getExtent(),
+        { padding: [80, 80, 80, 80], constrainResolution: false }
+      );
+    }
   }
 
-  /**
-   * Clamp a given number between two given ranges
-   *
-   * @param {number} value The value to clamp
-   * @param {number} min The smallest value
-   * @param {number} max The largest value
-   * @returns {number} A value within the range of min and max
-   */
   private clamp(value: number, min: number, max: number) {
     return Math.max(min, Math.min(max, value));
   }
@@ -416,7 +417,7 @@ export class WorldMapComponent implements AfterViewInit, OnDestroy, OnChanges {
    * many nodes at the location.
    *
    * @param fill ol.style.Fill A
-   * @returns {(feature) => ol.style.Style} A per-node generating style function
+   * @returns (feature) => ol.style.Style A per-node generating style function
    */
   private nodeFeatureStyle(fill) {
     return (feature) => {

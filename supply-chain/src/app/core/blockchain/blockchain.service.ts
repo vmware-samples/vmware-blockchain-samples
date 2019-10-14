@@ -33,7 +33,7 @@ import {
   OrdersResponse,
   OrderStatus,
   OrderActions,
-} from '../order/order';
+} from '../../order/shared/order';
 
 import {
   Node,
@@ -48,6 +48,7 @@ import {
 export class BlockchainService {
   notify: BehaviorSubject<any> = new BehaviorSubject(null);
   ordersAddress: any = Orders.networks[environment.network].address;
+  currentOrder: any;
   ordersABI: any = OrdersV1.abi;
   orderABI: any = Order.abi;
   address: string = environment.path;
@@ -75,6 +76,11 @@ export class BlockchainService {
     private notifierService: NotifierService,
     private translate: TranslateService
   ) {
+    this.initConnection();
+    this.servicePromise = this.getAccounts();
+  }
+
+  private initConnection() {
     if (environment.blockchainType === 'metamask' && window['web3']) {
       this.web3 = this.metaMask();
     } else if (environment.blockchainType === 'vmware') {
@@ -82,8 +88,6 @@ export class BlockchainService {
     } else {
       this.web3 = this.ganache();
     }
-
-    this.servicePromise = this.getAccounts();
   }
 
   metaMask(): Web3 {
@@ -106,7 +110,7 @@ export class BlockchainService {
     return this.sendOrder(order, 'confirmDelivery');
   }
 
-  createOrder(productType: string, quantity: number): Promise<any> {
+  createOrder(productType: string, quantity: number): Promise<string> {
     return fromPromise(this.servicePromise).pipe(mergeMap(() => {
       return new Promise((resolve, reject) => {
         return this.ordersContract.create(
@@ -116,8 +120,9 @@ export class BlockchainService {
           this.callbackToResolve(resolve, reject)
         );
       }).then((tx) => {
-        this.newOrderSource.next(tx);
-        return tx;
+        return this.orderCount().then(count => {
+          return this.order(count - 1);
+        });
       });
     })).toPromise();
   }
@@ -191,7 +196,7 @@ export class BlockchainService {
     ];
 
     return this.http.get(
-      `${environment.path}/api/concord/members`,
+      `${environment.path}/concord/members`,
       this.getHttpOptions()
     ).pipe(
       map(nodes => {
@@ -299,6 +304,7 @@ export class BlockchainService {
 
     const loadHistory = this.getHistory(order).then((history) => {
       order.history = history;
+      return order;
     });
 
     const loadDocument = new Promise((resolve, reject) => {
@@ -309,8 +315,9 @@ export class BlockchainService {
       return order;
     });
 
-    return Promise.all([loadHistory, loadDocument]).then(() => {
+    return Promise.all([loadHistory, loadDocument]).then(response => {
       order.detailsPopulated = true;
+      this.currentOrder = order;
       return order;
     });
   }
@@ -394,13 +401,13 @@ export class BlockchainService {
     })).toPromise();
   }
 
-  call(contract: any, methodName: string, ...args: any[]): Promise<any> {
+  call(contrct: any, methodName: string, ...args: any[]): Promise<any> {
     return fromPromise(this.servicePromise).pipe(mergeMap(() => {
       return new Promise((resolve, reject) => {
         if (args.length === 0) {
-          return contract[methodName](this.callbackToResolve(resolve, reject));
+          return contrct[methodName](this.callbackToResolve(resolve, reject));
         } else {
-          return contract[methodName](...args, this.callbackToResolve(resolve, reject));
+          return contrct[methodName](...args, this.callbackToResolve(resolve, reject));
         }
       });
     })).toPromise();
@@ -447,7 +454,9 @@ export class BlockchainService {
       return this.getOrderByAddress(order.id).then((updatedOrder) => {
         updatedOrder['where'] = 'sendOrder';
         this.updatedOrderSource.next(updatedOrder);
-        return updatedOrder;
+        return this.populateOrderDetails(updatedOrder).then(populatedOrder => {
+          return populatedOrder;
+        });
       });
     }).catch(err => {
       this.alertService.add(err);
@@ -463,10 +472,27 @@ export class BlockchainService {
     });
   }
 
-  private callbackToResolve(resolve, reject) {
+  private callbackToResolve(resolve, reject, retry: boolean = false) {
+    const self = this;
     return function(error, value) {
       if (error) {
-        reject(error);
+        const errorMessage = error.message ? JSON.parse(error.message.replace('Invalid JSON RPC response: ', '')) : {};
+        // Retry access token once more
+        if (errorMessage && errorMessage.status === 401 && !retry) {
+          console.log('retrying');
+
+          const reset = async () => {
+            await self.authService.refreshAccessToken().toPromise();
+            self.initConnection();
+          };
+          reset();
+          self.callbackToResolve(resolve, reject, true);
+
+        } else {
+          console.log('reject');
+          reject(error);
+        }
+
       } else {
         resolve(value);
       }

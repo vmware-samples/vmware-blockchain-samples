@@ -6,7 +6,7 @@
 
 import { Injectable } from '@angular/core';
 import { randomElement } from '../../shared/utils';
-import { User } from './user';
+import { User, UserRole } from './user';
 
 @Injectable({
   providedIn: 'root'
@@ -14,26 +14,26 @@ import { User } from './user';
 export class UserService {
 
   // TODO: get User, including role, from back end service
-  public readonly roles = ['farmer', 'auditor', 'storage', 'distributor', 'super_market' ];
-  _currentUser: User;
+  _currentUser: User     ;
 
   constructor() { }
 
   get currentUser(): User {
     if (! this._currentUser) {
       this._currentUser = new User();
-      this._currentUser.role = this.roles[0];
+      this._currentUser.role = UserRole.farmer;
     }
     return this._currentUser;
   }
 
-  hasRole(...roles: string[]): boolean {
-    return this._currentUser && (roles.indexOf(this._currentUser.role) >= 0);
+  hasRole(...roles: UserRole[]): boolean {
+    return this._currentUser && (roles.indexOf(this._currentUser.role) !== -1);
   }
 
   nextRole() {
-    let nextRoleIndex = 1 + this.roles.indexOf(this._currentUser.role);
-    nextRoleIndex = (nextRoleIndex < this.roles.length) ? nextRoleIndex : 0;
-    this._currentUser.role = this.roles[nextRoleIndex];
+    const roles = Object.values(UserRole);
+    let nextRoleIndex = 1 + Object.values(UserRole).indexOf(this._currentUser.role);
+    nextRoleIndex = (nextRoleIndex < roles.length) ? nextRoleIndex : 0;
+    this._currentUser.role = roles[nextRoleIndex];
   }
 }

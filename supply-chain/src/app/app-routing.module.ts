@@ -7,14 +7,23 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './home/home.component';
+import { OrderComponent } from './order/order.component';
 import { LoginComponent } from './auth/login/login.component';
 import { AuthGuard } from './auth/auth.guard';
+import { OrderResolver } from './order/shared/order-resolve.service';
 
 const routes: Routes = [
   {
-    path: 'orders/:order_id',
+    path: 'orders',
     component: HomeComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: ':order_id',
+        component: OrderComponent,
+        resolve: {order: OrderResolver}
+      }
+    ]
   },
   {
     path: 'login',
@@ -32,3 +41,4 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
+

@@ -5,7 +5,7 @@
  */
 
 import { ClarityModule } from '@clr/angular';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
@@ -22,7 +22,7 @@ describe('AppComponent', () => {
         ClarityModule,
         CoreModule,
         HomeModule,
-        HttpClientModule,
+        HttpClientTestingModule,
         MockTranslateModule,
         RouterTestingModule,
         TranslateModule.forRoot()
