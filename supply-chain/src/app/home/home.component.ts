@@ -10,27 +10,34 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  ViewChild
+  ViewChild,
+  AfterViewInit
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 import { ErrorAlertService } from '../shared/global-alert.service';
 import { BlockchainService } from '../core/blockchain/blockchain.service';
-import { Order } from '../core/order/order';
+import { Order } from '../order/shared/order';
 import { UserService } from '../core/user/user.service';
 import { NotifierService } from '../shared/notifier.service';
+import { WorldMapComponent } from '../world-map/world-map.component';
+
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'vmw-sc-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnDestroy, OnInit {
+export class HomeComponent implements OnDestroy, OnInit, AfterViewInit {
+  @ViewChild('worldMap') worldMap: WorldMapComponent;
   createOrderVisible = false;
   currentUser: any;
   alerts: any[] = [];
   _selectedOrder: Order;
+  nodes: any[];
+  orderTracking: any[];
   transaction: string;
   private updatedOrderRef: Subscription;
 
@@ -42,14 +49,9 @@ export class HomeComponent implements OnDestroy, OnInit {
     this._selectedOrder = value;
   }
 
-  ngOnDestroy() {
-    this.updatedOrderRef.unsubscribe();
-  }
-
   constructor(
     private blockchainService: BlockchainService,
     private route: ActivatedRoute,
-    private router: Router,
     public zone: NgZone,
     private alertService: ErrorAlertService,
     private notifierService: NotifierService,
@@ -66,18 +68,43 @@ export class HomeComponent implements OnDestroy, OnInit {
     this.notifierService.notify
       .subscribe(notfication => this.update(notfication));
 
-  }
-
-  ngOnInit() {
-    this.updatedOrderRef = this.blockchainService.updatedOrder.subscribe((order) => {
-      if (this.selectedOrder && this.selectedOrder.id === order.id) {
-        this.selectedOrder = order;
+    this.route.firstChild.params.subscribe(params => {
+      const orderId = params['order_id'];
+      const web3 = this.blockchainService.web3;
+      if (orderId && web3.isAddress(orderId)) {
+        this.blockchainService.getOrderByAddress(orderId).then(order => {
+          this.blockchainService.getLocations(order).then(locations => {
+            this.worldMap.syncLocations(locations);
+          });
+        });
       }
     });
   }
 
-  onClose() {
-    this.router.navigate([''], { fragment: null });
+  ngOnInit() {
+    this.updatedOrderRef = this.blockchainService.updatedOrder.subscribe((order) => {
+      const previousOrder = this.selectedOrder;
+
+      this.selectedOrder = order;
+      this.blockchainService.getLocations(order).then(locations => {
+        this.worldMap.syncLocations(locations);
+      });
+
+      if (order['where'] === 'sendOrder') {
+        this.worldMap.nodeConsensus();
+      }
+    });
+  }
+
+  ngAfterViewInit() {
+    if (environment.blockchainType === 'vmware') {
+      this.setNodes();
+
+    }
+  }
+
+  ngOnDestroy() {
+    this.updatedOrderRef.unsubscribe();
   }
 
   private addAlert(alert: any): void {
@@ -85,13 +112,20 @@ export class HomeComponent implements OnDestroy, OnInit {
       const alertItem = {
         message: String(alert)
       };
-       this.zone.run(() => this.alerts.push(alertItem));
+
+      this.zone.run(() => this.alerts.push(alertItem));
     }
   }
 
   private update(notification: any): void {
     if (!notification) { return; }
     this.transaction = notification;
+  }
+
+  private setNodes() {
+    this.blockchainService.getNodes().subscribe(nodes => {
+      this.nodes = nodes.nodesByLocation;
+    });
   }
 
 }

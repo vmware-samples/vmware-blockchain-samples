@@ -5,13 +5,15 @@
  */
 
 import { TestBed } from '@angular/core/testing';
-import { HttpClient, HttpHandler } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { AuthService } from './auth.service';
+import { BlockchainService } from './../core/blockchain/blockchain.service';
 
 describe('AuthService', () => {
   beforeEach(() => TestBed.configureTestingModule({
-    providers: [HttpClient, HttpHandler]
+    imports: [HttpClientTestingModule],
+    providers: [BlockchainService]
   }));
 
   it('should be created', () => {

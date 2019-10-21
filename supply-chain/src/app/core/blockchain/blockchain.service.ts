@@ -7,13 +7,15 @@
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { from as fromPromise, Subject } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { from as fromPromise, Subject, pipe, BehaviorSubject, Observable } from 'rxjs';
+import { timer } from 'rxjs';
+import { mergeMap, map, debounce } from 'rxjs/operators';
 
 import Web3 from 'web3';
 import * as HttpHeaderProvider from 'httpheaderprovider';
 import * as contract from 'truffle-contract';
 import * as pako from 'pako';
+import { TranslateService } from '@ngx-translate/core';
 
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../auth/auth.service';
@@ -29,14 +31,24 @@ import {
   Order as OrderModel,
   OrderHistory,
   OrdersResponse,
-  OrderStatus
-} from '../order/order';
+  OrderStatus,
+  OrderActions,
+} from '../../order/shared/order';
+
+import {
+  Node,
+  NodeProperties,
+  NodesResponse,
+} from './../../shared/node.model';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class BlockchainService {
+  notify: BehaviorSubject<any> = new BehaviorSubject(null);
   ordersAddress: any = Orders.networks[environment.network].address;
+  currentOrder: any;
   ordersABI: any = OrdersV1.abi;
   orderABI: any = Order.abi;
   address: string = environment.path;
@@ -52,7 +64,7 @@ export class BlockchainService {
   public newOrder = this.newOrderSource.asObservable();
 
   public updatedOrderSource = new Subject<OrderModel>();
-  public updatedOrder = this.updatedOrderSource.asObservable();
+  public updatedOrder = this.updatedOrderSource.asObservable().pipe(debounce(() => timer(200)));
 
   public readonly items = ['Apples', 'Bananas', 'Oranges'];
   private servicePromise: Promise<any>;
@@ -62,7 +74,13 @@ export class BlockchainService {
     private alertService: ErrorAlertService,
     private http: HttpClient,
     private notifierService: NotifierService,
+    private translate: TranslateService
   ) {
+    this.initConnection();
+    this.servicePromise = this.getAccounts();
+  }
+
+  private initConnection() {
     if (environment.blockchainType === 'metamask' && window['web3']) {
       this.web3 = this.metaMask();
     } else if (environment.blockchainType === 'vmware') {
@@ -70,8 +88,6 @@ export class BlockchainService {
     } else {
       this.web3 = this.ganache();
     }
-
-    this.servicePromise = this.getAccounts();
   }
 
   metaMask(): Web3 {
@@ -94,7 +110,7 @@ export class BlockchainService {
     return this.sendOrder(order, 'confirmDelivery');
   }
 
-  createOrder(productType: string, quantity: number): Promise<any> {
+  createOrder(productType: string, quantity: number): Promise<string> {
     return fromPromise(this.servicePromise).pipe(mergeMap(() => {
       return new Promise((resolve, reject) => {
         return this.ordersContract.create(
@@ -104,8 +120,9 @@ export class BlockchainService {
           this.callbackToResolve(resolve, reject)
         );
       }).then((tx) => {
-        this.newOrderSource.next(tx);
-        return tx;
+        return this.orderCount().then(count => {
+          return this.order(count - 1);
+        });
       });
     })).toPromise();
   }
@@ -144,8 +161,89 @@ export class BlockchainService {
     });
   }
 
-  getMembers(): Promise<any> {
-    return this.http.get(`${environment.path}/concord/members`, this.getHttpOptions()).toPromise();
+
+  getLocations(order: OrderModel): Promise<any> {
+    const locations = [];
+
+    return this.call(order.contract, 'getLocationLength')
+      .then(async lengthBN => {
+        const length = (new this.web3.BigNumber(lengthBN)).toNumber();
+
+        for (let i = 0; i < length; ++i) {
+          // code...
+          const location = await this.call(order.contract, 'locationHistory', i);
+
+          const lat = Number(this.web3.toUtf8(location[0]));
+          const long = Number(this.web3.toUtf8(location[1]));
+          locations.push([long, lat]);
+        }
+
+        return locations;
+      });
+
+  }
+
+  getNodes(): Observable<any> {
+    const locations = [
+      {geo: [-80.294105, 38.5976], region: 'West Virginia', organization: 'Acme Inc'},
+      {geo: [-119.692793, 45.836507], region: 'Oregon', organization: 'Acme Inc'},
+      {geo: [151.21, -33.868], region: 'Sydney', organization: 'On Time Dist LLC'},
+      {geo: [8.67972, 45.836507], region: 'Frankfurt', organization: 'NGO'},
+      {geo: [-80.294105, 38.5976], region: 'West Virginia', organization: 'Customs'},
+      {geo: [-119.692793, 45.836507], region: 'Oregon', organization: 'Supplier Corp'},
+      {geo: [151.21, -33.868], region: 'Sydney', organization: 'Supplier Corp'},
+      {geo: [8.67972, 45.836507], region: 'Frankfurt', organization: 'Customs'},
+    ];
+
+    return this.http.get(
+      `${environment.path}/concord/members`,
+      this.getHttpOptions()
+    ).pipe(
+      map(nodes => {
+        const groupedNodes: NodeProperties[] = [];
+        const tempNode = {};
+
+        // @ts-ignore
+        nodes.forEach((node, i) => {
+          node['geo'] = locations[i].geo;
+          node['location'] = locations[i].region;
+          node['organization'] = locations[i].organization;
+          let text = '';
+
+          if (node.millis_since_last_message < node.millis_since_last_message_threshold) {
+            // text = this.translate.instant('nodes.healthy');
+            text = 'Healthy';
+            node['healthy'] = true;
+            node['status'] = text;
+          } else {
+            // text = this.translate.instant('nodes.unhealthy');
+            text = 'Unhealthy';
+            node['healthy'] = false;
+            node['status'] = text;
+          }
+
+          //
+          // Cluster nodes
+          if (tempNode[node.location]) {
+            tempNode[node.location].push(node);
+          } else {
+            tempNode[node.location] = [node];
+          }
+
+        });
+
+        Object.values(tempNode).forEach(temp => {
+          groupedNodes.push({
+            location: temp[0].location,
+            geo: temp[0].geo,
+            // @ts-ignore
+            nodes: temp
+          });
+        });
+
+        return { nodes: nodes, nodesByLocation: groupedNodes };
+      })
+    );
   }
 
   getOrder(index: number): Promise<OrderModel> {
@@ -206,6 +304,7 @@ export class BlockchainService {
 
     const loadHistory = this.getHistory(order).then((history) => {
       order.history = history;
+      return order;
     });
 
     const loadDocument = new Promise((resolve, reject) => {
@@ -216,38 +315,15 @@ export class BlockchainService {
       return order;
     });
 
-    return Promise.all([loadHistory, loadDocument]).then(() => {
+    return Promise.all([loadHistory, loadDocument]).then(response => {
       order.detailsPopulated = true;
+      this.currentOrder = order;
       return order;
     });
   }
 
-  receivedAndInTransitOrder(order: OrderModel): Promise<any> {
-    return this.sendOrder(order, 'receivedAndInTransit');
-  }
-
-  revokeOrder(order: OrderModel): Promise<any> {
-    return this.sendOrder(order, 'revoke');
-  }
-
   storeAuditDocumentOrder(order: OrderModel, address: string): Promise<any> {
     return this.sendOrder(order, 'storeAuditDocument', address);
-  }
-
-  validatedOrder(order: OrderModel): Promise<any> {
-    return this.sendOrder(order, 'validated');
-  }
-
-  verifyInTransitOrder(order: OrderModel): Promise<any> {
-    return this.sendOrder(order, 'verifyInTransit');
-  }
-
-  warehouseReceivedOrder(order: OrderModel): Promise<any> {
-    return this.sendOrder(order, 'warehouseReceivedOrder');
-  }
-
-  warehouseReleasedOrder(order: OrderModel): Promise<any> {
-    return this.sendOrder(order, 'warehouseReleasedOrder');
   }
 
   async getDocument(docAddress: string): Promise<any> {
@@ -313,7 +389,7 @@ export class BlockchainService {
     });
   }
 
-  private callWithPromise(methodName: string, ...args: any[]): Promise<any> {
+  callWithPromise(methodName: string, ...args: any[]): Promise<any> {
     return fromPromise(this.servicePromise).pipe(mergeMap(() => {
       return new Promise((resolve, reject) => {
         if (args.length === 0) {
@@ -324,6 +400,19 @@ export class BlockchainService {
       });
     })).toPromise();
   }
+
+  call(contrct: any, methodName: string, ...args: any[]): Promise<any> {
+    return fromPromise(this.servicePromise).pipe(mergeMap(() => {
+      return new Promise((resolve, reject) => {
+        if (args.length === 0) {
+          return contrct[methodName](this.callbackToResolve(resolve, reject));
+        } else {
+          return contrct[methodName](...args, this.callbackToResolve(resolve, reject));
+        }
+      });
+    })).toPromise();
+  }
+
 
   private getAccounts(): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -336,14 +425,24 @@ export class BlockchainService {
       this.web3.eth.defaultAccount = this.from;
       this.ordersContract = this.web3.eth.contract(this.ordersABI).at(this.ordersAddress);
       // Instantiate our doc provider
+      this.initDoc();
+    });
+  }
+
+  private initDoc() {
       this.Doc = contract({
         abi: DocumentMeta.abi
       });
       this.Doc.bytecode = DocumentMeta.bytecode;
-      this.Doc.setProvider(this.authService.getVmwareBlockChainProvider());
-      this.Doc.defaults(this.sendDefaults);
-    });
 
+      if (environment.blockchainType === 'vmware') {
+        this.Doc.setProvider(this.authService.getVmwareBlockChainProvider());
+      } else {
+        this.Doc.setProvider(new Web3.providers.HttpProvider(this.address));
+        console.log(this.Doc);
+
+      }
+      this.Doc.defaults(this.sendDefaults);
   }
 
   private getHttpOptions(): any {
@@ -363,8 +462,11 @@ export class BlockchainService {
     }).then((resp) => {
       this.notifierService.update(resp);
       return this.getOrderByAddress(order.id).then((updatedOrder) => {
+        updatedOrder['where'] = 'sendOrder';
         this.updatedOrderSource.next(updatedOrder);
-        return updatedOrder;
+        return this.populateOrderDetails(updatedOrder).then(populatedOrder => {
+          return populatedOrder;
+        });
       });
     }).catch(err => {
       this.alertService.add(err);
@@ -380,10 +482,27 @@ export class BlockchainService {
     });
   }
 
-  private callbackToResolve(resolve, reject) {
+  private callbackToResolve(resolve, reject, retry: boolean = false) {
+    const self = this;
     return function(error, value) {
       if (error) {
-        reject(error);
+        const errorMessage = error.message ? JSON.parse(error.message.replace('Invalid JSON RPC response: ', '')) : {};
+        // Retry access token once more
+        if (errorMessage && errorMessage.status === 401 && !retry) {
+          console.log('retrying');
+
+          const reset = async () => {
+            await self.authService.refreshAccessToken().toPromise();
+            self.initConnection();
+          };
+          reset();
+          self.callbackToResolve(resolve, reject, true);
+
+        } else {
+          console.log('reject');
+          reject(error);
+        }
+
       } else {
         resolve(value);
       }
@@ -403,6 +522,27 @@ export class BlockchainService {
         response => console.log(response),
         error => console.log(error)
       );
+  }
+
+  genFakeLocations(): any {
+    const locations = {};
+    locations[OrderActions.ACTION_APPROVED] = [[-72.1279957, -36.604724]];
+    locations[OrderActions.ACTION_VALIDATED] = [[-70.7699144, -33.4727092]];
+    locations[OrderActions.ACTION_STORAGE_RECEIVED] = [[-73.1922875, -36.989655]];
+    locations[OrderActions.ACTION_STORAGE_RELEASED] = [[-73.1922875, -36.989655]];
+    locations[OrderActions.ACTION_SHIPPED] = [
+      [-73.1723565, -37.0936613],
+      [-73.2937571, -37.0347302],
+      [-75.8334716, -18.71571],
+      [-85.2449906, -5.4785062],
+      [-81.4745861, 3.647946],
+      [-79.8686006, 9.1437766],
+      [-73.7904787, 20.012401],
+      [-74.1197633, 40.6974034]
+    ];
+    locations[OrderActions.ACTION_RECEIVED] = [[-73.9944989, 40.7238246]];
+
+    return locations;
   }
 
 }

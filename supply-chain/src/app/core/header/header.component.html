@@ -17,10 +17,11 @@ The full license information can be found in LICENSE in the root directory of th
   </a>
 </div>
 <div class="header-actions">
-  <clr-dropdown>
-    <button (click)="nextRole()" class="nav-text" clrDropdownTrigger>
+    <a href="javascript://" (click)="nextRole()" class="nav-text nav-link">
       <clr-icon shape="user"></clr-icon>
       {{ 'role.' + currentUser.role | translate }}
-    </button>
-  </clr-dropdown>
+    </a>
+  <a href="javascript://" (click)="logOut()" class="nav-text nav-link">
+    {{ 'logout' | translate }}
+  </a>
 </div>

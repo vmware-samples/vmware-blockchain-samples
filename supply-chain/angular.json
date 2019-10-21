@@ -75,6 +75,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
+            "host": "127.0.0.1",
+            "disableHostCheck": true,
             "browserTarget": "supply-chain-dapp:build"
           },
           "configurations": {
@@ -109,7 +111,25 @@
             "assets": [
               "src/favicon.png",
               "src/assets"
-            ]
+            ],
+          },
+          "configurations": {
+            "ganache-dev": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.ganache-dev.ts"
+                }
+              ]
+            },
+            "vmware-dev": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.vmware-dev.ts"
+                }
+              ]
+            }
           }
         },
         "lint": {

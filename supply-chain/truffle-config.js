@@ -66,6 +66,13 @@ module.exports = {
         "https://<email>:<refresh-token>@<hostname-fqdn>/api/blockchains/<blockchain-id>/concord/eth"
       )
     },
+    vmwarews: {
+      network_id: "*",
+      quiet: true,
+      provider: () => Web3.providers.WebsocketProvider(
+        "wss://localhost:8080/ws"
+      )
+    },
     // Another network with more advanced options...
     // advanced: {
       // port: 8777,             // Custom port

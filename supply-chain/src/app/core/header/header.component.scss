@@ -27,6 +27,22 @@
 .nav-link {
   clr-icon {
     color: white;
+    left: 6px;
+    height: .9rem;
+    width: .9rem;
   }
   width: auto;
+}
+
+.header-actions .nav-link:first-child::after {
+  display: inline-block;
+  position: absolute;
+  content: "";
+  background: #fafafa;
+  opacity: .15;
+  height: 1.666667rem;
+  width: 1px;
+  top: .4166665rem;
+  left: auto;
+  margin-left: 1rem;
 }

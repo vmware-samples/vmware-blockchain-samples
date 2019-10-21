@@ -10,17 +10,17 @@ const timestamp = new Date().getTime();
 
 verifyMigrations();
 verifyOrdersV1();
-verifyOrdersProxy()
+verifyOrdersProxy();
 
 function verify(data, address) {
-  const username = '<username>';
-  const password = '<password>';
+  const username = 'admin@blockchain.local';
+  const password = 'T3sting!';
   const auth = 'Basic ' + Buffer.from(username + ':' + password).toString('base64');
 
   const options = {
-    host: "localhost",
+    host: "mgmt.blockchain.vmware.com",
     port: 443,
-    path: "/blockchains/local/api/concord/contracts/" + address,
+    path: "/blockchains/0588a005-18cb-4335-8293-c315a03af1c0/api/concord/contracts/" + address,
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

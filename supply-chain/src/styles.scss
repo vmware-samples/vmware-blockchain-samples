@@ -7,10 +7,15 @@
 /* You can add global styles to this file, and also import other style files */
 
 
+// OpenLayers CSS
+@import "../node_modules/ol/ol";
 @import "../node_modules/@clr/ui/src/utils/dependencies.clarity";
+
+
 
 $color-failure: $clr-red;
 $color-pending: $clr-yellow;
+$color-none: #ccc;
 $color-success: $clr-green-dark-midtone;
 
 $roles:(
@@ -26,6 +31,13 @@ $roles:(
     background-color: $color;
     color: white;
   }
+  .text-#{$role} {
+    color: $color;
+    font-weight: 600;
+  }
+  .card-#{$role} {
+    border-color: $color;
+  }
 }
 
 .login {
@@ -39,4 +51,15 @@ $roles:(
     padding-right: 0;
     padding-left: 0;
   }
+}
+
+.ol-zoom {
+  top: initial;
+  right: 0.5em;
+  bottom: 0.5em;
+  left: initial;
+}
+
+div[class^="clr-col-"] .card-orders:first-child {
+  margin-top: 0;
 }

@@ -16,12 +16,11 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  @ViewChild('username') usernameEl: ElementRef;
+  @ViewChild('refresh') refreshEl: ElementRef;
   error: boolean;
 
   loginForm: FormGroup = new FormGroup({
-      username: new FormControl('', Validators.required),
-      password: new FormControl('', Validators.required)
+      refresh: new FormControl('', Validators.required),
   });
 
   logginIn: boolean;
@@ -32,13 +31,13 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.usernameEl.nativeElement.focus();
+    this.refreshEl.nativeElement.focus();
   }
 
   onSubmit() {
     this.logginIn = true;
     this.authService
-      .loginLocally(this.loginForm.get('username').value, this.loginForm.get('password').value)
+      .loginLocally(this.loginForm.get('refresh').value)
       .subscribe(response => {
         this.logginIn = false;
         this.router.navigate(['/home']);
