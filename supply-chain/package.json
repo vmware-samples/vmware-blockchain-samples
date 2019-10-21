@@ -38,7 +38,6 @@
     "@clr/angular": "^1.1.2",
     "@clr/icons": "^1.1.2",
     "@clr/ui": "^1.1.2",
-    "@ngrx/store": "^8.0.0",
     "@nguniversal/express-engine": "^7.1.1",
     "@nguniversal/module-map-ngfactory-loader": "0.0.0",
     "@ngx-translate/core": "^11.0.1",

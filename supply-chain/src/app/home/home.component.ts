@@ -23,6 +23,8 @@ import { UserService } from '../core/user/user.service';
 import { NotifierService } from '../shared/notifier.service';
 import { WorldMapComponent } from '../world-map/world-map.component';
 
+import { environment } from '../../environments/environment';
+
 @Component({
   selector: 'vmw-sc-home',
   templateUrl: './home.component.html',
@@ -68,7 +70,8 @@ export class HomeComponent implements OnDestroy, OnInit, AfterViewInit {
 
     this.route.firstChild.params.subscribe(params => {
       const orderId = params['order_id'];
-      if (orderId) {
+      const web3 = this.blockchainService.web3;
+      if (orderId && web3.isAddress(orderId)) {
         this.blockchainService.getOrderByAddress(orderId).then(order => {
           this.blockchainService.getLocations(order).then(locations => {
             this.worldMap.syncLocations(locations);
@@ -94,7 +97,10 @@ export class HomeComponent implements OnDestroy, OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.setNodes();
+    if (environment.blockchainType === 'vmware') {
+      this.setNodes();
+
+    }
   }
 
   ngOnDestroy() {

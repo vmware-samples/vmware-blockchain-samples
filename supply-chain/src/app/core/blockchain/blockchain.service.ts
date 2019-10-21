@@ -425,14 +425,24 @@ export class BlockchainService {
       this.web3.eth.defaultAccount = this.from;
       this.ordersContract = this.web3.eth.contract(this.ordersABI).at(this.ordersAddress);
       // Instantiate our doc provider
+      this.initDoc();
+    });
+  }
+
+  private initDoc() {
       this.Doc = contract({
         abi: DocumentMeta.abi
       });
       this.Doc.bytecode = DocumentMeta.bytecode;
-      this.Doc.setProvider(this.authService.getVmwareBlockChainProvider());
-      this.Doc.defaults(this.sendDefaults);
-    });
 
+      if (environment.blockchainType === 'vmware') {
+        this.Doc.setProvider(this.authService.getVmwareBlockChainProvider());
+      } else {
+        this.Doc.setProvider(new Web3.providers.HttpProvider(this.address));
+        console.log(this.Doc);
+
+      }
+      this.Doc.defaults(this.sendDefaults);
   }
 
   private getHttpOptions(): any {
