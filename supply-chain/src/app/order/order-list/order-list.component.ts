@@ -83,7 +83,13 @@ export class OrderListComponent implements OnDestroy, OnInit {
   }
 
   private replaceOrder(order: Order) {
-    const orderIndex = this.orders.map((o) => o.id).indexOf(order.id);
+    const orderIdList = this.orders.map((o) => o.id);
+    if (orderIdList.length === 0) {
+      return false;
+    }
+
+    const orderIndex = orderIdList.indexOf(order.id);
+
     if (orderIndex >= 0) {
       this.orders.splice(orderIndex, 1, order);
       this._gridSelectedOrder = order;

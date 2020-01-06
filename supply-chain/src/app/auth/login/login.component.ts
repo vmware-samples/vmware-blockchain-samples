@@ -21,6 +21,7 @@ export class LoginComponent implements OnInit {
 
   loginForm: FormGroup = new FormGroup({
       refresh: new FormControl('', Validators.required),
+      blockchainId: new FormControl('', Validators.required),
   });
 
   logginIn: boolean;
@@ -37,7 +38,7 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     this.logginIn = true;
     this.authService
-      .loginLocally(this.loginForm.get('refresh').value)
+      .loginLocally(this.loginForm.get('refresh').value, this.loginForm.get('blockchainId').value)
       .subscribe(response => {
         this.logginIn = false;
         this.router.navigate(['/home']);
