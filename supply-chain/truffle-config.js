@@ -56,6 +56,13 @@ module.exports = {
       host: "127.0.0.1",     // Localhost (default: none)
       port: 7545,            // Standard Ethereum port (default: none)
       timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
+    concord: {
+      network_id: "*",
+      host: "0.0.0.0",     // Localhost (default: none)
+      port: 8545,            // Standard Ethereum port (default: none)
+      timeoutBlocks: 200,  //k
+      skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+    },
       skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
     },
 

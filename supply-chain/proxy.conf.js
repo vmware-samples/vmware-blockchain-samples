@@ -17,6 +17,14 @@ const PROXY_CONFIG = {
       "^/vmware": ""
     }
   },
+  "/concord": {
+    "target": "http://127.0.0.1:8545",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/concord": ""
+    }
+  },
   "/ganache": {
     "target": "http://127.0.0.1:7545",
     "secure": false,

@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "start:concord": "npm run copy-contract-build && ng serve --proxy-config proxy.conf.js -c concord-dev",
     "start:ganache": "npm run copy-contract-build && ng serve --proxy-config proxy.conf.js -c ganache-dev",
     "start:vmware": "npm run copy-contract-build && ng serve --proxy-config proxy.conf.js -c vmware-dev",
     "build": "npm run copy-contract-build && ng build --prod",
