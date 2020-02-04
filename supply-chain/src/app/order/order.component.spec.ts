@@ -6,6 +6,7 @@
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
 
 import { MockSharedModule } from '../shared/shared.module';
@@ -23,7 +24,11 @@ describe('OrderComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [MockSharedModule, HttpClientTestingModule],
+      imports: [
+        MockSharedModule,
+        HttpClientTestingModule,
+        RouterTestingModule
+      ],
       declarations: [
         OrderComponent,
         OrderDetailComponent,

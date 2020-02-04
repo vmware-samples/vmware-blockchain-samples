@@ -6,6 +6,7 @@
 
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { MockTranslateModule } from '../../mocks/mock-translate.module';
 
 import { BlockchainService } from './blockchain.service';
@@ -16,7 +17,8 @@ describe('BlockchainService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       HttpClientTestingModule,
-      MockTranslateModule
+      MockTranslateModule,
+      RouterTestingModule
     ],
     providers: [
       AuthService,

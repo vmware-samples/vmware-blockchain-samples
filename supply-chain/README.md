@@ -32,7 +32,7 @@ Update the `truffle-config.js` with the correct url with the basic auth username
   vmware: {
     network_id: "*",
     provider: () => new Web3.providers.HttpProvider(
-      "https://<username>:<api-token>@<hostname-fqdn>/api/blockchains/<blockchain-id>/concord/eth"
+      "https://<username>:<api-token>@<hostname>/api/blockchains/<blockchain-id>/concord/eth"
     )
   },
 ```
@@ -61,6 +61,13 @@ Update the environment BC_URL endpoint in the `docker-compose.yml` file to point
 
 ```
 
+Due to authentication happening in the browser and we don't have a backend fetching access tokens for us, we need to add `supply-chain.vmware.com` to our `/etc/hosts` to get past a browser CORS issue.
+
+So in `/etc/hosts` add:
+
+```
+127.0.0.1 supply-chain.vmware.com
+```
 
 Then start the server.
 
@@ -69,7 +76,7 @@ docker-compose up
 ```
 ![Docker Up](./static/docker-compose-up.png "Docker Up")
 
-Finally, open [localhost:4200](http://localhost:4200) in your browser.
+Finally, open [supply-chain.vmware.com:4200](http://supply-chain.vmare.com:4200) in your browser.
 
 NOTE: You may need to open an ssh tunnel if you are running on a separate VM
 

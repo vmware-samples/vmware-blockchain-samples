@@ -6,12 +6,13 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 import * as HttpHeaderProvider from 'httpheaderprovider';
 import * as Web3 from 'web3';
 
 import { Observable, of, bindCallback, throwError } from 'rxjs';
-import { map, flatMap, retryWhen, } from 'rxjs/operators';
+import { map, flatMap, retryWhen, catchError } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 
@@ -23,14 +24,17 @@ export class AuthService {
   // store the URL so we can redirect after logging in
   redirectUrl: string;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   loginServerSide(username: string, password: string): Observable<any> {
     return this.http.post('/api/authenticate',
       { username: username, password: password });
   }
 
-  loginLocally(refreshToken?: string): Observable<boolean> {
+  loginLocally(refreshToken?: string, blockchainId?: string): Observable<boolean> {
+    if (blockchainId) {
+      localStorage.setItem('blockchainId', blockchainId);
+    }
 
     return this.refreshAccessToken(refreshToken);
   }
@@ -75,11 +79,15 @@ export class AuthService {
       map(authResponse => authResponse['access_token']),
       flatMap((token) => this.completeAuth(token)),
       map(isLoggedIn => {
-        if (isLoggedIn) {
-          localStorage.setItem('Refresh', refreshToken);
-        }
+        localStorage.setItem('Refresh', refreshToken);
         return isLoggedIn;
-      })
+      }),
+      catchError((error) => {
+        if (error && error.status === 400) {
+          this.router.navigate(['/login']);
+        }
+        return of(false);
+      }),
     );
   }
 
@@ -87,6 +95,7 @@ export class AuthService {
     this.isLoggedIn = false;
     localStorage.removeItem('Refresh');
     localStorage.removeItem('Access');
+    localStorage.removeItem('blockchainId');
   }
 
   loginCheck(): Promise<boolean> {
@@ -108,8 +117,10 @@ export class AuthService {
       accessToken = localStorage.getItem('Access');
     }
 
+    const blockchainId = localStorage.getItem('blockchainId');
     const header = { 'Authorization': `Bearer ${accessToken}` };
-    return new HttpHeaderProvider(`${environment.path}/concord/eth`, this.getAuthHeader(accessToken));
+
+    return new HttpHeaderProvider(`${environment.path}/api/blockchains/${blockchainId}/concord/eth`, this.getAuthHeader(accessToken));
   }
 
 }

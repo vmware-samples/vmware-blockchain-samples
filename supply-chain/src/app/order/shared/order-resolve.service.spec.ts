@@ -6,6 +6,7 @@
 
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { OrderResolver } from './order-resolve.service';
 import { BlockchainService } from './../../core/blockchain/blockchain.service';
@@ -14,7 +15,11 @@ import { MockTranslateModule } from './../../mocks/mock-translate.module';
 
 describe('OrderResolveService', () => {
   beforeEach(() => TestBed.configureTestingModule({
-    imports: [HttpClientTestingModule, MockTranslateModule],
+    imports: [
+      HttpClientTestingModule,
+      MockTranslateModule,
+      RouterTestingModule
+    ],
     providers: [
       BlockchainService,
       OrderResolver,

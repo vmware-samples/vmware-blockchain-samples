@@ -194,9 +194,10 @@ export class BlockchainService {
       {geo: [151.21, -33.868], region: 'Sydney', organization: 'Supplier Corp'},
       {geo: [8.67972, 45.836507], region: 'Frankfurt', organization: 'Customs'},
     ];
+    const blockchainId = localStorage.getItem('blockchainId');
 
     return this.http.get(
-      `${environment.path}/concord/members`,
+      `${environment.path}/api/blockchains/${blockchainId}/replicas`,
       this.getHttpOptions()
     ).pipe(
       map(nodes => {
@@ -486,23 +487,7 @@ export class BlockchainService {
     const self = this;
     return function(error, value) {
       if (error) {
-        const errorMessage = error.message ? JSON.parse(error.message.replace('Invalid JSON RPC response: ', '')) : {};
-        // Retry access token once more
-        if (errorMessage && errorMessage.status === 401 && !retry) {
-          console.log('retrying');
-
-          const reset = async () => {
-            await self.authService.refreshAccessToken().toPromise();
-            self.initConnection();
-          };
-          reset();
-          self.callbackToResolve(resolve, reject, true);
-
-        } else {
-          console.log('reject');
-          reject(error);
-        }
-
+        reject(error);
       } else {
         resolve(value);
       }
