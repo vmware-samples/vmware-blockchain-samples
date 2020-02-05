@@ -41,6 +41,8 @@ import {
   NodesResponse,
 } from './../../shared/node.model';
 
+import { BlockchainType } from './blockchain';
+
 
 @Injectable({
   providedIn: 'root'
@@ -81,9 +83,9 @@ export class BlockchainService {
   }
 
   private initConnection() {
-    if (environment.blockchainType === 'metamask' && window['web3']) {
+    if (environment.blockchainType === BlockchainType.metamask && window['web3']) {
       this.web3 = this.metaMask();
-    } else if (environment.blockchainType === 'vmware') {
+    } else if (environment.blockchainType === BlockchainType.vmware) {
       this.web3 = this.vmwareBlockchain();
     } else {
       this.web3 = this.ganache();
@@ -194,10 +196,9 @@ export class BlockchainService {
       {geo: [151.21, -33.868], region: 'Sydney', organization: 'Supplier Corp'},
       {geo: [8.67972, 45.836507], region: 'Frankfurt', organization: 'Customs'},
     ];
-    const blockchainId = localStorage.getItem('blockchainId');
 
     return this.http.get(
-      `${environment.path}/api/blockchains/${blockchainId}/replicas`,
+      `${environment.path}/concord/members`,
       this.getHttpOptions()
     ).pipe(
       map(nodes => {
@@ -436,7 +437,7 @@ export class BlockchainService {
       });
       this.Doc.bytecode = DocumentMeta.bytecode;
 
-      if (environment.blockchainType === 'vmware') {
+      if (environment.blockchainType === BlockchainType.vmware) {
         this.Doc.setProvider(this.authService.getVmwareBlockChainProvider());
       } else {
         this.Doc.setProvider(new Web3.providers.HttpProvider(this.address));
@@ -486,7 +487,33 @@ export class BlockchainService {
   private callbackToResolve(resolve, reject, retry: boolean = false) {
     const self = this;
     return function(error, value) {
-      if (error) {
+      if (environment.blockchainType === BlockchainType.concord || BlockchainType.ganache) {
+        if (error) {
+          this.alertService.add(error);
+        }
+
+        resolve(value);
+      } else if (error) {
+        this.alertService.add(error);
+
+        const errorMessage = error.message ? JSON.parse(error.message.replace('Invalid JSON RPC response: ', '')) : {};
+        // Retry access token once more
+        if (errorMessage && errorMessage.status === 401 && !retry) {
+          console.log('retrying');
+
+          const reset = async () => {
+            await self.authService.refreshAccessToken().toPromise();
+            self.initConnection();
+          };
+          reset();
+          self.callbackToResolve(resolve, reject, true);
+
+        } else {
+          console.log('reject');
+          reject(error);
+        }
+        resolve(value);
+      } else if (error) {
         reject(error);
       } else {
         resolve(value);
