@@ -17,3 +17,10 @@ export class BlockchainNode {
   status: string;
   transactionState: BlockchainNodeTransactionStates;
 }
+
+export enum BlockchainType {
+   ganache = 'ganache',
+   concord = 'concord',
+   vmware = 'vmware',
+   metamask = 'metamask'
+ }

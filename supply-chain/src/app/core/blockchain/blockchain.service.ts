@@ -491,6 +491,27 @@ export class BlockchainService {
         if (error) {
           this.alertService.add(error);
         }
+
+        resolve(value);
+      } else if (error) {
+        this.alertService.add(error);
+
+        const errorMessage = error.message ? JSON.parse(error.message.replace('Invalid JSON RPC response: ', '')) : {};
+        // Retry access token once more
+        if (errorMessage && errorMessage.status === 401 && !retry) {
+          console.log('retrying');
+
+          const reset = async () => {
+            await self.authService.refreshAccessToken().toPromise();
+            self.initConnection();
+          };
+          reset();
+          self.callbackToResolve(resolve, reject, true);
+
+        } else {
+          console.log('reject');
+          reject(error);
+        }
         resolve(value);
       } else if (error) {
         reject(error);

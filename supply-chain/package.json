@@ -8,6 +8,7 @@
     "start:vmware": "npm run copy-contract-build && ng serve --proxy-config proxy.conf.js -c vmware-dev",
     "build": "npm run copy-contract-build && ng build --prod",
     "deploy:dev": "truffle migrate --reset --network=development && npm run copy-contract-build",
+    "deploy:concord": "truffle migrate --reset --network=concord && npm run copy-contract-build",
     "deploy:vmware": "truffle migrate --reset --network=vmware && npm run copy-contract-build",
     "verify_contracts:vmware": "bash verify/flatten.sh && node verify/verify.js",
     "deploy_and_verify:vmware": "npm run deploy:vmware && npm run verify_contracts:vmware",

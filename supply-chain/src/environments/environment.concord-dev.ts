@@ -6,7 +6,7 @@
 
 export const environment = {
   production: false,
-  blockchainType: 'ganache',
+  blockchainType: 'concord',
   path: 'http://localhost:4200/concord',
   network: '5000',
 };

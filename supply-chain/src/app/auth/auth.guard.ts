@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 VMware, all rights reserved.
+ * Copyright 2019-2020 VMware, all rights reserved.
  * This software is released under MIT license.
  * The full license information can be found in LICENSE in the root directory of this project.
  */
@@ -14,6 +14,7 @@ import {
 
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
+import { BlockchainType } from '../core/blockchain/blockchain';
 
 @Injectable({
   providedIn: 'root',
@@ -34,7 +35,7 @@ export class AuthGuard implements CanActivate {
 
   async checkLogin(url: string): Promise<boolean> {
     // Don't need to login with ganache
-    if (environment.blockchainType === 'ganache') { return true; }
+    if (environment.blockchainType === BlockchainType.ganache || BlockchainType.concord) { return true; }
     if (this.authService.isLoggedIn) { return true; }
     if (await this.authService.loginCheck()) { return true; }
 
