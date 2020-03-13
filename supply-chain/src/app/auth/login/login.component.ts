@@ -16,7 +16,7 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  @ViewChild('refresh') refreshEl: ElementRef;
+  @ViewChild('refresh', { static: true }) refreshEl: ElementRef;
   error: boolean;
 
   loginForm: FormGroup = new FormGroup({

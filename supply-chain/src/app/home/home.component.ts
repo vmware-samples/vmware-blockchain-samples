@@ -31,7 +31,7 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnDestroy, OnInit, AfterViewInit {
-  @ViewChild('worldMap') worldMap: WorldMapComponent;
+  @ViewChild('worldMap', { static: true }) worldMap: WorldMapComponent;
   createOrderVisible = false;
   currentUser: any;
   alerts: any[] = [];
