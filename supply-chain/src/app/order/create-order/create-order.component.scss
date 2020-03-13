@@ -7,3 +7,7 @@
 input[type=number] {
   width: 82px;
 }
+
+::ng-deep .clr-form-horizontal .clr-form-control>.clr-control-label {
+  width: 6rem;
+}

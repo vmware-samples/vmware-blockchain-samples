@@ -21,9 +21,7 @@
   }
 }
 
-@include media-breakpoint-down(xs) {
-  .status-connector {
-    padding-left: 0px;
-    padding-right: 0px;
-  }
+.status-connector {
+  padding-left: 0px;
+  padding-right: 0px;
 }
