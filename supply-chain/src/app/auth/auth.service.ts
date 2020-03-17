@@ -9,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 import * as HttpHeaderProvider from 'httpheaderprovider';
-import * as Web3 from 'web3';
+import Web3 from 'web3';
 
 import { Observable, of, bindCallback, throwError } from 'rxjs';
 import { map, flatMap, retryWhen, catchError } from 'rxjs/operators';
@@ -41,8 +41,7 @@ export class AuthService {
 
   completeAuth(accessToken: string): Observable<boolean> {
     const provider = this.getVmwareBlockChainProvider(accessToken);
-    const web3 = new Web3();
-    web3.setProvider(provider);
+    const web3 = new Web3(provider);
 
     const getBlock = bindCallback(web3.eth.getBlock);
 

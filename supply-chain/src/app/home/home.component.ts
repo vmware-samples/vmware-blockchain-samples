@@ -71,7 +71,7 @@ export class HomeComponent implements OnDestroy, OnInit, AfterViewInit {
     this.route.firstChild.params.subscribe(params => {
       const orderId = params['order_id'];
       const web3 = this.blockchainService.web3;
-      if (orderId && web3.isAddress(orderId)) {
+      if (orderId && web3.utils.isAddress(orderId)) {
         this.blockchainService.getOrderByAddress(orderId).then(order => {
           this.blockchainService.getLocations(order).then(locations => {
             this.worldMap.syncLocations(locations);
