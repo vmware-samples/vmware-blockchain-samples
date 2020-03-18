@@ -12,8 +12,6 @@ import { timer } from 'rxjs';
 import { mergeMap, map, debounce } from 'rxjs/operators';
 
 import Web3 from 'web3';
-import * as HttpHeaderProvider from 'httpheaderprovider';
-import * as contract from 'truffle-contract';
 import * as pako from 'pako';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -53,13 +51,15 @@ export class BlockchainService {
   currentOrder: any;
   ordersABI: any = OrdersV1.abi;
   orderABI: any = Order.abi;
+  docABI: any = DocumentMeta.abi;
+  docBC: any = DocumentMeta.bytecode;
   address: string = environment.path;
   web3: Web3;
   ordersContract: any;
   docContract: any;
   from: string;
   accounts: string[];
-  sendDefaults = { from: undefined, 'gas': '4400000' };
+  sendDefaults = { from: undefined, 'gas': 4400000 };
   Doc: any;
 
   private newOrderSource = new Subject<any>();
@@ -247,13 +247,6 @@ export class BlockchainService {
     });
   }
 
-  getReceipt(txReceipt: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.web3.eth.getTransactionReceipt(
-        txReceipt, this.callbackToResolve(resolve, reject));
-    });
-  }
-
   order(index: number): Promise<any> {
     return this.callWithPromise('orders', index);
   }
@@ -312,16 +305,15 @@ export class BlockchainService {
   }
 
   async getDocument(docAddress: string): Promise<any> {
-    this.docContract = await this.Doc.at(docAddress);
+    this.docContract = new this.web3.eth.Contract(this.docABI, docAddress);
 
-    // return this.docContract.docString()
+    // return this.docContract.methods.docString().call()
     //   .then(deflated => {
     //       return pako.inflate(
     //         deflated,
     //         { to: 'string' }
     //       );
     //   });
-
     return this.docContract.getPastEvents('DocumentEvent', { fromBlock: 0, toBlock: 'latest' })
       .then(events => {
         if (events && events[0] && events[0].returnValues[0]) {
@@ -396,26 +388,9 @@ export class BlockchainService {
       this.web3.eth.defaultAccount = this.from;
       this.ordersContract = new this.web3.eth.Contract(this.ordersABI, this.ordersAddress);
       // Instantiate our doc provider
-      this.initDoc();
 
       return accounts;
     });
-  }
-
-  private initDoc() {
-      this.Doc = contract({
-        abi: DocumentMeta.abi
-      });
-      this.Doc.bytecode = DocumentMeta.bytecode;
-
-      if (environment.blockchainType === BlockchainType.vmware) {
-        this.Doc.setProvider(this.authService.getVmwareBlockChainProvider());
-      } else {
-        this.Doc.setProvider(new Web3.providers.HttpProvider(this.address));
-        console.log(this.Doc);
-
-      }
-      this.Doc.defaults(this.sendDefaults);
   }
 
   private getHttpOptions(): any {
@@ -448,52 +423,25 @@ export class BlockchainService {
     ).send(this.sendDefaults);
   }
 
-  private callbackToResolve(resolve, reject, retry: boolean = false) {
-    const self = this;
-    return function(error, value) {
-      if (environment.blockchainType === BlockchainType.concord || BlockchainType.ganache) {
-        if (error) {
-          this.alertService.add(error);
-        }
-
-        resolve(value);
-      } else if (error) {
-        this.alertService.add(error);
-
-        const errorMessage = error.message ? JSON.parse(error.message.replace('Invalid JSON RPC response: ', '')) : {};
-        // Retry access token once more
-        if (errorMessage && errorMessage.status === 401 && !retry) {
-          console.log('retrying');
-
-          const reset = async () => {
-            await self.authService.refreshAccessToken().toPromise();
-            self.initConnection();
-          };
-          reset();
-          self.callbackToResolve(resolve, reject, true);
-
-        } else {
-          console.log('reject');
-          reject(error);
-        }
-        resolve(value);
-      } else if (error) {
-        reject(error);
-      } else {
-        resolve(value);
-      }
-    };
-  }
-
   private async inEventStore(order, file) {
     const deflated = pako.deflate(file, { to: 'string' });
+    const newDoc = new this.web3.eth.Contract(this.docABI);
 
-    this.docContract = await this.Doc.new();
-    const txReceipt = await this.docContract.inEvent(deflated);
+    this.docContract = await newDoc.deploy({
+      data: this.docBC,
+      arguments: []
+    }).send(this.sendDefaults);
+
+    await this.docContract
+      .methods.inEvent(deflated)
+      .send(this.sendDefaults);
+
     // This is commented out for the Hands On Section.
-    // const txReceipt = await this.docContract.inString(deflated);
-    const receipt = await this.getReceipt(txReceipt.tx);
-    return this.storeAuditDocumentOrder(order, this.docContract.address)
+    // await this.docContract
+    //   .methods.inString(deflated)
+    //   .send(this.sendDefaults);
+    // const receipt = await this.getReceipt(txReceipt.tx);
+    return this.storeAuditDocumentOrder(order, this.docContract.options.address)
       .then(
         response => console.log(response),
         error => console.log(error)

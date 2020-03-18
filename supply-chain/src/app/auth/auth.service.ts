@@ -8,7 +8,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import * as HttpHeaderProvider from 'httpheaderprovider';
 import Web3 from 'web3';
 
 import { Observable, of, bindCallback, throwError } from 'rxjs';
@@ -107,11 +106,12 @@ export class AuthService {
     }
 
     return {
-      'Authorization': `Bearer ${accessToken}`,
+      name: 'Authorization',
+      value: `Bearer ${accessToken}`,
     };
   }
 
-  getVmwareBlockChainProvider(accessToken?: string): HttpHeaderProvider {
+  getVmwareBlockChainProvider(accessToken?: string): any {
     if (!accessToken) {
       accessToken = localStorage.getItem('Access');
     }
@@ -119,7 +119,10 @@ export class AuthService {
     const blockchainId = localStorage.getItem('blockchainId');
     const header = { 'Authorization': `Bearer ${accessToken}` };
 
-    return new HttpHeaderProvider(`${environment.path}/api/blockchains/${blockchainId}/concord/eth`, this.getAuthHeader(accessToken));
+    return new Web3.providers.HttpProvider(
+      `${environment.path}/api/blockchains/${blockchainId}/concord/eth`,
+      {headers: [this.getAuthHeader(accessToken)]}
+    );
   }
 
 }

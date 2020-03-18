@@ -21,11 +21,10 @@ export class OrderResolver implements Resolve<any> {
     await this.blockchainService.getAccounts();
     if (route.params && route.params['order_id'] && web3.utils.isAddress(route.params['order_id'])) {
       const orderId = route.params['order_id'];
-      const order = await this.blockchainService.getOrderByAddress(orderId)
-        console.log('order');
-        console.log(order);
+      const order = await this.blockchainService.getOrderByAddress(orderId);
       const response =  await this.blockchainService.populateOrderDetails(order);
-        return response;
+
+      return response;
     } else {
       return new Promise((resolve, reject) => {
          resolve(false);
