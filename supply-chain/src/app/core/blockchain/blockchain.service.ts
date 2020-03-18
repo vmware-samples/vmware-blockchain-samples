@@ -363,6 +363,11 @@ export class BlockchainService {
   }
 
   callWithPromise(methodName: string, ...args: any[]): Promise<any> {
+    if (!this.ordersContract) {
+      return new Promise((resolve, reject) => {
+        resolve('Current order contract is not instantiated.');
+      });
+    }
     if (args.length === 0) {
       return this.ordersContract.methods[methodName]().call();
     } else {
