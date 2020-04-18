@@ -6,7 +6,7 @@
 
 pragma solidity >=0.4.21 <0.6.0;
 
-import "zos-lib/contracts/upgradeability/AdminUpgradeabilityProxy.sol";
+import "./upgradeability/AdminUpgradeabilityProxy.sol";
 
 /**
  * @title OrdersProxy

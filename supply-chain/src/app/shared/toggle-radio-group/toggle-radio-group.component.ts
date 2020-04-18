@@ -14,7 +14,7 @@ import { SimpleConfirmationComponent } from '../simple-confirmation/simple-confi
 })
 export class ToggleRadioGroupComponent {
 
-  @ViewChild(SimpleConfirmationComponent) confirmation;
+  @ViewChild(SimpleConfirmationComponent, { static: true }) confirmation;
   _selectedValue: string;
 
   @Input() disabled = false;

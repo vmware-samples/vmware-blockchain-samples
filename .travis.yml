@@ -10,7 +10,7 @@ addons:
 language: node_js
 
 node_js:
-  - "8.15.1"
+  - "10.17.0"
 services:
   - docker
   - xvfb

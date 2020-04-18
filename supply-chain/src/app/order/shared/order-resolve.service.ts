@@ -13,20 +13,18 @@ import { BlockchainService } from './../../core/blockchain/blockchain.service';
 export class OrderResolver implements Resolve<any> {
   constructor(private blockchainService: BlockchainService) {}
 
-  resolve(
+  async resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Promise<any> {
     const web3 = this.blockchainService.web3;
-
-    if (route.params && route.params['order_id'] && web3.isAddress(route.params['order_id'])) {
+    await this.blockchainService.getAccounts();
+    if (route.params && route.params['order_id'] && web3.utils.isAddress(route.params['order_id'])) {
       const orderId = route.params['order_id'];
+      const order = await this.blockchainService.getOrderByAddress(orderId);
+      const response =  await this.blockchainService.populateOrderDetails(order);
 
-      return this.blockchainService.getOrderByAddress(orderId).then(order => {
-        return this.blockchainService.populateOrderDetails(order).then(response => {
-          return response;
-          });
-      });
+      return response;
     } else {
       return new Promise((resolve, reject) => {
          resolve(false);

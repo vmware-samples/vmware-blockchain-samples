@@ -107,26 +107,8 @@ clr-icon {
   width: 32px;
 }
 
-@include media-breakpoint-down(lg) {
-  .card-header {
-    font-size: 0.4rem;
-  }
-}
-
-@include media-breakpoint-down(sm) {
-  .card-header {
-    font-size: 0.33rem;
-  }
-}
-
-@include media-breakpoint-down(xs) {
-  .status-card-status {
-    font-size: 0.3rem;
-  }
-  .card-header {
-    font-size: 0.25rem;
-    padding: 0.05rem;
-  }
+.card-header {
+  font-size: 0.4rem;
 }
 
 /**

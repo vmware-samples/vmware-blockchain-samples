@@ -113,11 +113,11 @@ export class OrderListComponent implements OnDestroy, OnInit {
     const orderId = params.order_id;
     const web3 = this.blockchainService.web3;
 
-    if (orderId && web3.isAddress(orderId)) {
+    if (orderId && web3.utils.isAddress(orderId)) {
       this.contractId = orderId;
     }
 
-    if (this.orders && web3.isAddress(orderId)) {
+    if (this.orders && web3.utils.isAddress(orderId)) {
       const orderIsPresent = this.orders.find(order => order.id === this.contractId);
       if (!orderIsPresent) {
         this.refresh(this.datagridState, true);

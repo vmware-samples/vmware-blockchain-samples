@@ -163,8 +163,8 @@ export class OrderDetailComponent {
         await this.blockchainService.sendOrder(
           this._order,
           'updateLocation',
-          web3.fromAscii(location[1].toString()),
-          web3.fromAscii(location[0].toString())
+          web3.utils.fromAscii(location[1].toString()),
+          web3.utils.fromAscii(location[0].toString())
         );
       }
     }

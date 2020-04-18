@@ -8,8 +8,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import * as HttpHeaderProvider from 'httpheaderprovider';
-import * as Web3 from 'web3';
+import Web3 from 'web3';
 
 import { Observable, of, bindCallback, throwError } from 'rxjs';
 import { map, flatMap, retryWhen, catchError } from 'rxjs/operators';
@@ -41,8 +40,7 @@ export class AuthService {
 
   completeAuth(accessToken: string): Observable<boolean> {
     const provider = this.getVmwareBlockChainProvider(accessToken);
-    const web3 = new Web3();
-    web3.setProvider(provider);
+    const web3 = new Web3(provider);
 
     const getBlock = bindCallback(web3.eth.getBlock);
 
@@ -108,11 +106,12 @@ export class AuthService {
     }
 
     return {
-      'Authorization': `Bearer ${accessToken}`,
+      name: 'Authorization',
+      value: `Bearer ${accessToken}`,
     };
   }
 
-  getVmwareBlockChainProvider(accessToken?: string): HttpHeaderProvider {
+  getVmwareBlockChainProvider(accessToken?: string): any {
     if (!accessToken) {
       accessToken = localStorage.getItem('Access');
     }
@@ -120,7 +119,10 @@ export class AuthService {
     const blockchainId = localStorage.getItem('blockchainId');
     const header = { 'Authorization': `Bearer ${accessToken}` };
 
-    return new HttpHeaderProvider(`${environment.path}/api/blockchains/${blockchainId}/concord/eth`, this.getAuthHeader(accessToken));
+    return new Web3.providers.HttpProvider(
+      `${environment.path}/api/blockchains/${blockchainId}/concord/eth`,
+      {headers: [this.getAuthHeader(accessToken)]}
+    );
   }
 
 }
