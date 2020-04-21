@@ -19,19 +19,25 @@ contract("Upgrade Test", async accounts => {
     ordersProxy = await OrdersProxy.deployed();
     orders = await Orders.at(ordersProxy.address);
     ordersUpgraded = await OrdersUpgrade.new();
-    await ordersProxy.upgradeTo.sendTransaction(ordersUpgraded.address);
+    const upgradeRes = await ordersProxy.upgradeTo.sendTransaction(
+      ordersUpgraded.address, {from: accounts[2]}
+    );
+
 
     // Switch to Orders proxy contract, with OrdersV2 ABI
     await OrdersUpgrade.defaults({ from: accounts[1] });
     ordersUpgraded = await OrdersUpgrade.at(ordersProxy.address);
+
     const version = await ordersUpgraded.getVersion.call();
 
     expect(version).to.equal("2.0");
   });
 
   it("the newly created order should be the upgraded order contract", async () => {
-    await ordersUpgraded.create.sendTransaction(web3.fromUtf8('Apples'), 100);
-    orderAddress = await ordersUpgraded.orders.call(0);
+    await ordersUpgraded.create.sendTransaction(web3.utils.fromUtf8('Apples'), 100);
+
+    const ordersLength = await ordersUpgraded.getAmount.call();
+    orderAddress = await ordersUpgraded.orders.call(ordersLength - 1);
     orderUpgraded = await OrderUpgrade.at(orderAddress);
 
     const testString = await orderUpgraded.testUpgrade.call();

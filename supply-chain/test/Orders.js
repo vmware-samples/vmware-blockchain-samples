@@ -25,12 +25,12 @@ contract("Orders Test", async accounts => {
     expect(orderAddress).to.be.a('string');
   });
 
-  it("should create a 1000 orders", async () => {
-    for (let index = 0; index < 1000; index++) {
+  it("should create a 100 orders", async () => {
+    for (let index = 0; index < 100; index++) {
       await orders.create.sendTransaction(web3.utils.fromUtf8('Apples'), index);
     }
     const ordersLength = await orders.getAmount.call();
 
-    expect(ordersLength.toString()).to.equal('1002');
+    expect(ordersLength.toString()).to.equal('102');
   });
 });
