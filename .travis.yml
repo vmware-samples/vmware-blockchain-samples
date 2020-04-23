@@ -19,7 +19,7 @@ before_install:
 - npm install
 - docker-compose build
 - npm install -g ganache-cli
-- npm install -g truffle@4.1.15
+- npm install -g truffle@5
 - export DISPLAY=:99.0
 - cd ..
 
