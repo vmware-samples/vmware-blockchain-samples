@@ -8,6 +8,7 @@ const OrdersProxy = artifacts.require("OrdersProxy");
 const Orders = artifacts.require("OrdersV1");
 const OrdersUpgrade = artifacts.require("OrdersV2");
 const OrderUpgrade = artifacts.require("OrderV2");
+const config = require('../config.js');
 
 contract("Upgrade Test", async accounts => {
   let orders, ordersUpgraded, orderUpgraded, ordersProxy;
@@ -19,8 +20,8 @@ contract("Upgrade Test", async accounts => {
     ordersProxy = await OrdersProxy.deployed();
     orders = await Orders.at(ordersProxy.address);
     ordersUpgraded = await OrdersUpgrade.new();
-    const upgradeRes = await ordersProxy.upgradeTo.sendTransaction(
-      ordersUpgraded.address, {from: accounts[2]}
+    await ordersProxy.upgradeTo.sendTransaction(
+      ordersUpgraded.address, {from: accounts[config.test.accountIndex]}
     );
 
 

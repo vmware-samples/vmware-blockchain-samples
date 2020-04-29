@@ -4,6 +4,7 @@
 
 const OrdersProxy = artifacts.require("OrdersProxy");
 const Orders = artifacts.require("OrdersV1");
+const config = require('../config.js');
 
 contract("Orders Test", async accounts => {
   let orders, ordersProxy;
@@ -19,9 +20,9 @@ contract("Orders Test", async accounts => {
 
     await ordersProxy.changeAdmin.sendTransaction(accounts[2]);
     const transaction = await orders.create.sendTransaction(web3.utils.fromUtf8('Apples'), 100);
-    const orderAddress = await orders.orders.call(1);
+    const orderAddress = await orders.orders.call(config.test.orderIndex);
     const ordersLength = await orders.getAmount.call();
-    expect(ordersLength.toString()).to.equal('2');
+    expect(ordersLength.toString()).to.equal(config.test.orderLength);
     expect(orderAddress).to.be.a('string');
   });
 
@@ -31,6 +32,6 @@ contract("Orders Test", async accounts => {
     }
     const ordersLength = await orders.getAmount.call();
 
-    expect(ordersLength.toString()).to.equal('102');
+    expect(ordersLength.toString()).to.equal(config.test.createOrders);
   });
 });
