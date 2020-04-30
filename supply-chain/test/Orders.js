@@ -4,6 +4,7 @@
 
 const OrdersProxy = artifacts.require("OrdersProxy");
 const Orders = artifacts.require("OrdersV1");
+const config = require('../config.js');
 
 contract("Orders Test", async accounts => {
   let orders, ordersProxy;
@@ -18,20 +19,19 @@ contract("Orders Test", async accounts => {
     orders = await Orders.at(ordersProxy.address);
 
     await ordersProxy.changeAdmin.sendTransaction(accounts[2]);
-    const transaction = await orders.create.sendTransaction(web3.fromUtf8('Apples'), 100);
-    const orderAddress = await orders.orders.call(0);
+    const transaction = await orders.create.sendTransaction(web3.utils.fromUtf8('Apples'), 100);
+    const orderAddress = await orders.orders.call(config.test.orderIndex);
     const ordersLength = await orders.getAmount.call();
-
-    expect((new web3.BigNumber(ordersLength)).toString()).to.equal('1');
+    expect(ordersLength.toString()).to.equal(config.test.orderLength);
     expect(orderAddress).to.be.a('string');
   });
 
-  it("should create a 1000 orders", async () => {
+  it("should create a 100 orders", async () => {
     for (let index = 0; index < 100; index++) {
-      await orders.create.sendTransaction(web3.fromUtf8('Apples'), index);
+      await orders.create.sendTransaction(web3.utils.fromUtf8('Apples'), index);
     }
     const ordersLength = await orders.getAmount.call();
 
-    expect((new web3.BigNumber(ordersLength)).toString()).to.equal('101');
+    expect(ordersLength.toString()).to.equal(config.test.createOrders);
   });
 });

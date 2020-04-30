@@ -3,7 +3,7 @@
 # The full license information can be found in LICENSE in the root directory of this project.
 
 
-FROM node:8.15.1 as node
+FROM node:10.17.0 as node
 LABEL Description="Supply Chain dApp"
 
 WORKDIR /app
@@ -11,7 +11,7 @@ WORKDIR /app
 COPY ./ /app/
 
 RUN npm install
-RUN npm install -g truffle@4.1.14
+RUN npm install -g truffle@5.1.22
 RUN npm install -g truffle-flattener@1.3.0
 RUN node patch.js
 

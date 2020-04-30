@@ -65,8 +65,13 @@ module.exports = {
       timeoutBlocks: 200,  //k
       skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
     },
-
-
+    concordDocker: {
+      network_id: "*",
+      host: "ethrpc1",     // Localhost (default: none)
+      port: 8545,            // Standard Ethereum port (default: none)
+      timeoutBlocks: 200,  //k
+      skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+    },
     vmware: {
       network_id: "*",
       quiet: true,
