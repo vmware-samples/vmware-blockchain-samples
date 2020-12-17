@@ -1,0 +1,13 @@
+version: '3'
+services:
+  obp:
+    image: "obp-contracts:latest"
+    network_mode: host
+    build:
+      context: .
+    volumes:
+      - ./contracts:/app/contracts
+      - ./migrations:/app/migrations
+      - ./build:/app/build
+      - ./truffle-config.js:/app/truffle-config.js
+      - ./package.json:/app/package.json

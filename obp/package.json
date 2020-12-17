@@ -1,0 +1,14 @@
+{
+  "name": "obp",
+  "version": "1.0.0",
+  "description": "ocean bound plastics",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Matthew Harrison",
+  "license": "Apache-2.0"
+}
