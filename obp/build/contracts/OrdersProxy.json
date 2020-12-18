@@ -484,9 +484,47 @@
     "name": "solc",
     "version": "0.4.24+commit.e67f0147.Emscripten.clang"
   },
-  "networks": {},
-  "schemaVersion": "3.3.2",
-  "updatedAt": "2020-12-17T21:02:12.088Z",
+  "networks": {
+    "5777": {
+      "events": {
+        "0x7e644d79422f17c01e4894b5f4f588d331ebfa28653d42ae832dc59e38c9798f": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "previousAdmin",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "newAdmin",
+              "type": "address"
+            }
+          ],
+          "name": "AdminChanged",
+          "type": "event"
+        },
+        "0xbc7cd75a20ee27fd9adebab32041f755214dbc6bffa90cc0225b39da2e5c2d3b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "implementation",
+              "type": "address"
+            }
+          ],
+          "name": "Upgraded",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x5e4D1d7A33832aC559E8B07faf3F280A7A2aE67e",
+      "transactionHash": "0x9c996633406906a6da389ec241d297cfd02a653ce8bc85e38d89b248ce41c21d"
+    }
+  },
+  "schemaVersion": "3.3.3",
+  "updatedAt": "2020-12-18T18:17:19.910Z",
+  "networkType": "ethereum",
   "devdoc": {
     "methods": {
       "admin()": {
