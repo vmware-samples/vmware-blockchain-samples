@@ -7,8 +7,13 @@
     "test": "test"
   },
   "scripts": {
+    "ganache": "ganache-cli --account='0x6566fce64dc52dc7f91528169d110f025d558a77bd9e1f6c23953002caa2a064,100000000000000000000' -p 7545 --networkId 5777",
+    "deploy": "sleep 10 && truffle migrate --reset",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Matthew Harrison",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "dependencies": {
+    "web3": "^1.3.1"
+  }
 }

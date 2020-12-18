@@ -5,9 +5,25 @@ services:
     network_mode: host
     build:
       context: .
+    command: "npm run deploy"
     volumes:
       - ./contracts:/app/contracts
       - ./migrations:/app/migrations
       - ./build:/app/build
       - ./truffle-config.js:/app/truffle-config.js
       - ./package.json:/app/package.json
+  ganache:
+    image: "ganache:latest"
+    network_mode: host
+    ports:
+      - 7545:7545
+    build:
+      context: .
+    command: "npm run ganache"
+    volumes:
+      - ./contracts:/app/contracts
+      - ./migrations:/app/migrations
+      - ./build:/app/build
+      - ./truffle-config.js:/app/truffle-config.js
+      - ./package.json:/app/package.json
+
