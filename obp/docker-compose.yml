@@ -2,7 +2,6 @@ version: '3'
 services:
   obp:
     image: "obp-contracts:latest"
-    network_mode: host
     build:
       context: .
     command: "npm run deploy"
@@ -14,7 +13,8 @@ services:
       - ./package.json:/app/package.json
   ganache:
     image: "ganache:latest"
-    network_mode: host
+    expose:
+      - '7545'
     ports:
       - 7545:7545
     build:
