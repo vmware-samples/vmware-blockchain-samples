@@ -1386,11 +1386,11 @@
       "events": {},
       "links": {},
       "address": "0xa54ED22c8fF55D8dfFE0c49BbBa88B27B55e4B6C",
-      "transactionHash": "0x14ffeb491bc9282443e43b390bcfb958bdfca388d2708943c25f50b3def508da"
+      "transactionHash": "0x219381a0d6994284e79e8c9d99368c788c36edbc6e9b283808e5e11a551f4f16"
     }
   },
   "schemaVersion": "3.3.3",
-  "updatedAt": "2020-12-18T18:17:19.922Z",
+  "updatedAt": "2020-12-19T19:50:59.573Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}

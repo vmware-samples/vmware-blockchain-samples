@@ -12,6 +12,8 @@
 /supply-chain/truffle-flattener
 /supply-chain/dist
 /supply-chain/src/assets/contracts
+obp/node_modules
+obp/build
 
 # artifacts
 /asset-transfer/AssetTransfer.bin
