@@ -18,7 +18,7 @@
  *
  */
 
-// const HDWalletProvider = require('@truffle/hdwallet-provider');
+const HDWalletProvider = require('@truffle/hdwallet-provider');
 // const infuraKey = "fj4jll3k.....";
 //
 // const fs = require('fs');
@@ -43,10 +43,14 @@ module.exports = {
     // options below to some value.
     //
     development: {
-     host: "127.0.0.1",     // Localhost (default: none)
-     port: 7545,            // Standard Ethereum port (default: none)
-     network_id: "*",
-     from: '0x327e2A8EeDBBbf625ACBfe91C6068590B2EaDD12'      // Any network (default: none)
+      provider: () => new HDWalletProvider(
+        '0x6566fce64dc52dc7f91528169d110f025d558a77bd9e1f6c23953002caa2a064',
+        'http://ganache:7545'
+      ),
+      host: "localhost",     // Localhost (default: none)
+      port: 7545,            // Standard Ethereum port (default: none)
+      network_id: "*",
+      from: '0x327e2A8EeDBBbf625ACBfe91C6068590B2EaDD12'      // Any network (default: none)
     },
 
     vmbc: {
