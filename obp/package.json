@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "ganache": "ganache-cli --account='0x6566fce64dc52dc7f91528169d110f025d558a77bd9e1f6c23953002caa2a064,10000000000000000000000' -p 7545 -h 0.0.0.0 --networkId 5777",
+    "ganache": "ganache-cli --gasLimit=0x1fffffffffffff --account='0x6566fce64dc52dc7f91528169d110f025d558a77bd9e1f6c23953002caa2a064,10000000000000000000000' -p 7545 -h 0.0.0.0 --networkId 5777",
     "deploy": "sleep 5 && truffle migrate --reset",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
