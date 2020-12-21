@@ -519,11 +519,11 @@
       },
       "links": {},
       "address": "0x5e4D1d7A33832aC559E8B07faf3F280A7A2aE67e",
-      "transactionHash": "0x9c996633406906a6da389ec241d297cfd02a653ce8bc85e38d89b248ce41c21d"
+      "transactionHash": "0x7be3e68df84f9868f0e35621d3862ff59fb37eb11293c9a3e5fd8a3ffe5bf769"
     }
   },
   "schemaVersion": "3.3.3",
-  "updatedAt": "2020-12-18T18:17:19.910Z",
+  "updatedAt": "2020-12-21T17:25:12.319Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {
