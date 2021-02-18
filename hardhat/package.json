@@ -4,6 +4,8 @@
   "description": "ERC20 and ERC1404 use case",
   "main": "index.js",
   "scripts": {
+    "deploy:vmware": "npx hardhat run scripts/deploy.ts --show-stack-traces --verbose",
+    "deploy:besu": "npx hardhat run scripts/deploy.ts --network besuMultiCluster",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

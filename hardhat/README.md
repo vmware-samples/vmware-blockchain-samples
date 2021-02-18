@@ -15,5 +15,5 @@ Go into `hardhat.config.ts` and update the vmware config with the given IP.
 
 
 ```bash
-yarn deploy
+yarn deploy:vmware
 ```
