@@ -14,7 +14,7 @@ contract SecurityToken is ERC20 {
       uint256 initialSupply
     ) public ERC20(name, symbol) {
       console.log("Deploying ERC20 Token:", name, symbol);
-      _mint(msg.sender, initialSupply * (10000000000 ** uint256(decimals())));
+      _mint(msg.sender, initialSupply * (10 ** uint256(decimals())));
     }
 
     function reduce (address account, uint256 amount) public virtual returns (bool) {
