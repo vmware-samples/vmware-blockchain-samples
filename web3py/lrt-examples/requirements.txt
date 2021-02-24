@@ -93,7 +93,7 @@ ssh-import-id==5.10
 systemd-python==234
 toolz==0.11.1
 trie==2.0.0a5
-Twisted==18.9.0
+Twisted==20.3.0
 typing-extensions==3.7.4.3
 ubuntu-advantage-tools==20.3
 ufw==0.36
