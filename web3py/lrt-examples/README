@@ -1,0 +1,5 @@
+simple long running test - 1 TPS
+--------------------------------
+1) install solidity version 0.5.0
+2) pip3 install -r requirements.txt
+3) python3 eth-concord.py
