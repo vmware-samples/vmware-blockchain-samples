@@ -74,12 +74,19 @@ signed_txn = w3.eth.account.sign_transaction(construct_txn, key1)
 tx_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
 tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash)
 print(tx_receipt)
+if (tx_receipt.status == 1):
+    print("contract deploy success")
+else:
+    print("contract deploy failed")
+    quit()
+ 
 greeter = w3.eth.contract(
     address=tx_receipt.contractAddress,
     abi=abi
 )
 print(greeter.functions.greet().call())
 
+count1 = 0
 count = 10000
 while (count > 0):
     construct_txn = greeter.functions.setGreeting('Nihao').buildTransaction({
@@ -92,8 +99,13 @@ while (count > 0):
     signed_txn = w3.eth.account.sign_transaction(construct_txn, key1)
     tx_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
     tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-    print("count:", count)
     print(tx_receipt)
-    print(greeter.functions.greet().call())
+    if (tx_receipt.status == 1):
+        print("tx success, complete:remaining",count1,":",count)
+        print(greeter.functions.greet().call())
+    else:
+        print("tx failed")
+        quit()
+    count1 += 1
     count -= 1
     time.sleep(1)
