@@ -1,0 +1,33 @@
+workload:
+  model: OPEN  # either OPEN or CLOSED workload model
+  transactions: 1000 # Number of transactions (token transfers).
+  load-factor: 10 # arrival rate for OPEN model & concurrency for CLOSED model
+  progress-interval: 5s # interval for updating progress in web UI
+
+web3j:
+  url: # ethereum client endpoint (Note: Leave it blank in demo mode.)
+  wallet-file: src/main/resources/wallets/demo-wallet.json # wallet file location
+  wallet-password: Password123 # wallet file password
+  eth-fund: 10 # only relevant in demo mode
+  private-key: # Private key of the sender's account. (Note: This takes precedence over wallet.)
+  log-level: NONE # NONE, BASIC, HEADERS, BODY
+
+token:
+  name: SecureToken
+  symbol: STK
+  initial-supply: 2 # Total tokens minted (value is multiplied by 10^18)
+  recipient: 45412868cB693e231DfD4ABCCA29D7001501d06f # Tokens would be transferred to this account.
+  amount: 5 # Number of tokens transferred in one transactions
+  gas-price: 4_100_000_000 # gas price
+  gas-limit: 9_000_000 # gas limit
+
+logging:
+  level:
+    com:
+      vmware: info
+    org:
+      web3j:
+        evm: warn
+
+server:
+  port: 8080 # web UI port for tracking progress
