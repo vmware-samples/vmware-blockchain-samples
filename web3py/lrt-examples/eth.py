@@ -1,3 +1,10 @@
+#/*
+# * Copyright 2021 VMware, all rights reserved.
+# * This software is released under MIT license.
+# * The full license information can be found in LICENSE in the root directory of this project.
+# */
+# Signed-off-by: John Doe <john.doe@email.org>
+
 import json
 
 from web3 import Web3
