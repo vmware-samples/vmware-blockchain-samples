@@ -11,6 +11,8 @@ from web3 import Web3
 from solcx import compile_standard
 from web3.middleware import geth_poa_middleware
 import time
+import urllib3
+urllib3.disable_warnings()
 
 # Solidity source code
 compiled_sol = compile_standard({
@@ -54,21 +56,25 @@ compiled_sol = compile_standard({
 account1 = '0xf17f52151EbEF6C7334FAD080c5704D77216b732'
 key1 = '0xae6ae8e5ccbfb04590405997ee2d52d2b330726137b875053c36d94e974d162f'
 
-vmware = 0
+vmware = 1
+vmware_prod_deploy = 0
 chainid = 1
-total_tx_count = 100
+total_tx_count = 1000
 
 # web3.py instance
 #w3 = Web3(Web3.EthereumTesterProvider())
 if (vmware == 1):
-  w3 = Web3(Web3.HTTPProvider("http://54.160.229.176:8545"))
-  chainid = 1
+    #w3 = Web3(Web3.HTTPProvider("http://54.160.229.176:8545"))
+    if (vmware_prod_deploy == 0):
+        w3 = Web3(Web3.HTTPProvider('https://10.184.110.253:8545', request_kwargs={'verify': False}))
+    chainid = 1
 else:
-  print("besu .............................")
-  w3 = Web3(Web3.HTTPProvider('http://10.0.0.65:32000')) #besu single cluster
-  #w3 = Web3(Web3.HTTPProvider('http://54.219.187.21:32000')) #besu single cluster
-  #w3 = Web3(Web3.HTTPProvider('http://54.241.133.23:32000')) #besu multi cluster
-  chainid = 2018
+    print("besu .............................")
+    #w3 = Web3(Web3.HTTPProvider('http://10.0.0.65:32000')) #besu single cluster
+    w3 = Web3(Web3.HTTPProvider('http://54.241.133.23:32000')) #besu single cluster
+    #w3 = Web3(Web3.HTTPProvider('http://54.219.187.21:32000')) #besu single cluster
+    #w3 = Web3(Web3.HTTPProvider('http://54.241.133.23:32000')) #besu multi cluster
+    chainid = 2018
 
 w3.middleware_onion.inject(geth_poa_middleware, layer=0)
 
@@ -80,13 +86,14 @@ abi = json.loads(compiled_sol['contracts']['Greeter.sol']['Greeter']['metadata']
 
 Greeter = w3.eth.contract(abi=abi, bytecode=bytecode)
 
+nonce = w3.eth.getTransactionCount(account1)
 # Submit the transaction that deploys the contract
 construct_txn = Greeter.constructor().buildTransaction({
     'from': account1,
     'gas': 2000000,
     #'gasPrice': 234567897654321,
     'gasPrice': 0,
-    'nonce': w3.eth.getTransactionCount(account1),
+    'nonce': nonce,
     'chainId': chainid
 })
 signed_txn = w3.eth.account.sign_transaction(construct_txn, key1)
@@ -98,7 +105,7 @@ if (tx_receipt.status == 1):
 else:
     print("contract deploy failed")
     quit()
- 
+
 greeter = w3.eth.contract(
     address=tx_receipt.contractAddress,
     abi=abi
