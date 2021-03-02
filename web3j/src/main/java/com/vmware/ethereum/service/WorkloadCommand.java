@@ -34,7 +34,6 @@ import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
 @Slf4j
 @Service
@@ -45,19 +44,24 @@ public class WorkloadCommand implements Runnable {
   private final CountDownLatch countDownLatch;
   private final MetricsService metrics;
 
-  @Override
   public void run() {
     Instant startTime = now();
-    try {
-      TransactionReceipt receipt = api.transfer();
-      metrics.updateTxStatus(receipt.isStatusOK());
-    } catch (Exception e) {
-      log.warn("{}", e.toString());
-      metrics.updateTxError(e.getClass().getSimpleName());
-    }
+    api.transfer()
+        .whenComplete(
+            (receipt, throwable) -> {
+              if (receipt != null) {
+                log.debug("Receipt: {}", receipt);
+                metrics.updateTxStatus(receipt.isStatusOK());
+              }
 
-    long responseTimeMs = between(startTime, now()).toMillis();
-    metrics.updateTxLatency(responseTimeMs);
-    countDownLatch.countDown();
+              if (throwable != null) {
+                log.warn("{}", throwable.toString());
+                metrics.updateTxError(throwable.getClass().getSimpleName());
+              }
+
+              long responseTimeMs = between(startTime, now()).toMillis();
+              metrics.updateTxLatency(responseTimeMs);
+              countDownLatch.countDown();
+            });
   }
 }

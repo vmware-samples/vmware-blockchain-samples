@@ -33,6 +33,7 @@ package com.vmware.ethereum.service;
 
 import static com.vmware.ethereum.config.WorkloadModel.OPEN;
 import static java.time.Instant.now;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.vmware.ethereum.config.WorkloadConfig;
 import java.util.concurrent.CountDownLatch;
@@ -70,9 +71,11 @@ public class WorkloadRunner {
   }
 
   /** Stop the workload. */
+  @SneakyThrows(InterruptedException.class)
   private void stop(WorkloadService workload) {
     workload.stop();
     metrics.setEndTime(now());
+    SECONDS.sleep(1);
     printReport();
     printBalance();
     log.info("Test is completed");
@@ -95,11 +98,12 @@ public class WorkloadRunner {
 
   /** Print report */
   private void printReport() {
+    log.info("Total: {}", metrics.getCompletionCount());
+    log.info("\tOK: {}", metrics.getSuccessCount());
+    log.info("\tKO: {}", metrics.getFailureCount());
+    log.info("\tErrors: {}", metrics.getErrorToCount());
+
     log.info("Test duration: {}", metrics.getElapsedTime());
-    log.info("Total: {}", metrics.getTotalCount());
-    log.info("OK: {}", metrics.getSuccessCount());
-    log.info("KO: {}", metrics.getFailureCount());
-    log.info("Errors: {}", metrics.getErrorToCount());
 
     if (config.getModel() == OPEN) {
       log.info("Arrival rate: {}/sec", config.getLoadFactor());

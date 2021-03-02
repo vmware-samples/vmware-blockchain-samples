@@ -31,6 +31,7 @@ import static java.math.BigInteger.valueOf;
 import com.vmware.ethereum.config.TokenConfig;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.concurrent.CompletableFuture;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -89,12 +90,8 @@ public class SecureTokenApi {
   }
 
   /** Transfer token. */
-  public TransactionReceipt transfer() throws Exception {
-    log.debug("Transferring token ..");
-    TransactionReceipt receipt =
-        token.transfer(config.getRecipient(), valueOf(config.getAmount())).send();
-    log.debug("Receipt: {}", receipt);
-    return receipt;
+  public CompletableFuture<TransactionReceipt> transfer() {
+    return token.transfer(config.getRecipient(), valueOf(config.getAmount())).sendAsync();
   }
 
   @SneakyThrows(IOException.class)

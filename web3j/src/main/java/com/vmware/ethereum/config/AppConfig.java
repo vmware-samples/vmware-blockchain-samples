@@ -100,7 +100,7 @@ public class AppConfig {
   @Bean
   public TransactionReceiptProcessor transactionReceiptProcessor(Web3j web3j) {
     Receipt receipt = config.getReceipt();
-    if (receipt.isRequire()) {
+    if (receipt.isRequired()) {
       return new PollingTransactionReceiptProcessor(
           web3j, receipt.getInterval(), receipt.getAttempts());
     }

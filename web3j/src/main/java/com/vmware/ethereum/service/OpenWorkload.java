@@ -49,7 +49,7 @@ public class OpenWorkload implements WorkloadService {
     log.info("Running {} transaction at arrival rate {}/sec ..", transactions, arrivalRate);
     executor = newSingleThreadScheduledExecutor();
     long periodUs = SECONDS.toMicros(1) / arrivalRate;
-    executor.scheduleAtFixedRate(command, 0, periodUs, MICROSECONDS);
+    executor.scheduleAtFixedRate(command, periodUs, periodUs, MICROSECONDS);
     log.info("Transactions scheduled");
   }
 
