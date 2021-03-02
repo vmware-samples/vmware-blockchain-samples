@@ -31,15 +31,16 @@ import static java.math.BigInteger.valueOf;
 import com.vmware.ethereum.config.TokenConfig;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.concurrent.CompletableFuture;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.web3j.crypto.Credentials;
 import org.web3j.model.SecurityToken;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
 
@@ -50,7 +51,8 @@ public class SecureTokenApi {
 
   private final TokenConfig config;
   private final Web3j web3j;
-  private final Credentials credentials;
+  private final TransactionManager transactionManager;
+  private final String senderAddress;
   private SecurityToken token;
 
   @PostConstruct
@@ -58,7 +60,7 @@ public class SecureTokenApi {
     log.info("Client version: {}", getClientVersion());
     log.info("Gas price: {}", getGasPrice());
     log.info("Net version: {}", getNetVersion());
-    log.info("Sender address: {}", credentials.getAddress());
+    log.info("Sender address: {}", senderAddress);
 
     token = deploy();
   }
@@ -75,7 +77,7 @@ public class SecureTokenApi {
     SecurityToken securityToken =
         SecurityToken.deploy(
                 web3j,
-                credentials,
+                transactionManager,
                 gasProvider,
                 config.getName(),
                 config.getSymbol(),
@@ -86,13 +88,9 @@ public class SecureTokenApi {
     return securityToken;
   }
 
-  /** Transfer token. */
-  public TransactionReceipt transfer() throws Exception {
-    log.debug("Transferring token ..");
-    TransactionReceipt receipt =
-        token.transfer(config.getRecipient(), valueOf(config.getAmount())).send();
-    log.debug("Receipt: {}", receipt);
-    return receipt;
+  /** Transfer token asynchronously. */
+  public CompletableFuture<TransactionReceipt> transferAsync() {
+    return token.transfer(config.getRecipient(), valueOf(config.getAmount())).sendAsync();
   }
 
   @SneakyThrows(IOException.class)
@@ -118,7 +116,7 @@ public class SecureTokenApi {
 
   /** Get token balance of the sender. */
   public long getSenderBalance() {
-    return getBalance(credentials.getAddress());
+    return getBalance(senderAddress);
   }
 
   /** Get token balance of the recipient. */

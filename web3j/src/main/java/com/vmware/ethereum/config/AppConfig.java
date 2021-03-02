@@ -26,6 +26,7 @@ package com.vmware.ethereum.config;
  * #L%
  */
 
+import com.vmware.ethereum.config.Web3jConfig.Receipt;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -49,6 +50,11 @@ import org.web3j.evm.Configuration;
 import org.web3j.evm.EmbeddedWeb3jService;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.tx.FastRawTransactionManager;
+import org.web3j.tx.RawTransactionManager;
+import org.web3j.tx.TransactionManager;
+import org.web3j.tx.response.PollingTransactionReceiptProcessor;
+import org.web3j.tx.response.TransactionReceiptProcessor;
 
 @Slf4j
 @Component
@@ -58,7 +64,7 @@ public class AppConfig {
   private final Web3jConfig config;
 
   @Bean
-  public SSLSocketFactory createSslSocketFactory() throws GeneralSecurityException {
+  public SSLSocketFactory sslSocketFactory() throws GeneralSecurityException {
     TrustManager[] trustManagers = InsecureTrustManagerFactory.INSTANCE.getTrustManagers();
     SSLContext sslContext = SSLContext.getInstance("TLS");
     sslContext.init(null, trustManagers, new SecureRandom());
@@ -77,30 +83,59 @@ public class AppConfig {
 
   @Bean
   public Credentials credentials() throws IOException, CipherException {
-    String privateKey = config.getPrivateKey();
+    Web3jConfig.Credentials credentials = config.getCredentials();
+
+    String privateKey = credentials.getPrivateKey();
     if (!privateKey.isBlank()) {
       log.info("Creating credentials from private key ..");
       return Credentials.create(privateKey);
     }
 
     log.info("Loading credentials from wallet ..");
-    return WalletUtils.loadCredentials(config.getWalletPassword(), config.getWalletFile());
+    return WalletUtils.loadCredentials(
+        credentials.getWalletPassword(), credentials.getWalletFile());
+  }
+
+  @Bean
+  public TransactionReceiptProcessor transactionReceiptProcessor(Web3j web3j) {
+    Receipt receipt = config.getReceipt();
+    return new PollingTransactionReceiptProcessor(
+        web3j, receipt.getInterval(), receipt.getAttempts());
+  }
+
+  @Bean
+  public TransactionManager transactionManager(
+      Web3j web3j,
+      Credentials credentials,
+      TransactionReceiptProcessor transactionReceiptProcessor) {
+
+    int chainId = config.getEthClient().getChainId();
+
+    if (config.isManageNonce()) {
+      return new FastRawTransactionManager(web3j, credentials, chainId);
+    }
+
+    return new RawTransactionManager(web3j, credentials, chainId, transactionReceiptProcessor);
   }
 
   @Bean
   public Web3j web3j(OkHttpClient okHttpClient, Credentials credentials) {
-    String url = config.getUrl();
+    String url = config.getEthClient().getUrl();
     if (!url.isBlank()) {
       return Web3j.build(new HttpService(url, okHttpClient));
     }
 
-    Configuration configuration =
-        new Configuration(new Address(credentials.getAddress()), config.getEthFund());
+    Configuration configuration = new Configuration(new Address(credentials.getAddress()), 10);
     return Web3j.build(new EmbeddedWeb3jService(configuration));
   }
 
   @Bean
   public CountDownLatch countDownLatch(WorkloadConfig config) {
     return new CountDownLatch(config.getTransactions());
+  }
+
+  @Bean
+  public String senderAddress(Credentials credentials) {
+    return credentials.getAddress();
   }
 }

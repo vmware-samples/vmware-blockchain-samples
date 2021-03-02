@@ -28,7 +28,7 @@ package com.vmware.ethereum.config;
 
 import java.io.File;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -45,10 +45,32 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties("web3j")
 public class Web3jConfig {
 
-  @NotNull private String url;
-  @NotNull private File walletFile;
-  @NotNull private String walletPassword;
-  @PositiveOrZero private long ethFund;
-  @NotNull private String privateKey;
+  @NotNull private EthClient ethClient;
+  @NotNull private Credentials credentials;
+  @NotNull private Receipt receipt;
   @NotNull private Level logLevel;
+  @NotNull private boolean manageNonce;
+
+  @Setter
+  @Getter
+  public static class EthClient {
+    @NotNull private String url;
+    @NotNull private int chainId;
+  }
+
+  @Setter
+  @Getter
+  public static class Credentials {
+    @NotNull private File walletFile;
+    @NotNull private String walletPassword;
+    @NotNull private String privateKey;
+  }
+
+  @Setter
+  @Getter
+  public static class Receipt {
+
+    @Positive private int attempts;
+    @NotNull private long interval;
+  }
 }

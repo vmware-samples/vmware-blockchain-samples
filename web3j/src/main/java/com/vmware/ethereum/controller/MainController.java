@@ -53,7 +53,7 @@ public class MainController {
   @ModelAttribute("ethInfo")
   public EthClientInfo getEthClientInfo() {
     EthClientInfo info = new EthClientInfo();
-    info.setClientUrl(config.getUrl());
+    info.setClientUrl(config.getEthClient().getUrl());
     info.setClientVersion(api.getClientVersion());
     info.setNetworkVersion(api.getNetVersion());
     return info;

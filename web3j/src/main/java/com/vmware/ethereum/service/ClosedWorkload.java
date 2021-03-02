@@ -26,12 +26,7 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
+import java.util.concurrent.Semaphore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,30 +38,19 @@ public class ClosedWorkload implements WorkloadService {
   private final long transactions;
   private final int concurrency;
 
-  private ExecutorService executor;
-
   @Override
   public void start() {
     log.info("Running {} transaction at concurrency {} ..", transactions, concurrency);
-
-    executor =
-        new ThreadPoolExecutor(
-            concurrency,
-            concurrency,
-            0L,
-            MILLISECONDS,
-            new LinkedBlockingQueue<>(concurrency),
-            new CallerRunsPolicy());
-
+    Semaphore semaphore = new Semaphore(concurrency);
     for (int i = 0; i < transactions; i++) {
-      executor.submit(command);
+      semaphore.acquireUninterruptibly();
+      command.transferAsyc().whenComplete((receipt, throwable) -> semaphore.release());
     }
-
     log.info("Transactions submitted");
   }
 
   @Override
   public void stop() {
-    executor.shutdown();
+    // Do nothing
   }
 }
