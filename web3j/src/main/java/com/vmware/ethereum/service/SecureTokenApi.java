@@ -59,7 +59,6 @@ public class SecureTokenApi {
   public void init() {
     log.info("Client version: {}", getClientVersion());
     log.info("Gas price: {}", getGasPrice());
-    log.info("Chain id: {}", getChainId());
     log.info("Net version: {}", getNetVersion());
     log.info("Sender address: {}", senderAddress);
 
@@ -89,14 +88,9 @@ public class SecureTokenApi {
     return securityToken;
   }
 
-  /** Transfer token. */
-  public CompletableFuture<TransactionReceipt> transfer() {
+  /** Transfer token asynchronously. */
+  public CompletableFuture<TransactionReceipt> transferAsync() {
     return token.transfer(config.getRecipient(), valueOf(config.getAmount())).sendAsync();
-  }
-
-  @SneakyThrows(IOException.class)
-  public int getChainId() {
-    return web3j.ethChainId().send().getChainId().intValue();
   }
 
   @SneakyThrows(IOException.class)

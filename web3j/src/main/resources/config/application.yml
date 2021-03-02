@@ -5,11 +5,18 @@ workload:
   progress-interval: 5s # interval for updating progress in web UI
 
 web3j:
-  url: # ethereum client endpoint (Note: Leave it blank in demo mode.)
-  wallet-file: src/main/resources/wallets/demo-wallet.json # wallet file location
-  wallet-password: Password123 # wallet file password
-  eth-fund: 10 # only relevant in demo mode
-  private-key: # Private key of the sender's account. (Note: This takes precedence over wallet.)
+  ethClient:
+    url: # ethereum client endpoint (Note: Leave it blank in demo mode.)
+    chain-id: -1 # To enable EIP-155, use the chain id of the network that your Ethereum client is connected.
+  credentials:
+    wallet-file: src/main/resources/wallets/demo-wallet.json # wallet file location
+    wallet-password: Password123 # wallet file password
+    private-key: # Private key of the sender's account. (Note: This takes precedence over wallet.)
+  receipt:
+    required: true # Whether receipt is required or not
+    attempts: 3 # Maximum number of polling attempts to get receipt
+    interval: 1000 # Sleep interval (ms) between polling attempts
+  manage-nonce: false # Whether nonce is maintained by web3j
   log-level: NONE # NONE, BASIC, HEADERS, BODY
 
 token:

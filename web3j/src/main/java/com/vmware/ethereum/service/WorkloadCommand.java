@@ -30,10 +30,12 @@ import static java.time.Duration.between;
 import static java.time.Instant.now;
 
 import java.time.Instant;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
 @Slf4j
 @Service
@@ -45,8 +47,13 @@ public class WorkloadCommand implements Runnable {
   private final MetricsService metrics;
 
   public void run() {
+    transferAsyc();
+  }
+
+  /** Transfer token asynchronously. */
+  public CompletableFuture<TransactionReceipt> transferAsyc() {
     Instant startTime = now();
-    api.transfer()
+    return api.transferAsync()
         .whenComplete(
             (receipt, throwable) -> {
               if (receipt != null) {
