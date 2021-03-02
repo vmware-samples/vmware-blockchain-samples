@@ -53,7 +53,6 @@ import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.FastRawTransactionManager;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.TransactionManager;
-import org.web3j.tx.response.NoOpProcessor;
 import org.web3j.tx.response.PollingTransactionReceiptProcessor;
 import org.web3j.tx.response.TransactionReceiptProcessor;
 
@@ -100,22 +99,23 @@ public class AppConfig {
   @Bean
   public TransactionReceiptProcessor transactionReceiptProcessor(Web3j web3j) {
     Receipt receipt = config.getReceipt();
-    if (receipt.isRequired()) {
-      return new PollingTransactionReceiptProcessor(
-          web3j, receipt.getInterval(), receipt.getAttempts());
-    }
-
-    return new NoOpProcessor(web3j);
+    return new PollingTransactionReceiptProcessor(
+        web3j, receipt.getInterval(), receipt.getAttempts());
   }
 
   @Bean
-  public TransactionManager transactionManager(Web3j web3j, Credentials credentials) {
+  public TransactionManager transactionManager(
+      Web3j web3j,
+      Credentials credentials,
+      TransactionReceiptProcessor transactionReceiptProcessor) {
+
     int chainId = config.getEthClient().getChainId();
+
     if (config.isManageNonce()) {
       return new FastRawTransactionManager(web3j, credentials, chainId);
     }
 
-    return new RawTransactionManager(web3j, credentials, chainId);
+    return new RawTransactionManager(web3j, credentials, chainId, transactionReceiptProcessor);
   }
 
   @Bean

@@ -70,7 +70,6 @@ public class Web3jConfig {
   @Getter
   public static class Receipt {
 
-    @NotNull private boolean required;
     @Positive private int attempts;
     @NotNull private long interval;
   }
