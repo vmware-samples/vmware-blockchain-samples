@@ -43,6 +43,7 @@
   </div>
   <div>
     <br>
+    <br>
     <h4>Test</h4>
     <table class="table table-dark" id="test">
       <tr>
@@ -107,25 +108,15 @@
         <td th:text="${progress.averageLatency}"></td>
       </tr>
     </table>
-    <h4>Ethereum</h4>
-    <table class="table table-dark" cellspacing="0">
-      <tbody>
-      <tr>
-        <th>Client URL</th>
-        <td th:text="${ethInfo.clientUrl}"></td>
-      </tr>
-      <tr>
-        <th>Client Version</th>
-        <td th:text="${ethInfo.clientVersion}"></td>
-      </tr>
-      <tr>
-        <th>Network Version</th>
-        <td th:text="${ethInfo.networkVersion}"></td>
-      </tr>
-      </tbody>
-    </table>
   </div>
 </div>
+
+<footer class="footer">
+  <div class="container">
+    <span class="text-muted"
+          th:text="|URL: ${ethInfo.clientUrl}, Version: ${ethInfo.clientVersion}, Network: ${ethInfo.networkVersion}|">Footer</span>
+  </div>
+</footer>
 
 <script>
   const red = 'rgb(255, 99, 132)';

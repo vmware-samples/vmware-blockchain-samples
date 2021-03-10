@@ -145,7 +145,7 @@ public class MetricsService {
 
   /** Latency for the entire test duration. */
   public long getAverageLatency() {
-    Timer timer = registry.find(TOKEN_TRANSFER_METRIC_NAME).tagKeys(STATUS_TAG).timer();
+    Timer timer = registry.find(TOKEN_TRANSFER_METRIC_NAME).tag(STATUS_TAG, STATUS_OK).timer();
     return timer == null ? 0 : (long) timer.mean(MILLISECONDS);
   }
 

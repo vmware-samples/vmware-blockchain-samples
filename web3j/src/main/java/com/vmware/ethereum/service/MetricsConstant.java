@@ -26,13 +26,11 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static java.lang.String.valueOf;
-
 public interface MetricsConstant {
 
   String TOKEN_RECEIPT_METRIC_NAME = "receipt.latency";
   String TOKEN_TRANSFER_METRIC_NAME = "transferWithReceipt.latency";
 
   String STATUS_TAG = "status";
-  String STATUS_OK = valueOf(0x1);
+  String STATUS_OK = "0x1";
 }
