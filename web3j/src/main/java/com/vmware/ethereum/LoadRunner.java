@@ -1,4 +1,4 @@
-package com.vmware.ethereum.model;
+package com.vmware.ethereum;
 
 /*-
  * #%L
@@ -26,32 +26,26 @@ package com.vmware.ethereum.model;
  * #L%
  */
 
-import com.vmware.ethereum.config.WorkloadModel;
-import java.time.Duration;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import com.vmware.ethereum.service.WorkloadRunner;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@Getter
-@Builder
-@ToString
-public class ProgressReport {
+@Slf4j
+@RequiredArgsConstructor
+@SpringBootApplication
+public class LoadRunner implements CommandLineRunner {
 
-  private final long txTotal;
-  private final long txPending;
+  private final WorkloadRunner workload;
 
-  private final String txStatus;
-  private final String txErrors;
+  public static void main(String[] args) {
+    SpringApplication.run(LoadRunner.class, args);
+  }
 
-  private final Duration elapsedTime;
-  private final Duration remainingTime;
-
-  private final WorkloadModel workloadModel;
-  private final int loadFactor;
-
-  private final long currentThroughput;
-  private final long currentLatency;
-
-  private final long averageThroughput;
-  private final long averageLatency;
+  @Override
+  public void run(String[] args) {
+    workload.run();
+  }
 }

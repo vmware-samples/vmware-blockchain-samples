@@ -26,9 +26,12 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
+import static java.util.stream.Collectors.joining;
+
 import com.vmware.ethereum.config.WorkloadConfig;
 import com.vmware.ethereum.model.ProgressReport;
-import java.util.Arrays;
+import java.util.Map;
+import java.util.Map.Entry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -50,9 +53,8 @@ public class ProgressService {
   private ProgressReport buildProgress() {
     return ProgressReport.builder()
         .txTotal(config.getTransactions())
-        .txSuccess(metrics.getSuccessCount().get())
-        .txFailure(metrics.getFailureCount().get())
-        .txErrors(getErrors())
+        .txStatus(toString(metrics.getStatusToCount()))
+        .txErrors(toString(metrics.getErrorToCount()))
         .txPending(metrics.getPendingCount())
         .elapsedTime(metrics.getElapsedTime())
         .remainingTime(metrics.getRemainingTime())
@@ -65,8 +67,8 @@ public class ProgressService {
         .build();
   }
 
-  /** Formatted error count. */
-  private String getErrors() {
-    return Arrays.toString(metrics.getErrorToCount().entrySet().toArray());
+  /** Formatted map */
+  private String toString(Map<String, Long> map) {
+    return map.entrySet().stream().map(Entry::toString).collect(joining("<br>"));
   }
 }

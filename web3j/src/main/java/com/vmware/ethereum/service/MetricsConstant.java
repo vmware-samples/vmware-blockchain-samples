@@ -1,4 +1,4 @@
-package com.vmware.ethereum;
+package com.vmware.ethereum.service;
 
 /*-
  * #%L
@@ -26,26 +26,13 @@ package com.vmware.ethereum;
  * #L%
  */
 
-import com.vmware.ethereum.service.WorkloadRunner;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import static java.lang.String.valueOf;
 
-@Slf4j
-@RequiredArgsConstructor
-@SpringBootApplication
-public class Application implements CommandLineRunner {
+public interface MetricsConstant {
 
-  private final WorkloadRunner workload;
+  String TOKEN_RECEIPT_METRIC_NAME = "receipt.latency";
+  String TOKEN_TRANSFER_METRIC_NAME = "transferWithReceipt.latency";
 
-  public static void main(String[] args) {
-    SpringApplication.run(Application.class, args);
-  }
-
-  @Override
-  public void run(String[] args) {
-    workload.run();
-  }
+  String STATUS_TAG = "status";
+  String STATUS_OK = valueOf(0x1);
 }

@@ -25,10 +25,19 @@ $ mvn clean install
 # Run
 
 Configure [application.yml](src/main/resources/config/application.yml) as per your test requirement
-and Ethereum client deployment. Run the following command to start the load test. Monitor the test
-using web UI (default port: 8080)
+and Ethereum client deployment. Run the following command to start the load test.
 
 ```shell
 $ mvn spring-boot:run
 # Ctrl+C to stop once the test is done. 
+```
+
+# Monitor
+
+Monitor the test using [Chart.js](https://www.chartjs.org/) on port 8080. If you would like to send
+metrics to Wavefront, you could configure it and start a Wavefront Proxy using the following
+command.
+
+```shell
+$ docker run -d -e WAVEFRONT_URL=YOUR_WAVEFRONT_URL -e WAVEFRONT_TOKEN=YOUR_API_TOKEN -p 2878:2878 wavefronthq/proxy:latest
 ```
