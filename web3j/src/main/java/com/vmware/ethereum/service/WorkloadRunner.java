@@ -99,8 +99,7 @@ public class WorkloadRunner {
   /** Print report */
   private void printReport() {
     log.info("Total: {}", metrics.getCompletionCount());
-    log.info("\tOK: {}", metrics.getSuccessCount());
-    log.info("\tKO: {}", metrics.getFailureCount());
+    log.info("\tStatus: {}", metrics.getStatusToCount());
     log.info("\tErrors: {}", metrics.getErrorToCount());
 
     log.info("Test duration: {}", metrics.getElapsedTime());

@@ -69,10 +69,9 @@ function updateReport(progress) {
   update("test", 3, progress.remainingTime);
 
   update("transactions", 0, progress.txTotal);
-  update("transactions", 1, progress.txSuccess);
-  update("transactions", 2, progress.txFailure);
-  update("transactions", 3, progress.txErrors);
-  update("transactions", 4, progress.txPending);
+  update("transactions", 1, progress.txStatus);
+  update("transactions", 2, progress.txErrors);
+  update("transactions", 3, progress.txPending);
 
   update("metrics", 0, progress.currentThroughput);
   update("metrics", 1, progress.currentLatency);

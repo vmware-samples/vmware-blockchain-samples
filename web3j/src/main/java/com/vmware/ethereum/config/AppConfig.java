@@ -27,6 +27,10 @@ package com.vmware.ethereum.config;
  */
 
 import com.vmware.ethereum.config.Web3jConfig.Receipt;
+import com.vmware.ethereum.service.TimedWrapper.PollingTransactionReceiptProcessor;
+import io.micrometer.core.aop.TimedAspect;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Tags;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -53,7 +57,6 @@ import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.FastRawTransactionManager;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.TransactionManager;
-import org.web3j.tx.response.PollingTransactionReceiptProcessor;
 import org.web3j.tx.response.TransactionReceiptProcessor;
 
 @Slf4j
@@ -112,7 +115,8 @@ public class AppConfig {
     int chainId = config.getEthClient().getChainId();
 
     if (config.isManageNonce()) {
-      return new FastRawTransactionManager(web3j, credentials, chainId);
+      return new FastRawTransactionManager(
+          web3j, credentials, chainId, transactionReceiptProcessor);
     }
 
     return new RawTransactionManager(web3j, credentials, chainId, transactionReceiptProcessor);
@@ -137,5 +141,10 @@ public class AppConfig {
   @Bean
   public String senderAddress(Credentials credentials) {
     return credentials.getAddress();
+  }
+
+  @Bean
+  public TimedAspect timedAspect(MeterRegistry registry) {
+    return new TimedAspect(registry, (pjp -> Tags.empty()));
   }
 }

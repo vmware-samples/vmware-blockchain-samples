@@ -26,51 +26,30 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static java.time.Duration.between;
-import static java.time.Instant.now;
+import static com.vmware.ethereum.service.MetricsConstant.TOKEN_RECEIPT_METRIC_NAME;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import io.micrometer.core.annotation.Timed;
+import java.io.IOException;
 import org.springframework.stereotype.Service;
+import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.protocol.exceptions.TransactionException;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
-public class WorkloadCommand implements Runnable {
+public class TimedWrapper {
 
-  private final SecureTokenApi api;
-  private final CountDownLatch countDownLatch;
-  private final MetricsService metrics;
+  public static class PollingTransactionReceiptProcessor
+      extends org.web3j.tx.response.PollingTransactionReceiptProcessor {
 
-  @Override
-  public void run() {
-    transferAsync();
-  }
+    public PollingTransactionReceiptProcessor(Web3j web3j, long sleepDuration, int attempts) {
+      super(web3j, sleepDuration, attempts);
+    }
 
-  /** Transfer token asynchronously. */
-  public CompletableFuture<TransactionReceipt> transferAsync() {
-    Instant startTime = now();
-    return api.transferAsync()
-        .whenComplete(
-            (receipt, throwable) -> {
-              Duration duration = between(startTime, now());
-
-              if (receipt != null) {
-                log.debug("Receipt: {}", receipt);
-                metrics.record(duration, receipt.getStatus());
-              }
-
-              if (throwable != null) {
-                log.warn("{}", throwable.toString());
-                metrics.record(duration, throwable);
-              }
-
-              countDownLatch.countDown();
-            });
+    @Timed(value = TOKEN_RECEIPT_METRIC_NAME)
+    @Override
+    public TransactionReceipt waitForTransactionReceipt(String transactionHash)
+        throws IOException, TransactionException {
+      return super.waitForTransactionReceipt(transactionHash);
+    }
   }
 }
