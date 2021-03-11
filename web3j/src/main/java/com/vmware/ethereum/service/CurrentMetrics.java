@@ -26,42 +26,48 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static java.util.stream.Collectors.joining;
+import static java.lang.Math.max;
 
-import com.vmware.ethereum.config.WorkloadConfig;
-import com.vmware.ethereum.model.ProgressReport;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.time.Duration;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.LongAdder;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
+@EnableScheduling
 @RequiredArgsConstructor
-public class ProgressService {
+public class CurrentMetrics {
 
-  private final MetricsService metrics;
-  private final WorkloadConfig config;
+  private final AtomicInteger txCount;
+  private final LongAdder aggregateLatency;
 
-  /** Get progress report. */
-  public ProgressReport getProgress() {
-    return ProgressReport.builder()
-        .txTotal(config.getTransactions())
-        .txStatus(toString(metrics.getStatusToCount()))
-        .txErrors(toString(metrics.getErrorToCount()))
-        .txPending(metrics.getPendingCount())
-        .elapsedTime(metrics.getElapsedTime())
-        .remainingTime(metrics.getRemainingTime())
-        .workloadModel(config.getModel())
-        .loadFactor(config.getLoadFactor())
-        .currentThroughput(metrics.getCurrentThroughput())
-        .currentLatency(metrics.getCurrentLatency())
-        .averageThroughput(metrics.getAverageThroughput())
-        .averageLatency(metrics.getAverageLatency())
-        .build();
+  @Getter private long throughput;
+  @Getter private long latency;
+
+  public CurrentMetrics() {
+    txCount = new AtomicInteger();
+    aggregateLatency = new LongAdder();
   }
 
-  /** Formatted map */
-  private String toString(Map<String, Long> map) {
-    return map.entrySet().stream().map(Entry::toString).collect(joining("<br>"));
+  @Scheduled(fixedRate = 1000)
+  public void calculate() {
+    throughput = txCount.get();
+    latency = aggregateLatency.sum() / max(txCount.get(), 1);
+    reset();
+  }
+
+  /** Aggregate latency and increment count. */
+  public void record(Duration duration) {
+    txCount.incrementAndGet();
+    aggregateLatency.add(duration.toMillis());
+  }
+
+  private void reset() {
+    txCount.set(0);
+    aggregateLatency.reset();
   }
 }

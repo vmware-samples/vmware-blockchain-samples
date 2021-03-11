@@ -47,34 +47,20 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.LongAdder;
-import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
-@Setter
-@Getter
 @Service
+@RequiredArgsConstructor
 public class MetricsService {
 
   private final MeterRegistry registry;
-  private final long totalCount;
+  private final WorkloadConfig config;
+  private final CurrentMetrics currentMetrics;
 
-  private final long periodInterval;
-  private final AtomicInteger periodCount;
-  private final LongAdder periodLatency;
-
-  private Instant startTime;
-  private Instant endTime;
-
-  public MetricsService(WorkloadConfig config, MeterRegistry registry) {
-    periodCount = new AtomicInteger();
-    periodLatency = new LongAdder();
-    periodInterval = config.getProgressInterval().getSeconds();
-    totalCount = config.getTransactions();
-    this.registry = registry;
-  }
+  @Setter private Instant startTime;
+  @Setter private Instant endTime;
 
   /** Record the latency for successful tx. */
   public void record(Duration duration, String status) {
@@ -89,9 +75,7 @@ public class MetricsService {
   /** Record the latency with given tags. */
   private void record(Duration duration, Iterable<Tag> tags) {
     Timer.builder(TOKEN_TRANSFER_METRIC_NAME).tags(tags).register(registry).record(duration);
-
-    periodCount.incrementAndGet();
-    periodLatency.add(duration.toMillis());
+    currentMetrics.record(duration);
   }
 
   /** Get elapsed time of the test. */
@@ -135,38 +119,27 @@ public class MetricsService {
 
   /** Get total pending transactions. */
   public long getPendingCount() {
-    return totalCount - getCompletionCount();
+    return config.getTransactions() - getCompletionCount();
   }
 
-  /** Throughput for the entire test duration. */
+  /** Throughput for the test duration. */
   public long getAverageThroughput() {
-    return getThroughput(getCompletionCount(), getElapsedTime().getSeconds());
+    return getCompletionCount() / max(getElapsedTime().getSeconds(), 1);
   }
 
-  /** Latency for the entire test duration. */
+  /** Latency for the test duration. */
   public long getAverageLatency() {
     Timer timer = registry.find(TOKEN_TRANSFER_METRIC_NAME).tag(STATUS_TAG, STATUS_OK).timer();
     return timer == null ? 0 : (long) timer.mean(MILLISECONDS);
   }
 
-  /** Throughput for the current period. */
-  public long getPeriodThroughput() {
-    return getThroughput(periodCount.get(), periodInterval);
+  /** Instantaneous throughput. */
+  public long getCurrentThroughput() {
+    return currentMetrics.getThroughput();
   }
 
-  /** Latency for the current period. */
-  public long getPeriodLatency() {
-    return periodLatency.sum() / max(periodCount.get(), 1);
-  }
-
-  /** Get transactions per second. */
-  private long getThroughput(long transactions, long seconds) {
-    return transactions / max(seconds, 1);
-  }
-
-  /** Reset the counters for the next period. */
-  public void resetPeriodMetrics() {
-    periodCount.set(0);
-    periodLatency.reset();
+  /** Instantaneous latency. */
+  public long getCurrentLatency() {
+    return currentMetrics.getLatency();
   }
 }
