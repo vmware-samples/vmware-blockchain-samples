@@ -7,6 +7,7 @@
 pragma solidity >=0.4.21 <0.6.0;
 
 import "./OrderAccessControl.sol";
+import "./Document.sol";
 
 /**
  * @title OrderV1
@@ -60,7 +61,7 @@ contract OrderV1 is OrderAccessControl {
   }
 
   Meta public meta;
-  address public auditDocument;
+  Document public auditDocument = new Document();
   Record[] public history;
   Location[] public locationHistory;
   State public state;
@@ -143,7 +144,7 @@ contract OrderV1 is OrderAccessControl {
   /**
    * @dev Auditor will store the audit document
    */
-  function storeAuditDocument(address document)
+  function storeAuditDocument(Document document)
     public
     onlyAuditor
     inState(State.Audited)

@@ -430,12 +430,10 @@ export class BlockchainService {
 
   private async inEventStore(order, file) {
     const deflated = pako.deflate(file, { to: 'string' });
-    const newDoc = new this.web3.eth.Contract(this.docABI);
-
-    this.docContract = await newDoc.deploy({
-      data: this.docBC,
-      arguments: []
-    }).send(this.sendDefaults);
+    this.docContract = new this.web3.eth.Contract(
+      this.docABI,
+      await order.contract.methods.auditDocument().call()
+    );
 
     await this.docContract
       .methods.inEvent(deflated)
