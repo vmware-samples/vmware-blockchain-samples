@@ -54,11 +54,28 @@ module.exports = {
     vmware: {
       network_id: "5000",
       quiet: true,
+      chain_id: "5000",
+      // provider: () => new Web3.providers.HttpProvider('https://localhost:8545')
       provider: () => new HDWalletProvider(
         'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3',
         // 'http://54.160.229.176:8545'
-        'https://localhost:8545'
-        )
+        'https://localhost:8545',
+        // 'http://10.40.205.171:8545'
+        ),
+        value: '0x00',
+    },
+    besu: {
+      network_id: "2018",
+      quiet: true,
+      // provider: () => new Web3.providers.HttpProvider('https://localhost:8545')
+      provider: () => new HDWalletProvider(
+        'c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3',
+        // 'http://54.160.229.176:8545'
+        'http://50.18.241.122:32010',
+        // 'http://10.40.205.171:8545'
+        ),
+        gas: 3000000,
+        gasLimit: 2100000
     },
     // Another network with more advanced options...
     // advanced: {

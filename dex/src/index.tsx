@@ -4,7 +4,10 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-
+// import 'normalize.css/normalize.css'; // css reset
+// import '@cds/core/global.min.css'; // clarity global styles
+// import '@cds/core/styles/module.shims.min.css'; // non-evergreen browser shims
+// import '@cds/city/css/bundles/default.min.css'; // load base font
 
 ReactDOM.render(
   <React.StrictMode>

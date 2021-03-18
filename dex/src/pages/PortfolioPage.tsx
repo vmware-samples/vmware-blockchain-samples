@@ -3,8 +3,6 @@ import PortfolioTable from '../components/PortfolioTable';
 
 export default function PortfolioPage(): JSX.Element {
   return (
-    <>
-     <PortfolioTable></PortfolioTable>
-    </>
+     <PortfolioTable />
   );
 }

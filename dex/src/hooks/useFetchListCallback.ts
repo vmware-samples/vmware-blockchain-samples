@@ -22,12 +22,13 @@ export function useFetchListCallback(): () => Promise<Array<ERC20>>  {
 
           const balance = await erc20.balanceOf(account);
           const decimals = await erc20.decimals();
-          const divideBy = BigNumber.from(10).pow(decimals)
+          const divideBy = 10 ** decimals
 
           balances.push({
             name: await erc20.name(),
             symbol: await erc20.symbol(),
-            balance: balance.div(divideBy).toNumber()
+            balance: (balance.toString() / divideBy).toString(),
+            address: token.contractAddress
           });
         }
       }

@@ -26,6 +26,7 @@ async function main() {
     );
 
     await securityToken.deployed();
+
     token.contractAddress = securityToken.address;
     deployedContracts.push(securityToken.address)
 
@@ -45,7 +46,8 @@ async function main() {
   for (const address of deployedContracts) {
     const contract = await ethers.getContractAt('SecurityToken', address)
     const decimals = await contract.decimals()
-    const amount = BigNumber.from(10).pow(decimals).mul(1000)
+    const amount = BigNumber.from(10).pow(18).mul(1000)
+
     for (const account of Object.values(accounts)) {
       await contract.transfer(account, amount)
     }

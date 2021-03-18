@@ -39,19 +39,21 @@ export default {
     hardhat: {
     },
     vmware: {
-      url: "https://localhost:8545",
+      url: "http://localhost:8545",
+      user: 'user1',
+      password: 'user1Pass',
       chainId: 5000,
-      from: '627306090abaB3A6e1400e9345bC60c78a8BEf57',
-
+      accounts: ['c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3'],
+      from: '627306090abaB3A6e1400e9345bC60c78a8BEf57'
     },
     besuMultiCluster: {
-      url: "<ip>",
+      url: "http://54.241.133.23:32000",
       chainId: 2018,
       accounts: ['c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3'],
       saveDeployments: true,
       from: '627306090abaB3A6e1400e9345bC60c78a8BEf57',
       gas: 3000000,
-      gasPrice: 2100000
+      gasPrice: 0
     },
   },
   solidity: "0.7.3",

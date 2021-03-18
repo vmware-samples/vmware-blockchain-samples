@@ -76,7 +76,10 @@ module.exports = {
       network_id: "*",
       quiet: true,
       provider: () => new Web3.providers.HttpProvider(
-        "https://<email>:<refresh-token>@<hostname-fqdn>/api/blockchains/<blockchain-id>/concord/eth"
+        // "https://<em?ail>:<refresh-token>@<hostname-fqdn>/api/blockchains/<blockchain-id>/concord/eth"
+        "http://ethrpc:ethpw@localhost:8545"
+        // "http://54.160.229.176:8545"
+        // "http://10.184.110.253:8545"
       )
     },
     vmwarews: {

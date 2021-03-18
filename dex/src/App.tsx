@@ -31,7 +31,7 @@ function App() {
 
     <Router>
 
-    <div className="main-container">
+    <main className="main-container" cds-text="body">
       <div className="content-container">
         <div className="content-area">
           <Web3ReactManager>
@@ -51,7 +51,7 @@ function App() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
     </Router>
     </Web3ReactProvider>
 

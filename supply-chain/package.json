@@ -16,7 +16,7 @@
     "test": "npm run copy-contract-build && ng test -c vmware-dev",
     "test:travis": "npm run copy-contract-build && ng test --watch=false -c ganache-dev",
     "truffle:test:ganache": "export ENGINE=GANACHE && truffle test ./test/Orders.js && truffle test ./test/Order.js && truffle test ./test/Upgrade.js",
-    "truffle:test:vmware": "truffle test ./test/Orders.js --network=vmware && truffle test ./test/Order.js --network=vmware && truffle test ./test/Upgrade.js --network=vmware",
+    "truffle:test:vmware": "export ENGINE=CONCORD && truffle test --network=vmware",
     "truffle:test:concord": "export ENGINE=CONCORD && truffle test --network=concord",
     "truffle:test:concordDocker": "export ENGINE=CONCORD && truffle test --network=concordDocker",
     "lint": "ng lint",
