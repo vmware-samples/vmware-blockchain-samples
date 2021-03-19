@@ -158,8 +158,8 @@ count2 = 0
 while (count2 < count1):
     tx_receipt = w3.eth.waitForTransactionReceipt(txlist[count2])
     if (tx_receipt.status == 1):
-        #if (txlist_mismatch[count2] == 1):
-        #    print(tx_receipt)
+        if (txlist_mismatch[count2] == 1):
+            print(tx_receipt)
         if (count1-count2-1 == 0):
             break
         #print(greeter.functions.greet().call())
@@ -172,3 +172,5 @@ end_time = time.time()
 print("--- %s seconds ---" % (end_time - start_time))
 print("tx success, complete:remaining",total_tx_count,":",0)
 print("TPS:", total_tx_count/(end_time - start_time))
+block = w3.eth.getBlock('latest')
+print(block)
