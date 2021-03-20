@@ -38,7 +38,7 @@ idna==2.8
 importlib-metadata==1.5.0
 incremental==16.10.1
 ipfshttpclient==0.7.0a1
-Jinja2==2.10.1
+Jinja2==2.11.3
 jsonpatch==1.22
 jsonpointer==2.0
 jsonschema==3.2.0
