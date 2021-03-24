@@ -60,7 +60,7 @@ key1 = '0xae6ae8e5ccbfb04590405997ee2d52d2b330726137b875053c36d94e974d162f'
 vmware = 1
 vmware_prod_deploy = 0
 chainid = 1
-total_tx_count = 1000
+total_tx_count = 1
 
 # web3.py instance
 #w3 = Web3(Web3.EthereumTesterProvider())
@@ -92,6 +92,8 @@ abi = json.loads(compiled_sol['contracts']['Greeter.sol']['Greeter']['metadata']
 
 Greeter = w3.eth.contract(abi=abi, bytecode=bytecode)
 
+print(w3.net.listening)
+print(w3.net.peerCount)
 nonce = w3.eth.getTransactionCount(account1)
 # Submit the transaction that deploys the contract
 construct_txn = Greeter.constructor().buildTransaction({
@@ -172,5 +174,18 @@ end_time = time.time()
 print("--- %s seconds ---" % (end_time - start_time))
 print("tx success, complete:remaining",total_tx_count,":",0)
 print("TPS:", total_tx_count/(end_time - start_time))
-block = w3.eth.getBlock('latest')
+
+block = w3.eth.getBlock('latest', False)
+print(block)
+
+block = w3.eth.getBlock('latest', True)
+print(block)
+
+count = w3.eth.get_block_transaction_count('latest')
+print(count)
+
+count = w3.eth.get_block_transaction_count(block['number'])
+print(count)
+
+block = w3.eth.get_transaction_by_block(block['number'], 0x0)
 print(block)
