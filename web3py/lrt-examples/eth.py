@@ -30,13 +30,17 @@ compiled_sol = compile_standard({
                       greeting = 'Hello';
                   }
 
+                  event Increment(address owner);
+
                   function setGreeting(string memory _greeting) public {
+                      emit Increment(msg.sender);
                       greeting = _greeting;
                   }
 
                   function greet() view public returns (string memory) {
                       return greeting;
                   }
+
                 }
               '''
         }
@@ -57,7 +61,7 @@ compiled_sol = compile_standard({
 account1 = '0xf17f52151EbEF6C7334FAD080c5704D77216b732'
 key1 = '0xae6ae8e5ccbfb04590405997ee2d52d2b330726137b875053c36d94e974d162f'
 
-vmware = 1
+vmware = 0
 vmware_prod_deploy = 0
 chainid = 1
 total_tx_count = 1
@@ -123,6 +127,9 @@ greeter = w3.eth.contract(
 )
 print(greeter.functions.greet().call())
 
+contractAddress = tx_receipt.contractAddress
+print(contractAddress)
+
 start_time = time.time()
 count1 = 0
 txlist = []
@@ -181,11 +188,28 @@ print(block)
 block = w3.eth.getBlock('latest', True)
 print(block)
 
-count = w3.eth.get_block_transaction_count('latest')
-print(count)
+newApi = True
 
-count = w3.eth.get_block_transaction_count(block['number'])
-print(count)
+if (newApi):
+    count = w3.eth.get_block_transaction_count('latest')
+    print(count)
 
-block = w3.eth.get_transaction_by_block(block['number'], 0x0)
-print(block)
+    count = w3.eth.get_block_transaction_count(block['number'])
+    print(count)
+
+    block = w3.eth.get_transaction_by_block(block['number'], 0x0)
+    print(block)
+
+    chainid = w3.eth.chain_id
+    print(chainid)
+
+    estimate_gas = greeter.functions.greet().estimateGas()
+    print(estimate_gas)
+
+    filt = w3.eth.filter('latest')
+    print(filt)
+    print(w3.eth.getFilterChanges(filt.filter_id))
+
+    filtx = w3.eth.filter({'fromBlock': 0, 'toBlock': 'latest', 'address': contractAddress})
+    print(filtx)
+    print(w3.eth.getFilterLogs(filtx.filter_id))
