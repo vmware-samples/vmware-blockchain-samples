@@ -7,6 +7,7 @@ import { ethers } from "hardhat";
 import fs from 'fs';
 import tks from "../deploy/token-list.json";
 import { BigNumber, Contract } from "ethers";
+import Web3 from "web3";
 
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
@@ -62,3 +63,4 @@ main()
     console.error(error);
     process.exit(1);
   });
+

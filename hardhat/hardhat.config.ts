@@ -1,6 +1,5 @@
 import { extendEnvironment, task } from "hardhat/config";
 import "@nomiclabs/hardhat-waffle";
-import 'hardhat-deploy';
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -39,7 +38,7 @@ export default {
     hardhat: {
     },
     vmware: {
-      url: "https://localhost:8545",
+      url: "http://localhost:8545",
       chainId: 5000,
       from: '627306090abaB3A6e1400e9345bC60c78a8BEf57',
 
