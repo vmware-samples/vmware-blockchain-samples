@@ -61,7 +61,7 @@ compiled_sol = compile_standard({
 account1 = '0xf17f52151EbEF6C7334FAD080c5704D77216b732'
 key1 = '0xae6ae8e5ccbfb04590405997ee2d52d2b330726137b875053c36d94e974d162f'
 
-vmware = 0
+vmware = 1
 vmware_prod_deploy = 0
 chainid = 1
 total_tx_count = 1
@@ -71,9 +71,9 @@ total_tx_count = 1
 if (vmware == 1):
     #w3 = Web3(Web3.HTTPProvider("http://54.160.229.176:8545"))
     if (vmware_prod_deploy == 0):
-        #w3 = Web3(Web3.HTTPProvider('https://10.184.110.253:8545', request_kwargs={'verify': False}))
+        w3 = Web3(Web3.HTTPProvider('https://10.185.230.50:8545', request_kwargs={'verify': False}))
         print("vmware dev ...")
-        w3 = Web3(Web3.HTTPProvider('http://10.184.110.253:8545'))
+        #w3 = Web3(Web3.HTTPProvider('https://10.185.230.50:8545'))
         chainid = 5000
     else:
         print("vmware prod ...")
@@ -206,10 +206,12 @@ if (newApi):
     estimate_gas = greeter.functions.greet().estimateGas()
     print(estimate_gas)
 
-    filt = w3.eth.filter('latest')
-    print(filt)
-    print(w3.eth.getFilterChanges(filt.filter_id))
-
-    filtx = w3.eth.filter({'fromBlock': 0, 'toBlock': 'latest', 'address': contractAddress})
-    print(filtx)
-    print(w3.eth.getFilterLogs(filtx.filter_id))
+    if (vmware == 0):
+        filt = w3.eth.filter('latest')
+        print(filt)
+        print(w3.eth.getFilterChanges(filt.filter_id))
+        print(w3.eth.getFilterLogs(filt.filter_id))
+        
+        filtx = w3.eth.filter({'fromBlock': 0, 'toBlock': 'latest', 'address': contractAddress})
+        print(filtx)
+        print(w3.eth.getFilterLogs(filtx.filter_id))
