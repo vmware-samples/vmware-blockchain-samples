@@ -4,7 +4,34 @@ Blockchain is a platform that contains blocks of data about transactions between
 
 ![Supply Chain Use Case](./static/supply-chain.png "Supply Chain Use Case")
 
-One use case of blockchain is to track different types of transactions in a supply chain in a secure and transparent manner. Starting from the manufacturer to the sale of the product every transaction in the supply chain is documented to reduce costs and minimize human error. The supply chain decentralized application (dApp) uses smart contracts, which are self-executing contractual promises, stored on the blockchain that no one controls, and everyone can trust. The supply chain dApp can be used on VMware Blockchain or other Ethereum-based blockchain.
+One use case of blockchain is to track different types of transactions in a supply chain securely and transparently. Starting from the manufacturer to the sale of the product every transaction in the supply chain is documented to reduce costs and minimize human error. The supply chain decentralized application (dApp) uses smart contracts, which are self-executing contractual promises, stored on the blockchain that no one controls, and everyone can trust. The supply chain dApp can be used on VMware Blockchain or other Ethereum-based blockchain.
+
+
+## Quick Setup with VMware Concord
+
+
+Install truffle@5 globally
+```bash
+npm install -g truffle@5.3
+```
+
+Install dependencies
+```bash
+npm install
+```
+
+Deploy contracts
+```bash
+npm run deploy:concord
+```
+
+Start up supply chain DApp
+```bash
+npm run start:concord
+```
+
+*Tada!* Supply Chain DApp is running at http://localhost:4200
+
 
 ## Quick Setup with Docker
 
@@ -42,7 +69,7 @@ docker-compose build
 Deploy contracts by running truffle migrate by using our container.
 
 ```
-docker-compose run supply-chain truffle migrate --network=vmware  
+docker-compose run supply-chain truffle migrate --network=vmware
 ```
 ![Migrate Contracts](./static/contract-migrations.png "Migrate Contracts")
 
@@ -107,7 +134,7 @@ npm install
 Deploy contracts on ganache
 
 ```shell
-truffle migrate --reset --network=development 
+truffle migrate --reset --network=development
 ```
 
 Deploy contracts on VMware Blockchain
@@ -125,7 +152,7 @@ First go to `truffle-config.js` and update the username, password and path under
 Then deploy the contracts
 
 ```shell
-truffle migrate --reset --network=vmware 
+truffle migrate --reset --network=vmware
 ```
 
 Run tests to verify everything is working correctly
@@ -197,7 +224,7 @@ web3.toUtf8('0x4170706c65730000000000000000000000000000000000000000000000000000'
 - Click Organic.
 - Click Upload and navigate to vmware-blockchain-samples > build > contracts.
 - Upload a JSON contract file less than 200KB.
-- In the top left corner, set the user role to Storage.    
+- In the top left corner, set the user role to Storage.
 - Click Received and Finished.
 - In the top left corner, set the user role to Distributor.
 - Click In Transit.

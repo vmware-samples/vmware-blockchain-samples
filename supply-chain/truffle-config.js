@@ -59,11 +59,10 @@ module.exports = {
       skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
     },
     concord: {
-      network_id: "*",
-      host: "0.0.0.0",     // Localhost (default: none)
-      port: 8545,            // Standard Ethereum port (default: none)
-      timeoutBlocks: 200,  //k
-      skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+      network_id: 5000,
+      provider: () => new Web3.providers.HttpProvider(
+        "http://localhost:8545"
+      )
     },
     concordDocker: {
       network_id: "*",
@@ -73,14 +72,14 @@ module.exports = {
       skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
     },
     vmware: {
-      network_id: "*",
+      network_id: 5000,
       quiet: true,
       provider: () => new Web3.providers.HttpProvider(
         "https://<email>:<refresh-token>@<hostname-fqdn>/api/blockchains/<blockchain-id>/concord/eth"
       )
     },
     vmwarews: {
-      network_id: "*",
+      network_id: 5000,
       quiet: true,
       provider: () => Web3.providers.WebsocketProvider(
         "wss://localhost:8080/ws"
