@@ -28,7 +28,7 @@ async function main() {
 
     await securityToken.deployed();
     token.contractAddress = securityToken.address;
-    deployedContracts.push(securityToken.address)
+    deployedContracts.push([token.name, securityToken.address])
 
     console.log(`${token.name} deployed to:`, securityToken.address);
   }
@@ -36,19 +36,20 @@ async function main() {
   console.log('Saving contract addresses');
   fs.writeFileSync(__dirname + '/../deploy/token-list.json', JSON.stringify(tks, null, 2));
 
-  console.log('Airdrop tokens');
+  console.log('Transfering tokens');
   const accounts = {
-    alice: '0x784e2c4D95c9Be66Cb0B9cda5b39d72e7630bCa8',
-    bob: '0xF4d5B303A15b04D7C6b7510b24c62D393805B8d7',
-    charlie: '0x67C94d4a4fab02697513e4611A4742a98879aD56',
+    alice: process.env.ALICE_KEY,
+    bob: process.env.BOB_KEY,
+    charlie: process.env.CHARLIE_KEY,
   }
 
-  for (const address of deployedContracts) {
+  for (const [token, address] of deployedContracts) {
     const contract = await ethers.getContractAt('SecurityToken', address)
     const decimals = await contract.decimals()
     const amount = BigNumber.from(10).pow(decimals).mul(1000)
-    for (const account of Object.values(accounts)) {
-      await contract.transfer(account, amount)
+    for (const [name, account] of Object.entries(accounts)) {
+      console.log(`Transfering ${token} to ${name} @ ${account}`);
+      await contract.transfer(account, amount);
     }
   }
 
