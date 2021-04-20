@@ -1,12 +1,11 @@
 {
   "name": "tokenize",
   "version": "1.0.0",
-  "description": "ERC20 and ERC1404 use case",
+  "description": "ERC20 use case",
   "main": "index.js",
   "scripts": {
     "deploy:vmware": "npx hardhat run scripts/deploy.ts",
-    "deploy:besu": "npx hardhat run scripts/deploy.ts --network besuMultiCluster",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx hardhat test"
   },
   "keywords": [
     "erc20",
@@ -30,6 +29,6 @@
     "web3": "^1.3.3"
   },
   "dependencies": {
-    "hardhat-deploy": "^0.7.0-beta.44"
+    "dotenv": "^8.2.0"
   }
 }
