@@ -29,8 +29,10 @@ package com.vmware.ethereum.service;
 import static java.time.Duration.between;
 import static java.time.Instant.now;
 
+import com.vmware.ethereum.config.Web3jConfig;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
@@ -46,13 +48,22 @@ public class WorkloadCommand implements Runnable {
   private final SecureTokenApi api;
   private final CountDownLatch countDownLatch;
   private final MetricsService metrics;
+  private final Web3jConfig web3jConfig;
+  public static final HashMap<String, Instant> txHashTime = new HashMap<String, Instant>();
 
   @Override
   public void run() {
-    transferAsync();
+    if (web3jConfig.isQueuedPolling()) transferQueued();
+    else transferAsync();
   }
 
-  /** Transfer token asynchronously. */
+  /** Transfer token for deferred polling. */
+  public String transferQueued() {
+    Instant startTime = now();
+    // countDownLatch.countDown();
+    return api.transferQueued(countDownLatch, txHashTime, metrics);
+  }
+
   public CompletableFuture<TransactionReceipt> transferAsync() {
     Instant startTime = now();
     return api.transferAsync()

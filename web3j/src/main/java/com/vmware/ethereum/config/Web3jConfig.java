@@ -50,6 +50,7 @@ public class Web3jConfig {
   @NotNull private Receipt receipt;
   @NotNull private Level logLevel;
   @NotNull private boolean manageNonce;
+  @NotNull private boolean queuedPolling;
 
   @Setter
   @Getter

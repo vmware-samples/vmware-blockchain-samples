@@ -1,7 +1,7 @@
 workload:
   model: OPEN  # either OPEN or CLOSED workload model
-  transactions: 5_000 # total transactions to be done
-  load-factor: 50 # arrival rate for OPEN model & concurrency for CLOSED model
+  transactions: 1_00 # total transactions to be done
+  load-factor: 10 # arrival rate for OPEN model & concurrency for CLOSED model
   progress-interval: 5s # interval for updating progress in web UI
 
 web3j:
@@ -14,9 +14,10 @@ web3j:
     private-key: # private key of the sender account (Note: This takes precedence over wallet.)
   receipt:
     attempts: 5 # maximum number of polling attempts to get receipt
-    interval: 1000 # sleep interval (ms) between polling attempts
-  manage-nonce: true # Managing nonce would avoid the overhead of calling eth_getTransactionCount.
+    interval: 100 # sleep interval (ms) between polling attempts
+  manage-nonce: false # Managing nonce would avoid the overhead of calling eth_getTransactionCount.
   log-level: NONE # NONE, BASIC, HEADERS, BODY
+  queued-polling: false #set true for queued polling of transaction receipt, will only work with OPEN model
 
 token:
   name: SecureToken
