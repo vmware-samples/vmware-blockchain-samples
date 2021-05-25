@@ -43,6 +43,7 @@ import com.vmware.ethereum.config.WorkloadConfig;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
@@ -55,7 +56,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MetricsService {
 
-  private final MeterRegistry registry;
+  private final MeterRegistry composite;
+  private final SimpleMeterRegistry simple;
   private final WorkloadConfig config;
   private final CurrentMetrics currentMetrics;
 
@@ -74,7 +76,7 @@ public class MetricsService {
 
   /** Record the latency with given tags. */
   private void record(Duration duration, Iterable<Tag> tags) {
-    Timer.builder(TOKEN_TRANSFER_METRIC_NAME).tags(tags).register(registry).record(duration);
+    Timer.builder(TOKEN_TRANSFER_METRIC_NAME).tags(tags).register(composite).record(duration);
     currentMetrics.record(duration);
   }
 
@@ -108,7 +110,7 @@ public class MetricsService {
 
   /** Get timer count field, group by the given tag name. */
   private Map<String, Long> getTagValueToCount(String tagName) {
-    return registry.find(TOKEN_TRANSFER_METRIC_NAME).tagKeys(tagName).timers().stream()
+    return simple.find(TOKEN_TRANSFER_METRIC_NAME).tagKeys(tagName).timers().stream()
         .collect(toMap(timer -> timer.getId().getTag(tagName), Timer::count));
   }
 
@@ -129,7 +131,7 @@ public class MetricsService {
 
   /** Latency for the test duration. */
   public long getAverageLatency() {
-    Timer timer = registry.find(TOKEN_TRANSFER_METRIC_NAME).tag(STATUS_TAG, STATUS_OK).timer();
+    Timer timer = simple.find(TOKEN_TRANSFER_METRIC_NAME).tag(STATUS_TAG, STATUS_OK).timer();
     return timer == null ? 0 : (long) timer.mean(MILLISECONDS);
   }
 
