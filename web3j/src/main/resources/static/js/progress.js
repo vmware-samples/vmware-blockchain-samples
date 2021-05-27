@@ -37,6 +37,12 @@ function LoadProgress() {
       const progress = JSON.parse(event.data);
       updateChart(progress);
       updateReport(progress);
+
+      // Stop updates once the test is done.
+      if (progress.txPending <= 0) {
+        stop();
+        console.log("Test completed")
+      }
     });
 
     this.source.onerror = function () {

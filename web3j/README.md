@@ -34,10 +34,10 @@ $ mvn spring-boot:run
 
 # Monitor
 
-Monitor the test using [Chart.js](https://www.chartjs.org/) on port 8080. If you would like to send
-metrics to Wavefront, you could configure it and start a Wavefront Proxy using the following
-command.
+Optionally configure [application.yml](./src/main/resources/config/application.yml) to enable
+exporting metrics to one or more monitoring tools.
 
-```shell
-$ docker run -d -e WAVEFRONT_URL=YOUR_WAVEFRONT_URL -e WAVEFRONT_TOKEN=YOUR_API_TOKEN -p 2878:2878 wavefronthq/proxy:latest
-```
+* [Chart.js](https://www.chartjs.org/) (default)
+* [Wavefront Proxy](https://hub.docker.com/r/wavefronthq/proxy)
+* [Influxdb](https://hub.docker.com/_/influxdb)
+* [Prometheus](https://prometheus.io/docs/prometheus/latest/installation/)

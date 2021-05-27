@@ -30,12 +30,15 @@ import com.vmware.ethereum.config.Web3jConfig.Receipt;
 import com.vmware.ethereum.service.TimedWrapper.PollingTransactionReceiptProcessor;
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Tags;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.util.concurrent.CountDownLatch;
+import java.util.function.Function;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
@@ -44,6 +47,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.web3j.abi.datatypes.Address;
@@ -145,6 +149,12 @@ public class AppConfig {
 
   @Bean
   public TimedAspect timedAspect(MeterRegistry registry) {
-    return new TimedAspect(registry, (pjp -> Tags.empty()));
+    Function<ProceedingJoinPoint, Iterable<Tag>> tagsBasedOnJoinPoint = pjp -> Tags.empty();
+    return new TimedAspect(registry, tagsBasedOnJoinPoint);
+  }
+
+  @Bean
+  public SimpleMeterRegistry simpleMeterRegistry() {
+    return new SimpleMeterRegistry();
   }
 }

@@ -36,12 +36,21 @@ management:
     tags:
       testName: demo
     export:
+      prometheus:
+        enabled: false
       wavefront:
         enabled: false
         uri: proxy://localhost:2878
         source:
         global-prefix: ethereum.web3j.token
         step: 30s
+      influx:
+        enabled: false
+        uri: http://localhost:8086
+        token: my-super-secret-auth-token
+        org: my-org
+        bucket: my-bucket
+        step: 10s
     enable:
       jvm: false
       logback: false
@@ -60,6 +69,9 @@ logging:
     org:
       web3j:
         evm: warn
+    io:
+      micrometer:
+        influx: info
 
 server:
   port: 8080 # web UI port for tracking progress
