@@ -30,7 +30,6 @@ import static java.math.BigInteger.valueOf;
 import static java.time.Instant.now;
 
 import com.vmware.ethereum.config.TokenConfig;
-import com.vmware.ethereum.config.Web3jConfig;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.time.Instant;
@@ -63,10 +62,10 @@ import org.web3j.tx.response.TransactionReceiptProcessor;
 public class SecureTokenApi {
 
   private final TokenConfig config;
-  private final Web3jConfig web3jConfig;
   private final Web3j web3j;
   private final TransactionManager transactionManager;
-  private final TransactionReceiptProcessor transactionReceiptProcessor;
+  private final TransactionManager queuedTransactionManager;
+  private final TransactionReceiptProcessor queuedTransactionReceiptProcessor;
   private final String senderAddress;
   private final Credentials credentials;
   private SecurityToken token;
@@ -92,28 +91,15 @@ public class SecureTokenApi {
         new StaticGasProvider(valueOf(config.getGasPrice()), valueOf(config.getGasLimit()));
 
     BigInteger initialSupply = valueOf(config.getInitialSupply());
-    SecurityToken securityToken;
-    if (web3jConfig.isQueuedPolling()) {
-      securityToken =
-          SecurityToken.deploy(
-                  web3j,
-                  credentials,
-                  gasProvider,
-                  config.getName(),
-                  config.getSymbol(),
-                  initialSupply)
-              .send();
-    } else {
-      securityToken =
-          SecurityToken.deploy(
-                  web3j,
-                  transactionManager,
-                  gasProvider,
-                  config.getName(),
-                  config.getSymbol(),
-                  initialSupply)
-              .send();
-    }
+    SecurityToken securityToken =
+        SecurityToken.deploy(
+                web3j,
+                transactionManager,
+                gasProvider,
+                config.getName(),
+                config.getSymbol(),
+                initialSupply)
+            .send();
 
     securityToken
         .getTransactionReceipt()
@@ -139,7 +125,7 @@ public class SecureTokenApi {
 
     try {
       String txHash =
-          transactionManager
+          queuedTransactionManager
               .sendTransaction(
                   valueOf(config.getGasPrice()),
                   valueOf(config.getGasLimit()),
@@ -147,7 +133,8 @@ public class SecureTokenApi {
                   txData,
                   BigInteger.ZERO)
               .getTransactionHash();
-      TransactionReceipt txReceipt = transactionReceiptProcessor.waitForTransactionReceipt(txHash);
+      TransactionReceipt txReceipt =
+          queuedTransactionReceiptProcessor.waitForTransactionReceipt(txHash);
       Instant startTime = now();
       txHashTime.put(txHash, startTime);
     } catch (Exception e) {

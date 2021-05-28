@@ -60,7 +60,6 @@ public class WorkloadCommand implements Runnable {
   /** Transfer token for deferred polling. */
   public String transferQueued() {
     Instant startTime = now();
-    // countDownLatch.countDown();
     return api.transferQueued(countDownLatch, txHashTime, metrics);
   }
 

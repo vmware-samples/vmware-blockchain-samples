@@ -32,7 +32,6 @@ import static java.time.Instant.now;
 import com.vmware.ethereum.config.Web3jConfig.Receipt;
 import com.vmware.ethereum.service.MetricsService;
 import com.vmware.ethereum.service.TimedWrapper.PollingTransactionReceiptProcessor;
-import com.vmware.ethereum.service.TimedWrapper.QueuingTransactionReceiptProcessor;
 import com.vmware.ethereum.service.WorkloadCommand;
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -72,6 +71,7 @@ import org.web3j.tx.FastRawTransactionManager;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.response.Callback;
+import org.web3j.tx.response.QueuingTransactionReceiptProcessor;
 import org.web3j.tx.response.TransactionReceiptProcessor;
 
 @Slf4j
@@ -116,44 +116,62 @@ public class AppConfig {
   }
 
   @Bean
-  public TransactionReceiptProcessor transactionReceiptProcessor(
+  public TransactionReceiptProcessor queuedTransactionReceiptProcessor(
       Web3j web3j, CountDownLatch countDownLatch, MetricsService metrics) {
     Receipt receipt = config.getReceipt();
+    return new QueuingTransactionReceiptProcessor(
+        web3j,
+        new Callback() {
+          @Override
+          public void accept(TransactionReceipt transactionReceipt) {
 
-    if (config.isQueuedPolling()) {
-      return new QueuingTransactionReceiptProcessor(
-          web3j,
-          new Callback() {
-            @Override
-            public void accept(TransactionReceipt transactionReceipt) {
+            log.debug("Receipt: {}", transactionReceipt);
+            Duration duration =
+                between(txHashTime.get(transactionReceipt.getTransactionHash()), now());
+            metrics.record(duration, transactionReceipt.getStatus());
+            countDownLatch.countDown();
+          }
 
-              log.debug("Receipt: {}", transactionReceipt);
-              Duration duration =
-                  between(txHashTime.get(transactionReceipt.getTransactionHash()), now());
-              metrics.record(duration, transactionReceipt.getStatus());
-              countDownLatch.countDown();
-            }
+          @Override
+          public void exception(Exception exception) {
+            metrics.record(null, exception);
+            countDownLatch.countDown();
+          }
+        },
+        receipt.getAttempts(),
+        receipt.getInterval());
+  }
 
-            @Override
-            public void exception(Exception exception) {
-              metrics.record(null, exception);
-              countDownLatch.countDown();
-            }
-          },
-          receipt.getAttempts(),
-          receipt.getInterval());
-    } else {
-      return new PollingTransactionReceiptProcessor(
-          web3j, receipt.getInterval(), receipt.getAttempts());
+  @Bean
+  public TransactionManager queuedTransactionManager(
+      Web3j web3j,
+      Credentials credentials,
+      CountDownLatch countDownLatch,
+      MetricsService metrics,
+      TransactionReceiptProcessor queuedTransactionReceiptProcessor) {
+
+    int chainId = config.getEthClient().getChainId();
+
+    if (config.isManageNonce()) {
+      return new FastRawTransactionManager(
+          web3j, credentials, chainId, queuedTransactionReceiptProcessor);
     }
+
+    return new RawTransactionManager(
+        web3j, credentials, chainId, queuedTransactionReceiptProcessor);
+  }
+
+  @Bean
+  public TransactionReceiptProcessor transactionReceiptProcessor(Web3j web3j) {
+    Receipt receipt = config.getReceipt();
+    return new PollingTransactionReceiptProcessor(
+        web3j, receipt.getInterval(), receipt.getAttempts());
   }
 
   @Bean
   public TransactionManager transactionManager(
       Web3j web3j,
       Credentials credentials,
-      CountDownLatch countDownLatch,
-      MetricsService metrics,
       TransactionReceiptProcessor transactionReceiptProcessor) {
 
     int chainId = config.getEthClient().getChainId();
