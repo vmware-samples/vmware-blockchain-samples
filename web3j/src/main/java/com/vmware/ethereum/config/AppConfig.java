@@ -32,6 +32,7 @@ import static java.time.Instant.now;
 import com.vmware.ethereum.config.Web3jConfig.Receipt;
 import com.vmware.ethereum.service.MetricsService;
 import com.vmware.ethereum.service.TimedWrapper.PollingTransactionReceiptProcessor;
+import com.vmware.ethereum.service.TimedWrapper.QueuingTransactionReceiptProcessor;
 import com.vmware.ethereum.service.WorkloadCommand;
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -71,7 +72,6 @@ import org.web3j.tx.FastRawTransactionManager;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.response.Callback;
-import org.web3j.tx.response.QueuingTransactionReceiptProcessor;
 import org.web3j.tx.response.TransactionReceiptProcessor;
 
 @Slf4j

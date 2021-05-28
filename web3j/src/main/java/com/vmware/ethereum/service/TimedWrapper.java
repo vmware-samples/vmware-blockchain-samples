@@ -34,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.exceptions.TransactionException;
+import org.web3j.tx.response.Callback;
 
 @Service
 public class TimedWrapper {
@@ -53,22 +54,22 @@ public class TimedWrapper {
     }
   }
 
-  // public static class QueuingTransactionReceiptProcessor
-  //     extends org.web3j.tx.response.QueuingTransactionReceiptProcessor {
+  public static class QueuingTransactionReceiptProcessor
+      extends org.web3j.tx.response.QueuingTransactionReceiptProcessor {
 
-  //   public QueuingTransactionReceiptProcessor(
-  //       Web3j web3j, Callback callback, int pollingAttemptsPerTxHash, long pollingFrequency) {
-  //     super(web3j, callback, pollingAttemptsPerTxHash, pollingFrequency);
-  //   }
+    public QueuingTransactionReceiptProcessor(
+        Web3j web3j, Callback callback, int pollingAttemptsPerTxHash, long pollingFrequency) {
+      super(web3j, callback, pollingAttemptsPerTxHash, pollingFrequency);
+    }
 
-  //   @Timed(value = TOKEN_RECEIPT_METRIC_NAME)
-  //   @Override
-  //   public TransactionReceipt waitForTransactionReceipt(String transactionHash)
-  //       throws IOException, TransactionException {
-  //     super.waitForTransactionReceipt(transactionHash);
-  //     TransactionReceipt tr = new TransactionReceipt();
-  //     tr.setTransactionHash(transactionHash);
-  //     return tr;
-  //   }
-  // }
+    @Timed(value = TOKEN_RECEIPT_METRIC_NAME)
+    @Override
+    public TransactionReceipt waitForTransactionReceipt(String transactionHash)
+        throws IOException, TransactionException {
+      return super.waitForTransactionReceipt(transactionHash);
+      // TransactionReceipt tr = new TransactionReceipt();
+      // tr.setTransactionHash(transactionHash);
+      // return tr;
+    }
+  }
 }
