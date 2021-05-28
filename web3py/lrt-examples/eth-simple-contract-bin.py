@@ -24,11 +24,11 @@ expectedCount = 0
 account1 = '0xf17f52151EbEF6C7334FAD080c5704D77216b732'
 key1 = '0xae6ae8e5ccbfb04590405997ee2d52d2b330726137b875053c36d94e974d162f'
 
-vmware = 0
+vmware = 1
 if (vmware):
     #vmware
     chainid = 5000
-    w3 = Web3(Web3.HTTPProvider('http://10.186.48.100:8545'))
+    w3 = Web3(Web3.HTTPProvider('https://10.186.48.100:8545', request_kwargs={'verify': False}))
 else:
     #besu
     chainid = 2018
