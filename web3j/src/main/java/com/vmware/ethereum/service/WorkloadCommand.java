@@ -50,7 +50,6 @@ public class WorkloadCommand implements Runnable {
   private final CountDownLatch countDownLatch;
   private final MetricsService metrics;
   private final Web3jConfig web3jConfig;
-  // change to map, share using bean
   public static Map<String, Instant> txHashTime = new HashMap<String, Instant>();
 
   @Override
