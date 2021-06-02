@@ -35,9 +35,8 @@ import java.math.BigInteger;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -47,7 +46,6 @@ import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.generated.Uint256;
-import org.web3j.crypto.Credentials;
 import org.web3j.model.SecurityToken;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
@@ -64,10 +62,8 @@ public class SecureTokenApi {
   private final TokenConfig config;
   private final Web3j web3j;
   private final TransactionManager transactionManager;
-  private final TransactionManager queuedTransactionManager;
   private final TransactionReceiptProcessor queuedTransactionReceiptProcessor;
   private final String senderAddress;
-  private final Credentials credentials;
   private SecurityToken token;
   private String contractAddress;
   private String txHash;
@@ -112,9 +108,7 @@ public class SecureTokenApi {
   }
 
   /** Transfer token for deferred polling. */
-  public String transferQueued(
-      CountDownLatch countDownLatch, HashMap<String, Instant> txHashTime, MetricsService metrics) {
-
+  public String transferQueued(Map<String, Instant> txHashTime) {
     Function function =
         new Function(
             "transfer",
@@ -122,10 +116,9 @@ public class SecureTokenApi {
                 new Address(config.getRecipient()), new Uint256(valueOf(config.getAmount()))),
             Collections.emptyList());
     String txData = FunctionEncoder.encode(function);
-
     try {
-      String txHash =
-          queuedTransactionManager
+      txHash =
+        transactionManager
               .sendTransaction(
                   valueOf(config.getGasPrice()),
                   valueOf(config.getGasLimit()),

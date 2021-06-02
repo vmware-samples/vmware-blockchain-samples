@@ -67,9 +67,6 @@ public class TimedWrapper {
     public TransactionReceipt waitForTransactionReceipt(String transactionHash)
         throws IOException, TransactionException {
       return super.waitForTransactionReceipt(transactionHash);
-      // TransactionReceipt tr = new TransactionReceipt();
-      // tr.setTransactionHash(transactionHash);
-      // return tr;
     }
   }
 }

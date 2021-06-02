@@ -45,7 +45,7 @@ import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Function;
 import javax.net.ssl.SSLContext;
@@ -57,6 +57,7 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.web3j.abi.datatypes.Address;
@@ -80,7 +81,7 @@ import org.web3j.tx.response.TransactionReceiptProcessor;
 public class AppConfig {
 
   private final Web3jConfig config;
-  private HashMap<String, Instant> txHashTime = WorkloadCommand.txHashTime;
+  private Map<String, Instant> txHashTime = WorkloadCommand.txHashTime;
 
   @Bean
   public SSLSocketFactory sslSocketFactory() throws GeneralSecurityException {
@@ -116,6 +117,7 @@ public class AppConfig {
   }
 
   @Bean
+  @ConditionalOnExpression("${config.isQueuedPolling():true}")
   public TransactionReceiptProcessor queuedTransactionReceiptProcessor(
       Web3j web3j, CountDownLatch countDownLatch, MetricsService metrics) {
     Receipt receipt = config.getReceipt();
@@ -140,25 +142,6 @@ public class AppConfig {
         },
         receipt.getAttempts(),
         receipt.getInterval());
-  }
-
-  @Bean
-  public TransactionManager queuedTransactionManager(
-      Web3j web3j,
-      Credentials credentials,
-      CountDownLatch countDownLatch,
-      MetricsService metrics,
-      TransactionReceiptProcessor queuedTransactionReceiptProcessor) {
-
-    int chainId = config.getEthClient().getChainId();
-
-    if (config.isManageNonce()) {
-      return new FastRawTransactionManager(
-          web3j, credentials, chainId, queuedTransactionReceiptProcessor);
-    }
-
-    return new RawTransactionManager(
-        web3j, credentials, chainId, queuedTransactionReceiptProcessor);
   }
 
   @Bean

@@ -33,6 +33,7 @@ import com.vmware.ethereum.config.Web3jConfig;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +50,8 @@ public class WorkloadCommand implements Runnable {
   private final CountDownLatch countDownLatch;
   private final MetricsService metrics;
   private final Web3jConfig web3jConfig;
-  public static final HashMap<String, Instant> txHashTime = new HashMap<String, Instant>();
+  // change to map, share using bean
+  public static Map<String, Instant> txHashTime = new HashMap<String, Instant>();
 
   @Override
   public void run() {
@@ -60,7 +62,7 @@ public class WorkloadCommand implements Runnable {
   /** Transfer token for deferred polling. */
   public String transferQueued() {
     Instant startTime = now();
-    return api.transferQueued(countDownLatch, txHashTime, metrics);
+    return api.transferQueued(txHashTime);
   }
 
   public CompletableFuture<TransactionReceipt> transferAsync() {
