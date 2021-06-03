@@ -57,7 +57,7 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.web3j.abi.datatypes.Address;
@@ -117,7 +117,7 @@ public class AppConfig {
   }
 
   @Bean
-  @ConditionalOnExpression("${config.isQueuedPolling():true}")
+  @ConditionalOnProperty(value="config.queued-polling", havingValue = "true")
   public TransactionReceiptProcessor queuedTransactionReceiptProcessor(
       Web3j web3j, CountDownLatch countDownLatch, MetricsService metrics) {
     Receipt receipt = config.getReceipt();
