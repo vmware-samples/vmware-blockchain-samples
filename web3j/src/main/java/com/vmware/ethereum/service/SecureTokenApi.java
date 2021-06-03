@@ -49,6 +49,7 @@ import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.model.SecurityToken;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
@@ -66,7 +67,7 @@ public class SecureTokenApi {
   private final String senderAddress;
   private SecurityToken token;
   private String contractAddress;
-  private String txHash;
+  private final Map<String, Instant> txTime;
 
   @PostConstruct
   public void init() {
@@ -108,7 +109,7 @@ public class SecureTokenApi {
   }
 
   /** Transfer token for deferred polling. */
-  public String transferQueued(Map<String, Instant> txHashTime) {
+  public String transferQueued() throws IOException, TransactionException {
     Function function =
         new Function(
             "transfer",
@@ -116,24 +117,19 @@ public class SecureTokenApi {
                 new Address(config.getRecipient()), new Uint256(valueOf(config.getAmount()))),
             Collections.emptyList());
     String txData = FunctionEncoder.encode(function);
-    try {
-      txHash =
+
+    String txHash =
         transactionManager
-              .sendTransaction(
-                  valueOf(config.getGasPrice()),
-                  valueOf(config.getGasLimit()),
-                  contractAddress,
-                  txData,
-                  BigInteger.ZERO)
-              .getTransactionHash();
-      TransactionReceipt txReceipt =
-          queuedTransactionReceiptProcessor.waitForTransactionReceipt(txHash);
-      Instant startTime = now();
-      txHashTime.put(txHash, startTime);
-    } catch (Exception e) {
-      e.printStackTrace();
-      log.info("Transaction failed");
-    }
+            .sendTransaction(
+                valueOf(config.getGasPrice()),
+                valueOf(config.getGasLimit()),
+                contractAddress,
+                txData,
+                BigInteger.ZERO)
+            .getTransactionHash();
+    queuedTransactionReceiptProcessor.waitForTransactionReceipt(txHash);
+    Instant startTime = now();
+    txTime.put(txHash, startTime);
     return txHash;
   }
 

@@ -26,30 +26,17 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static com.vmware.ethereum.service.MetricsConstant.TOKEN_RECEIPT_METRIC_NAME;
-
-import io.micrometer.core.annotation.Timed;
-import java.io.IOException;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
-import org.web3j.protocol.exceptions.TransactionException;
 
 @Service
-public class TimedWrapper {
+public class TxTimeMap {
 
-  public static class PollingTransactionReceiptProcessor
-      extends org.web3j.tx.response.PollingTransactionReceiptProcessor {
-
-    public PollingTransactionReceiptProcessor(Web3j web3j, long sleepDuration, int attempts) {
-      super(web3j, sleepDuration, attempts);
-    }
-
-    @Timed(value = TOKEN_RECEIPT_METRIC_NAME)
-    @Override
-    public TransactionReceipt waitForTransactionReceipt(String transactionHash)
-        throws IOException, TransactionException {
-      return super.waitForTransactionReceipt(transactionHash);
-    }
+  @Bean
+  public Map<String, Instant> txTime() {
+    return new HashMap<String, Instant>();
   }
 }

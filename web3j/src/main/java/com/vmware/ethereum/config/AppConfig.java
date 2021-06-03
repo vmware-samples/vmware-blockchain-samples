@@ -32,8 +32,6 @@ import static java.time.Instant.now;
 import com.vmware.ethereum.config.Web3jConfig.Receipt;
 import com.vmware.ethereum.service.MetricsService;
 import com.vmware.ethereum.service.TimedWrapper.PollingTransactionReceiptProcessor;
-import com.vmware.ethereum.service.TimedWrapper.QueuingTransactionReceiptProcessor;
-import com.vmware.ethereum.service.WorkloadCommand;
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
@@ -57,7 +55,7 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.web3j.abi.datatypes.Address;
@@ -73,6 +71,7 @@ import org.web3j.tx.FastRawTransactionManager;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.response.Callback;
+import org.web3j.tx.response.QueuingTransactionReceiptProcessor;
 import org.web3j.tx.response.TransactionReceiptProcessor;
 
 @Slf4j
@@ -81,7 +80,7 @@ import org.web3j.tx.response.TransactionReceiptProcessor;
 public class AppConfig {
 
   private final Web3jConfig config;
-  private Map<String, Instant> txHashTime = WorkloadCommand.txHashTime;
+  private final Map<String, Instant> txTime;
 
   @Bean
   public SSLSocketFactory sslSocketFactory() throws GeneralSecurityException {
@@ -117,7 +116,7 @@ public class AppConfig {
   }
 
   @Bean
-  @ConditionalOnProperty(value="config.queued-polling", havingValue = "true")
+  @ConditionalOnExpression("${config.isQueuedPolling():true}")
   public TransactionReceiptProcessor queuedTransactionReceiptProcessor(
       Web3j web3j, CountDownLatch countDownLatch, MetricsService metrics) {
     Receipt receipt = config.getReceipt();
@@ -128,8 +127,7 @@ public class AppConfig {
           public void accept(TransactionReceipt transactionReceipt) {
 
             log.debug("Receipt: {}", transactionReceipt);
-            Duration duration =
-                between(txHashTime.get(transactionReceipt.getTransactionHash()), now());
+            Duration duration = between(txTime.get(transactionReceipt.getTransactionHash()), now());
             metrics.record(duration, transactionReceipt.getStatus());
             countDownLatch.countDown();
           }
