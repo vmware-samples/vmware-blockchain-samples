@@ -63,8 +63,8 @@ public class WorkloadCommand implements Runnable {
   }
 
   /** Transfer token for deferred polling. */
-  public String transferQueued() throws IOException, TransactionException {
-    return api.transferQueued();
+  public void transferQueued() throws IOException, TransactionException {
+    api.transferQueued();
   }
 
   /** Transfer token asynchronously. */

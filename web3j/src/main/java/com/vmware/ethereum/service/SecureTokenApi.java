@@ -65,9 +65,9 @@ public class SecureTokenApi {
   private final TransactionManager transactionManager;
   private final TransactionReceiptProcessor queuedTransactionReceiptProcessor;
   private final String senderAddress;
+  private final Map<String, Instant> txTime;
   private SecurityToken token;
   private String contractAddress;
-  private final Map<String, Instant> txTime;
 
   @PostConstruct
   public void init() {
@@ -109,7 +109,7 @@ public class SecureTokenApi {
   }
 
   /** Transfer token for deferred polling. */
-  public String transferQueued() throws IOException, TransactionException {
+  public void transferQueued() throws IOException, TransactionException {
     Function function =
         new Function(
             "transfer",
@@ -130,7 +130,6 @@ public class SecureTokenApi {
     queuedTransactionReceiptProcessor.waitForTransactionReceipt(txHash);
     Instant startTime = now();
     txTime.put(txHash, startTime);
-    return txHash;
   }
 
   /** Transfer token asynchronously. */

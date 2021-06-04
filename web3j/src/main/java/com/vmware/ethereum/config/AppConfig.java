@@ -43,6 +43,7 @@ import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Function;
@@ -55,7 +56,7 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.web3j.abi.datatypes.Address;
@@ -116,16 +117,18 @@ public class AppConfig {
   }
 
   @Bean
-  @ConditionalOnExpression("${config.isQueuedPolling():true}")
+  @ConditionalOnProperty(value = "web3j.queued-polling", havingValue = "true")
   public TransactionReceiptProcessor queuedTransactionReceiptProcessor(
-      Web3j web3j, CountDownLatch countDownLatch, MetricsService metrics) {
+      Web3j web3j,
+      CountDownLatch countDownLatch,
+      MetricsService metrics,
+      Map<String, Instant> txTime) {
     Receipt receipt = config.getReceipt();
     return new QueuingTransactionReceiptProcessor(
         web3j,
         new Callback() {
           @Override
           public void accept(TransactionReceipt transactionReceipt) {
-
             log.debug("Receipt: {}", transactionReceipt);
             Duration duration = between(txTime.get(transactionReceipt.getTransactionHash()), now());
             metrics.record(duration, transactionReceipt.getStatus());
@@ -134,7 +137,7 @@ public class AppConfig {
 
           @Override
           public void exception(Exception exception) {
-            metrics.record(null, exception);
+            metrics.record(Duration.ZERO, exception);
             countDownLatch.countDown();
           }
         },
@@ -195,5 +198,10 @@ public class AppConfig {
   @Bean
   public SimpleMeterRegistry simpleMeterRegistry() {
     return new SimpleMeterRegistry();
+  }
+
+  @Bean
+  public Map<String, Instant> txTime() {
+    return new HashMap<String, Instant>();
   }
 }
