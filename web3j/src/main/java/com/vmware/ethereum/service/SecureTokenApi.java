@@ -27,22 +27,33 @@ package com.vmware.ethereum.service;
  */
 
 import static java.math.BigInteger.valueOf;
+import static java.time.Instant.now;
 
 import com.vmware.ethereum.config.TokenConfig;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.web3j.abi.FunctionEncoder;
+import org.web3j.abi.datatypes.Address;
+import org.web3j.abi.datatypes.Function;
+import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.model.SecurityToken;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
+import org.web3j.tx.response.TransactionReceiptProcessor;
 
 @Slf4j
 @Service
@@ -52,8 +63,11 @@ public class SecureTokenApi {
   private final TokenConfig config;
   private final Web3j web3j;
   private final TransactionManager transactionManager;
+  private final TransactionReceiptProcessor queuedTransactionReceiptProcessor;
   private final String senderAddress;
+  private final Map<String, Instant> txTime;
   private SecurityToken token;
+  private String contractAddress;
 
   @PostConstruct
   public void init() {
@@ -84,8 +98,38 @@ public class SecureTokenApi {
                 initialSupply)
             .send();
 
-    securityToken.getTransactionReceipt().ifPresent(receipt -> log.info("Receipt: {}", receipt));
+    securityToken
+        .getTransactionReceipt()
+        .ifPresent(
+            receipt -> {
+              log.info("Receipt: {}", receipt);
+              contractAddress = receipt.getContractAddress();
+            });
     return securityToken;
+  }
+
+  /** Transfer token for deferred polling. */
+  public void transferQueued() throws IOException, TransactionException {
+    Function function =
+        new Function(
+            "transfer",
+            Arrays.asList(
+                new Address(config.getRecipient()), new Uint256(valueOf(config.getAmount()))),
+            Collections.emptyList());
+    String txData = FunctionEncoder.encode(function);
+
+    String txHash =
+        transactionManager
+            .sendTransaction(
+                valueOf(config.getGasPrice()),
+                valueOf(config.getGasLimit()),
+                contractAddress,
+                txData,
+                BigInteger.ZERO)
+            .getTransactionHash();
+    queuedTransactionReceiptProcessor.waitForTransactionReceipt(txHash);
+    Instant startTime = now();
+    txTime.put(txHash, startTime);
   }
 
   /** Transfer token asynchronously. */

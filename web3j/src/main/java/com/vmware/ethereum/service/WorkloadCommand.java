@@ -29,14 +29,18 @@ package com.vmware.ethereum.service;
 import static java.time.Duration.between;
 import static java.time.Instant.now;
 
+import com.vmware.ethereum.config.Web3jConfig;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.protocol.exceptions.TransactionException;
 
 @Slf4j
 @Service
@@ -46,10 +50,21 @@ public class WorkloadCommand implements Runnable {
   private final SecureTokenApi api;
   private final CountDownLatch countDownLatch;
   private final MetricsService metrics;
+  private final Web3jConfig web3jConfig;
 
+  @SneakyThrows
   @Override
   public void run() {
-    transferAsync();
+    if (web3jConfig.isQueuedPolling()) {
+      transferQueued();
+    } else {
+      transferAsync();
+    }
+  }
+
+  /** Transfer token for deferred polling. */
+  public void transferQueued() throws IOException, TransactionException {
+    api.transferQueued();
   }
 
   /** Transfer token asynchronously. */

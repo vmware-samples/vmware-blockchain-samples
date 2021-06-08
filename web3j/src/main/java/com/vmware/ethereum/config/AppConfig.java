@@ -26,7 +26,11 @@ package com.vmware.ethereum.config;
  * #L%
  */
 
+import static java.time.Duration.between;
+import static java.time.Instant.now;
+
 import com.vmware.ethereum.config.Web3jConfig.Receipt;
+import com.vmware.ethereum.service.MetricsService;
 import com.vmware.ethereum.service.TimedWrapper.PollingTransactionReceiptProcessor;
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -37,6 +41,10 @@ import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Function;
 import javax.net.ssl.SSLContext;
@@ -48,6 +56,7 @@ import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.web3j.abi.datatypes.Address;
@@ -57,10 +66,13 @@ import org.web3j.crypto.WalletUtils;
 import org.web3j.evm.Configuration;
 import org.web3j.evm.EmbeddedWeb3jService;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.FastRawTransactionManager;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.TransactionManager;
+import org.web3j.tx.response.Callback;
+import org.web3j.tx.response.QueuingTransactionReceiptProcessor;
 import org.web3j.tx.response.TransactionReceiptProcessor;
 
 @Slf4j
@@ -101,6 +113,35 @@ public class AppConfig {
     log.info("Loading credentials from wallet ..");
     return WalletUtils.loadCredentials(
         credentials.getWalletPassword(), credentials.getWalletFile());
+  }
+
+  @Bean
+  @ConditionalOnProperty(value = "web3j.queued-polling", havingValue = "true")
+  public TransactionReceiptProcessor queuedTransactionReceiptProcessor(
+      Web3j web3j,
+      CountDownLatch countDownLatch,
+      MetricsService metrics,
+      Map<String, Instant> txTime) {
+    Receipt receipt = config.getReceipt();
+    return new QueuingTransactionReceiptProcessor(
+        web3j,
+        new Callback() {
+          @Override
+          public void accept(TransactionReceipt transactionReceipt) {
+            log.debug("Receipt: {}", transactionReceipt);
+            Duration duration = between(txTime.get(transactionReceipt.getTransactionHash()), now());
+            metrics.record(duration, transactionReceipt.getStatus());
+            countDownLatch.countDown();
+          }
+
+          @Override
+          public void exception(Exception exception) {
+            metrics.record(Duration.ZERO, exception);
+            countDownLatch.countDown();
+          }
+        },
+        receipt.getAttempts(),
+        receipt.getInterval());
   }
 
   @Bean
@@ -156,5 +197,10 @@ public class AppConfig {
   @Bean
   public SimpleMeterRegistry simpleMeterRegistry() {
     return new SimpleMeterRegistry();
+  }
+
+  @Bean
+  public Map<String, Instant> txTime() {
+    return new HashMap<>();
   }
 }
