@@ -81,7 +81,6 @@ import org.web3j.tx.response.TransactionReceiptProcessor;
 public class AppConfig {
 
   private final Web3jConfig config;
-  private final Map<String, Instant> txTime;
 
   @Bean
   public SSLSocketFactory sslSocketFactory() throws GeneralSecurityException {
@@ -202,6 +201,6 @@ public class AppConfig {
 
   @Bean
   public Map<String, Instant> txTime() {
-    return new HashMap<String, Instant>();
+    return new HashMap<>();
   }
 }
