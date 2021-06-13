@@ -30,9 +30,9 @@ import static java.time.Duration.between;
 import static java.time.Instant.now;
 
 import com.vmware.ethereum.config.Web3jConfig;
-import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +40,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
-import org.web3j.protocol.exceptions.TransactionException;
+import org.web3j.tx.response.TransactionReceiptProcessor;
 
 @Slf4j
 @Service
@@ -51,8 +51,9 @@ public class WorkloadCommand implements Runnable {
   private final CountDownLatch countDownLatch;
   private final MetricsService metrics;
   private final Web3jConfig web3jConfig;
+  private final TransactionReceiptProcessor queuedTransactionReceiptProcessor;
+  private final Map<String, Instant> txTime;
 
-  @SneakyThrows
   @Override
   public void run() {
     if (web3jConfig.isQueuedPolling()) {
@@ -63,8 +64,27 @@ public class WorkloadCommand implements Runnable {
   }
 
   /** Transfer token for deferred polling. */
-  public void transferQueued() throws IOException, TransactionException {
-    api.transferQueued();
+  public void transferQueued() {
+    api.transferQueued()
+        .whenComplete(
+            ((txHash, throwable) -> {
+              Instant startTime = now();
+              if (txHash != null) {
+                queuedTransactionReceiptProcessor(txHash);
+                txTime.put(txHash, startTime);
+              }
+
+              if (throwable != null) {
+                log.warn("{}", throwable.toString());
+                metrics.record(Duration.ZERO, throwable);
+                countDownLatch.countDown();
+              }
+            }));
+  }
+  /** This a no op for queuedTransactionReceiptProcessor, so it won't throw any exception */
+  @SneakyThrows
+  private void queuedTransactionReceiptProcessor(String txHash) {
+    queuedTransactionReceiptProcessor.waitForTransactionReceipt(txHash);
   }
 
   /** Transfer token asynchronously. */
