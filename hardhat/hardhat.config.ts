@@ -31,7 +31,7 @@ export default {
     hardhat: {
     },
     concord: {
-      url: "http://localhost:8545",
+      url: "https://localhost:8545",
       chainId: 5000,
       from: '627306090abaB3A6e1400e9345bC60c78a8BEf57',
     }
