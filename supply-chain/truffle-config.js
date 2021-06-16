@@ -61,7 +61,7 @@ module.exports = {
     concord: {
       network_id: 5000,
       provider: () => new Web3.providers.HttpProvider(
-        "http://localhost:8545"
+        "https://localhost:8545"
       )
     },
     concordDocker: {
