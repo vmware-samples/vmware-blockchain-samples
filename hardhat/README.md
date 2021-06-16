@@ -14,7 +14,7 @@ Make sure you have VMware Concord up and running.  If you don't have it running 
 
 ### Deploy ERC20 Smart Contracts
 ```bash
-yarn deploy:concord
+yarn deploy:vmware
 ```
 
 Let's go to Metamask and transfer coins from our ERC20 application. If you haven't already install Metamask [here](https://metamask.io/).
