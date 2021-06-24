@@ -16,7 +16,7 @@ web3j:
     attempts: 5 # maximum number of polling attempts to get receipt
     interval: 1000 # sleep interval (ms) between polling attempts
   manage-nonce: true # Managing nonce would avoid the overhead of calling eth_getTransactionCount.
-  log-level: NONE # NONE, BASIC, HEADERS, BODY
+  log-level: BODY # NONE, BASIC, HEADERS, BODY
   queued-polling: false #set true for queued polling of transaction receipt, will only work with OPEN model
 
 token:
@@ -54,7 +54,7 @@ management:
         step: 10s
     enable:
       jvm: false
-      logback: false
+      logback: true
       system: false
       process: false
     web:
@@ -69,7 +69,8 @@ logging:
       vmware: info
     org:
       web3j:
-        evm: warn
+        evm: debug
+        protocol: debug
     io:
       micrometer:
         influx: info
