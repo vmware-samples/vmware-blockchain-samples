@@ -27,15 +27,12 @@ package com.vmware.ethereum.service;
  */
 
 import static java.math.BigInteger.valueOf;
-import static java.time.Instant.now;
 
 import com.vmware.ethereum.config.TokenConfig;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -49,11 +46,10 @@ import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.model.SecurityToken;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
-import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
-import org.web3j.tx.response.TransactionReceiptProcessor;
+import org.web3j.utils.Async;
 
 @Slf4j
 @Service
@@ -63,9 +59,7 @@ public class SecureTokenApi {
   private final TokenConfig config;
   private final Web3j web3j;
   private final TransactionManager transactionManager;
-  private final TransactionReceiptProcessor queuedTransactionReceiptProcessor;
   private final String senderAddress;
-  private final Map<String, Instant> txTime;
   private SecurityToken token;
   private String contractAddress;
 
@@ -109,7 +103,7 @@ public class SecureTokenApi {
   }
 
   /** Transfer token for deferred polling. */
-  public void transferQueued() throws IOException, TransactionException {
+  public CompletableFuture<String> transferQueued() {
     Function function =
         new Function(
             "transfer",
@@ -117,19 +111,16 @@ public class SecureTokenApi {
                 new Address(config.getRecipient()), new Uint256(valueOf(config.getAmount()))),
             Collections.emptyList());
     String txData = FunctionEncoder.encode(function);
-
-    String txHash =
-        transactionManager
-            .sendTransaction(
-                valueOf(config.getGasPrice()),
-                valueOf(config.getGasLimit()),
-                contractAddress,
-                txData,
-                BigInteger.ZERO)
-            .getTransactionHash();
-    queuedTransactionReceiptProcessor.waitForTransactionReceipt(txHash);
-    Instant startTime = now();
-    txTime.put(txHash, startTime);
+    return Async.run(
+        () ->
+            transactionManager
+                .sendTransaction(
+                    valueOf(config.getGasPrice()),
+                    valueOf(config.getGasLimit()),
+                    contractAddress,
+                    txData,
+                    BigInteger.ZERO)
+                .getTransactionHash());
   }
 
   /** Transfer token asynchronously. */
