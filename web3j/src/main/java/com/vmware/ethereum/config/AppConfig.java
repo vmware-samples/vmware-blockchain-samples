@@ -36,6 +36,7 @@ import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Tags;
+import io.micrometer.core.instrument.binder.okhttp3.OkHttpConnectionPoolMetrics;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import java.io.IOException;
@@ -91,9 +92,10 @@ public class AppConfig {
   }
 
   @Bean
-  public OkHttpClient okHttpClient(SSLSocketFactory sslSocketFactory) {
+  public OkHttpClient okHttpClient(SSLSocketFactory sslSocketFactory, MeterRegistry registry) {
     TrustManager[] trustManagers = InsecureTrustManagerFactory.INSTANCE.getTrustManagers();
     OkHttpClient.Builder builder = new OkHttpClient.Builder();
+    new OkHttpConnectionPoolMetrics(builder.getConnectionPool$okhttp()).bindTo(registry);
     builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustManagers[0]);
     builder.hostnameVerifier((hostname, session) -> true);
     builder.addInterceptor(new HttpLoggingInterceptor().setLevel(config.getLogLevel()));

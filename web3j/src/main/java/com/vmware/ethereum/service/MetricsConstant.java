@@ -33,4 +33,9 @@ public interface MetricsConstant {
 
   String STATUS_TAG = "status";
   String STATUS_OK = "0x1";
+
+  String OKHTTP_CONNECTION_COUNT = "okhttp.pool.connection.count";
+  String STATE_TAG = "state";
+  String STATE_ACTIVE = "active";
+  String STATE_IDLE = "idle";
 }

@@ -26,6 +26,8 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
+import static com.vmware.ethereum.service.MetricsConstant.STATE_ACTIVE;
+import static com.vmware.ethereum.service.MetricsConstant.STATE_IDLE;
 import static java.util.stream.Collectors.joining;
 
 import com.vmware.ethereum.config.WorkloadConfig;
@@ -57,6 +59,8 @@ public class ProgressService {
         .currentLatency(metrics.getCurrentLatency())
         .averageThroughput(metrics.getAverageThroughput())
         .averageLatency(metrics.getAverageLatency())
+        .activeConnections(metrics.getHttpConnections(STATE_ACTIVE))
+        .idleConnections(metrics.getHttpConnections(STATE_IDLE))
         .build();
   }
 
