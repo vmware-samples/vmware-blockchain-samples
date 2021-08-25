@@ -38,7 +38,7 @@ management:
       testName: demo
     export:
       prometheus:
-        enabled: false
+        enabled: true
       wavefront:
         enabled: false
         uri: proxy://localhost:2878

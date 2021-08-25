@@ -26,6 +26,8 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
+import static com.vmware.ethereum.service.MetricsConstant.OKHTTP_CONNECTION_COUNT;
+import static com.vmware.ethereum.service.MetricsConstant.STATE_TAG;
 import static com.vmware.ethereum.service.MetricsConstant.STATUS_OK;
 import static com.vmware.ethereum.service.MetricsConstant.STATUS_TAG;
 import static com.vmware.ethereum.service.MetricsConstant.TOKEN_TRANSFER_METRIC_NAME;
@@ -40,6 +42,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.stream.Collectors.toMap;
 
 import com.vmware.ethereum.config.WorkloadConfig;
+import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Timer;
@@ -143,5 +146,11 @@ public class MetricsService {
   /** Instantaneous latency. */
   public long getCurrentLatency() {
     return currentMetrics.getLatency();
+  }
+
+  /** Get number of HTTP connections. */
+  public long getHttpConnections(String state) {
+    Gauge connections = simple.find(OKHTTP_CONNECTION_COUNT).tag(STATE_TAG, state).gauge();
+    return connections == null ? 0 : (long) connections.value();
   }
 }

@@ -54,4 +54,7 @@ public class ProgressReport {
 
   private final long averageThroughput;
   private final long averageLatency;
+
+  private final long activeConnections;
+  private final long idleConnections;
 }
