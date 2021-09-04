@@ -1,0 +1,12 @@
+
+.modal-noninteractable {
+  pointer-events: none;
+  filter: brightness(50%);
+}
+
+clr-tabs.tabs-vertical > ul.nav {
+  // margin-right: 0;
+  // > .nav-item {
+  //   margin-right: 0;
+  // }
+}
