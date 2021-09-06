@@ -5,9 +5,27 @@ This deploys erc20 tokens to VMware blockchain using [hardhat](https://hardhat.o
 
 ## Getting Started with Metamask and Concord
 
-### Install dependencies
+### Install postgresql for storing smart contract addresses
+Follow steps in https://www.linode.com/docs/guides/how-to-install-postgresql-on-ubuntu-16-04/ to install postgres with username "postgres" and password "postgres"
+
+### Configure postgresql for storing smart contract addresses
+```bash
+su - postgres
+psql
+postgres=# CREATE EXTENSION hstore;
+postgres=# CREATE TABLE contract (id SERIAL PRIMARY KEY, version TEXT, address TEXT, attributes hstore);
+postgres=# CREATE INDEX idx_contract_attrs ON contract USING GIN(attributes);
+```
+
+### Smart contract address search example in postgres
+```bash
+sudo -Hiu postgres -H -- psql -U postgres -c "SELECT address FROM contract WHERE attributes -> 'name' = 'GenericSecurityToken'"
+```
+
+### Install other dependencies including postgres for javascript
 ```bash
 yarn install
+yarn add pg
 ```
 
 Make sure you have VMware Concord up and running.  If you don't have it running locally, make sure to update `hardhat.config.ts:networks:concord` to the correct URL path.
