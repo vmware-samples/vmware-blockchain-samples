@@ -26,12 +26,15 @@ package com.vmware.ethereum.config;
  * #L%
  */
 
+import static io.grpc.ManagedChannelBuilder.forAddress;
 import static java.time.Duration.between;
 import static java.time.Instant.now;
 
 import com.vmware.ethereum.config.Web3jConfig.Receipt;
 import com.vmware.ethereum.service.MetricsService;
 import com.vmware.ethereum.service.TimedWrapper.PollingTransactionReceiptProcessor;
+import com.vmware.web3j.protocol.grpc.GrpcService;
+import io.grpc.ManagedChannel;
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
@@ -40,6 +43,8 @@ import io.micrometer.core.instrument.binder.okhttp3.OkHttpConnectionPoolMetrics;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.time.Duration;
@@ -60,13 +65,11 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-import org.web3j.abi.datatypes.Address;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
-import org.web3j.evm.Configuration;
-import org.web3j.evm.EmbeddedWeb3jService;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.FastRawTransactionManager;
@@ -170,14 +173,21 @@ public class AppConfig {
   }
 
   @Bean
-  public Web3j web3j(OkHttpClient okHttpClient, Credentials credentials) {
+  public Web3j web3j(OkHttpClient okHttpClient, Credentials credentials)
+      throws MalformedURLException {
     String url = config.getEthClient().getUrl();
-    if (!url.isBlank()) {
+    if (!url.isBlank() && config.isUseGrpc()) {
+      URL newUrl = new URL(url);
+      String host = newUrl.getHost();
+      int port = newUrl.getPort();
+      log.info("gRPC Host - {} Port - {}", host, port);
+      ManagedChannel channel = forAddress(host, port).usePlaintext().build();
+      Web3jService service = new GrpcService(channel);
+      return Web3j.build(service);
+    } else {
+      if (url.isBlank()) url = "http://0.0.0.0:8545";
       return Web3j.build(new HttpService(url, okHttpClient));
     }
-
-    Configuration configuration = new Configuration(new Address(credentials.getAddress()), 10);
-    return Web3j.build(new EmbeddedWeb3jService(configuration));
   }
 
   @Bean
