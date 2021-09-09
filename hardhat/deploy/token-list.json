@@ -3,14 +3,8 @@
     {
       "name": "GenericSecurityToken",
       "symbol": "GST",
-      "amount": 1000000,
-      "contractAddress": "0x6af92AC8a9d22dA1C1Dd9A31e2De2B636EaC9b31"
-    },
-    {
-      "name": "SupplyChainToken",
-      "symbol": "SCT",
-      "amount": 1000000,
-      "contractAddress": "0x31c6D5e4E3eC719745D83e1F4aba04C5a3b07d3b"
+      "amount": 1000000000,
+      "contractAddress": "0xfDac668A91A45D883cC441F2D0486B1ac86e2915"
     }
   ]
 }

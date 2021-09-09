@@ -78,14 +78,12 @@ async function main() {
 
   for (const [token, address] of deployedContracts) {
     const contract = await ethers.getContractAt('SecurityToken', address)
-    const decimals = await contract.decimals()
-    const amount = BigNumber.from(10).pow(decimals).mul(1000)
+	const amount = 10000000;
     for (const [name, account] of Object.entries(accounts)) {
       console.log(`Transfering ${token} to ${name} @ ${account}`);
       await contract.transfer(account, amount);
     }
   }
-
 
 }
 
@@ -97,4 +95,3 @@ main()
     console.error(error);
     process.exit(1);
   });
-
