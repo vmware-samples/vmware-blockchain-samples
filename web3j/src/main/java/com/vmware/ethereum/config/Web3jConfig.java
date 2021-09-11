@@ -51,12 +51,13 @@ public class Web3jConfig {
   @NotNull private Level logLevel;
   @NotNull private boolean manageNonce;
   @NotNull private boolean queuedPolling;
-  @NotNull private boolean useGrpc;
 
   @Setter
   @Getter
   public static class EthClient {
-    @NotNull private String url;
+    @NotNull private String protocol;
+    @NotNull private String host;
+    @NotNull private int port;
     @NotNull private int chainId;
   }
 

@@ -49,13 +49,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Failure to find com.beust:klaxon:jar:5.0.1 -->
-    <dependency>
-      <groupId>com.beust</groupId>
-      <artifactId>klaxon</artifactId>
-      <version>5.5</version>
-    </dependency>
-
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>

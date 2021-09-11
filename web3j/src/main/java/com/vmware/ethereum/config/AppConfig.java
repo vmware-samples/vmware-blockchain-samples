@@ -43,8 +43,6 @@ import io.micrometer.core.instrument.binder.okhttp3.OkHttpConnectionPoolMetrics;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.time.Duration;
@@ -173,21 +171,24 @@ public class AppConfig {
   }
 
   @Bean
-  public Web3j web3j(OkHttpClient okHttpClient, Credentials credentials)
-      throws MalformedURLException {
-    String url = config.getEthClient().getUrl();
-    if (!url.isBlank() && config.isUseGrpc()) {
-      URL newUrl = new URL(url);
-      String host = newUrl.getHost();
-      int port = newUrl.getPort();
-      log.info("gRPC Host - {} Port - {}", host, port);
+  public Web3jService web3jService(OkHttpClient okHttpClient) {
+    String protocol = config.getEthClient().getProtocol();
+    String host = config.getEthClient().getHost();
+    int port = config.getEthClient().getPort();
+    log.info("protocol - {} Host - {} Port - {}", protocol, host, port);
+    if (protocol.equals("grpc")) {
       ManagedChannel channel = forAddress(host, port).usePlaintext().build();
       Web3jService service = new GrpcService(channel);
-      return Web3j.build(service);
+      return new GrpcService(channel);
     } else {
-      if (url.isBlank()) url = "http://0.0.0.0:8545";
-      return Web3j.build(new HttpService(url, okHttpClient));
+      String url = protocol + "://" + host + ":" + port;
+      return new HttpService(url, okHttpClient);
     }
+  }
+
+  @Bean
+  public Web3j web3j(Web3jService web3jService) {
+    return Web3j.build(web3jService);
   }
 
   @Bean
