@@ -22,6 +22,7 @@ web3j:
   queued-polling: false # set true for queued polling of transaction receipt, will only work with OPEN model
 
 token:
+  deploy-token: false
   name: SecureToken
   symbol: STK
   initial-supply: 2 # total tokens minted (value is internally multiplied by 10^18)
@@ -64,6 +65,12 @@ management:
         request:
           autotime:
             enabled: false
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
 
 logging:
   level:
