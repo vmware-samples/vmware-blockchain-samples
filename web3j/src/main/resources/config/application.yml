@@ -23,6 +23,7 @@ web3j:
 
 token:
   deploy-token: false
+  contract-address: 0xc92ee685476cb2e6086e8c8b4b2a649d9c29d06a
   name: SecureToken
   symbol: STK
   initial-supply: 2 # total tokens minted (value is internally multiplied by 10^18)
@@ -66,12 +67,6 @@ management:
           autotime:
             enabled: false
 
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: postgres
-
 logging:
   level:
     com:
@@ -84,4 +79,4 @@ logging:
         influx: info
 
 server:
-  port: 8080 # web UI port for tracking progress
+  port: 8081 # web UI port for tracking progress

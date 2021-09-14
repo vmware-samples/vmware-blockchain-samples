@@ -50,7 +50,6 @@ import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
 import org.web3j.utils.Async;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 @Slf4j
 @Service
@@ -63,7 +62,6 @@ public class SecureTokenApi {
   private final String senderAddress;
   private SecurityToken token;
   private String contractAddress;
-  private JdbcTemplate jdbcTemplate;
 
   @PostConstruct
   public void init() {
@@ -81,35 +79,36 @@ public class SecureTokenApi {
     ContractGasProvider gasProvider =
         new StaticGasProvider(valueOf(config.getGasPrice()), valueOf(config.getGasLimit()));
 
-    if(config.isDeployToken()){
+    if (config.isDeployToken()) {
       log.info("Deploy: {}", config);
       BigInteger initialSupply = valueOf(config.getInitialSupply());
       SecurityToken securityToken =
-        SecurityToken.deploy(
-          web3j,
-          transactionManager,
-          gasProvider,
-          config.getName(),
-          config.getSymbol(),
-          initialSupply)
-          .send();
+          SecurityToken.deploy(
+                  web3j,
+                  transactionManager,
+                  gasProvider,
+                  config.getName(),
+                  config.getSymbol(),
+                  initialSupply)
+              .send();
 
       securityToken
-        .getTransactionReceipt()
-        .ifPresent(
-          receipt -> {
-            log.info("Receipt: {}", receipt);
-            contractAddress = receipt.getContractAddress();
-          });
+          .getTransactionReceipt()
+          .ifPresent(
+              receipt -> {
+                log.info("Receipt: {}", receipt);
+                contractAddress = receipt.getContractAddress();
+              });
+      return securityToken;
+    } else {
+      contractAddress = config.getContractAddress();
+      log.info("contract address - {}", contractAddress);
+      SecurityToken securityToken =
+          SecurityToken.load(contractAddress, web3j, transactionManager, gasProvider);
+      String name = securityToken.name().send();
+      log.info("name - {}", name);
       return securityToken;
     }
-    else {
-      String sql = "SELECT address FROM contract WHERE attributes -> 'name' = 'GenericSecurityToken'";
-      jdbcTemplate.query(sql);
-      SecurityToken securityToken = SecurityToken.load(contractAddress, web3j, transactionManager, gasProvider);
-      return securityToken;
-    }
-
   }
 
   /** Transfer token for deferred polling. */

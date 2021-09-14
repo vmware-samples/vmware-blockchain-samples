@@ -45,6 +45,7 @@ import org.springframework.validation.annotation.Validated;
 public class TokenConfig {
 
   @NotNull private boolean deployToken;
+  private String contractAddress;
   @NotEmpty private String name;
   @NotEmpty private String symbol;
   @Positive private long initialSupply;
