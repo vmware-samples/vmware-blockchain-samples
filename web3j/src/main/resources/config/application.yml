@@ -6,9 +6,9 @@ workload:
 
 web3j:
   ethClient:
-    protocol: grpc #supports grpc, http, https
-    host: localhost #IP of the ethereum client Node
-    port: 50505 #port number (50505 - gRPC, 8545 - ethRPC)
+    protocol: grpc # supports grpc, http, https
+    host:  # IP of the ethereum client Node
+    port: 50505 # port number (50505 - gRPC, 8545 - ethRPC)
     chain-id: 5000 # To enable EIP-155, use the chain id of the network that your Ethereum client is connected.
   credentials:
     wallet-file: src/main/resources/wallets/demo-wallet.json # wallet file location
@@ -19,7 +19,7 @@ web3j:
     interval: 1000 # sleep interval (ms) between polling attempts
   manage-nonce: true # Managing nonce would avoid the overhead of calling eth_getTransactionCount.
   log-level: NONE # NONE, BASIC, HEADERS, BODY
-  queued-polling: false #set true for queued polling of transaction receipt, will only work with OPEN model
+  queued-polling: false # set true for queued polling of transaction receipt, will only work with OPEN model
 
 token:
   name: SecureToken

@@ -53,12 +53,9 @@ public class MainController {
   @ModelAttribute("ethInfo")
   public EthClientInfo getEthClientInfo() {
     EthClientInfo info = new EthClientInfo();
+    Web3jConfig.EthClient ethClient = config.getEthClient();
     info.setClientUrl(
-        config.getEthClient().getProtocol()
-            + "://"
-            + config.getEthClient().getHost()
-            + ":"
-            + config.getEthClient().getPort());
+        ethClient.getProtocol() + "://" + ethClient.getHost() + ":" + ethClient.getPort());
     info.setClientVersion(api.getClientVersion());
     info.setNetworkVersion(api.getNetVersion());
     return info;

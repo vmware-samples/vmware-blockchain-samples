@@ -27,6 +27,7 @@ package com.vmware.ethereum.config;
  */
 
 import java.io.File;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import lombok.Getter;
@@ -55,8 +56,11 @@ public class Web3jConfig {
   @Setter
   @Getter
   public static class EthClient {
-    @NotNull private String protocol;
-    @NotNull private String host;
+    @NotBlank private String protocol;
+
+    @NotBlank(message = "host cannot be blank, please enter a value")
+    private String host;
+
     @NotNull private int port;
     @NotNull private int chainId;
   }

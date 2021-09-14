@@ -84,7 +84,6 @@ public class AppConfig {
 
   private final Web3jConfig config;
 
-  @Bean
   public SSLSocketFactory sslSocketFactory() throws GeneralSecurityException {
     TrustManager[] trustManagers = InsecureTrustManagerFactory.INSTANCE.getTrustManagers();
     SSLContext sslContext = SSLContext.getInstance("TLS");
@@ -92,12 +91,11 @@ public class AppConfig {
     return sslContext.getSocketFactory();
   }
 
-  @Bean
-  public OkHttpClient okHttpClient(SSLSocketFactory sslSocketFactory, MeterRegistry registry) {
+  public OkHttpClient okHttpClient(MeterRegistry registry) throws GeneralSecurityException {
     TrustManager[] trustManagers = InsecureTrustManagerFactory.INSTANCE.getTrustManagers();
     OkHttpClient.Builder builder = new OkHttpClient.Builder();
     new OkHttpConnectionPoolMetrics(builder.getConnectionPool$okhttp()).bindTo(registry);
-    builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustManagers[0]);
+    builder.sslSocketFactory(sslSocketFactory(), (X509TrustManager) trustManagers[0]);
     builder.hostnameVerifier((hostname, session) -> true);
     builder.addInterceptor(new HttpLoggingInterceptor().setLevel(config.getLogLevel()));
     return builder.build();
@@ -171,18 +169,17 @@ public class AppConfig {
   }
 
   @Bean
-  public Web3jService web3jService(OkHttpClient okHttpClient) {
+  public Web3jService web3jService(MeterRegistry registry) throws GeneralSecurityException {
     String protocol = config.getEthClient().getProtocol();
     String host = config.getEthClient().getHost();
     int port = config.getEthClient().getPort();
-    log.info("protocol - {} Host - {} Port - {}", protocol, host, port);
     if (protocol.equals("grpc")) {
       ManagedChannel channel = forAddress(host, port).usePlaintext().build();
       Web3jService service = new GrpcService(channel);
       return new GrpcService(channel);
     } else {
       String url = protocol + "://" + host + ":" + port;
-      return new HttpService(url, okHttpClient);
+      return new HttpService(url, okHttpClient(registry));
     }
   }
 
