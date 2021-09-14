@@ -77,4 +77,4 @@ logging:
         influx: info
 
 server:
-  port: 8080 # web UI port for tracking progress
+  port: 8081 # web UI port for tracking progress

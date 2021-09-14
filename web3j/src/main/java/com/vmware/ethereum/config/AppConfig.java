@@ -84,14 +84,14 @@ public class AppConfig {
 
   private final Web3jConfig config;
 
-  public SSLSocketFactory sslSocketFactory() throws GeneralSecurityException {
+  private SSLSocketFactory sslSocketFactory() throws GeneralSecurityException {
     TrustManager[] trustManagers = InsecureTrustManagerFactory.INSTANCE.getTrustManagers();
     SSLContext sslContext = SSLContext.getInstance("TLS");
     sslContext.init(null, trustManagers, new SecureRandom());
     return sslContext.getSocketFactory();
   }
 
-  public OkHttpClient okHttpClient(MeterRegistry registry) throws GeneralSecurityException {
+  private OkHttpClient okHttpClient(MeterRegistry registry) throws GeneralSecurityException {
     TrustManager[] trustManagers = InsecureTrustManagerFactory.INSTANCE.getTrustManagers();
     OkHttpClient.Builder builder = new OkHttpClient.Builder();
     new OkHttpConnectionPoolMetrics(builder.getConnectionPool$okhttp()).bindTo(registry);
@@ -170,12 +170,12 @@ public class AppConfig {
 
   @Bean
   public Web3jService web3jService(MeterRegistry registry) throws GeneralSecurityException {
-    String protocol = config.getEthClient().getProtocol();
-    String host = config.getEthClient().getHost();
-    int port = config.getEthClient().getPort();
+    Web3jConfig.EthClient ethClient = config.getEthClient();
+    String protocol = ethClient.getProtocol();
+    String host = ethClient.getHost();
+    int port = ethClient.getPort();
     if (protocol.equals("grpc")) {
       ManagedChannel channel = forAddress(host, port).usePlaintext().build();
-      Web3jService service = new GrpcService(channel);
       return new GrpcService(channel);
     } else {
       String url = protocol + "://" + host + ":" + port;

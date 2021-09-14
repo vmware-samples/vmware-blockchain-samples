@@ -57,10 +57,7 @@ public class Web3jConfig {
   @Getter
   public static class EthClient {
     @NotBlank private String protocol;
-
-    @NotBlank(message = "host cannot be blank, please enter a value")
-    private String host;
-
+    @NotBlank private String host;
     @NotNull private int port;
     @NotNull private int chainId;
   }

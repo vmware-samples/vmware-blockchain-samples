@@ -76,6 +76,7 @@
       <artifactId>micrometer-registry-influx</artifactId>
       <scope>runtime</scope>
     </dependency>
+
   </dependencies>
 
   <build>
