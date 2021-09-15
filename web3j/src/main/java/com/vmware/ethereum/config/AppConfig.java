@@ -26,12 +26,15 @@ package com.vmware.ethereum.config;
  * #L%
  */
 
+import static io.grpc.ManagedChannelBuilder.forAddress;
 import static java.time.Duration.between;
 import static java.time.Instant.now;
 
 import com.vmware.ethereum.config.Web3jConfig.Receipt;
 import com.vmware.ethereum.service.MetricsService;
 import com.vmware.ethereum.service.TimedWrapper.PollingTransactionReceiptProcessor;
+import com.vmware.web3j.protocol.grpc.GrpcService;
+import io.grpc.ManagedChannel;
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
@@ -60,13 +63,11 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-import org.web3j.abi.datatypes.Address;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.WalletUtils;
-import org.web3j.evm.Configuration;
-import org.web3j.evm.EmbeddedWeb3jService;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.FastRawTransactionManager;
@@ -83,20 +84,18 @@ public class AppConfig {
 
   private final Web3jConfig config;
 
-  @Bean
-  public SSLSocketFactory sslSocketFactory() throws GeneralSecurityException {
+  private SSLSocketFactory sslSocketFactory() throws GeneralSecurityException {
     TrustManager[] trustManagers = InsecureTrustManagerFactory.INSTANCE.getTrustManagers();
     SSLContext sslContext = SSLContext.getInstance("TLS");
     sslContext.init(null, trustManagers, new SecureRandom());
     return sslContext.getSocketFactory();
   }
 
-  @Bean
-  public OkHttpClient okHttpClient(SSLSocketFactory sslSocketFactory, MeterRegistry registry) {
+  private OkHttpClient okHttpClient(MeterRegistry registry) throws GeneralSecurityException {
     TrustManager[] trustManagers = InsecureTrustManagerFactory.INSTANCE.getTrustManagers();
     OkHttpClient.Builder builder = new OkHttpClient.Builder();
     new OkHttpConnectionPoolMetrics(builder.getConnectionPool$okhttp()).bindTo(registry);
-    builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustManagers[0]);
+    builder.sslSocketFactory(sslSocketFactory(), (X509TrustManager) trustManagers[0]);
     builder.hostnameVerifier((hostname, session) -> true);
     builder.addInterceptor(new HttpLoggingInterceptor().setLevel(config.getLogLevel()));
     return builder.build();
@@ -170,14 +169,23 @@ public class AppConfig {
   }
 
   @Bean
-  public Web3j web3j(OkHttpClient okHttpClient, Credentials credentials) {
-    String url = config.getEthClient().getUrl();
-    if (!url.isBlank()) {
-      return Web3j.build(new HttpService(url, okHttpClient));
+  public Web3jService web3jService(MeterRegistry registry) throws GeneralSecurityException {
+    Web3jConfig.EthClient ethClient = config.getEthClient();
+    String protocol = ethClient.getProtocol();
+    String host = ethClient.getHost();
+    int port = ethClient.getPort();
+    if (protocol.equals("grpc")) {
+      ManagedChannel channel = forAddress(host, port).usePlaintext().build();
+      return new GrpcService(channel);
+    } else {
+      String url = protocol + "://" + host + ":" + port;
+      return new HttpService(url, okHttpClient(registry));
     }
+  }
 
-    Configuration configuration = new Configuration(new Address(credentials.getAddress()), 10);
-    return Web3j.build(new EmbeddedWeb3jService(configuration));
+  @Bean
+  public Web3j web3j(Web3jService web3jService) {
+    return Web3j.build(web3jService);
   }
 
   @Bean
