@@ -78,37 +78,33 @@ public class SecureTokenApi {
   private SecurityToken deploy() {
     ContractGasProvider gasProvider =
         new StaticGasProvider(valueOf(config.getGasPrice()), valueOf(config.getGasLimit()));
-
-    if (config.isDeployToken()) {
+    contractAddress = config.getContractAddress();
+    if (!contractAddress.isBlank()) {
+      log.info("Contract Address - {}", contractAddress);
+      SecurityToken securityToken =
+        SecurityToken.load(contractAddress, web3j, transactionManager, gasProvider);
+      return securityToken;
+    }
       log.info("Deploy: {}", config);
       BigInteger initialSupply = valueOf(config.getInitialSupply());
       SecurityToken securityToken =
-          SecurityToken.deploy(
-                  web3j,
-                  transactionManager,
-                  gasProvider,
-                  config.getName(),
-                  config.getSymbol(),
-                  initialSupply)
-              .send();
+        SecurityToken.deploy(
+          web3j,
+          transactionManager,
+          gasProvider,
+          config.getName(),
+          config.getSymbol(),
+          initialSupply)
+          .send();
 
       securityToken
-          .getTransactionReceipt()
-          .ifPresent(
-              receipt -> {
-                log.info("Receipt: {}", receipt);
-                contractAddress = receipt.getContractAddress();
-              });
+        .getTransactionReceipt()
+        .ifPresent(
+          receipt -> {
+            log.info("Receipt: {}", receipt);
+            contractAddress = receipt.getContractAddress();
+          });
       return securityToken;
-    } else {
-      contractAddress = config.getContractAddress();
-      log.info("contract address - {}", contractAddress);
-      SecurityToken securityToken =
-          SecurityToken.load(contractAddress, web3j, transactionManager, gasProvider);
-      String name = securityToken.name().send();
-      log.info("name - {}", name);
-      return securityToken;
-    }
   }
 
   /** Transfer token for deferred polling. */
@@ -166,6 +162,15 @@ public class SecureTokenApi {
   /** Get token balance of the recipient. */
   public long getRecipientBalance() {
     return getBalance(config.getRecipient());
+  }
+
+  /** Get token balance of the parallel recipient. */
+  public long getParallelRecipientBalance() {
+    String parallelRecipient = config.getParallelRecipient();
+    if(!parallelRecipient.isBlank()){
+      return getBalance(parallelRecipient);
+    }
+    return getRecipientBalance();
   }
 
   /** Get token balance of the given address. */

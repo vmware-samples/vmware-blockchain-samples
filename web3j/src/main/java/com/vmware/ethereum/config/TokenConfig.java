@@ -44,12 +44,12 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties("token")
 public class TokenConfig {
 
-  @NotNull private boolean deployToken;
-  private String contractAddress;
+  @NotNull private String contractAddress;
   @NotEmpty private String name;
   @NotEmpty private String symbol;
   @Positive private long initialSupply;
   @NotEmpty private String recipient;
+  @NotNull private String parallelRecipient;
   @Positive private long amount;
   @Positive private long gasPrice;
   @Positive private long gasLimit;

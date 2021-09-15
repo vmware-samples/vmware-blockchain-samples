@@ -43,6 +43,7 @@ public class ProgressService {
 
   private final MetricsService metrics;
   private final WorkloadConfig config;
+  private final SecureTokenApi secureTokenApi;
 
   /** Get progress report. */
   public ProgressReport getProgress() {
@@ -61,6 +62,9 @@ public class ProgressService {
         .averageLatency(metrics.getAverageLatency())
         .activeConnections(metrics.getHttpConnections(STATE_ACTIVE))
         .idleConnections(metrics.getHttpConnections(STATE_IDLE))
+        .senderBalance(secureTokenApi.getSenderBalance())
+        .recipientBalance(secureTokenApi.getRecipientBalance())
+        .parallelRecipientBalance(secureTokenApi.getParallelRecipientBalance())
         .build();
   }
 

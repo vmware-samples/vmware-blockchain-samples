@@ -22,12 +22,12 @@ web3j:
   queued-polling: false # set true for queued polling of transaction receipt, will only work with OPEN model
 
 token:
-  deploy-token: false
-  contract-address: 0xc92ee685476cb2e6086e8c8b4b2a649d9c29d06a
+  contract-address:  # ERC20 contract address (Note: without 0x and in case of empty it will deploy a new contract)
   name: SecureToken
   symbol: STK
   initial-supply: 2 # total tokens minted (value is internally multiplied by 10^18)
   recipient: 45412868cB693e231DfD4ABCCA29D7001501d06f # recipient account
+  parallel-recipient:  # parallel recipient account
   amount: 5 # amount of tokens transferred in one transaction
   gas-price: 4_100_000_000 # gas price
   gas-limit: 9_000_000 # gas limit
@@ -79,4 +79,4 @@ logging:
         influx: info
 
 server:
-  port: 8081 # web UI port for tracking progress
+  port: 8080 # web UI port for tracking progress
