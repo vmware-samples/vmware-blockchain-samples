@@ -35,6 +35,7 @@ import static com.vmware.ethereum.config.WorkloadModel.OPEN;
 import static java.time.Instant.now;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import com.vmware.ethereum.config.TokenConfig;
 import com.vmware.ethereum.config.WorkloadConfig;
 import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +51,7 @@ public class WorkloadRunner {
   private final WorkloadConfig config;
   private final WorkloadCommand command;
   private final SecureTokenApi api;
+  private final TokenConfig tokenConfig;
 
   private final CountDownLatch countDownLatch;
   private final MetricsService metrics;
@@ -93,7 +95,10 @@ public class WorkloadRunner {
   private void printBalance() {
     log.info("Block number: {}", api.getBlockNumber());
     log.info("Sender has {} tokens", api.getSenderBalance());
-    log.info("Recipient has {} tokens", api.getRecipientBalance());
+    long[] recipientBalances = api.getRecipientBalance(tokenConfig.getRecipient());
+    for(int i=0;i<tokenConfig.getRecipient().length;i++){
+      log.info("Recipient {} has {} tokens", i+1,recipientBalances[i]);
+    }
   }
 
   /** Print report */

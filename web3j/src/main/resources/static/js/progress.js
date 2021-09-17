@@ -85,8 +85,13 @@ function updateReport(progress) {
   update("metrics", 3, progress.averageLatency);
 
   update("accDetails", 0, progress.senderBalance);
-  update("accDetails", 1, progress.recipientBalance);
-  update("accDetails", 2, progress.parallelRecipientBalance);
+  for(var i=0;i<progress.recipientBalance.length;i++){
+    update("accDetails", i+1, progress.recipientBalance[i]);
+  }
+
+//  update("accDetails",1,progress.recipientBalance[0])
+//  update("accDetails", 1, progress.recipientBalance);
+//  update("accDetails", 2, progress.parallelRecipientBalance);
 }
 
 progress = new LoadProgress();

@@ -36,6 +36,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.Arrays;
+
 @Setter
 @Getter
 @ToString
@@ -48,8 +50,8 @@ public class TokenConfig {
   @NotEmpty private String name;
   @NotEmpty private String symbol;
   @Positive private long initialSupply;
-  @NotEmpty private String recipient;
-  @NotNull private String parallelRecipient;
+  @NotEmpty private String[] recipient;
+//  @NotNull private String parallelRecipient;
   @Positive private long amount;
   @Positive private long gasPrice;
   @Positive private long gasLimit;

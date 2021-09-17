@@ -59,6 +59,6 @@ public class ProgressReport {
   private final long idleConnections;
 
   private final long senderBalance;
-  private final long recipientBalance;
-  private final long parallelRecipientBalance;
+  private final long[] recipientBalance;
+//  private final long parallelRecipientBalance;
 }

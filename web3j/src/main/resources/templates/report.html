@@ -51,14 +51,18 @@
         <th>Sender Account</th>
         <td th:text="${progress.senderBalance}"></td>
       </tr>
-      <tr>
+      <tr th:each="recipient : ${progress.recipientBalance}">
         <th>Recipient Account</th>
-        <td th:text="${progress.recipientBalance}"></td>
+        <td th:text="${recipient}"></td>
       </tr>
-      <tr>
-        <th>Parallel Recipient Account</th>
-        <td th:text="${progress.parallelRecipientBalance}"></td>
-      </tr>
+<!--      <tr>-->
+<!--        <th>Recipient Account</th>-->
+<!--        <td th:text="${progress.recipientBalance}"></td>-->
+<!--      </tr>-->
+<!--      <tr>-->
+<!--        <th>Parallel Recipient Account</th>-->
+<!--        <td th:text="${progress.parallelRecipientBalance}"></td>-->
+<!--      </tr>-->
       </tbody>
     </table>
 

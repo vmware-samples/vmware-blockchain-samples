@@ -62,6 +62,7 @@ public class SecureTokenApi {
   private final String senderAddress;
   private SecurityToken token;
   private String contractAddress;
+  private static int i;
 
   @PostConstruct
   public void init() {
@@ -113,7 +114,7 @@ public class SecureTokenApi {
         new Function(
             "transfer",
             Arrays.asList(
-                new Address(config.getRecipient()), new Uint256(valueOf(config.getAmount()))),
+                new Address(config.getRecipient()[0]), new Uint256(valueOf(config.getAmount()))),
             Collections.emptyList());
     String txData = FunctionEncoder.encode(function);
     return Async.run(
@@ -130,7 +131,11 @@ public class SecureTokenApi {
 
   /** Transfer token asynchronously. */
   public CompletableFuture<TransactionReceipt> transferAsync() {
-    return token.transfer(config.getRecipient(), valueOf(config.getAmount())).sendAsync();
+    String recipient = config.getRecipient()[i];
+    i++;
+    if(i>=config.getRecipient().length)
+      i=0;
+    return token.transfer(recipient, valueOf(config.getAmount())).sendAsync();
   }
 
   @SneakyThrows(IOException.class)
@@ -159,19 +164,24 @@ public class SecureTokenApi {
     return getBalance(senderAddress);
   }
 
-  /** Get token balance of the recipient. */
-  public long getRecipientBalance() {
-    return getBalance(config.getRecipient());
+  /** Get token balance of the recipient.
+   * @return*/
+  public long[] getRecipientBalance(String[] recipient) {
+     long[] recipientBalances = new long[recipient.length];
+     for(i=0;i<recipient.length;i++){
+       recipientBalances[i]=getBalance(recipient[i]);
+     }
+    return recipientBalances;
   }
 
   /** Get token balance of the parallel recipient. */
-  public long getParallelRecipientBalance() {
-    String parallelRecipient = config.getParallelRecipient();
-    if(!parallelRecipient.isBlank()){
-      return getBalance(parallelRecipient);
-    }
-    return getRecipientBalance();
-  }
+//  public long getParallelRecipientBalance() {
+//    String parallelRecipient = config.getParallelRecipient();
+//    if(!parallelRecipient.isBlank()){
+//      return getBalance(parallelRecipient);
+//    }
+//    return getRecipientBalance();
+//  }
 
   /** Get token balance of the given address. */
   @SneakyThrows(Exception.class)
