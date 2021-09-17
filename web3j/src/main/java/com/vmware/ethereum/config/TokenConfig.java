@@ -51,7 +51,6 @@ public class TokenConfig {
   @NotEmpty private String symbol;
   @Positive private long initialSupply;
   @NotEmpty private String[] recipient;
-//  @NotNull private String parallelRecipient;
   @Positive private long amount;
   @Positive private long gasPrice;
   @Positive private long gasLimit;

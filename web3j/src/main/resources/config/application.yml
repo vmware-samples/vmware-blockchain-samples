@@ -27,7 +27,6 @@ token:
   symbol: STK
   initial-supply: 2 # total tokens minted (value is internally multiplied by 10^18)
   recipient: [45412868cB693e231DfD4ABCCA29D9001801d062,1Ff482D42D8727258A1680192Fa4ba925C46Bc43,3Ff481142D8727278A1686102Fa4ba925C46Bc24] # recipient account
-#  parallel-recipient: 1Ff482D42D8727258A1686102Fa4ba925C46Bc42 # parallel recipient account
   amount: 5 # amount of tokens transferred in one transaction
   gas-price: 4_100_000_000 # gas price
   gas-limit: 9_000_000 # gas limit

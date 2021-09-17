@@ -62,7 +62,7 @@ public class SecureTokenApi {
   private final String senderAddress;
   private SecurityToken token;
   private String contractAddress;
-  private static int i;
+  private int recipientIndex = 0;
 
   @PostConstruct
   public void init() {
@@ -114,7 +114,7 @@ public class SecureTokenApi {
         new Function(
             "transfer",
             Arrays.asList(
-                new Address(config.getRecipient()[0]), new Uint256(valueOf(config.getAmount()))),
+                new Address(config.getRecipient()[getRecipientIndex()-1]), new Uint256(valueOf(config.getAmount()))),
             Collections.emptyList());
     String txData = FunctionEncoder.encode(function);
     return Async.run(
@@ -131,11 +131,15 @@ public class SecureTokenApi {
 
   /** Transfer token asynchronously. */
   public CompletableFuture<TransactionReceipt> transferAsync() {
-    String recipient = config.getRecipient()[i];
-    i++;
-    if(i>=config.getRecipient().length)
-      i=0;
-    return token.transfer(recipient, valueOf(config.getAmount())).sendAsync();
+    return token.transfer(config.getRecipient()[getRecipientIndex()-1], valueOf(config.getAmount())).sendAsync();
+  }
+
+  /** Returns recipient index. */
+  private int getRecipientIndex(){
+    if(recipientIndex>=config.getRecipient().length)
+      recipientIndex=0;
+    recipientIndex++;
+    return recipientIndex;
   }
 
   @SneakyThrows(IOException.class)
@@ -164,24 +168,14 @@ public class SecureTokenApi {
     return getBalance(senderAddress);
   }
 
-  /** Get token balance of the recipient.
-   * @return*/
-  public long[] getRecipientBalance(String[] recipient) {
-     long[] recipientBalances = new long[recipient.length];
-     for(i=0;i<recipient.length;i++){
-       recipientBalances[i]=getBalance(recipient[i]);
+  /** Get token balance of the recipient. */
+  public long[] getRecipientBalance(String[] recipients) {
+     long[] recipientBalances = new long[recipients.length];
+     for(int i=0;i<recipients.length;i++){
+       recipientBalances[i]=getBalance(recipients[i]);
      }
     return recipientBalances;
   }
-
-  /** Get token balance of the parallel recipient. */
-//  public long getParallelRecipientBalance() {
-//    String parallelRecipient = config.getParallelRecipient();
-//    if(!parallelRecipient.isBlank()){
-//      return getBalance(parallelRecipient);
-//    }
-//    return getRecipientBalance();
-//  }
 
   /** Get token balance of the given address. */
   @SneakyThrows(Exception.class)
