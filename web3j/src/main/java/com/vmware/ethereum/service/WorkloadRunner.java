@@ -96,8 +96,8 @@ public class WorkloadRunner {
     log.info("Block number: {}", api.getBlockNumber());
     log.info("Sender has {} tokens", api.getSenderBalance());
     long[] recipientBalances = api.getRecipientBalance(tokenConfig.getRecipient());
-    for(int i=0;i<tokenConfig.getRecipient().length;i++){
-      log.info("Recipient {} has {} tokens", i+1,recipientBalances[i]);
+    for (int i = 0; i < tokenConfig.getRecipient().length; i++) {
+      log.info("Recipient {} has {} tokens", i + 1, recipientBalances[i]);
     }
   }
 

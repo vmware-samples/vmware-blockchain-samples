@@ -114,7 +114,8 @@ public class SecureTokenApi {
         new Function(
             "transfer",
             Arrays.asList(
-                new Address(config.getRecipient()[getRecipientIndex()-1]), new Uint256(valueOf(config.getAmount()))),
+                new Address(config.getRecipient()[getRecipientIndex() - 1]),
+                new Uint256(valueOf(config.getAmount()))),
             Collections.emptyList());
     String txData = FunctionEncoder.encode(function);
     return Async.run(
@@ -131,13 +132,14 @@ public class SecureTokenApi {
 
   /** Transfer token asynchronously. */
   public CompletableFuture<TransactionReceipt> transferAsync() {
-    return token.transfer(config.getRecipient()[getRecipientIndex()-1], valueOf(config.getAmount())).sendAsync();
+    return token
+        .transfer(config.getRecipient()[getRecipientIndex() - 1], valueOf(config.getAmount()))
+        .sendAsync();
   }
 
   /** Returns recipient index. */
-  private int getRecipientIndex(){
-    if(recipientIndex>=config.getRecipient().length)
-      recipientIndex=0;
+  private int getRecipientIndex() {
+    if (recipientIndex >= config.getRecipient().length) recipientIndex = 0;
     recipientIndex++;
     return recipientIndex;
   }
@@ -170,10 +172,10 @@ public class SecureTokenApi {
 
   /** Get token balance of the recipient. */
   public long[] getRecipientBalance(String[] recipients) {
-     long[] recipientBalances = new long[recipients.length];
-     for(int i=0;i<recipients.length;i++){
-       recipientBalances[i]=getBalance(recipients[i]);
-     }
+    long[] recipientBalances = new long[recipients.length];
+    for (int i = 0; i < recipients.length; i++) {
+      recipientBalances[i] = getBalance(recipients[i]);
+    }
     return recipientBalances;
   }
 
