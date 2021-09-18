@@ -160,13 +160,9 @@ public class SecureTokenApi {
     return getBalance(senderAddress);
   }
 
-  /** Get token balance of the recipient. */
-  public long[] getRecipientBalance(String[] recipients) {
-    long[] recipientBalances = new long[recipients.length];
-    for (int i = 0; i < recipients.length; i++) {
-      recipientBalances[i] = getBalance(recipients[i]);
-    }
-    return recipientBalances;
+  /** Get token balance of the recipients. */
+  public long[] getRecipientBalance() {
+    return Arrays.stream(config.getRecipients()).mapToLong(this::getBalance).toArray();
   }
 
   /** Get token balance of the given address. */

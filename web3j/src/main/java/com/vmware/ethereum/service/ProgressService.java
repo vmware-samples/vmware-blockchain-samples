@@ -65,7 +65,7 @@ public class ProgressService {
         .activeConnections(metrics.getHttpConnections(STATE_ACTIVE))
         .idleConnections(metrics.getHttpConnections(STATE_IDLE))
         .senderBalance(secureTokenApi.getSenderBalance())
-        .recipientBalance(secureTokenApi.getRecipientBalance(tokenConfig.getRecipients()))
+        .recipientBalance(secureTokenApi.getRecipientBalance())
         .build();
   }
 
