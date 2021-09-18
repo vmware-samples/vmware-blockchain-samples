@@ -26,8 +26,8 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static java.math.BigInteger.valueOf;
 import static com.google.common.collect.Iterators.cycle;
+import static java.math.BigInteger.valueOf;
 
 import com.vmware.ethereum.config.TokenConfig;
 import java.io.IOException;
@@ -114,9 +114,7 @@ public class SecureTokenApi {
     Function function =
         new Function(
             "transfer",
-            Arrays.asList(
-                new Address(recipients.next()),
-                new Uint256(valueOf(config.getAmount()))),
+            Arrays.asList(new Address(recipients.next()), new Uint256(valueOf(config.getAmount()))),
             Collections.emptyList());
     String txData = FunctionEncoder.encode(function);
     return Async.run(
@@ -133,9 +131,7 @@ public class SecureTokenApi {
 
   /** Transfer token asynchronously. */
   public CompletableFuture<TransactionReceipt> transferAsync() {
-    return token
-        .transfer(recipients.next(), valueOf(config.getAmount()))
-        .sendAsync();
+    return token.transfer(recipients.next(), valueOf(config.getAmount())).sendAsync();
   }
 
   @SneakyThrows(IOException.class)
