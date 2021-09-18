@@ -27,12 +27,14 @@ package com.vmware.ethereum.service;
  */
 
 import static java.math.BigInteger.valueOf;
+import static com.google.common.collect.Iterators.cycle;
 
 import com.vmware.ethereum.config.TokenConfig;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +64,7 @@ public class SecureTokenApi {
   private final String senderAddress;
   private SecurityToken token;
   private String contractAddress;
-  private int recipientIndex = 0;
+  private Iterator<String> recipients;
 
   @PostConstruct
   public void init() {
@@ -70,6 +72,7 @@ public class SecureTokenApi {
     log.info("Gas price: {}", getGasPrice());
     log.info("Net version: {}", getNetVersion());
     log.info("Sender address: {}", senderAddress);
+    recipients = cycle(config.getRecipients());
 
     token = deploy();
   }
@@ -82,9 +85,7 @@ public class SecureTokenApi {
     contractAddress = config.getContractAddress();
     if (!contractAddress.isBlank()) {
       log.info("Contract Address - {}", contractAddress);
-      SecurityToken securityToken =
-          SecurityToken.load(contractAddress, web3j, transactionManager, gasProvider);
-      return securityToken;
+      return SecurityToken.load(contractAddress, web3j, transactionManager, gasProvider);
     }
     log.info("Deploy: {}", config);
     BigInteger initialSupply = valueOf(config.getInitialSupply());
@@ -114,7 +115,7 @@ public class SecureTokenApi {
         new Function(
             "transfer",
             Arrays.asList(
-                new Address(config.getRecipient()[getRecipientIndex() - 1]),
+                new Address(recipients.next()),
                 new Uint256(valueOf(config.getAmount()))),
             Collections.emptyList());
     String txData = FunctionEncoder.encode(function);
@@ -133,15 +134,8 @@ public class SecureTokenApi {
   /** Transfer token asynchronously. */
   public CompletableFuture<TransactionReceipt> transferAsync() {
     return token
-        .transfer(config.getRecipient()[getRecipientIndex() - 1], valueOf(config.getAmount()))
+        .transfer(recipients.next(), valueOf(config.getAmount()))
         .sendAsync();
-  }
-
-  /** Returns recipient index. */
-  private int getRecipientIndex() {
-    if (recipientIndex >= config.getRecipient().length) recipientIndex = 0;
-    recipientIndex++;
-    return recipientIndex;
   }
 
   @SneakyThrows(IOException.class)

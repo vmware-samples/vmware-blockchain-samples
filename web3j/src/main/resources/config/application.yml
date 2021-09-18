@@ -1,13 +1,13 @@
 workload:
   model: OPEN  # either OPEN or CLOSED workload model
-  transactions: 1_000 # total transactions to be done
+  transactions: 1_00 # total transactions to be done
   load-factor: 10 # arrival rate for OPEN model & concurrency for CLOSED model
   progress-interval: 5s # interval for updating progress in web UI
 
 web3j:
   ethClient:
     protocol: grpc # supports grpc, http, https
-    host: # IP of the ethereum client Node
+    host:  # IP of the ethereum client Node
     port: 50505 # port number (50505 - gRPC, 8545 - ethRPC)
     chain-id: 5000 # To enable EIP-155, use the chain id of the network that your Ethereum client is connected.
   credentials:
@@ -22,11 +22,13 @@ web3j:
   queued-polling: false # set true for queued polling of transaction receipt, will only work with OPEN model
 
 token:
-  contract-address: # ERC20 contract address (Note: without 0x and in case of empty it will deploy a new contract)
+  contract-address:  # ERC20 contract address (Note: without 0x and in case of empty it will deploy a new contract)
   name: SecureToken
   symbol: STK
   initial-supply: 2 # total tokens minted (value is internally multiplied by 10^18)
-  recipient: [45412868cB693e231DfD4ABCCA29D9001801d062,1Ff482D42D8727258A1680192Fa4ba925C46Bc43] # recipient account
+  recipients: # list of recipient accounts
+    - 45412868cB693e231DfD4ABCCA29D9001801d062
+    - 1Ff482D42D8727258A1680192Fa4ba925C46Bc43
   amount: 5 # amount of tokens transferred in one transaction
   gas-price: 4_100_000_000 # gas price
   gas-limit: 9_000_000 # gas limit
@@ -78,4 +80,4 @@ logging:
         influx: info
 
 server:
-  port: 8080 # web UI port for tracking progress
+  port: 8082 # web UI port for tracking progress
