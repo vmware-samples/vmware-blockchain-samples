@@ -51,9 +51,9 @@
         <th>Sender</th>
         <td th:text="${progress.senderBalance}"></td>
       </tr>
-      <tr th:each="recipient,recipientStat : ${progress.recipientBalance}">
-        <th th:text="'Recipient ' + ${recipientStat.index+1}"></th>
-        <td th:text="${recipient}"></td>
+      <tr th:each="recipient, recipientStat : ${progress.recipientAdd}">
+        <th th:text="'Recipient ' + '(' + ${#strings.abbreviate(recipient,8)} + ')'"></th>
+        <td th:text="${progress.recipientBalance[__(${recipientStat.index})__]}"></td>
       </tr>
       </tbody>
     </table>
