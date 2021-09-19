@@ -28,8 +28,6 @@ package com.vmware.ethereum.model;
 
 import com.vmware.ethereum.config.WorkloadModel;
 import java.time.Duration;
-import java.util.Map;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -63,5 +61,4 @@ public class ProgressReport {
   private final long senderBalance;
   private final String[] recipientAdd;
   private final long[] recipientBalance;
-
 }

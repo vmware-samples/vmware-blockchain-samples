@@ -29,15 +29,12 @@ package com.vmware.ethereum.service;
 import static com.vmware.ethereum.service.MetricsConstant.STATE_ACTIVE;
 import static com.vmware.ethereum.service.MetricsConstant.STATE_IDLE;
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toMap;
 
 import com.vmware.ethereum.config.TokenConfig;
 import com.vmware.ethereum.config.WorkloadConfig;
 import com.vmware.ethereum.model.ProgressReport;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.IntStream;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
