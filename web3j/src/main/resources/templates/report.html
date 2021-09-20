@@ -48,11 +48,11 @@
     <table class="table table-dark" id="accDetails">
       <tbody>
       <tr>
-        <th th:text="'Sender ' + '(' + ${#strings.substring(progress.senderAddress,3,8)} + '...)'">Sender</th>
+        <th th:text="'Sender ' + '(' + ${#strings.substring('__${#strings.toUpperCase(progress.senderAddress)}__',2,7)} + '...)'">Sender</th>
         <td th:text="${progress.senderBalance}"></td>
       </tr>
       <tr th:each="recipient, recipientStat : ${progress.recipientAddress}">
-        <th th:text="'Recipient ' + '(' + ${#strings.abbreviate(recipient,8)} + ')'"></th>
+        <th th:text="'Recipient ' + '(' + ${#strings.abbreviate('__${#strings.toUpperCase(recipient)}__',8)} + ')'"></th>
         <td th:text="${progress.recipientBalance[__(${recipientStat.index})__]}"></td>
       </tr>
       </tbody>
