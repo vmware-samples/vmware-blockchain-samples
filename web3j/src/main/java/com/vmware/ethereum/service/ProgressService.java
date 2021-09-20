@@ -46,6 +46,7 @@ public class ProgressService {
   private final WorkloadConfig config;
   private final SecureTokenApi secureTokenApi;
   private final TokenConfig tokenConfig;
+  private final String senderAddress;
 
   /** Get progress report. */
   public ProgressReport getProgress() {
@@ -64,9 +65,10 @@ public class ProgressService {
         .averageLatency(metrics.getAverageLatency())
         .activeConnections(metrics.getHttpConnections(STATE_ACTIVE))
         .idleConnections(metrics.getHttpConnections(STATE_IDLE))
+        .senderAddress(senderAddress)
         .senderBalance(secureTokenApi.getSenderBalance())
         .recipientBalance(secureTokenApi.getRecipientBalance())
-        .recipientAdd(tokenConfig.getRecipients())
+        .recipientAddress(tokenConfig.getRecipients())
         .build();
   }
 
