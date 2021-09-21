@@ -29,6 +29,7 @@ package com.vmware.ethereum.service;
 import static java.time.Duration.between;
 import static java.time.Instant.now;
 
+import com.vmware.ethereum.config.TokenConfig;
 import com.vmware.ethereum.config.Web3jConfig;
 import java.time.Duration;
 import java.time.Instant;
@@ -51,6 +52,7 @@ public class WorkloadCommand implements Runnable {
   private final CountDownLatch countDownLatch;
   private final MetricsService metrics;
   private final Web3jConfig web3jConfig;
+  private final TokenConfig tokenConfig;
   private final TransactionReceiptProcessor queuedTransactionReceiptProcessor;
   private final Map<String, Instant> txTime;
 

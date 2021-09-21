@@ -27,6 +27,7 @@ package com.vmware.ethereum.config;
  */
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,10 +44,11 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties("token")
 public class TokenConfig {
 
+  @NotNull private String contractAddress;
   @NotEmpty private String name;
   @NotEmpty private String symbol;
   @Positive private long initialSupply;
-  @NotEmpty private String recipient;
+  @NotEmpty private String[] recipients;
   @Positive private long amount;
   @Positive private long gasPrice;
   @Positive private long gasLimit;

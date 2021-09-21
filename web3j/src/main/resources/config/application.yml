@@ -22,10 +22,13 @@ web3j:
   queued-polling: false # set true for queued polling of transaction receipt, will only work with OPEN model
 
 token:
+  contract-address:  # ERC20 contract address (Note: without 0x and in case of empty it will deploy a new contract)
   name: SecureToken
   symbol: STK
   initial-supply: 2 # total tokens minted (value is internally multiplied by 10^18)
-  recipient: 45412868cB693e231DfD4ABCCA29D7001501d06f # recipient account
+  recipients: # list of recipient accounts
+    - 45412868cB693e231DfD4ABCCA29D9001801d062
+    - 1Ff482D42D8727258A1680192Fa4ba925C46Bc43
   amount: 5 # amount of tokens transferred in one transaction
   gas-price: 4_100_000_000 # gas price
   gas-limit: 9_000_000 # gas limit

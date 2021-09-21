@@ -10,10 +10,10 @@
   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
   copies of the Software, and to permit persons to whom the Software is
   furnished to do so, subject to the following conditions:
-  
+
   The above copyright notice and this permission notice shall be included in
   all copies or substantial portions of the Software.
-  
+
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -44,6 +44,20 @@
   <div>
     <br>
     <br>
+    <h4>Token Balance</h4>
+    <table class="table table-dark" id="accDetails">
+      <tbody>
+      <tr>
+        <th th:text="'Sender ' + '(' + ${#strings.substring('__${#strings.toUpperCase(progress.senderAddress)}__',2,7)} + '...)'">Sender</th>
+        <td th:text="${progress.senderBalance}"></td>
+      </tr>
+      <tr th:each="recipient, recipientStat : ${progress.recipientAddress}">
+        <th th:text="'Recipient ' + '(' + ${#strings.abbreviate('__${#strings.toUpperCase(recipient)}__',8)} + ')'"></th>
+        <td th:text="${progress.recipientBalance[__(${recipientStat.index})__]}"></td>
+      </tr>
+      </tbody>
+    </table>
+
     <h4>Test</h4>
     <table class="table table-dark" id="test">
       <tr>
@@ -116,6 +130,7 @@
         <td th:text="${progress.idleConnections}"></td>
       </tr>
     </table>
+
   </div>
 </div>
 

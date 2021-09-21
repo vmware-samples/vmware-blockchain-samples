@@ -26,6 +26,7 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
+import static com.google.common.collect.Iterators.cycle;
 import static java.math.BigInteger.valueOf;
 
 import com.vmware.ethereum.config.TokenConfig;
@@ -33,6 +34,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -62,6 +64,7 @@ public class SecureTokenApi {
   private final String senderAddress;
   private SecurityToken token;
   private String contractAddress;
+  private Iterator<String> recipients;
 
   @PostConstruct
   public void init() {
@@ -69,6 +72,7 @@ public class SecureTokenApi {
     log.info("Gas price: {}", getGasPrice());
     log.info("Net version: {}", getNetVersion());
     log.info("Sender address: {}", senderAddress);
+    recipients = cycle(config.getRecipients());
 
     token = deploy();
   }
@@ -76,11 +80,14 @@ public class SecureTokenApi {
   /** Deploy token. */
   @SneakyThrows(Exception.class)
   private SecurityToken deploy() {
-    log.info("Deploy: {}", config);
-
     ContractGasProvider gasProvider =
         new StaticGasProvider(valueOf(config.getGasPrice()), valueOf(config.getGasLimit()));
-
+    contractAddress = config.getContractAddress();
+    if (!contractAddress.isBlank()) {
+      log.info("Contract Address - {}", contractAddress);
+      return SecurityToken.load(contractAddress, web3j, transactionManager, gasProvider);
+    }
+    log.info("Deploy: {}", config);
     BigInteger initialSupply = valueOf(config.getInitialSupply());
     SecurityToken securityToken =
         SecurityToken.deploy(
@@ -107,8 +114,7 @@ public class SecureTokenApi {
     Function function =
         new Function(
             "transfer",
-            Arrays.asList(
-                new Address(config.getRecipient()), new Uint256(valueOf(config.getAmount()))),
+            Arrays.asList(new Address(recipients.next()), new Uint256(valueOf(config.getAmount()))),
             Collections.emptyList());
     String txData = FunctionEncoder.encode(function);
     return Async.run(
@@ -125,7 +131,7 @@ public class SecureTokenApi {
 
   /** Transfer token asynchronously. */
   public CompletableFuture<TransactionReceipt> transferAsync() {
-    return token.transfer(config.getRecipient(), valueOf(config.getAmount())).sendAsync();
+    return token.transfer(recipients.next(), valueOf(config.getAmount())).sendAsync();
   }
 
   @SneakyThrows(IOException.class)
@@ -154,9 +160,9 @@ public class SecureTokenApi {
     return getBalance(senderAddress);
   }
 
-  /** Get token balance of the recipient. */
-  public long getRecipientBalance() {
-    return getBalance(config.getRecipient());
+  /** Get token balance of the recipients. */
+  public long[] getRecipientBalance() {
+    return Arrays.stream(config.getRecipients()).mapToLong(this::getBalance).toArray();
   }
 
   /** Get token balance of the given address. */
