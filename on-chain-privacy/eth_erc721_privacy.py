@@ -12,7 +12,9 @@ chainid = 5000
 contract_deploy = True
 contract1_use = True
 contract2_use = True
-account_perm_test = True
+account_perm_test = False
+contract1_address = ""
+contract2_address = ""
 logging.basicConfig(level = logging.INFO)
 log = logging.getLogger("logger")
 
@@ -58,10 +60,10 @@ def main():
     gas_price = 0
 
     global abi1
-    with open("/var/jenkins/workspace/vmwathena_blockchain/hermes/ethereum/contracts/SupplyChainItemPrivacy.abi/SupplyChainItem.abi", "r") as f:
+    with open("/var/jenkins/workspace/vmware-blockchain-samples/on-chain-privacy/contracts/SupplyChainItemPrivacy.abi/SupplyChainItem.abi", "r") as f:
         abi1 = f.read()
     global bin1
-    with open("/var/jenkins/workspace/vmwathena_blockchain/hermes/ethereum/contracts/SupplyChainItemPrivacy.bin/SupplyChainItem.bin", "r") as f:
+    with open("/var/jenkins/workspace/vmware-blockchain-samples/on-chain-privacy/contracts/SupplyChainItemPrivacy.bin/SupplyChainItem.bin", "r") as f:
         bin1 = f.read()
 
     if (contract_deploy):
@@ -74,7 +76,7 @@ def main():
         erc721_asset_transfer(contract2_address, account1, account3)
 
     if (account_perm_test):
-        erc721_account_perm_test()
+        erc721_account_perm_test(contract1_address)
 
 def erc721_contract_deploy():
     #
@@ -336,19 +338,28 @@ if __name__ == "__main__":
             contract_deploy = True 
             contract1_use = False
             contract2_use = False
+            account_perm_test = False
         elif (arg == "--contract1_use"):
             contract_deploy = False
             contract1_use = True
+            contract2_use = False
+            account_perm_test = False
             contract1_address = sys.argv[i + 1]
         elif (arg == "--contract2_use"):
             contract_deploy = False
+            contract1_use = False
             contract2_use = True
+            account_perm_test = False
             contract2_address = sys.argv[i + 1]
         elif (arg == "--account_perm_test"):
+            contract_deploy = False
+            contract1_use = False
+            contract2_use = False
             account_perm_test = True
+            contract1_address = sys.argv[i + 1]
 
-def erc721_account_perm_test():
-    erc721_asset_transfer(contract1_address, account3, account1)
+def erc721_account_perm_test(contract_address):
+    erc721_asset_transfer(contract_address, account3, account1)
 
 # call main
 main()

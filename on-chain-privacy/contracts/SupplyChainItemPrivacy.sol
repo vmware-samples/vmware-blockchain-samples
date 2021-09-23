@@ -13,8 +13,11 @@ contract SupplyChainItem is ERC721 {
     }
 
     function newItem(address account) public returns (uint256) {
-        // check if sender has permissions to use smart contract
-        require(perm[msg.sender]);
+        // check if account has permissions to use smart contract
+        // require(perm[account] == true, 'Account cannot access contract');
+        if (perm[account] != true) {
+            revert('Account cannot access contract');
+        }
 
         _tokenIds.increment();
 
@@ -41,8 +44,8 @@ contract SupplyChainItem is ERC721 {
         uint256 tokenId
     ) public virtual override {
         // check if from and to addresses have permissions to use smart contract
-        require(perm[from]);
-        require(perm[to]);
+        require(perm[from] == true, 'Account cannot access contract');
+        require(perm[to] == true, 'Account cannot access contract');
 
         super.transferFrom(from, to, tokenId);
     }
@@ -51,8 +54,8 @@ contract SupplyChainItem is ERC721 {
      * @dev See {IERC721-balanceOf}.
      */
     function balanceOf(address owner) public view virtual override returns (uint256) {
-        // check if sender has permissions to use smart contract
-        require(perm[owner]);
+        // check if owner has permissions to use smart contract
+        require(perm[owner] == true, 'Account cannot access contract');
 
         return super.balanceOf(owner);
     }
