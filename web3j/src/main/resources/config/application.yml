@@ -6,9 +6,9 @@ workload:
 
 web3j:
   ethClient:
-    protocol: grpc # supports grpc, http, https
+    protocol: http # supports grpc, http, https
     host:  # IP of the ethereum client Node
-    port: 50505 # port number (50505 - gRPC, 8545 - ethRPC)
+    port: 8545 # port number (50505 - gRPC, 8545 - ethRPC)
     chain-id: 5000 # To enable EIP-155, use the chain id of the network that your Ethereum client is connected.
   credentials:
     wallet-file: src/main/resources/wallets/demo-wallet.json # wallet file location
@@ -67,6 +67,23 @@ management:
         request:
           autotime:
             enabled: false
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  datasource:
+    initialization-mode: always
+    platform: postgres
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
 
 logging:
   level:

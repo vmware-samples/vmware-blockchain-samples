@@ -29,14 +29,14 @@ package com.vmware.ethereum.service;
 import static com.google.common.collect.Iterators.cycle;
 import static java.math.BigInteger.valueOf;
 
+import com.vmware.ethereum.config.ContractRepository;
 import com.vmware.ethereum.config.TokenConfig;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.PostConstruct;
+
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -60,11 +60,13 @@ public class SecureTokenApi {
 
   private final TokenConfig config;
   private final Web3j web3j;
-  private final TransactionManager transactionManager;
+  private final TransactionManager web3jTransactionManager;
   private final String senderAddress;
   private SecurityToken token;
   private String contractAddress;
   private Iterator<String> recipients;
+  private final ContractRepository contractRepository;
+
 
   @PostConstruct
   public void init() {
@@ -82,17 +84,25 @@ public class SecureTokenApi {
   private SecurityToken deploy() {
     ContractGasProvider gasProvider =
         new StaticGasProvider(valueOf(config.getGasPrice()), valueOf(config.getGasLimit()));
+
+    List<String> contracts = contractRepository.getContractAddress();
+    if(!contracts.isEmpty()){
+      contractAddress = contracts.get(0).substring(3,contracts.get(0).length()-1);
+      log.info("Postgres Contract Address - {}", contractAddress);
+      return SecurityToken.load(contractAddress, web3j, web3jTransactionManager, gasProvider);
+    }
+
     contractAddress = config.getContractAddress();
     if (!contractAddress.isBlank()) {
       log.info("Contract Address - {}", contractAddress);
-      return SecurityToken.load(contractAddress, web3j, transactionManager, gasProvider);
+      return SecurityToken.load(contractAddress, web3j, web3jTransactionManager, gasProvider);
     }
     log.info("Deploy: {}", config);
     BigInteger initialSupply = valueOf(config.getInitialSupply());
     SecurityToken securityToken =
         SecurityToken.deploy(
                 web3j,
-                transactionManager,
+                web3jTransactionManager,
                 gasProvider,
                 config.getName(),
                 config.getSymbol(),
@@ -119,7 +129,7 @@ public class SecureTokenApi {
     String txData = FunctionEncoder.encode(function);
     return Async.run(
         () ->
-            transactionManager
+              web3jTransactionManager
                 .sendTransaction(
                     valueOf(config.getGasPrice()),
                     valueOf(config.getGasLimit()),

@@ -153,7 +153,7 @@ public class AppConfig {
   }
 
   @Bean
-  public TransactionManager transactionManager(
+  public TransactionManager web3jTransactionManager(
       Web3j web3j,
       Credentials credentials,
       TransactionReceiptProcessor transactionReceiptProcessor) {
