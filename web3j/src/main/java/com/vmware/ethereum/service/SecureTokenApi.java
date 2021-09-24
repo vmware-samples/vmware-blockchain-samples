@@ -36,7 +36,6 @@ import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.PostConstruct;
-
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -67,7 +66,6 @@ public class SecureTokenApi {
   private Iterator<String> recipients;
   private final ContractRepository contractRepository;
 
-
   @PostConstruct
   public void init() {
     log.info("Client version: {}", getClientVersion());
@@ -86,8 +84,8 @@ public class SecureTokenApi {
         new StaticGasProvider(valueOf(config.getGasPrice()), valueOf(config.getGasLimit()));
 
     List<String> contracts = contractRepository.getContractAddress();
-    if(!contracts.isEmpty()){
-      contractAddress = contracts.get(0).substring(3,contracts.get(0).length()-1);
+    if (!contracts.isEmpty()) {
+      contractAddress = contracts.get(0).substring(3, contracts.get(0).length() - 1);
       log.info("Postgres Contract Address - {}", contractAddress);
       return SecurityToken.load(contractAddress, web3j, web3jTransactionManager, gasProvider);
     }
@@ -129,7 +127,7 @@ public class SecureTokenApi {
     String txData = FunctionEncoder.encode(function);
     return Async.run(
         () ->
-              web3jTransactionManager
+            web3jTransactionManager
                 .sendTransaction(
                     valueOf(config.getGasPrice()),
                     valueOf(config.getGasLimit()),

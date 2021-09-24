@@ -27,14 +27,13 @@ package com.vmware.ethereum.model;
  */
 
 import com.vladmihalcea.hibernate.type.basic.PostgreSQLHStoreType;
+import java.util.HashMap;
+import java.util.Map;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-
-import javax.persistence.*;
-import java.util.HashMap;
-import java.util.Map;
 
 @Setter
 @Getter
@@ -47,14 +46,11 @@ public class Contract {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  @Column
-  private String version;
+  @Column private String version;
 
-  @Column
-  private String address;
+  @Column private String address;
 
   @Type(type = "hstore")
   @Column(columnDefinition = "hstore")
   private Map<String, String> attributes = new HashMap<>();
-
 }

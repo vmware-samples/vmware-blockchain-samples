@@ -27,15 +27,16 @@ package com.vmware.ethereum.config;
  */
 
 import com.vmware.ethereum.model.Contract;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface ContractRepository extends JpaRepository<Contract, Integer> {
 
-  @Query(value="SELECT address FROM contract WHERE attributes -> 'name' = 'GenericSecurityToken'", nativeQuery=true)
+  @Query(
+      value = "SELECT address FROM contract WHERE attributes -> 'name' = 'GenericSecurityToken'",
+      nativeQuery = true)
   List<String> getContractAddress();
 }
