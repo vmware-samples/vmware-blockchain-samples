@@ -17,9 +17,17 @@ postgres=# CREATE TABLE contract (id SERIAL PRIMARY KEY, version TEXT, address T
 postgres=# CREATE INDEX idx_contract_attrs ON contract USING GIN(attributes);
 ```
 
-### Smart contract address search example in postgres
+### Smart contract address add and search example in postgres
 ```bash
+INSERT INTO contract (version, address, attributes) VALUES ('1', '0xc2b3150D03A3320b6De3F3a3dD0fDA086C384eB5', 'name => "GenericSecurityToken"');
 sudo -Hiu postgres -H -- psql -U postgres -c "SELECT address FROM contract WHERE attributes -> 'name' = 'GenericSecurityToken'"
+```
+
+### Configure postgresql for storing smart contract addresses
+```bash
+su - postgres
+psql
+postgres=# drop table contract;
 ```
 
 ### Install other dependencies including postgres for javascript
