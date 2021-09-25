@@ -69,6 +69,16 @@ def main():
     if (contract_deploy):
         erc721_contract_deploy()
 
+    global contract1_address
+    f = open("contract1_address.txt", "r")
+    contract1_address = f.read()
+    f.close()
+
+    global contract2_address
+    f = open("contract2_address.txt", "r")
+    contract2_address = f.read()
+    f.close()
+
     if (contract1_use):
         erc721_asset_transfer(contract1_address, account1, account2)
 
@@ -124,9 +134,15 @@ def erc721_contract_deploy():
         if (i == 1):
             global contract1_address
             contract1_address = tx_receipt.contractAddress
+            f = open("contract1_address.txt", "w")
+            f.write(contract1_address)
+            f.close()
         elif (i == 2):
             global contract2_address
             contract2_address = tx_receipt.contractAddress
+            f = open("contract2_address.txt", "w")
+            f.write(contract2_address)
+            f.close()
 
     #
     # i=1 use nft_contract 1
@@ -214,7 +230,13 @@ def erc721_asset_transfer(contract_address, accountx, accounty):
 
         # Validating transaction hash
         tx_hash_send = signed_txn.hash
-        tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+        tx_hash = 0
+        try:
+            tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+        except ValueError as e:
+            log.error("json rpc error: '{}'".format(e))
+            return
+
         assert tx_hash_send == tx_hash, "tx hash mismatch"
 
         # Validating transaction receipt
@@ -330,6 +352,9 @@ def erc721_asset_transfer(contract_address, accountx, accounty):
     # jenkins node with 16 vCPUs, 32GB RAM is faster than hermes nimbus VM
     #assert tx_rate >= 1, "NFT account transfer taking too long"
 
+def erc721_account_perm_test(contract_address):
+    erc721_asset_transfer(contract_address, account3, account1)
+
 if __name__ == "__main__":
     #print(f"Arguments count: {len(sys.argv)}")
     for i, arg in enumerate(sys.argv):
@@ -344,22 +369,16 @@ if __name__ == "__main__":
             contract1_use = True
             contract2_use = False
             account_perm_test = False
-            contract1_address = sys.argv[i + 1]
         elif (arg == "--contract2_use"):
             contract_deploy = False
             contract1_use = False
             contract2_use = True
             account_perm_test = False
-            contract2_address = sys.argv[i + 1]
         elif (arg == "--account_perm_test"):
             contract_deploy = False
             contract1_use = False
             contract2_use = False
             account_perm_test = True
-            contract1_address = sys.argv[i + 1]
 
-def erc721_account_perm_test(contract_address):
-    erc721_asset_transfer(contract_address, account3, account1)
-
-# call main
-main()
+    # call main
+    main()

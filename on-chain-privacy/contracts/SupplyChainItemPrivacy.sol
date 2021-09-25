@@ -16,7 +16,7 @@ contract SupplyChainItem is ERC721 {
         // check if account has permissions to use smart contract
         // require(perm[account] == true, 'Account cannot access contract');
         if (perm[account] != true) {
-            revert('Account cannot access contract');
+            revert('account cannot access contract');
         }
 
         _tokenIds.increment();
