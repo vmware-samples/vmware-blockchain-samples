@@ -13,10 +13,11 @@ contract SupplyChainItem is ERC721 {
     }
 
     function newItem(address account) public returns (uint256) {
+        string memory error_message = unicode"no permission to use contract";
         // check if account has permissions to use smart contract
-        // require(perm[account] == true, 'Account cannot access contract');
+        // require(perm[account] == true, error_message);
         if (perm[account] != true) {
-            revert('account cannot access contract');
+            revert(error_message);
         }
 
         _tokenIds.increment();

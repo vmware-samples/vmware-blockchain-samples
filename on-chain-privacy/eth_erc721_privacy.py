@@ -2,6 +2,7 @@ import sys
 import time
 import urllib3
 import logging
+import json
 from web3 import Web3
 from web3.middleware import geth_poa_middleware
 urllib3.disable_warnings()
@@ -234,6 +235,7 @@ def erc721_asset_transfer(contract_address, accountx, accounty):
         try:
             tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
         except ValueError as e:
+            # log.error("json rpc error: '{}'".format(json.loads(e)))
             log.error("json rpc error: '{}'".format(e))
             return
 
