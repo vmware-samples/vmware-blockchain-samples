@@ -85,7 +85,7 @@ public class SecureTokenApi {
 
     List<String> contracts = contractRepository.getContractAddress();
     if (!contracts.isEmpty()) {
-      contractAddress = contracts.get(0).substring(3, contracts.get(0).length() - 1);
+      contractAddress = contracts.get(0).substring(2);
       log.info("Postgres Contract Address - {}", contractAddress);
       return SecurityToken.load(contractAddress, web3j, web3jTransactionManager, gasProvider);
     }
