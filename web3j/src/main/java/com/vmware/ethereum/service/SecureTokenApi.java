@@ -29,7 +29,9 @@ package com.vmware.ethereum.service;
 import static com.google.common.collect.Iterators.cycle;
 import static java.math.BigInteger.valueOf;
 
+import com.vmware.ethereum.config.DatabaseConfig;
 import com.vmware.ethereum.config.TokenConfig;
+import com.vmware.ethereum.model.Contract;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -41,6 +43,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.sql2o.Connection;
+import org.sql2o.Sql2o;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Function;
@@ -59,6 +63,7 @@ import org.web3j.utils.Async;
 public class SecureTokenApi {
 
   private final TokenConfig config;
+  private final DatabaseConfig databaseConfig;
   private final Web3j web3j;
   private final TransactionManager transactionManager;
   private final String senderAddress;
@@ -83,10 +88,26 @@ public class SecureTokenApi {
     ContractGasProvider gasProvider =
         new StaticGasProvider(valueOf(config.getGasPrice()), valueOf(config.getGasLimit()));
     contractAddress = config.getContractAddress();
+
+    if (!databaseConfig.getUrl().isBlank()) {
+      Sql2o sql2o =
+          new Sql2o(
+              databaseConfig.getUrl(), databaseConfig.getUsername(), databaseConfig.getPassword());
+      String sql = "SELECT * FROM contract WHERE attributes -> 'name' = 'GenericSecurityToken';";
+
+      try (Connection con = sql2o.open()) {
+        Contract contract = con.createQuery(sql).executeAndFetchFirst(Contract.class);
+        contractAddress = contract.getAddress().substring(2);
+        log.info("sql2o Contract Address - {}", contractAddress);
+        return SecurityToken.load(contractAddress, web3j, transactionManager, gasProvider);
+      }
+    }
+
     if (!contractAddress.isBlank()) {
       log.info("Contract Address - {}", contractAddress);
       return SecurityToken.load(contractAddress, web3j, transactionManager, gasProvider);
     }
+
     log.info("Deploy: {}", config);
     BigInteger initialSupply = valueOf(config.getInitialSupply());
     SecurityToken securityToken =

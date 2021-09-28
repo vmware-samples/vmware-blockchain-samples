@@ -6,9 +6,9 @@ workload:
 
 web3j:
   ethClient:
-    protocol: grpc # supports grpc, http, https
+    protocol: http # supports grpc, http, https
     host:  # IP of the ethereum client Node
-    port: 50505 # port number (50505 - gRPC, 8545 - ethRPC)
+    port: 8545 # port number (50505 - gRPC, 8545 - ethRPC)
     chain-id: 5000 # To enable EIP-155, use the chain id of the network that your Ethereum client is connected.
   credentials:
     wallet-file: src/main/resources/wallets/demo-wallet.json # wallet file location
@@ -32,6 +32,11 @@ token:
   amount: 5 # amount of tokens transferred in one transaction
   gas-price: 4_100_000_000 # gas price
   gas-limit: 9_000_000 # gas limit
+
+database:
+  url:  # postgres database url (Ex: jdbc:postgresql://127.0.0.1:5432/postgres)
+  username: postgres # postgres database username
+  password: postgres # postgres database password
 
 management:
   endpoints:
