@@ -31,6 +31,7 @@ import static java.math.BigInteger.valueOf;
 
 import com.vmware.ethereum.config.DatabaseConfig;
 import com.vmware.ethereum.config.TokenConfig;
+import com.vmware.ethereum.model.Contract;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -38,8 +39,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.PostConstruct;
-
-import com.vmware.ethereum.model.Contract;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -90,13 +89,14 @@ public class SecureTokenApi {
         new StaticGasProvider(valueOf(config.getGasPrice()), valueOf(config.getGasLimit()));
     contractAddress = config.getContractAddress();
 
-    if(!databaseConfig.getUrl().isBlank()){
-      Sql2o sql2o = new Sql2o(databaseConfig.getUrl(), databaseConfig.getUsername(), databaseConfig.getPassword());
+    if (!databaseConfig.getUrl().isBlank()) {
+      Sql2o sql2o =
+          new Sql2o(
+              databaseConfig.getUrl(), databaseConfig.getUsername(), databaseConfig.getPassword());
       String sql = "SELECT * FROM contract WHERE attributes -> 'name' = 'GenericSecurityToken';";
 
       try (Connection con = sql2o.open()) {
-        Contract contract = con.createQuery(sql)
-          .executeAndFetchFirst(Contract.class);
+        Contract contract = con.createQuery(sql).executeAndFetchFirst(Contract.class);
         contractAddress = contract.getAddress().substring(2);
         log.info("sql2o Contract Address - {}", contractAddress);
         return SecurityToken.load(contractAddress, web3j, transactionManager, gasProvider);

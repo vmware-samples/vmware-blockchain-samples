@@ -35,8 +35,8 @@ token:
 
 database:
   url:  # postgres database url (Ex: jdbc:postgresql://127.0.0.1:5432/postgres)
-  username: postgres
-  password: postgres
+  username: postgres # postgres database username
+  password: postgres # postgres database password
 
 management:
   endpoints:

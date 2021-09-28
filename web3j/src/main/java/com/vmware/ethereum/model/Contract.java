@@ -26,11 +26,10 @@ package com.vmware.ethereum.model;
  * #L%
  */
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 
 @Setter
 @Getter
