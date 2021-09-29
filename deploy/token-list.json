@@ -1,0 +1,16 @@
+{
+  "tokens": [
+    {
+      "name": "GenericSecurityToken",
+      "symbol": "GST",
+      "amount": 1000000,
+      "contractAddress": "0xc2b3150D03A3320b6De3F3a3dD0fDA086C384eB5"
+    },
+    {
+      "name": "SupplyChainToken",
+      "symbol": "SCT",
+      "amount": 1000000,
+      "contractAddress": "0xA506fe86b76005BC6bAD821a4FEB20276005ebdF"
+    }
+  ]
+}

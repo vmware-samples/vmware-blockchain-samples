@@ -1,0 +1,9 @@
+{
+  "swaps": [
+    {
+      "name": "GST-SCT",
+      "rate": 1,
+      "contractAddress": "0x7373de9d9da5185316a8D493C0B04923326754b2"
+    }
+  ]
+}

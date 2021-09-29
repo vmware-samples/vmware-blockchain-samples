@@ -1,11 +1,22 @@
 {
   "name": "swap-dappv2",
   "version": "0.1.0",
+  "engines": {
+    "node": "^14.8.0"
+  },
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.12.1",
+    "@material-ui/icons": "^4.11.2",
+    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-waffle": "^2.0.1",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "chai": "^4.3.4",
+    "ethereum-waffle": "^3.2.2",
+    "ethers": "5.0.26",
+    "hardhat": "2.0.8",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
@@ -15,7 +26,10 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy:concord": "npx hardhat run scripts/deploy.ts",
+    "deploy:hardhat": "npx hardhat run scripts/deployHardhat.ts",
+    "test-swap": "npx hardhat test"
   },
   "eslintConfig": {
     "extends": [
@@ -34,5 +48,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.22",
+    "ts-node": "^10.1.0",
+    "typescript": "^4.4.3",
+    "web3": "^1.4.0"
   }
 }
