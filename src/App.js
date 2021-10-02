@@ -59,14 +59,14 @@ let tokens = [
   },
   {
     "symbol": "SCT",
-    "address": "0xb84aee68019bc523b6e845DDCB8E6DbA6a302C81"
+    "address": "0xA506fe86b76005BC6bAD821a4FEB20276005ebdF"
   }
 ]
 
 let swaps = [
   {
     "symbol": "GST-SCT",
-    "address": "0xEe941bF0D5dF3C7B72eFf358E9F257AaA07e25dD"
+    "address": "0x7373de9d9da5185316a8D493C0B04923326754b2"
   }
 ]
 

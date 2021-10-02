@@ -69,7 +69,7 @@ async function main() {
     const amount = BigNumber.from(10).pow(decimals).mul(1000)
 
     //Transfer to swap contract
-    console.log(`Transfering ${token} to swap  @ ${swapContractAddress}`);
+    console.log(`Transfering ${token} to swap contract @ ${swapContractAddress}`);
     await contract.transfer(swapContractAddress, amount);
 
     for (const [name, account] of Object.entries(accounts)) {
