@@ -1,0 +1,40 @@
+<h3>Genesis Account Information</h3>
+<div style="margin: 0.5rem 0rem;">
+  VMBC Genesis account with one million ETH starting balance.
+</div>
+
+<div>Current Genesis Account ETH Balance: <b>{{ godBalance }} ETH</b></div>
+<div style="height: 1rem;"></div>
+
+<div class="gen-output-field">
+  Genesis God Address (0x777d...7777):
+  <pre>{{ godAddress }}</pre>
+</div>
+<div class="gen-output-field">
+  Private Key:
+  <pre>{{ godPrivateKey }}</pre>
+</div>
+
+<div style="height: 1rem;"></div>
+
+<h4>Send ETH from Genesis Account to Another</h4>
+<div class="gen-output-field" style="margin-top: 1rem;">
+  Current Account Provided by Metamask (balance {{ ethService.currentAccountBalance }}):
+  <pre>{{ ethService.currentAccount }}</pre>
+</div>
+<div style="height: 0.5rem;"></div>
+<form [formGroup]="sendForm">
+  <clr-input-container style="margin-top: 0.2rem;">
+    <label>Address</label>
+    <input placeholder="Target Account Address" clrInput formControlName="address" id="address" class="eth-input"/>
+    <clr-control-error>Address is required</clr-control-error>
+  </clr-input-container>
+  <clr-input-container>
+    <label>Amount</label>
+    <input placeholder="ETH Amount" clrInput formControlName="amount" id="amount" class="eth-input"/>
+    <clr-control-error>ETH amount is required</clr-control-error>
+  </clr-input-container>
+</form>
+<div style="height: 0.5rem;"></div>
+<button class="btn btn-primary" (click)="sendBalance()">Send ETH</button>
+<div style="height: 2rem;"></div>

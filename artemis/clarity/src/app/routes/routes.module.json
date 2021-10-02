@@ -1,0 +1,11 @@
+{
+  "namespace": "thisapp",
+  "mounted": "routes",
+  "group": "",
+
+  "name": "UserRoutesModule",
+  "folder": "",
+  "file": "routes.module",
+
+  "attributes": ["ui", "angular", "clarity"]
+}
