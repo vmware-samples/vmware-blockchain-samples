@@ -9,7 +9,6 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Checkbox from '@material-ui/core/Checkbox';
-
 import Link from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
@@ -18,18 +17,15 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import SwapVerticalCircleOutlinedIcon from '@material-ui/icons/SwapVerticalCircleOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-
 import './App.css';
 import { useState } from 'react';
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import Swap from './artifacts/contracts/Swap.sol/Swap.json'
 import Token from './artifacts/contracts/SecurityToken.sol/SecurityToken.json'
-
 const greeterAddress = "your-contract-address"
 //const tokenAddress = "0x3d5365F3340Be63d11618aEaA7124CEB791596a1"
 //TODO change to read from json file
-//Below is the config for SDDC
-/*
+//Below is the config for VMBC IMMEDIATELY after system bootup
 let tokens = [
   {
     "symbol": "GST",
@@ -40,37 +36,12 @@ let tokens = [
     "address": "0xA506fe86b76005BC6bAD821a4FEB20276005ebdF"
   }
 ]
-
 let swaps = [
   {
     "symbol": "GST-SCT",
     "address": "0x7373de9d9da5185316a8D493C0B04923326754b2"
   }
 ]
-*/
-
-
-//This is the local deployment
-
-let tokens = [
-  {
-    "symbol": "GST",
-    "address": "0xc2b3150D03A3320b6De3F3a3dD0fDA086C384eB5"
-  },
-  {
-    "symbol": "SCT",
-    "address": "0xA506fe86b76005BC6bAD821a4FEB20276005ebdF"
-  }
-]
-
-let swaps = [
-  {
-    "symbol": "GST-SCT",
-    "address": "0x7373de9d9da5185316a8D493C0B04923326754b2"
-  }
-]
-
-
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -83,7 +54,6 @@ function Copyright() {
     </Typography>
   );
 }
-
 const useStyles = makeStyles((theme) => ({
   root: {
     height: '100vh',
@@ -114,21 +84,16 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
-
   fieldspacing: {
     margin: theme.spacing(2, 0, 2),
   },
-
   selectspacing: {
     margin: theme.spacing(3, 0, 1),
   },
   
 }));
-
 export default function SignInSide() {
-
   const classes = useStyles();
-
   const [tokenType, setTokenTypeValue] = useState(0)
   const [swapType, setSwapTypeValue] = useState(1)
   const [userAccount, setUserAccount] = useState()
@@ -140,12 +105,10 @@ export default function SignInSide() {
   const [tokenAddress, setTokenAddress] = useState(tokens[0].address)
   const [swapContractAddress, setSwpContractAddress] = useState(swaps[0].address)
   const [swapRate, setSwapRate] = useState(1)
-
-
   async function requestAccount() {
     await window.ethereum.request({ method: 'eth_requestAccounts' });
   }
-
+  //financial = (x) => Number.parseFloat(x).toFixed(2);
   async function getBalance() {
     console.log("called" + tokenType)
     if (typeof window.ethereum !== 'undefined') {
@@ -154,11 +117,17 @@ export default function SignInSide() {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const contract = new ethers.Contract(tokenAddress, Token.abi, provider)
       const balance = await contract.balanceOf(account);
-      console.log("Balance: ", balance.toString());
-      setTokenBalance(balance.toString());
+      
+      setTokenBalance((balance / 1000000000000000000).toFixed(0));
+      /*
+      if (balance.toString().length == "22")
+          setTokenBalance(balance.toString().substring(0,4));
+      else  
+          setTokenBalance(balance.toString().substring(0,3));
+      
+      */
     }
   }
-
   async function transferTokens() {
     console.log(toAddress)
     if (typeof window.ethereum !== 'undefined') {
@@ -166,14 +135,17 @@ export default function SignInSide() {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const contract = new ethers.Contract(tokenAddress, Token.abi, signer);
-      const transation = await contract.transfer(toAddress, amount);
+      
+      //const amountToSend = amount + "00000000000000000";
+      const amountToSend = (amount * 1000000000000000000).toFixed(0);
+      console.log(amountToSend);
+      const transation = await contract.transfer(toAddress, amountToSend);
       await transation.wait();
       console.log(`${amount} Tokens successfully sent to ${toAddress}`);
       getBalance();
+    
     }
   }
-
-
   async function swapTokens() {
     console.log(toAddress)
     if (typeof window.ethereum !== 'undefined') {
@@ -181,33 +153,30 @@ export default function SignInSide() {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const contract = new ethers.Contract(tokenAddress, Token.abi, signer);
-      const transaction = await contract.approve(swapContractAddress, swapAmount);
+      //const amountToSend = swapAmount + "00000000000000000";
+      const amountToSend = (swapAmount * 1000000000000000000).toFixed(0);
+      console.log(amountToSend);
+      const transaction = await contract.approve(swapContractAddress, amountToSend);
       await transaction.wait();
       const swapContract = new ethers.Contract(swapContractAddress, Swap.abi, signer);
-      const transactionSwap = await swapContract.swapTokens(swapAmount);
+      const transactionSwap = await swapContract.swapTokens(amountToSend);
       //console.log(`${amount} Tokens successfully sent to ${toAddress}`);
       getBalance();
     }
   }
-
   async function handleChange(event) {
     console.log(event.target.value)
     setTokenAddress(tokens[event.target.value].address);
     console.log(tokenAddress)
     setTokenTypeValue(event.target.value)
-
   }
-
   async function handleSwapChange(event) {
     console.log(event.target.value)
     //setTokenAddress(tokens[event.target.value].address);
     //console.log(tokenAddress)
     setSwapTypeValue(event.target.value)
-
   }
-
   getBalance();
-
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
@@ -220,7 +189,6 @@ export default function SignInSide() {
           <Typography component="h1" variant="h5">
            Transfer or Swap ERC20 Tokens
           </Typography>
-
           <form className={classes.form} noValidate>
             <InputLabel id="demo-simple-select-label" variant="outlined">tokens</InputLabel>
               <Select
@@ -245,8 +213,6 @@ export default function SignInSide() {
               variant="filled"
               className={classes.fieldspacing}
               fullWidth/>
-
-
             <TextField 
               label="Your Address" 
               id="outlined-size-normal"
@@ -256,7 +222,6 @@ export default function SignInSide() {
               fullWidth/>
             
            
-
             <TextField
               variant="outlined"
               margin="normal"
@@ -269,7 +234,6 @@ export default function SignInSide() {
               value={toAddress}
               onChange={e => setToAddress(e.target.value)}
             />
-
             <TextField
               variant="outlined"
               margin="normal"
@@ -282,7 +246,6 @@ export default function SignInSide() {
               value={amount}
               onChange={e => setAmount(e.target.value)}
             />
-
             <TextField
               margin="normal"
               variant="filled"
@@ -318,7 +281,6 @@ export default function SignInSide() {
                 <MenuItem value={0}>GST</MenuItem>
                 <MenuItem value={1}>SCT</MenuItem>
             </Select>
-
             <TextField 
               label="Rate" 
               id="swaprate"
@@ -329,7 +291,6 @@ export default function SignInSide() {
               className={classes.fieldspacing}
               fullWidth
             />
-
             <TextField 
               label="Swap Contract Address" 
               id="swapcontractAddress"
@@ -340,7 +301,6 @@ export default function SignInSide() {
               className={classes.fieldspacing}
               fullWidth
             />
-
             <TextField
               variant="outlined"
               margin="normal"
@@ -363,7 +323,6 @@ export default function SignInSide() {
             >
               Swap
             </Button>
-
             <Box mt={5}>
               <Copyright />
             </Box>
