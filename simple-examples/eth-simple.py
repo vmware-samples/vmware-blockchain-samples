@@ -15,10 +15,10 @@ import urllib3
 from hexbytes import HexBytes
 urllib3.disable_warnings()
 
-vmware = 1
+vmware = 0
 vmware_prod_deploy = 0
 chainid = 1
-total_tx_count = 100
+total_tx_count = 1
 
 # web3.py instance
 #w3 = Web3(Web3.EthereumTesterProvider())
