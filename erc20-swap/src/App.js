@@ -20,28 +20,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import './App.css';
 import { useState } from 'react';
 import { BigNumber, ethers } from 'ethers'
-import Swap from './artifacts/contracts/Swap.sol/Swap.json'
-import Token from './artifacts/contracts/SecurityToken.sol/SecurityToken.json'
+import Swap from '@artifacts/contracts/Swap.sol/Swap.json'
+import Token from '@artifacts/contracts/SecurityToken.sol/SecurityToken.json'
+import { tokens } from '@deploy/token-list.json';
+import { swaps } from '@deploy/swap-list.json';
 const greeterAddress = "your-contract-address"
 //const tokenAddress = "0x3d5365F3340Be63d11618aEaA7124CEB791596a1"
 //TODO change to read from json file
 //Below is the config for VMBC IMMEDIATELY after system bootup
-let tokens = [
-  {
-    "symbol": "GST",
-    "address": "0xc2b3150D03A3320b6De3F3a3dD0fDA086C384eB5"
-  },
-  {
-    "symbol": "SCT",
-    "address": "0xA506fe86b76005BC6bAD821a4FEB20276005ebdF"
-  }
-]
-let swaps = [
-  {
-    "symbol": "GST-SCT",
-    "address": "0x7373de9d9da5185316a8D493C0B04923326754b2"
-  }
-]
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -90,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
   selectspacing: {
     margin: theme.spacing(3, 0, 1),
   },
-  
+
 }));
 export default function SignInSide() {
   const classes = useStyles();
@@ -117,14 +103,14 @@ export default function SignInSide() {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const contract = new ethers.Contract(tokenAddress, Token.abi, provider)
       const balance = await contract.balanceOf(account);
-      
+
       setTokenBalance((balance / 1000000000000000000).toFixed(0));
       /*
       if (balance.toString().length == "22")
           setTokenBalance(balance.toString().substring(0,4));
-      else  
+      else
           setTokenBalance(balance.toString().substring(0,3));
-      
+
       */
     }
   }
@@ -135,7 +121,7 @@ export default function SignInSide() {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const contract = new ethers.Contract(tokenAddress, Token.abi, signer);
-      
+
       //const amountToSend = amount + "00000000000000000";
       const amountToSend = (amount * 1000000000000000000).toFixed(0);
       console.log(amountToSend);
@@ -143,7 +129,7 @@ export default function SignInSide() {
       await transation.wait();
       console.log(`${amount} Tokens successfully sent to ${toAddress}`);
       getBalance();
-    
+
     }
   }
   async function swapTokens() {
@@ -203,25 +189,25 @@ export default function SignInSide() {
                 <MenuItem value={0}>GST</MenuItem>
                 <MenuItem value={1}>SCT</MenuItem>
             </Select>
-          
-            <TextField 
-              label="Contract Address" 
+
+            <TextField
+              label="Contract Address"
               id="contractAddress"
               id="outlined-size-normal"
-              defaultValue={tokenAddress || ''} 
-              value={tokenAddress || ''} 
+              defaultValue={tokenAddress || ''}
+              value={tokenAddress || ''}
               variant="filled"
               className={classes.fieldspacing}
               fullWidth/>
-            <TextField 
-              label="Your Address" 
+            <TextField
+              label="Your Address"
               id="outlined-size-normal"
-              defaultValue={userAddress || ''} 
-              value={userAddress || ''} 
+              defaultValue={userAddress || ''}
+              value={userAddress || ''}
               variant="filled"
               fullWidth/>
-            
-           
+
+
             <TextField
               variant="outlined"
               margin="normal"
@@ -256,10 +242,10 @@ export default function SignInSide() {
               id="tokenBalance"
               value={tokenBalance || ''}
             />
-            
+
             <Button
-              onClick={transferTokens} 
-              
+              onClick={transferTokens}
+
               fullWidth
               variant="contained"
               color="primary"
@@ -267,7 +253,7 @@ export default function SignInSide() {
             >
               Transfer
             </Button>
-          
+
             <InputLabel id="demo-simple-select-label" variant="outlined">Swap To</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
@@ -281,22 +267,22 @@ export default function SignInSide() {
                 <MenuItem value={0}>GST</MenuItem>
                 <MenuItem value={1}>SCT</MenuItem>
             </Select>
-            <TextField 
-              label="Rate" 
+            <TextField
+              label="Rate"
               id="swaprate"
               id="outlined-size-normal"
-              defaultValue={swapRate || '1'} 
-              value={swapRate || '1'} 
-              variant="filled"  
+              defaultValue={swapRate || '1'}
+              value={swapRate || '1'}
+              variant="filled"
               className={classes.fieldspacing}
               fullWidth
             />
-            <TextField 
-              label="Swap Contract Address" 
+            <TextField
+              label="Swap Contract Address"
               id="swapcontractAddress"
               id="outlined-size-normal"
-              defaultValue={swapContractAddress || ''} 
-              value={swapContractAddress || ''} 
+              defaultValue={swapContractAddress || ''}
+              value={swapContractAddress || ''}
               variant="filled"
               className={classes.fieldspacing}
               fullWidth
@@ -313,9 +299,9 @@ export default function SignInSide() {
               value={swapAmount}
               onChange={e => setSwapAmount(e.target.value)}
             />
-            
+
             <Button
-              onClick={swapTokens} 
+              onClick={swapTokens}
               fullWidth
               variant="contained"
               color="primary"
