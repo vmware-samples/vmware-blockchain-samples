@@ -96,3 +96,30 @@ Here you will find DApp and Smart Contract samples of how to deploy and interact
 3. [Verify and Upload Contracts](./supply-chain/verify)
 
    - The verify contract example is similar to how users post their contracts on [Etherscan](https://etherscan.io/verifyContract), but posting to VMware blockchain instead and being able to view the verified contracts in the VMware Blockchain UI.
+
+
+
+### known Issues
+  1. Https Mode Cloning
+     - When the repo is cloned using `git clone https://github.com/vmware-samples/vmware-blockchain-samples.git` https mode, then `yarn install` will fail with following error.
+       ```shell
+        error Command failed.
+        Exit code: 128
+        Command: git
+        Arguments: ls-remote --tags --heads ssh://git@github.com/ethereumjs/ethereumjs-abi.git
+        Directory: /Users/snallayan/Work/vmbc/vmware-blockchain-samples/erc20-swap
+        Output:
+        git@github.com: Permission denied (publickey).
+        fatal: Could not read from remote repository.
+
+        Please make sure you have the correct access rights
+        and the repository exists.
+       ```
+       This is due to `ethereumjs-abi` dependency which needs to be downloaded in ssh mode.
+       As a fix,  Adding github identity with ssh-add solves the issue.
+
+       `ssh-add -K <path to private key>`
+       ```
+       $ ssh-add -K ~/.ssh/github
+        Identity added: /Users/abc/.ssh/github
+       ```
