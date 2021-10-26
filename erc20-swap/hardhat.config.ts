@@ -33,8 +33,8 @@ export default {
     },
     concord: {
       //url: "http://10.72.228.91:8545",
-      url: "http://localhost:8545",
-      chainId: 5000,
+      url: process.env.VMBC_URL || "http://localhost:8545",
+      chainId: Number(process.env.VMBC_CHAIN_ID) || 5000,
       gasPrice : 0,
       from: '627306090abaB3A6e1400e9345bC60c78a8BEf57'
     },
