@@ -3,6 +3,9 @@
 .git
 .gitignore
 node_modules
+artifacts
+build
+cache
 npm-debug.log
 Dockerfile*
 docker-compose*

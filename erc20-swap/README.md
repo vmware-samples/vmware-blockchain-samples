@@ -2,9 +2,29 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+
+
+
+# Available Scripts
+
+## Container Mode
+
+### `./build.sh`
+  To build a docker image out of the erc20 swap example on a alpine linux
+
+### `docker-compose -f docker-compose.yml up | down`
+  To bring up / down the container which will connect to host to VMBC instance
+
+## Local Mode
 
 In the project directory, you can run:
+
+### `yarn install`
+To install all the dependencies
+
+### `yarn deploy:concord`
+Deploys the smart contact in localhost:8545 VMBC Network.
+Refer `hardhat.config.ts` for any config changes
 
 ### `yarn start`
 
