@@ -187,8 +187,11 @@ public class SecureTokenApi {
   }
 
   /** Get token balance of the given address. */
-  @SneakyThrows(Exception.class)
   private long getBalance(String account) {
-    return token.balanceOf(account).send().longValue();
+    try {
+      return token.balanceOf(account).send().longValue();
+    } catch (Exception e) {
+      return 0;
+    }
   }
 }
