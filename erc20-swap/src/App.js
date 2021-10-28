@@ -88,8 +88,8 @@ export default function SignInSide() {
   const [tokenBalance, setTokenBalance] = useState()
   const [userAddress, setUserAddress] = useState()
   const [toAddress, setToAddress] = useState()
-  const [tokenAddress, setTokenAddress] = useState(tokens[0].address)
-  const [swapContractAddress, setSwpContractAddress] = useState(swaps[0].address)
+  const [tokenAddress, setTokenAddress] = useState(tokens[0].contractAddress)
+  const [swapContractAddress, setSwpContractAddress] = useState(swaps[0].contractAddress)
   const [swapRate, setSwapRate] = useState(1)
   async function requestAccount() {
     await window.ethereum.request({ method: 'eth_requestAccounts' });
