@@ -1,4 +1,4 @@
-package com.vmware.ethereum.service;
+package org.web3j.tx.response;
 
 /*-
  * #%L
@@ -26,10 +26,8 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static com.vmware.ethereum.service.MetricsConstant.TOKEN_RECEIPT_METRIC_NAME;
-
-import io.micrometer.core.annotation.Timed;
 import java.io.IOException;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
@@ -38,18 +36,25 @@ import org.web3j.protocol.exceptions.TransactionException;
 @Service
 public class TimedWrapper {
 
-  public static class PollingTransactionReceiptProcessor
-      extends org.web3j.tx.response.PollingTransactionReceiptProcessor {
+  public static class OncePollingTransactionReceiptProcessor extends TransactionReceiptProcessor {
 
-    public PollingTransactionReceiptProcessor(Web3j web3j, long sleepDuration, int attempts) {
-      super(web3j, sleepDuration, attempts);
+    public OncePollingTransactionReceiptProcessor(Web3j web3j) {
+      super(web3j);
     }
 
-    @Timed(value = TOKEN_RECEIPT_METRIC_NAME)
     @Override
     public TransactionReceipt waitForTransactionReceipt(String transactionHash)
         throws IOException, TransactionException {
-      return super.waitForTransactionReceipt(transactionHash);
+
+      Optional<? extends TransactionReceipt> receiptOptional =
+          sendTransactionReceiptRequest(transactionHash);
+
+      if (receiptOptional.isPresent()) {
+        return receiptOptional.get();
+      }
+      throw new TransactionException(
+          "Transaction receipt was not available after single attempt: " + transactionHash,
+          transactionHash);
     }
   }
 }

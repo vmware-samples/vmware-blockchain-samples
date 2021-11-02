@@ -32,7 +32,6 @@ import static java.time.Instant.now;
 
 import com.vmware.ethereum.config.Web3jConfig.Receipt;
 import com.vmware.ethereum.service.MetricsService;
-import com.vmware.ethereum.service.TimedWrapper.PollingTransactionReceiptProcessor;
 import com.vmware.web3j.protocol.grpc.GrpcService;
 import io.grpc.ManagedChannel;
 import io.micrometer.core.aop.TimedAspect;
@@ -75,6 +74,7 @@ import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.response.Callback;
 import org.web3j.tx.response.QueuingTransactionReceiptProcessor;
+import org.web3j.tx.response.TimedWrapper.OncePollingTransactionReceiptProcessor;
 import org.web3j.tx.response.TransactionReceiptProcessor;
 
 @Slf4j
@@ -147,9 +147,7 @@ public class AppConfig {
 
   @Bean
   public TransactionReceiptProcessor transactionReceiptProcessor(Web3j web3j) {
-    Receipt receipt = config.getReceipt();
-    return new PollingTransactionReceiptProcessor(
-        web3j, receipt.getInterval(), receipt.getAttempts());
+    return new OncePollingTransactionReceiptProcessor(web3j);
   }
 
   @Bean
