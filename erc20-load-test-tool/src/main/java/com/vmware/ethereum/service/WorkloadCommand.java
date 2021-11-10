@@ -26,22 +26,23 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static java.time.Duration.between;
-import static java.time.Instant.now;
-
 import com.vmware.ethereum.config.TokenConfig;
 import com.vmware.ethereum.config.Web3jConfig;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.response.TransactionReceiptProcessor;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+
+import static java.time.Duration.between;
+import static java.time.Instant.now;
 
 @Slf4j
 @Service
@@ -54,6 +55,7 @@ public class WorkloadCommand implements Runnable {
   private final Web3jConfig web3jConfig;
   private final TokenConfig tokenConfig;
   private final TransactionReceiptProcessor queuedTransactionReceiptProcessor;
+  private final TransactionReceiptProcessor noOpProcessor;
   private final Map<String, Instant> txTime;
 
   @Override
@@ -63,6 +65,30 @@ public class WorkloadCommand implements Runnable {
     } else {
       transferAsync();
     }
+  }
+
+  public void transferNoOp() {
+    Instant startTime = now();
+    api.transferQueued()
+      .whenComplete(
+        ((txHash, throwable) -> {
+          Duration duration = between(startTime, now());
+          if (txHash != null) {
+            noOpProcessor(txHash);
+            txTime.put(txHash, startTime);
+          }
+
+          if (throwable != null) {
+            log.warn("{}", throwable.toString());
+            metrics.record(Duration.ZERO, throwable);
+            countDownLatch.countDown();
+          }
+        }));
+  }
+
+  @SneakyThrows
+  private void noOpProcessor(String txHash) {
+    noOpProcessor.waitForTransactionReceipt(txHash);
   }
 
   /** Transfer token for deferred polling. */
