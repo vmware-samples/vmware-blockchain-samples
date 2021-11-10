@@ -30,7 +30,6 @@ import static com.vmware.ethereum.service.MetricsConstant.STATE_ACTIVE;
 import static com.vmware.ethereum.service.MetricsConstant.STATE_IDLE;
 import static java.util.stream.Collectors.joining;
 
-import com.vmware.ethereum.config.TokenConfig;
 import com.vmware.ethereum.config.WorkloadConfig;
 import com.vmware.ethereum.model.ProgressReport;
 import java.util.Map;
@@ -44,9 +43,6 @@ public class ProgressService {
 
   private final MetricsService metrics;
   private final WorkloadConfig config;
-  private final SecureTokenApi secureTokenApi;
-  private final TokenConfig tokenConfig;
-  private final String senderAddress;
 
   /** Get progress report. */
   public ProgressReport getProgress() {
@@ -65,10 +61,6 @@ public class ProgressService {
         .averageLatency(metrics.getAverageLatency())
         .activeConnections(metrics.getHttpConnections(STATE_ACTIVE))
         .idleConnections(metrics.getHttpConnections(STATE_IDLE))
-        .senderAddress(senderAddress)
-        .senderBalance(secureTokenApi.getSenderBalance())
-        .recipientBalance(secureTokenApi.getRecipientBalance())
-        .recipientAddress(tokenConfig.getRecipients())
         .build();
   }
 
