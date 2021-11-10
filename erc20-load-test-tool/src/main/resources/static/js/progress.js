@@ -84,10 +84,6 @@ function updateReport(progress) {
   update("metrics", 2, progress.averageThroughput);
   update("metrics", 3, progress.averageLatency);
 
-//  update("accDetails", 0, progress.senderBalance);
-//  for(let i=0;i<progress.recipientBalance.length;i++){
-//    update("accDetails", i+1, progress.recipientBalance[i]);
-//  }
 }
 
 progress = new LoadProgress();
