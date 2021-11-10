@@ -1,6 +1,6 @@
 workload:
   model: OPEN  # either OPEN or CLOSED workload model
-  transactions: 1 # total transactions to be done
+  transactions: 100 # total transactions to be done
   load-factor: 10 # arrival rate for OPEN model & concurrency for CLOSED model
   progress-interval: 5s # interval for updating progress in web UI
 
@@ -74,6 +74,10 @@ management:
             enabled: false
 
 logging:
+  pattern:
+    file: "%d %-5level [%thread] %logger : %msg%n"
+  file:
+    name: app.log
   level:
     com:
       vmware: info
