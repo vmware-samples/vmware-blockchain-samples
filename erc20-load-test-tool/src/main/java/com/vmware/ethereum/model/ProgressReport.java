@@ -57,10 +57,4 @@ public class ProgressReport {
 
   private final long activeConnections;
   private final long idleConnections;
-
-  private final String senderAddress;
-  private final long senderBalance;
-
-  private final String[] recipientAddress;
-  private final long[] recipientBalance;
 }
