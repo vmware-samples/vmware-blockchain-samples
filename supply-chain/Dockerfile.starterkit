@@ -3,27 +3,23 @@
 # From Alpine 3.14 as the Base Image
 FROM alpine:3.14
 
-# Maintainer
-LABEL maintainer = "snallayan@vmware.com"
-
 # Desc
-LABEL description="VMware Blockchain Starter Kit - ERC20 Swap"
+LABEL description="VMware Blockchain Starter Kit - Supply Chain"
 
 # Copy the sample applications
-COPY . /workspace/erc20-swap
+COPY . /workspace/supply-chain
 
 # Install Dependencies
 RUN apk add --update nodejs=14.18.1-r0
 RUN apk add --update npm=7.17.0-r0
 
 # Run build Commands
-WORKDIR /workspace/erc20-swap
-
-RUN npm install
-RUN npm run clean
+WORKDIR /workspace/supply-chain
+RUN npm cache verify
+RUN npm install --verbose
 
 # Expose Ports
-EXPOSE 3000
+EXPOSE 4200
 
 # Enviroinment Variables
 ENV VMBC_CHAIN_ID=5000

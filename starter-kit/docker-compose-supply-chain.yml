@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  supply-chain:
+    image: vmbc-eth-starter-kit/vmbc-supply-chain:1.0
+    container_name: vmbc-supply-chain-kit
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - 4200:4200

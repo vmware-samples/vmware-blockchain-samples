@@ -1,6 +1,5 @@
 version: "3.8"
 services:
-
   erc20-swap:
     image: vmbc-eth-starter-kit/vmbc-erc20-swap:1.0
     container_name: vmbc-erc20-swap-kit

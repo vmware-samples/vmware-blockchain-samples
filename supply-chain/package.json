@@ -48,10 +48,12 @@
     "@webcomponents/custom-elements": "^1.0.0",
     "core-js": "^2.6.5",
     "express": "^4.15.2",
+    "fsevents": "^2.3.2",
     "geojson-vt": "^3.2.1",
     "ol": "^5.3.3",
     "pako": "^1.0.10",
     "rxjs": "~6.5.4",
+    "truffle": "^5.3.14",
     "tslib": "^1.9.0",
     "web3": "1.2.4",
     "zone.js": "~0.9.1"

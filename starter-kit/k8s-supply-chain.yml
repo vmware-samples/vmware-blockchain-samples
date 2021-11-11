@@ -1,0 +1,57 @@
+apiVersion: v1
+items:
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose-supply-chain.yml -o k8s-supply-chain.yml
+        kompose.version: 1.24.0 (4a2a0458)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: supply-chain
+      name: supply-chain
+    spec:
+      ports:
+        - name: "4200"
+          port: 4200
+          targetPort: 4200
+      selector:
+        io.kompose.service: supply-chain
+    status:
+      loadBalancer: {}
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose-supply-chain.yml -o k8s-supply-chain.yml
+        kompose.version: 1.24.0 (4a2a0458)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: supply-chain
+      name: supply-chain
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          io.kompose.service: supply-chain
+      strategy: {}
+      template:
+        metadata:
+          annotations:
+            kompose.cmd: kompose convert -f docker-compose-supply-chain.yml -o k8s-supply-chain.yml
+            kompose.version: 1.24.0 (4a2a0458)
+          creationTimestamp: null
+          labels:
+            io.kompose.service: supply-chain
+        spec:
+          containers:
+            - image: vmbc-eth-starter-kit/vmbc-supply-chain:1.0
+              name: vmbc-supply-chain-kit
+              ports:
+                - containerPort: 4200
+              resources: {}
+          restartPolicy: Always
+    status: {}
+kind: List
+metadata: {}
+
