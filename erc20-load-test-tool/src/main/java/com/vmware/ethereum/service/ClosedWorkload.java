@@ -26,6 +26,7 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
+import com.vmware.ethereum.config.Web3jConfig;
 import java.util.concurrent.Semaphore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ClosedWorkload implements WorkloadService {
 
   private final WorkloadCommand command;
+  private final Web3jConfig web3jConfig;
   private final long transactions;
   private final int concurrency;
 
@@ -44,7 +46,11 @@ public class ClosedWorkload implements WorkloadService {
     Semaphore semaphore = new Semaphore(concurrency);
     for (int i = 0; i < transactions; i++) {
       semaphore.acquireUninterruptibly();
-      command.transferAsync().whenComplete((receipt, throwable) -> semaphore.release());
+      if (web3jConfig.getReceipt().getMode().equals("NOOP")) {
+        command.transferNoOp().whenComplete((txHash, throwable) -> semaphore.release());
+      } else {
+        command.transferAsync().whenComplete((receipt, throwable) -> semaphore.release());
+      }
     }
     log.info("Transactions submitted");
   }

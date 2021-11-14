@@ -37,6 +37,7 @@ import lombok.ToString;
 @ToString
 public class ProgressReport {
 
+  private final String txReceiptMode;
   private final long txTotal;
   private final long txPending;
 

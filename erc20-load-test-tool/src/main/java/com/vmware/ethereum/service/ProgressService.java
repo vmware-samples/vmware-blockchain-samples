@@ -30,6 +30,7 @@ import static com.vmware.ethereum.service.MetricsConstant.STATE_ACTIVE;
 import static com.vmware.ethereum.service.MetricsConstant.STATE_IDLE;
 import static java.util.stream.Collectors.joining;
 
+import com.vmware.ethereum.config.Web3jConfig;
 import com.vmware.ethereum.config.WorkloadConfig;
 import com.vmware.ethereum.model.ProgressReport;
 import java.util.Map;
@@ -43,10 +44,12 @@ public class ProgressService {
 
   private final MetricsService metrics;
   private final WorkloadConfig config;
+  private final Web3jConfig web3jConfig;
 
   /** Get progress report. */
   public ProgressReport getProgress() {
     return ProgressReport.builder()
+        .txReceiptMode(web3jConfig.getReceipt().getMode())
         .txTotal(config.getTransactions())
         .txStatus(toString(metrics.getStatusToCount()))
         .txErrors(toString(metrics.getErrorToCount()))

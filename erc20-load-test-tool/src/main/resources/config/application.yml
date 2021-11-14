@@ -1,6 +1,6 @@
 workload:
-  model: OPEN  # either OPEN or CLOSED workload model
-  transactions: 100 # total transactions to be done
+  model: CLOSED  # either OPEN or CLOSED workload model
+  transactions: 1_000 # total transactions to be done
   load-factor: 10 # arrival rate for OPEN model & concurrency for CLOSED model
   progress-interval: 5s # interval for updating progress in web UI
 
@@ -15,6 +15,7 @@ web3j:
     wallet-password: Password123 # wallet file password
     private-key: # private key of the sender account (Note: This takes precedence over wallet.)
   receipt:
+    mode: NOOP # NOOP, POLL, QUEUE
     attempts: 5 # maximum number of polling attempts to get receipt
     interval: 1000 # sleep interval (ms) between polling attempts
   manage-nonce: true # Managing nonce would avoid the overhead of calling eth_getTransactionCount.

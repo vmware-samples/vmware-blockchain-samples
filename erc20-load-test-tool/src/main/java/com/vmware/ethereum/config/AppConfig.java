@@ -26,6 +26,10 @@ package com.vmware.ethereum.config;
  * #L%
  */
 
+import static io.grpc.ManagedChannelBuilder.forAddress;
+import static java.time.Duration.between;
+import static java.time.Instant.now;
+
 import com.vmware.ethereum.config.Web3jConfig.Receipt;
 import com.vmware.ethereum.service.MetricsService;
 import com.vmware.ethereum.service.TimedWrapper.PollingTransactionReceiptProcessor;
@@ -38,6 +42,19 @@ import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.binder.okhttp3.OkHttpConnectionPoolMetrics;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.function.Function;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
@@ -57,27 +74,8 @@ import org.web3j.tx.FastRawTransactionManager;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.response.Callback;
-import org.web3j.tx.response.NoOpProcessor;
 import org.web3j.tx.response.QueuingTransactionReceiptProcessor;
 import org.web3j.tx.response.TransactionReceiptProcessor;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.security.SecureRandom;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.function.Function;
-
-import static io.grpc.ManagedChannelBuilder.forAddress;
-import static java.time.Duration.between;
-import static java.time.Instant.now;
 
 @Slf4j
 @Component
@@ -119,12 +117,7 @@ public class AppConfig {
   }
 
   @Bean
-  public TransactionReceiptProcessor noOpProcessor(Web3j web3j) {
-    return new NoOpProcessor(web3j);
-  }
-
-  @Bean
-  @ConditionalOnProperty(value = "web3j.queued-polling", havingValue = "true")
+  @ConditionalOnProperty(value = "web3j.receipt.mode", havingValue = "QUEUED")
   public TransactionReceiptProcessor queuedTransactionReceiptProcessor(
       Web3j web3j,
       CountDownLatch countDownLatch,

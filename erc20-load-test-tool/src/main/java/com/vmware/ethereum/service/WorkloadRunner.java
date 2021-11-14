@@ -36,6 +36,7 @@ import static java.time.Instant.now;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.vmware.ethereum.config.TokenConfig;
+import com.vmware.ethereum.config.Web3jConfig;
 import com.vmware.ethereum.config.WorkloadConfig;
 import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +53,7 @@ public class WorkloadRunner {
   private final WorkloadCommand command;
   private final SecureTokenApi api;
   private final TokenConfig tokenConfig;
+  private final Web3jConfig web3jConfig;
 
   private final CountDownLatch countDownLatch;
   private final MetricsService metrics;
@@ -88,7 +90,8 @@ public class WorkloadRunner {
     if (config.getModel() == OPEN) {
       return new OpenWorkload(command, config.getTransactions(), config.getLoadFactor());
     }
-    return new ClosedWorkload(command, config.getTransactions(), config.getLoadFactor());
+    return new ClosedWorkload(
+        command, web3jConfig, config.getTransactions(), config.getLoadFactor());
   }
 
   /** Print token balance of the sender and the receiver. */

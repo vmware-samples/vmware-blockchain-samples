@@ -67,7 +67,10 @@
       </tr>
     </table>
 
-    <h4>Transactions</h4>
+    <h4>
+      <span th:if="${progress.txReceiptMode == 'NOOP'}">Transaction Hashes</span>
+      <span th:unless="${progress.txReceiptMode == 'NOOP'}">Transaction Receipts</span>
+    </h4>
     <table class="table table-dark" id="transactions">
       <tbody>
       <tr>
@@ -75,7 +78,10 @@
         <td th:text="${progress.txTotal}"></td>
       </tr>
       <tr>
-        <th>Status</th>
+        <th>
+          <span th:if="${progress.txReceiptMode == 'NOOP'}">Success</span>
+          <span th:unless="${progress.txReceiptMode == 'NOOP'}">Status</span>
+        </th>
         <td th:text="${progress.txStatus}"></td>
       </tr>
       <tr>

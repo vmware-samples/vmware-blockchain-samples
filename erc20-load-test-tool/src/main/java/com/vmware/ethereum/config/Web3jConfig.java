@@ -74,6 +74,7 @@ public class Web3jConfig {
   @Getter
   public static class Receipt {
 
+    @NotBlank private String mode;
     @Positive private int attempts;
     @NotNull private long interval;
   }
