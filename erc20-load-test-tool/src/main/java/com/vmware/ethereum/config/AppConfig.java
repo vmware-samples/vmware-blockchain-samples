@@ -73,8 +73,8 @@ import org.web3j.tx.FastRawTransactionManager;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.response.Callback;
+import org.web3j.tx.response.GenericTransactionReceiptProcessor;
 import org.web3j.tx.response.QueuingTransactionReceiptProcessor;
-import org.web3j.tx.response.TimedWrapper.OncePollingTransactionReceiptProcessor;
 import org.web3j.tx.response.TransactionReceiptProcessor;
 
 @Slf4j
@@ -147,7 +147,9 @@ public class AppConfig {
 
   @Bean
   public TransactionReceiptProcessor transactionReceiptProcessor(Web3j web3j) {
-    return new OncePollingTransactionReceiptProcessor(web3j);
+    Receipt receipt = config.getReceipt();
+    return new GenericTransactionReceiptProcessor(
+        web3j, receipt.getInterval(), receipt.getAttempts());
   }
 
   @Bean

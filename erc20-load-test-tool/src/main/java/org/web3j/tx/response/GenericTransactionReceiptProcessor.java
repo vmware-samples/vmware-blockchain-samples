@@ -28,33 +28,55 @@ package org.web3j.tx.response;
 
 import java.io.IOException;
 import java.util.Optional;
-import org.springframework.stereotype.Service;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.exceptions.TransactionException;
 
-@Service
-public class TimedWrapper {
+/**
+ * This class combines the functionality of PollingTransactionReceiptProcessor and NoOpProcessor.
+ */
+public class GenericTransactionReceiptProcessor extends PollingTransactionReceiptProcessor {
 
-  public static class OncePollingTransactionReceiptProcessor extends TransactionReceiptProcessor {
+  public GenericTransactionReceiptProcessor(Web3j web3j, long sleepDuration, int attempts) {
+    super(web3j, sleepDuration, attempts);
+  }
 
-    public OncePollingTransactionReceiptProcessor(Web3j web3j) {
-      super(web3j);
+  public TransactionReceipt waitForTransactionReceipt(String transactionHash)
+      throws IOException, TransactionException {
+    return getTransactionReceipt(transactionHash, sleepDuration, attempts);
+  }
+
+  private TransactionReceipt getTransactionReceipt(
+      String transactionHash, long sleepDuration, int attempts)
+      throws IOException, TransactionException {
+
+    // Don't attempt to get receipt.
+    if (attempts == 0) {
+      return new EmptyTransactionReceipt(transactionHash);
     }
 
-    @Override
-    public TransactionReceipt waitForTransactionReceipt(String transactionHash)
-        throws IOException, TransactionException {
-
+    for (int i = 0; i < attempts; i++) {
       Optional<? extends TransactionReceipt> receiptOptional =
           sendTransactionReceiptRequest(transactionHash);
-
       if (receiptOptional.isPresent()) {
         return receiptOptional.get();
       }
-      throw new TransactionException(
-          "Transaction receipt was not available after single attempt: " + transactionHash,
-          transactionHash);
+
+      // Sleep unless it is the last attempt.
+      if (i < attempts - 1) {
+        try {
+          Thread.sleep(sleepDuration);
+        } catch (InterruptedException e) {
+          throw new TransactionException(e);
+        }
+      }
     }
+
+    throw new TransactionException(
+        "Transaction receipt was not generated after "
+            + sleepDuration * (long) attempts / 1000L
+            + " seconds for transaction: "
+            + transactionHash,
+        transactionHash);
   }
 }
