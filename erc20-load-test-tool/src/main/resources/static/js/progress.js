@@ -58,32 +58,36 @@ function LoadProgress() {
 
 function updateChart(progress) {
   config.data.labels.push(new Date());
-  config.data.datasets[0].data.push(progress.currentThroughput);
-  config.data.datasets[1].data.push(progress.currentLatency);
+  config.data.datasets[0].data.push(progress.averageThroughput);
+  config.data.datasets[1].data.push(progress.averageLatency);
   chart.update();
 }
 
 function updateReport(progress) {
   const update = (id, rowIndex, value) => {
     document.getElementById(
-        id).rows[rowIndex].cells[1].innerHTML = value;
+      id).rows[rowIndex].cells[1].innerHTML = value;
   };
 
-  update("test", 0, progress.workloadModel);
-  update("test", 1, progress.loadFactor);
+  // 0 - Workload Model
+  // 1 - Load Factor
   update("test", 2, progress.elapsedTime);
   update("test", 3, progress.remainingTime);
 
-  update("transactions", 0, progress.txTotal);
+  // 0 - Total Transactions
   update("transactions", 1, progress.txStatus);
   update("transactions", 2, progress.txErrors);
   update("transactions", 3, progress.txPending);
 
-  update("metrics", 0, progress.currentThroughput);
-  update("metrics", 1, progress.currentLatency);
-  update("metrics", 2, progress.averageThroughput);
-  update("metrics", 3, progress.averageLatency);
+  if (progress.receiptMode === 'DEFERRED') {
+    update("receipts", 0, progress.receiptStatus);
+    update("receipts", 1, progress.receiptErrors);
+  }
 
+  update("metrics", 0, progress.averageThroughput);
+  update("metrics", 1, progress.averageLatency);
+  update("metrics", 2, progress.activeConnections);
+  update("metrics", 3, progress.idleConnections);
 }
 
 progress = new LoadProgress();

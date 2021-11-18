@@ -32,6 +32,7 @@ import static java.util.stream.Collectors.joining;
 
 import com.vmware.ethereum.config.WorkloadConfig;
 import com.vmware.ethereum.model.ProgressReport;
+import com.vmware.ethereum.model.ReceiptMode;
 import java.util.Map;
 import java.util.Map.Entry;
 import lombok.RequiredArgsConstructor;
@@ -43,20 +44,22 @@ public class ProgressService {
 
   private final MetricsService metrics;
   private final WorkloadConfig config;
+  private final ReceiptMode receiptMode;
 
   /** Get progress report. */
   public ProgressReport getProgress() {
     return ProgressReport.builder()
+        .receiptMode(receiptMode)
         .txTotal(config.getTransactions())
-        .txStatus(toString(metrics.getStatusToCount()))
-        .txErrors(toString(metrics.getErrorToCount()))
+        .txStatus(toString(metrics.getTimerStatusToCount()))
+        .txErrors(toString(metrics.getTimerErrorToCount()))
+        .receiptStatus(toString(metrics.getCounterStatusToCount()))
+        .receiptErrors(toString(metrics.getCounterErrorToCount()))
         .txPending(metrics.getPendingCount())
         .elapsedTime(metrics.getElapsedTime())
         .remainingTime(metrics.getRemainingTime())
         .workloadModel(config.getModel())
         .loadFactor(config.getLoadFactor())
-        .currentThroughput(metrics.getCurrentThroughput())
-        .currentLatency(metrics.getCurrentLatency())
         .averageThroughput(metrics.getAverageThroughput())
         .averageLatency(metrics.getAverageLatency())
         .activeConnections(metrics.getHttpConnections(STATE_ACTIVE))

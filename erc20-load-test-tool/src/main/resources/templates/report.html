@@ -38,7 +38,7 @@
 <body>
 
 <div class="row">
-  <div style="width:75%; margin-left: 10px">
+  <div style="width:70%; margin-left: 10px">
     <canvas id="canvas"></canvas>
   </div>
   <div>
@@ -67,7 +67,9 @@
       </tr>
     </table>
 
-    <h4>Transactions</h4>
+    <span th:if="${progress.receiptMode.name() == 'IMMEDIATE'}"><h4>Transactions & Receipts</h4></span>
+    <span th:unless="${progress.receiptMode.name() == 'IMMEDIATE'}"><h4>Transactions</h4></span>
+
     <table class="table table-dark" id="transactions">
       <tbody>
       <tr>
@@ -89,16 +91,24 @@
       </tbody>
     </table>
 
+    <span th:if="${progress.receiptMode.name() == 'DEFERRED'}">
+      <h4>Deferred Receipts</h4>
+      <table class="table table-dark" id="receipts">
+        <tbody>
+        <tr>
+          <th>Status</th>
+          <td th:text="${progress.receiptStatus}"></td>
+        </tr>
+        <tr>
+          <th>Errors</th>
+          <td th:text="${progress.receiptErrors}"></td>
+        </tr>
+        </tbody>
+      </table>
+    </span>
+
     <h4>Metrics</h4>
     <table class="table table-dark" id="metrics">
-      <tr>
-        <th>Current Throughput (/s)</th>
-        <td th:text="${progress.currentThroughput}"></td>
-      </tr>
-      <tr>
-        <th>Current Latency (ms)</th>
-        <td th:text="${progress.currentLatency}"></td>
-      </tr>
       <tr>
         <th>Average Throughput (/s)</th>
         <td th:text="${progress.averageThroughput}"></td>

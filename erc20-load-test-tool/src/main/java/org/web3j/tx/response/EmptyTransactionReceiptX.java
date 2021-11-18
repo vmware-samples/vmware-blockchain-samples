@@ -1,4 +1,4 @@
-package com.vmware.ethereum.model;
+package org.web3j.tx.response;
 
 /*-
  * #%L
@@ -26,15 +26,15 @@ package com.vmware.ethereum.model;
  * #L%
  */
 
-import java.util.Map;
-import lombok.Getter;
-import lombok.Setter;
+public class EmptyTransactionReceiptX extends org.web3j.tx.response.EmptyTransactionReceipt {
 
-@Setter
-@Getter
-public class Contract {
-  private Long id;
-  private String version;
-  private String address;
-  private Map<String, String> attributes;
+  public EmptyTransactionReceiptX(String transactionHash) {
+    super(transactionHash);
+  }
+
+  /* Workaround for web3j issue 1548 */
+  @Override
+  public boolean isStatusOK() {
+    return true;
+  }
 }

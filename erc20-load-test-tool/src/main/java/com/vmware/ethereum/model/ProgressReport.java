@@ -37,20 +37,22 @@ import lombok.ToString;
 @ToString
 public class ProgressReport {
 
+  private final ReceiptMode receiptMode;
+
   private final long txTotal;
   private final long txPending;
 
   private final String txStatus;
   private final String txErrors;
 
+  private final String receiptStatus;
+  private final String receiptErrors;
+
   private final Duration elapsedTime;
   private final Duration remainingTime;
 
   private final WorkloadModel workloadModel;
   private final int loadFactor;
-
-  private final long currentThroughput;
-  private final long currentLatency;
 
   private final long averageThroughput;
   private final long averageLatency;

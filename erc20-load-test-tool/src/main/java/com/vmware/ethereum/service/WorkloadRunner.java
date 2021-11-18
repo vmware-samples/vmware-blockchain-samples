@@ -1,8 +1,3 @@
-/*
- * Copyright 2021 VMware, all rights reserved.
- * This software is released under MIT license.
- * The full license information can be found in LICENSE in the root directory of this project.
- */
 package com.vmware.ethereum.service;
 
 /*-
@@ -32,11 +27,15 @@ package com.vmware.ethereum.service;
  */
 
 import static com.vmware.ethereum.config.WorkloadModel.OPEN;
+import static com.vmware.ethereum.model.ReceiptMode.DEFERRED;
+import static com.vmware.ethereum.model.ReceiptMode.IMMEDIATE;
 import static java.time.Instant.now;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.vmware.ethereum.config.TokenConfig;
+import com.vmware.ethereum.config.Web3jConfig;
 import com.vmware.ethereum.config.WorkloadConfig;
+import com.vmware.ethereum.model.ReceiptMode;
 import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -48,13 +47,15 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class WorkloadRunner {
 
-  private final WorkloadConfig config;
+  private final WorkloadConfig workloadConfig;
+  private final TokenConfig tokenConfig;
+  private final Web3jConfig web3jConfig;
   private final WorkloadCommand command;
   private final SecureTokenApi api;
-  private final TokenConfig tokenConfig;
 
   private final CountDownLatch countDownLatch;
   private final MetricsService metrics;
+  private final ReceiptMode receiptMode;
 
   /** Run the workload. */
   @SneakyThrows(InterruptedException.class)
@@ -85,10 +86,12 @@ public class WorkloadRunner {
 
   /** Create workload to run. */
   private WorkloadService createWorkload() {
-    if (config.getModel() == OPEN) {
-      return new OpenWorkload(command, config.getTransactions(), config.getLoadFactor());
+    if (workloadConfig.getModel() == OPEN) {
+      return new OpenWorkload(
+          command, workloadConfig.getTransactions(), workloadConfig.getLoadFactor());
     }
-    return new ClosedWorkload(command, config.getTransactions(), config.getLoadFactor());
+    return new ClosedWorkload(
+        command, workloadConfig.getTransactions(), workloadConfig.getLoadFactor());
   }
 
   /** Print token balance of the sender and the receiver. */
@@ -102,17 +105,31 @@ public class WorkloadRunner {
   }
 
   /** Print report */
+  @SneakyThrows(InterruptedException.class)
   private void printReport() {
-    log.info("Total: {}", metrics.getCompletionCount());
-    log.info("\tStatus: {}", metrics.getStatusToCount());
-    log.info("\tErrors: {}", metrics.getErrorToCount());
+    log.info("Receipt polling: {}", receiptMode);
+
+    log.info("{}:", receiptMode == IMMEDIATE ? "Transactions & Receipts" : "Transactions");
+    log.info("\tCompleted: {}", metrics.getCompletionCount());
+    if (receiptMode == IMMEDIATE) {
+      log.info("\tStatus: {}", metrics.getTimerStatusToCount());
+    }
+    log.info("\tErrors: {}", metrics.getTimerErrorToCount());
+
+    if (receiptMode == DEFERRED) {
+      long receiptDelayMs = web3jConfig.getReceipt().getInterval();
+      Thread.sleep(receiptDelayMs);
+      log.info("Receipts:");
+      log.info("\tStatus: {}", metrics.getCounterStatusToCount());
+      log.info("\tErrors: {}", metrics.getCounterErrorToCount());
+    }
 
     log.info("Test duration: {}", metrics.getElapsedTime());
 
-    if (config.getModel() == OPEN) {
-      log.info("Arrival rate: {}/sec", config.getLoadFactor());
+    if (workloadConfig.getModel() == OPEN) {
+      log.info("Arrival rate: {}/sec", workloadConfig.getLoadFactor());
     } else {
-      log.info("Concurrency: {}", config.getLoadFactor());
+      log.info("Concurrency: {}", workloadConfig.getLoadFactor());
     }
 
     log.info("Avg throughput: {}/sec", metrics.getAverageThroughput());

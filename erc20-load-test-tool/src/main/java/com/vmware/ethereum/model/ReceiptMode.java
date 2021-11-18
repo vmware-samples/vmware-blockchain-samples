@@ -1,5 +1,4 @@
-package com.vmware.ethereum.service;
-
+package com.vmware.ethereum.model;
 /*-
  * #%L
  * ERC-20 Load Testing Tool
@@ -26,30 +25,8 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static com.vmware.ethereum.service.MetricsConstant.TOKEN_RECEIPT_METRIC_NAME;
-
-import io.micrometer.core.annotation.Timed;
-import java.io.IOException;
-import org.springframework.stereotype.Service;
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
-import org.web3j.protocol.exceptions.TransactionException;
-
-@Service
-public class TimedWrapper {
-
-  public static class PollingTransactionReceiptProcessor
-      extends org.web3j.tx.response.PollingTransactionReceiptProcessor {
-
-    public PollingTransactionReceiptProcessor(Web3j web3j, long sleepDuration, int attempts) {
-      super(web3j, sleepDuration, attempts);
-    }
-
-    @Timed(value = TOKEN_RECEIPT_METRIC_NAME)
-    @Override
-    public TransactionReceipt waitForTransactionReceipt(String transactionHash)
-        throws IOException, TransactionException {
-      return super.waitForTransactionReceipt(transactionHash);
-    }
-  }
+public enum ReceiptMode {
+  IMMEDIATE,
+  DEFERRED,
+  NONE
 }
