@@ -28,14 +28,15 @@ package com.vmware.ethereum.service;
 
 import static com.google.common.collect.Iterators.cycle;
 import static java.math.BigInteger.valueOf;
+import static java.util.Objects.requireNonNull;
+import static org.springframework.util.ReflectionUtils.findField;
+import static org.springframework.util.ReflectionUtils.setField;
 
-import com.vmware.ethereum.config.DatabaseConfig;
 import com.vmware.ethereum.config.TokenConfig;
-import com.vmware.ethereum.model.Contract;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.PostConstruct;
@@ -43,19 +44,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.sql2o.Connection;
-import org.sql2o.Sql2o;
-import org.web3j.abi.FunctionEncoder;
-import org.web3j.abi.datatypes.Address;
-import org.web3j.abi.datatypes.Function;
-import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.model.SecurityToken;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.TransactionManager;
-import org.web3j.tx.gas.ContractGasProvider;
-import org.web3j.tx.gas.StaticGasProvider;
-import org.web3j.utils.Async;
 
 @Slf4j
 @Service
@@ -63,12 +55,11 @@ import org.web3j.utils.Async;
 public class SecureTokenApi {
 
   private final TokenConfig config;
-  private final DatabaseConfig databaseConfig;
   private final Web3j web3j;
   private final TransactionManager transactionManager;
+  private final SecureTokenFactory tokenFactory;
   private final String senderAddress;
   private SecurityToken token;
-  private String contractAddress;
   private Iterator<String> recipients;
 
   @PostConstruct
@@ -79,75 +70,19 @@ public class SecureTokenApi {
     log.info("Sender address: {}", senderAddress);
     recipients = cycle(config.getRecipients());
 
-    token = deploy();
+    token = tokenFactory.getSecureToken();
+    setTransactionManager();
   }
 
-  /** Deploy token. */
-  @SneakyThrows(Exception.class)
-  private SecurityToken deploy() {
-    ContractGasProvider gasProvider =
-        new StaticGasProvider(valueOf(config.getGasPrice()), valueOf(config.getGasLimit()));
-    contractAddress = config.getContractAddress();
-
-    if (!databaseConfig.getUrl().isBlank()) {
-      Sql2o sql2o =
-          new Sql2o(
-              databaseConfig.getUrl(), databaseConfig.getUsername(), databaseConfig.getPassword());
-      String sql = "SELECT * FROM contract WHERE attributes -> 'name' = 'GenericSecurityToken';";
-
-      try (Connection con = sql2o.open()) {
-        Contract contract = con.createQuery(sql).executeAndFetchFirst(Contract.class);
-        contractAddress = contract.getAddress().substring(2);
-        log.info("sql2o Contract Address - {}", contractAddress);
-        return SecurityToken.load(contractAddress, web3j, transactionManager, gasProvider);
-      }
-    }
-
-    if (!contractAddress.isBlank()) {
-      log.info("Contract Address - {}", contractAddress);
-      return SecurityToken.load(contractAddress, web3j, transactionManager, gasProvider);
-    }
-
-    log.info("Deploy: {}", config);
-    BigInteger initialSupply = valueOf(config.getInitialSupply());
-    SecurityToken securityToken =
-        SecurityToken.deploy(
-                web3j,
-                transactionManager,
-                gasProvider,
-                config.getName(),
-                config.getSymbol(),
-                initialSupply)
-            .send();
-
-    securityToken
-        .getTransactionReceipt()
-        .ifPresent(
-            receipt -> {
-              log.info("Receipt: {}", receipt);
-              contractAddress = receipt.getContractAddress();
-            });
-    return securityToken;
-  }
-
-  /** Transfer token for deferred polling. */
-  public CompletableFuture<String> transferQueued() {
-    Function function =
-        new Function(
-            "transfer",
-            Arrays.asList(new Address(recipients.next()), new Uint256(valueOf(config.getAmount()))),
-            Collections.emptyList());
-    String txData = FunctionEncoder.encode(function);
-    return Async.run(
-        () ->
-            transactionManager
-                .sendTransaction(
-                    valueOf(config.getGasPrice()),
-                    valueOf(config.getGasLimit()),
-                    contractAddress,
-                    txData,
-                    BigInteger.ZERO)
-                .getTransactionHash());
+  /**
+   * This is a hack. We want contract deployment to use PollingTransactionReceiptProcessor, but
+   * override it later for token transfers to use NoOpProcessor or
+   * QueuingTransactionReceiptProcessor if configured.
+   */
+  private void setTransactionManager() {
+    Field field = requireNonNull(findField(SecurityToken.class, "transactionManager"));
+    field.setAccessible(true);
+    setField(field, token, transactionManager);
   }
 
   /** Transfer token asynchronously. */
@@ -187,11 +122,8 @@ public class SecureTokenApi {
   }
 
   /** Get token balance of the given address. */
+  @SneakyThrows(Exception.class)
   private long getBalance(String account) {
-    try {
-      return token.balanceOf(account).send().longValue();
-    } catch (Exception e) {
-      return 0;
-    }
+    return token.balanceOf(account).send().longValue();
   }
 }

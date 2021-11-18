@@ -27,29 +27,19 @@ package com.vmware.ethereum.config;
  */
 
 import static io.grpc.ManagedChannelBuilder.forAddress;
-import static java.time.Duration.between;
-import static java.time.Instant.now;
 
 import com.vmware.ethereum.config.Web3jConfig.Receipt;
 import com.vmware.ethereum.service.MetricsService;
 import com.vmware.web3j.protocol.grpc.GrpcService;
 import io.grpc.ManagedChannel;
-import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Tag;
-import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.binder.okhttp3.OkHttpConnectionPoolMetrics;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-import java.util.function.Function;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
@@ -58,8 +48,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.web3j.crypto.CipherException;
@@ -91,14 +79,13 @@ public class AppConfig {
     return sslContext.getSocketFactory();
   }
 
-  private OkHttpClient okHttpClient(MeterRegistry registry) throws GeneralSecurityException {
+  private OkHttpClient okHttpClient() throws GeneralSecurityException {
     TrustManager[] trustManagers = InsecureTrustManagerFactory.INSTANCE.getTrustManagers();
-    OkHttpClient.Builder builder = new OkHttpClient.Builder();
-    new OkHttpConnectionPoolMetrics(builder.getConnectionPool$okhttp()).bindTo(registry);
-    builder.sslSocketFactory(sslSocketFactory(), (X509TrustManager) trustManagers[0]);
-    builder.hostnameVerifier((hostname, session) -> true);
-    builder.addInterceptor(new HttpLoggingInterceptor().setLevel(config.getLogLevel()));
-    return builder.build();
+    return new OkHttpClient.Builder()
+        .sslSocketFactory(sslSocketFactory(), (X509TrustManager) trustManagers[0])
+        .hostnameVerifier((hostname, session) -> true)
+        .addInterceptor(new HttpLoggingInterceptor().setLevel(config.getLogLevel()))
+        .build();
   }
 
   @Bean
@@ -116,38 +103,33 @@ public class AppConfig {
         credentials.getWalletPassword(), credentials.getWalletFile());
   }
 
-  @Bean
-  @ConditionalOnProperty(value = "web3j.queued-polling", havingValue = "true")
-  public TransactionReceiptProcessor queuedTransactionReceiptProcessor(
-      Web3j web3j,
-      CountDownLatch countDownLatch,
-      MetricsService metrics,
-      Map<String, Instant> txTime) {
-    Receipt receipt = config.getReceipt();
-    return new QueuingTransactionReceiptProcessor(
-        web3j,
-        new Callback() {
-          @Override
-          public void accept(TransactionReceipt transactionReceipt) {
-            log.debug("Receipt: {}", transactionReceipt);
-            Duration duration = between(txTime.get(transactionReceipt.getTransactionHash()), now());
-            metrics.record(duration, transactionReceipt.getStatus());
-            countDownLatch.countDown();
-          }
+  /** Callback handler for transaction receipt. */
+  private Callback receiptHandler(MetricsService metrics) {
+    return new Callback() {
+      @Override
+      public void accept(TransactionReceipt receipt) {
+        log.trace("Receipt: {}", receipt);
+        metrics.increment(receipt.getStatus());
+      }
 
-          @Override
-          public void exception(Exception exception) {
-            metrics.record(Duration.ZERO, exception);
-            countDownLatch.countDown();
-          }
-        },
-        receipt.getAttempts(),
-        receipt.getInterval());
+      @Override
+      public void exception(Exception exception) {
+        log.warn("{}", exception.toString());
+        metrics.increment(exception);
+      }
+    };
   }
 
   @Bean
-  public TransactionReceiptProcessor transactionReceiptProcessor(Web3j web3j) {
+  public TransactionReceiptProcessor transactionReceiptProcessor(
+      Web3j web3j, MetricsService metrics) {
     Receipt receipt = config.getReceipt();
+
+    if (receipt.isDefer()) {
+      return new QueuingTransactionReceiptProcessor(
+          web3j, receiptHandler(metrics), receipt.getAttempts(), receipt.getInterval());
+    }
+
     return new GenericTransactionReceiptProcessor(
         web3j, receipt.getInterval(), receipt.getAttempts());
   }
@@ -179,7 +161,9 @@ public class AppConfig {
       return new GrpcService(channel);
     } else {
       String url = protocol + "://" + host + ":" + port;
-      return new HttpService(url, okHttpClient(registry));
+      OkHttpClient httpClient = okHttpClient();
+      new OkHttpConnectionPoolMetrics(httpClient.connectionPool()).bindTo(registry);
+      return new HttpService(url, httpClient);
     }
   }
 
@@ -199,18 +183,7 @@ public class AppConfig {
   }
 
   @Bean
-  public TimedAspect timedAspect(MeterRegistry registry) {
-    Function<ProceedingJoinPoint, Iterable<Tag>> tagsBasedOnJoinPoint = pjp -> Tags.empty();
-    return new TimedAspect(registry, tagsBasedOnJoinPoint);
-  }
-
-  @Bean
   public SimpleMeterRegistry simpleMeterRegistry() {
     return new SimpleMeterRegistry();
-  }
-
-  @Bean
-  public Map<String, Instant> txTime() {
-    return new HashMap<>();
   }
 }

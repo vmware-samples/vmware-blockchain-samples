@@ -49,9 +49,6 @@ public class ProgressReport {
   private final WorkloadModel workloadModel;
   private final int loadFactor;
 
-  private final long currentThroughput;
-  private final long currentLatency;
-
   private final long averageThroughput;
   private final long averageLatency;
 

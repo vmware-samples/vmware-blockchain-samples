@@ -26,22 +26,19 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
+import static com.vmware.ethereum.service.MetricsConstant.STATUS_UNKNOWN;
 import static java.time.Duration.between;
 import static java.time.Instant.now;
 
-import com.vmware.ethereum.config.TokenConfig;
-import com.vmware.ethereum.config.Web3jConfig;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
-import org.web3j.tx.response.TransactionReceiptProcessor;
+import org.web3j.tx.response.EmptyTransactionReceipt;
 
 @Slf4j
 @Service
@@ -51,42 +48,10 @@ public class WorkloadCommand implements Runnable {
   private final SecureTokenApi api;
   private final CountDownLatch countDownLatch;
   private final MetricsService metrics;
-  private final Web3jConfig web3jConfig;
-  private final TokenConfig tokenConfig;
-  private final TransactionReceiptProcessor queuedTransactionReceiptProcessor;
-  private final Map<String, Instant> txTime;
 
   @Override
   public void run() {
-    if (web3jConfig.isQueuedPolling()) {
-      transferQueued();
-    } else {
-      transferAsync();
-    }
-  }
-
-  /** Transfer token for deferred polling. */
-  public void transferQueued() {
-    api.transferQueued()
-        .whenComplete(
-            ((txHash, throwable) -> {
-              Instant startTime = now();
-              if (txHash != null) {
-                queuedTransactionReceiptProcessor(txHash);
-                txTime.put(txHash, startTime);
-              }
-
-              if (throwable != null) {
-                log.warn("{}", throwable.toString());
-                metrics.record(Duration.ZERO, throwable);
-                countDownLatch.countDown();
-              }
-            }));
-  }
-  /** This a no op for queuedTransactionReceiptProcessor, so that it won't throw any exception */
-  @SneakyThrows
-  private void queuedTransactionReceiptProcessor(String txHash) {
-    queuedTransactionReceiptProcessor.waitForTransactionReceipt(txHash);
+    transferAsync();
   }
 
   /** Transfer token asynchronously. */
@@ -98,8 +63,12 @@ public class WorkloadCommand implements Runnable {
               Duration duration = between(startTime, now());
 
               if (receipt != null) {
-                log.debug("Receipt: {}", receipt);
-                metrics.record(duration, receipt.getStatus());
+                log.trace("Receipt: {}", receipt);
+                String status =
+                    receipt instanceof EmptyTransactionReceipt
+                        ? STATUS_UNKNOWN
+                        : receipt.getStatus();
+                metrics.record(duration, status);
               }
 
               if (throwable != null) {

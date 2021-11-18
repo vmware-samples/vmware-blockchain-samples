@@ -55,8 +55,6 @@ public class ProgressService {
         .remainingTime(metrics.getRemainingTime())
         .workloadModel(config.getModel())
         .loadFactor(config.getLoadFactor())
-        .currentThroughput(metrics.getCurrentThroughput())
-        .currentLatency(metrics.getCurrentLatency())
         .averageThroughput(metrics.getAverageThroughput())
         .averageLatency(metrics.getAverageLatency())
         .activeConnections(metrics.getHttpConnections(STATE_ACTIVE))

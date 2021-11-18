@@ -26,7 +26,6 @@ package com.vmware.ethereum.model;
  * #L%
  */
 
-import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,5 +36,5 @@ public class Contract {
   private Long id;
   private String version;
   private String address;
-  private Map<String, String> attributes = new HashMap<>();
+  private Map<String, String> attributes;
 }
