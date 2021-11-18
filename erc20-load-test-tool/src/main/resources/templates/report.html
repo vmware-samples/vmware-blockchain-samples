@@ -38,7 +38,7 @@
 <body>
 
 <div class="row">
-  <div style="width:75%; margin-left: 10px">
+  <div style="width:70%; margin-left: 10px">
     <canvas id="canvas"></canvas>
   </div>
   <div>
@@ -91,14 +91,6 @@
 
     <h4>Metrics</h4>
     <table class="table table-dark" id="metrics">
-      <tr>
-        <th>Current Throughput (/s)</th>
-        <td th:text="${progress.currentThroughput}"></td>
-      </tr>
-      <tr>
-        <th>Current Latency (ms)</th>
-        <td th:text="${progress.currentLatency}"></td>
-      </tr>
       <tr>
         <th>Average Throughput (/s)</th>
         <td th:text="${progress.averageThroughput}"></td>

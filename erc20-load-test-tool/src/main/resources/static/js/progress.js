@@ -58,8 +58,8 @@ function LoadProgress() {
 
 function updateChart(progress) {
   config.data.labels.push(new Date());
-  config.data.datasets[0].data.push(progress.currentThroughput);
-  config.data.datasets[1].data.push(progress.currentLatency);
+  config.data.datasets[0].data.push(progress.averageThroughput);
+  config.data.datasets[1].data.push(progress.averageLatency);
   chart.update();
 }
 
@@ -79,11 +79,10 @@ function updateReport(progress) {
   update("transactions", 2, progress.txErrors);
   update("transactions", 3, progress.txPending);
 
-  update("metrics", 0, progress.currentThroughput);
-  update("metrics", 1, progress.currentLatency);
-  update("metrics", 2, progress.averageThroughput);
-  update("metrics", 3, progress.averageLatency);
-
+  update("metrics", 0, progress.averageThroughput);
+  update("metrics", 1, progress.averageLatency);
+  update("metrics", 2, progress.activeConnections);
+  update("metrics", 3, progress.idleConnections);
 }
 
 progress = new LoadProgress();

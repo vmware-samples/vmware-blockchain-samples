@@ -160,8 +160,10 @@ public class MetricsService {
 
   /** Latency for the test duration. */
   public long getAverageLatency() {
-    Timer timer = simple.find(TOKEN_TRANSFER_TIMER).tag(STATUS_TAG, STATUS_OK).timer();
-    return timer == null ? 0 : (long) timer.mean(MILLISECONDS);
+    Collection<Timer> timers = simple.find(TOKEN_TRANSFER_TIMER).timers();
+    double totalTime = timers.stream().mapToDouble(timer -> timer.totalTime(MILLISECONDS)).sum();
+    long count = timers.stream().mapToLong(Timer::count).sum();
+    return count == 0 ? 0 : (long) (totalTime / count);
   }
 
   /** Get number of HTTP connections. */
