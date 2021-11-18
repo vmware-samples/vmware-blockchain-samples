@@ -56,11 +56,13 @@ import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.FastRawTransactionManager;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.response.Callback;
+import org.web3j.tx.response.EmptyTransactionReceiptX;
 import org.web3j.tx.response.GenericTransactionReceiptProcessor;
 import org.web3j.tx.response.QueuingTransactionReceiptProcessor;
 import org.web3j.tx.response.TransactionReceiptProcessor;
@@ -127,7 +129,16 @@ public class AppConfig {
 
     if (receipt.isDefer()) {
       return new QueuingTransactionReceiptProcessor(
-          web3j, receiptHandler(metrics), receipt.getAttempts(), receipt.getInterval());
+          web3j, receiptHandler(metrics), receipt.getAttempts(), receipt.getInterval()) {
+
+        /* Workaround for web3j issue 1548 */
+        @Override
+        public TransactionReceipt waitForTransactionReceipt(String transactionHash)
+            throws IOException, TransactionException {
+          super.waitForTransactionReceipt(transactionHash);
+          return new EmptyTransactionReceiptX(transactionHash);
+        }
+      };
     }
 
     return new GenericTransactionReceiptProcessor(

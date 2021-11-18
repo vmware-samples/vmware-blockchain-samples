@@ -52,13 +52,7 @@ public class GenericTransactionReceiptProcessor extends PollingTransactionReceip
 
     // Don't attempt to get receipt.
     if (attempts == 0) {
-      return new EmptyTransactionReceipt(transactionHash) {
-        // Hack to bypass check done by Contract.executeTransaction()
-        @Override
-        public boolean isStatusOK() {
-          return true;
-        }
-      };
+      return new EmptyTransactionReceiptX(transactionHash);
     }
 
     for (int i = 0; i < attempts; i++) {
