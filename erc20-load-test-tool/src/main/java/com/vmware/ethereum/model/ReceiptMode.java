@@ -1,5 +1,4 @@
 package com.vmware.ethereum.model;
-
 /*-
  * #%L
  * ERC-20 Load Testing Tool
@@ -26,37 +25,8 @@ package com.vmware.ethereum.model;
  * #L%
  */
 
-import com.vmware.ethereum.config.WorkloadModel;
-import java.time.Duration;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
-
-@Getter
-@Builder
-@ToString
-public class ProgressReport {
-
-  private final ReceiptMode receiptMode;
-
-  private final long txTotal;
-  private final long txPending;
-
-  private final String txStatus;
-  private final String txErrors;
-
-  private final String receiptStatus;
-  private final String receiptErrors;
-
-  private final Duration elapsedTime;
-  private final Duration remainingTime;
-
-  private final WorkloadModel workloadModel;
-  private final int loadFactor;
-
-  private final long averageThroughput;
-  private final long averageLatency;
-
-  private final long activeConnections;
-  private final long idleConnections;
+public enum ReceiptMode {
+  IMMEDIATE,
+  DEFERRED,
+  NONE
 }

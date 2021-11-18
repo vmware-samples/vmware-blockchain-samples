@@ -27,11 +27,14 @@ package com.vmware.ethereum.service;
  */
 
 import static com.vmware.ethereum.config.WorkloadModel.OPEN;
+import static com.vmware.ethereum.model.ReceiptMode.DEFERRED;
+import static com.vmware.ethereum.model.ReceiptMode.IMMEDIATE;
 import static java.time.Instant.now;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.vmware.ethereum.config.TokenConfig;
 import com.vmware.ethereum.config.WorkloadConfig;
+import com.vmware.ethereum.model.ReceiptMode;
 import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -50,6 +53,7 @@ public class WorkloadRunner {
 
   private final CountDownLatch countDownLatch;
   private final MetricsService metrics;
+  private final ReceiptMode receiptMode;
 
   /** Run the workload. */
   @SneakyThrows(InterruptedException.class)
@@ -98,9 +102,20 @@ public class WorkloadRunner {
 
   /** Print report */
   private void printReport() {
-    log.info("Total: {}", metrics.getCompletionCount());
-    log.info("\tStatus: {}", metrics.getStatusToCount());
-    log.info("\tErrors: {}", metrics.getErrorToCount());
+    log.info("Receipt polling mode: {}", receiptMode);
+    String title = receiptMode == IMMEDIATE ? "Transactions & Receipts" : "Transactions";
+    log.info("{}: {}", title, metrics.getCompletionCount());
+
+    if (receiptMode == IMMEDIATE) {
+      log.info("\tStatus: {}", metrics.getTimerStatusToCount());
+    }
+    log.info("\tErrors: {}", metrics.getTimerErrorToCount());
+
+    if (receiptMode == DEFERRED) {
+      log.info("Receipts:");
+      log.info("\tStatus: {}", metrics.getCounterStatusToCount());
+      log.info("\tErrors: {}", metrics.getCounterErrorToCount());
+    }
 
     log.info("Test duration: {}", metrics.getElapsedTime());
 

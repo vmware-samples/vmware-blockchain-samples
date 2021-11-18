@@ -89,6 +89,24 @@
       </tbody>
     </table>
 
+    <h4>Receipts</h4>
+    <table class="table table-dark" id="receipts">
+      <tbody>
+      <tr>
+        <th>Polling Mode</th>
+        <td th:text="${progress.receiptMode}"></td>
+      </tr>
+      <tr>
+        <th>Status</th>
+        <td th:text="${progress.receiptStatus}"></td>
+      </tr>
+      <tr>
+        <th>Errors</th>
+        <td th:text="${progress.receiptErrors}"></td>
+      </tr>
+      </tbody>
+    </table>
+
     <h4>Metrics</h4>
     <table class="table table-dark" id="metrics">
       <tr>

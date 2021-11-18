@@ -69,15 +69,15 @@ function updateReport(progress) {
         id).rows[rowIndex].cells[1].innerHTML = value;
   };
 
-  update("test", 0, progress.workloadModel);
-  update("test", 1, progress.loadFactor);
   update("test", 2, progress.elapsedTime);
   update("test", 3, progress.remainingTime);
 
-  update("transactions", 0, progress.txTotal);
   update("transactions", 1, progress.txStatus);
   update("transactions", 2, progress.txErrors);
   update("transactions", 3, progress.txPending);
+
+  update("receipts", 1, progress.receiptStatus);
+  update("receipts", 2, progress.receiptErrors);
 
   update("metrics", 0, progress.averageThroughput);
   update("metrics", 1, progress.averageLatency);

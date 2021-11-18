@@ -26,9 +26,13 @@ package com.vmware.ethereum.config;
  * #L%
  */
 
+import static com.vmware.ethereum.model.ReceiptMode.DEFERRED;
+import static com.vmware.ethereum.model.ReceiptMode.IMMEDIATE;
+import static com.vmware.ethereum.model.ReceiptMode.NONE;
 import static io.grpc.ManagedChannelBuilder.forAddress;
 
 import com.vmware.ethereum.config.Web3jConfig.Receipt;
+import com.vmware.ethereum.model.ReceiptMode;
 import com.vmware.ethereum.service.MetricsService;
 import com.vmware.web3j.protocol.grpc.GrpcService;
 import io.grpc.ManagedChannel;
@@ -196,5 +200,14 @@ public class AppConfig {
   @Bean
   public SimpleMeterRegistry simpleMeterRegistry() {
     return new SimpleMeterRegistry();
+  }
+
+  @Bean
+  public ReceiptMode receiptMode() {
+    Receipt receipt = config.getReceipt();
+    if (receipt.isDefer()) {
+      return DEFERRED;
+    }
+    return receipt.getAttempts() == 0 ? NONE : IMMEDIATE;
   }
 }

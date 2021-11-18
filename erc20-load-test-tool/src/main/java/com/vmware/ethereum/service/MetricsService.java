@@ -99,6 +99,39 @@ public class MetricsService {
     Counter.builder(TOKEN_RECEIPT_COUNTER).tags(tags).register(composite).increment();
   }
 
+  /** Get "count" group by "status code" for latency timer. */
+  public Map<String, Long> getTimerStatusToCount() {
+    return getTimerTagValueToCount(STATUS_TAG);
+  }
+
+  /** Get "count" group by "exception class" for latency timer. */
+  public Map<String, Long> getTimerErrorToCount() {
+    return getTimerTagValueToCount(EXCEPTION_TAG);
+  }
+
+  /** Get "count" group by the given tag name for latency timer. */
+  private Map<String, Long> getTimerTagValueToCount(String tagName) {
+    return simple.find(TOKEN_TRANSFER_TIMER).tagKeys(tagName).timers().stream()
+        .collect(toMap(timer -> timer.getId().getTag(tagName), Timer::count));
+  }
+
+  /** Get "count" group by "status code" for receipt counter. */
+  public Map<String, Long> getCounterStatusToCount() {
+    return getCounterTagValueToCount(STATUS_TAG);
+  }
+
+  /** Get "count" group by "exception class" for receipt counter. */
+  public Map<String, Long> getCounterErrorToCount() {
+    return getCounterTagValueToCount(EXCEPTION_TAG);
+  }
+
+  /** Get "count" group by the given tag name for receipt counter. */
+  private Map<String, Long> getCounterTagValueToCount(String tagName) {
+    return simple.find(TOKEN_RECEIPT_COUNTER).tagKeys(tagName).counters().stream()
+        .collect(
+            toMap(counter -> counter.getId().getTag(tagName), counter -> (long) counter.count()));
+  }
+
   /** Tag for the given status. */
   private Set<Tag> statusTag(String status) {
     return singleton(Tag.of(STATUS_TAG, ofNullable(status).orElse(STATUS_OK)));
@@ -107,6 +140,11 @@ public class MetricsService {
   /** Tag for the given exception. */
   private Set<Tag> exceptionTag(Throwable throwable) {
     return singleton(Tag.of(EXCEPTION_TAG, throwable.getClass().getSimpleName()));
+  }
+
+  /** Sum the values in the collection. */
+  private long sum(Collection<Long> values) {
+    return values.stream().mapToLong(Long::longValue).sum();
   }
 
   /** Get elapsed time of the test. */
@@ -124,30 +162,8 @@ public class MetricsService {
 
   /** Get total completed transactions. */
   public long getCompletionCount() {
-    return sum(getStatusToCount().values()) + sum(getErrorToCount().values());
+    return sum(getTimerStatusToCount().values()) + sum(getTimerErrorToCount().values());
   }
-
-  /** Get count group by status code. */
-  public Map<String, Long> getStatusToCount() {
-    return getTagValueToCount(STATUS_TAG);
-  }
-
-  /** Get count group by exception class. */
-  public Map<String, Long> getErrorToCount() {
-    return getTagValueToCount(EXCEPTION_TAG);
-  }
-
-  /** Get timer count field, group by the given tag name. */
-  private Map<String, Long> getTagValueToCount(String tagName) {
-    return simple.find(TOKEN_TRANSFER_TIMER).tagKeys(tagName).timers().stream()
-        .collect(toMap(timer -> timer.getId().getTag(tagName), Timer::count));
-  }
-
-  /** Sum the values in the collection. */
-  private long sum(Collection<Long> values) {
-    return values.stream().mapToLong(Long::longValue).sum();
-  }
-
   /** Get total pending transactions. */
   public long getPendingCount() {
     return config.getTransactions() - getCompletionCount();
