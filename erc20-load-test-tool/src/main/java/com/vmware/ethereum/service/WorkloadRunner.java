@@ -33,6 +33,7 @@ import static java.time.Instant.now;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.vmware.ethereum.config.TokenConfig;
+import com.vmware.ethereum.config.Web3jConfig;
 import com.vmware.ethereum.config.WorkloadConfig;
 import com.vmware.ethereum.model.ReceiptMode;
 import java.util.concurrent.CountDownLatch;
@@ -46,10 +47,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class WorkloadRunner {
 
-  private final WorkloadConfig config;
+  private final WorkloadConfig workloadConfig;
+  private final TokenConfig tokenConfig;
+  private final Web3jConfig web3jConfig;
   private final WorkloadCommand command;
   private final SecureTokenApi api;
-  private final TokenConfig tokenConfig;
 
   private final CountDownLatch countDownLatch;
   private final MetricsService metrics;
@@ -84,10 +86,12 @@ public class WorkloadRunner {
 
   /** Create workload to run. */
   private WorkloadService createWorkload() {
-    if (config.getModel() == OPEN) {
-      return new OpenWorkload(command, config.getTransactions(), config.getLoadFactor());
+    if (workloadConfig.getModel() == OPEN) {
+      return new OpenWorkload(
+          command, workloadConfig.getTransactions(), workloadConfig.getLoadFactor());
     }
-    return new ClosedWorkload(command, config.getTransactions(), config.getLoadFactor());
+    return new ClosedWorkload(
+        command, workloadConfig.getTransactions(), workloadConfig.getLoadFactor());
   }
 
   /** Print token balance of the sender and the receiver. */
@@ -101,17 +105,20 @@ public class WorkloadRunner {
   }
 
   /** Print report */
+  @SneakyThrows(InterruptedException.class)
   private void printReport() {
-    log.info("Receipt polling mode: {}", receiptMode);
-    String title = receiptMode == IMMEDIATE ? "Transactions & Receipts" : "Transactions";
-    log.info("{}: {}", title, metrics.getCompletionCount());
+    log.info("Receipt polling: {}", receiptMode);
 
+    log.info("{}:", receiptMode == IMMEDIATE ? "Transactions & Receipts" : "Transactions");
+    log.info("\tCompleted: {}", metrics.getCompletionCount());
     if (receiptMode == IMMEDIATE) {
       log.info("\tStatus: {}", metrics.getTimerStatusToCount());
     }
     log.info("\tErrors: {}", metrics.getTimerErrorToCount());
 
     if (receiptMode == DEFERRED) {
+      long receiptDelayMs = web3jConfig.getReceipt().getInterval();
+      Thread.sleep(receiptDelayMs);
       log.info("Receipts:");
       log.info("\tStatus: {}", metrics.getCounterStatusToCount());
       log.info("\tErrors: {}", metrics.getCounterErrorToCount());
@@ -119,10 +126,10 @@ public class WorkloadRunner {
 
     log.info("Test duration: {}", metrics.getElapsedTime());
 
-    if (config.getModel() == OPEN) {
-      log.info("Arrival rate: {}/sec", config.getLoadFactor());
+    if (workloadConfig.getModel() == OPEN) {
+      log.info("Arrival rate: {}/sec", workloadConfig.getLoadFactor());
     } else {
-      log.info("Concurrency: {}", config.getLoadFactor());
+      log.info("Concurrency: {}", workloadConfig.getLoadFactor());
     }
 
     log.info("Avg throughput: {}/sec", metrics.getAverageThroughput());

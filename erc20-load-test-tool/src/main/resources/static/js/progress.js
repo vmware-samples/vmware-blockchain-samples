@@ -66,18 +66,23 @@ function updateChart(progress) {
 function updateReport(progress) {
   const update = (id, rowIndex, value) => {
     document.getElementById(
-        id).rows[rowIndex].cells[1].innerHTML = value;
+      id).rows[rowIndex].cells[1].innerHTML = value;
   };
 
+  // 0 - Workload Model
+  // 1 - Load Factor
   update("test", 2, progress.elapsedTime);
   update("test", 3, progress.remainingTime);
 
+  // 0 - Total Transactions
   update("transactions", 1, progress.txStatus);
   update("transactions", 2, progress.txErrors);
   update("transactions", 3, progress.txPending);
 
-  update("receipts", 1, progress.receiptStatus);
-  update("receipts", 2, progress.receiptErrors);
+  if (progress.receiptMode === 'DEFERRED') {
+    update("receipts", 0, progress.receiptStatus);
+    update("receipts", 1, progress.receiptErrors);
+  }
 
   update("metrics", 0, progress.averageThroughput);
   update("metrics", 1, progress.averageLatency);
