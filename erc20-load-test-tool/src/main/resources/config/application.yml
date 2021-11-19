@@ -42,7 +42,7 @@ management:
         include: info, health, env, metrics, prometheus
   metrics:
     tags:
-      target: ${web3j.eth-client.host}
+      target: ${web3j.eth-client.host}:${web3j.eth-client.port}
       dapp: port-${server.port}
     export:
       prometheus:
