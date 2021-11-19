@@ -55,13 +55,6 @@ management:
         source:
         global-prefix: ethereum.erc20
         step: 10s
-      influx:
-        enabled: false
-        uri: http://localhost:8086
-        token: my-super-secret-auth-token
-        org: my-org
-        bucket: my-bucket
-        step: 10s
     web:
       server:
         request:
