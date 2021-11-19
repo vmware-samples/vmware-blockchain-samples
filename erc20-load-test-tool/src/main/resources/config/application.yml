@@ -45,7 +45,7 @@ management:
         include: info, health, env, metrics, prometheus
   metrics:
     tags:
-      testName: demo
+      target: ${web3j.eth-client.host}
     export:
       prometheus:
         enabled: true
@@ -53,8 +53,8 @@ management:
         enabled: false
         uri: proxy://localhost:2878
         source:
-        global-prefix: ethereum.web3j.token
-        step: 30s
+        global-prefix: ethereum.erc20
+        step: 10s
       influx:
         enabled: false
         uri: http://localhost:8086
@@ -62,11 +62,6 @@ management:
         org: my-org
         bucket: my-bucket
         step: 10s
-    enable:
-      jvm: false
-      logback: false
-      system: false
-      process: false
     web:
       server:
         request:
