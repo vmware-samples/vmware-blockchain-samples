@@ -54,9 +54,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
-import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
@@ -95,18 +93,9 @@ public class AppConfig {
   }
 
   @Bean
-  public Credentials credentials() throws IOException, CipherException {
-    Web3jConfig.Credentials credentials = config.getCredentials();
-
-    String privateKey = credentials.getPrivateKey();
-    if (!privateKey.isBlank()) {
-      log.info("Creating credentials from private key ..");
-      return Credentials.create(privateKey);
-    }
-
-    log.info("Loading credentials from wallet ..");
-    return WalletUtils.loadCredentials(
-        credentials.getWalletPassword(), credentials.getWalletFile());
+  public Credentials credentials(TokenConfig config) {
+    String privateKey = config.getPrivateKey();
+    return Credentials.create(privateKey);
   }
 
   /** Callback handler for transaction receipt. */
