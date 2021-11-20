@@ -26,7 +26,6 @@ package com.vmware.ethereum.config;
  * #L%
  */
 
-import java.io.File;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
@@ -47,7 +46,6 @@ import org.springframework.validation.annotation.Validated;
 public class Web3jConfig {
 
   @NotNull private EthClient ethClient;
-  @NotNull private Credentials credentials;
   @NotNull private Receipt receipt;
   @NotNull private Level logLevel;
   @NotNull private boolean manageNonce;
@@ -59,14 +57,6 @@ public class Web3jConfig {
     @NotBlank private String host;
     @NotNull private int port;
     @NotNull private int chainId;
-  }
-
-  @Setter
-  @Getter
-  public static class Credentials {
-    @NotNull private File walletFile;
-    @NotNull private String walletPassword;
-    @NotNull private String privateKey;
   }
 
   @Setter
