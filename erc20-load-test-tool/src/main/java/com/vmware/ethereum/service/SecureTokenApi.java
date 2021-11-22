@@ -71,6 +71,13 @@ public class SecureTokenApi {
     recipients = cycle(config.getRecipients());
 
     token = tokenFactory.getSecureToken();
+    token
+        .getTransactionReceipt()
+        .ifPresent(
+            receipt -> {
+              log.info("Receipt: {}", receipt);
+            });
+
     setTransactionManager();
   }
 
