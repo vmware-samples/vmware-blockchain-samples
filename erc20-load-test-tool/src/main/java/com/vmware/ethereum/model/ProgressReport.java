@@ -26,6 +26,8 @@ package com.vmware.ethereum.model;
  * #L%
  */
 
+import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationWords;
+
 import com.vmware.ethereum.config.WorkloadModel;
 import java.time.Duration;
 import lombok.Builder;
@@ -59,4 +61,17 @@ public class ProgressReport {
 
   private final long activeConnections;
   private final long idleConnections;
+
+  public String getElapsedTime() {
+    return format(elapsedTime);
+  }
+
+  public String getRemainingTime() {
+    return format(remainingTime);
+  }
+
+  /** Format duration as words. */
+  private String format(Duration duration) {
+    return formatDurationWords(duration.toMillis(), true, true);
+  }
 }

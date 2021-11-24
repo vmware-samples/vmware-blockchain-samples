@@ -32,10 +32,16 @@ import static com.vmware.ethereum.model.ReceiptMode.IMMEDIATE;
 import static java.time.Instant.now;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.vmware.ethereum.config.TokenConfig;
 import com.vmware.ethereum.config.Web3jConfig;
 import com.vmware.ethereum.config.WorkloadConfig;
+import com.vmware.ethereum.model.ProgressReport;
 import com.vmware.ethereum.model.ReceiptMode;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -55,6 +61,7 @@ public class WorkloadRunner {
 
   private final CountDownLatch countDownLatch;
   private final MetricsService metrics;
+  private final ProgressService progress;
   private final ReceiptMode receiptMode;
 
   /** Run the workload. */
@@ -82,6 +89,8 @@ public class WorkloadRunner {
     printReport();
     printBalance();
     log.info("Test is completed");
+    saveReport();
+    System.exit(0);
   }
 
   /** Create workload to run. */
@@ -134,5 +143,17 @@ public class WorkloadRunner {
 
     log.info("Avg throughput: {}/sec", metrics.getAverageThroughput());
     log.info("Avg latency:  {} ms", metrics.getAverageLatency());
+  }
+
+  /** Save report */
+  @SneakyThrows(IOException.class)
+  private void saveReport() {
+    ProgressReport report = progress.getProgress();
+    ObjectWriter writer = new ObjectMapper().writerWithDefaultPrettyPrinter();
+    File dir = Paths.get("output", "result").toFile();
+    File file = new File(dir, "report.json");
+    boolean success = dir.mkdirs();
+    writer.writeValue(file, report);
+    log.info("Report saved at: {}", file);
   }
 }
