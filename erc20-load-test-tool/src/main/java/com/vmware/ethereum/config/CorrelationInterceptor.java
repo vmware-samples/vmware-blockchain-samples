@@ -26,46 +26,27 @@ package com.vmware.ethereum.config;
  * #L%
  */
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import okhttp3.logging.HttpLoggingInterceptor.Level;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.validation.annotation.Validated;
+import okhttp3.Interceptor;
+import okhttp3.Request;
+import okhttp3.Response;
 
-@Setter
-@Getter
-@ToString
-@Validated
-@Configuration
-@ConfigurationProperties("web3j")
-public class Web3jConfig {
+import java.io.IOException;
+import java.util.UUID;
 
-  @NotNull private EthClient ethClient;
-  @NotNull private Receipt receipt;
-  @NotNull private Level logLevel;
-  @NotNull private boolean manageNonce;
+public class CorrelationInterceptor implements Interceptor {
 
-  @Setter
-  @Getter
-  public static class EthClient {
-    @NotNull private boolean correlate;
-    @NotBlank private String protocol;
-    @NotBlank private String host;
-    @NotNull private int port;
-    @NotNull private int chainId;
+  private String prefix;
+
+  public CorrelationInterceptor(String prefix) {
+    this.prefix = prefix;
   }
 
-  @Setter
-  @Getter
-  public static class Receipt {
+  @Override
+  public Response intercept(Chain chain) throws IOException {
+    UUID uuid = UUID.randomUUID();
+    Request request =
+        chain.request().newBuilder().addHeader("cid", this.prefix + "-"+uuid).build();
 
-    @PositiveOrZero private int attempts;
-    @NotNull private long interval;
-    @NotNull private boolean defer;
+    return chain.proceed(request);
   }
 }
