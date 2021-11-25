@@ -64,7 +64,7 @@ logging:
     file: "%d %-5level [%thread] %logger : %msg%n"
     console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{0} - %msg%n"
   file:
-    name: app.log
+    name: output/logs/app-${server.port}.log
   level:
     com:
       vmware: info

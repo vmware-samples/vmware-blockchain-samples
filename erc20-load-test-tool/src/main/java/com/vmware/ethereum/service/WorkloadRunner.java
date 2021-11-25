@@ -32,14 +32,21 @@ import static com.vmware.ethereum.model.ReceiptMode.IMMEDIATE;
 import static java.time.Instant.now;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.vmware.ethereum.config.TokenConfig;
 import com.vmware.ethereum.config.Web3jConfig;
 import com.vmware.ethereum.config.WorkloadConfig;
+import com.vmware.ethereum.model.ProgressReport;
 import com.vmware.ethereum.model.ReceiptMode;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -55,7 +62,11 @@ public class WorkloadRunner {
 
   private final CountDownLatch countDownLatch;
   private final MetricsService metrics;
+  private final ProgressService progress;
   private final ReceiptMode receiptMode;
+
+  @Value("${server.port}")
+  private int serverPort;
 
   /** Run the workload. */
   @SneakyThrows(InterruptedException.class)
@@ -82,6 +93,8 @@ public class WorkloadRunner {
     printReport();
     printBalance();
     log.info("Test is completed");
+    saveReport();
+    System.exit(0);
   }
 
   /** Create workload to run. */
@@ -134,5 +147,18 @@ public class WorkloadRunner {
 
     log.info("Avg throughput: {}/sec", metrics.getAverageThroughput());
     log.info("Avg latency:  {} ms", metrics.getAverageLatency());
+  }
+
+  /** Save report */
+  @SneakyThrows(IOException.class)
+  private void saveReport() {
+    ProgressReport report = progress.getProgress();
+    ObjectWriter writer = new ObjectMapper().writerWithDefaultPrettyPrinter();
+    File dir = Paths.get("output", "result").toFile();
+    String fileName = String.format("report-%d.json", serverPort);
+    File file = new File(dir, fileName);
+    boolean success = dir.mkdirs();
+    writer.writeValue(file, report);
+    log.info("Report saved at: {}", file);
   }
 }
