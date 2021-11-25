@@ -46,6 +46,7 @@ import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -63,6 +64,9 @@ public class WorkloadRunner {
   private final MetricsService metrics;
   private final ProgressService progress;
   private final ReceiptMode receiptMode;
+
+  @Value("${server.port}")
+  private int serverPort;
 
   /** Run the workload. */
   @SneakyThrows(InterruptedException.class)
@@ -151,7 +155,8 @@ public class WorkloadRunner {
     ProgressReport report = progress.getProgress();
     ObjectWriter writer = new ObjectMapper().writerWithDefaultPrettyPrinter();
     File dir = Paths.get("output", "result").toFile();
-    File file = new File(dir, "report.json");
+    String fileName = String.format("report-%d.json", serverPort);
+    File file = new File(dir, fileName);
     boolean success = dir.mkdirs();
     writer.writeValue(file, report);
     log.info("Report saved at: {}", file);
