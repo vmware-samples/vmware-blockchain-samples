@@ -1,8 +1,8 @@
+import json
 import os
-import urllib3
-import time
-import threading
 import subprocess
+import threading
+import urllib3
 from web3 import Web3
 from web3.auto import w3 as w3help
 from web3.middleware import geth_poa_middleware
@@ -13,10 +13,12 @@ urllib3.disable_warnings()
 ethrpcApiUrl = ""
 w3 = None
 chainid = 5000
+port = 8080
 
 # function to deploy contract address and distribute tokens among all senders
-def deploy_contract(accts, priv_keys):
 
+
+def deploy_contract(accts, priv_keys):
     # connecting to end point
     global w3
     w3 = Web3(Web3.HTTPProvider(ethrpcApiUrl,
@@ -80,7 +82,6 @@ def deploy_contract(accts, priv_keys):
     print("erc20_item_count account: {} {} \n".format(
         contract_deploy_account, erc20_item_count))
 
-    
     # distributing tokens to all senders
     for i in range(1, len(accts)):
         construct_txn = erc20_contract.functions.transfer(accts[i], 10000000).buildTransaction({
@@ -108,27 +109,53 @@ def deploy_contract(accts, priv_keys):
     return contractAddress
 
 
-def run_erc20(priv_key, contract_address):
-    #run erc20 app
-    print("start "+priv_key)
-    mvn="cd .. ; mvn clean install"
-    p = subprocess.Popen(mvn, shell=True, stdout = subprocess.PIPE)
+def run_erc20(priv_key, contract_address, i):
+    # run erc20 app
+    global port
+    print("start "+str(port+i))
+    if(share_contract):
+        mvn = "cd .. ; mvn spring-boot:run -Dspring-boot.run.arguments='--server.port=" + \
+            str(port+i) + " --token.private-key=" + priv_key + \
+            " --token.contract-address=" + contract_address + "'"
+    else:
+        mvn = "cd .. ; mvn spring-boot:run -Dspring-boot.run.arguments='--server.port=" + \
+            str(port+i) + " --token.private-key=" + priv_key + "'"
+
+    p = subprocess.Popen(mvn, shell=True, stdout=subprocess.PIPE)
     stdout, stderr = p.communicate()
-    print(p.returncode) # is 0 if success
+    print(p.returncode)  # is 0 if success
     print(stderr)
-    print(priv_key+" completed")
-        
+    # print(stdout)
+    print(str(port+i)+" completed")
+
+
+# reads reports of all runs and write to final-report.json
+def result_service(instance):
+    filename = "../output/result/report-"
+    final_throughput = 0
+    final_latency = 0
+    final_tx = 0
+    final_loadfactor = 0
+    for i in range(1, instance+1):
+        with open(filename+str(port+i)+'.json', 'r') as f:
+            data = json.load(f)
+            final_tx += data['txTotal']
+            final_throughput += data['averageThroughput']
+            final_latency += data['averageLatency']
+            final_loadfactor = data['loadFactor']
+
+    json_obj = {}
+    json_obj['txTotal'] = final_tx
+    json_obj['final_throughput'] = final_throughput
+    json_obj['final_latency'] = int(final_latency/instance)
+    json_obj['final_loadfactor'] = final_loadfactor
+
+    filename = "../output/result/final-report.json"
+    with open(filename, 'w') as f:
+        json.dump(json_obj, f, indent=4)
+
 
 def main():
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument("-i", "--instances")
-    # parser.add_argument("-u", "--url")
-    # args = parser.parse_args()
-
-    # if args.instances:
-    #     instance = int(args.instances)
-    #     print(instance)
-
     instance = int(os.getenv('DAPP_INSTANCES', 1))
     print(instance)
 
@@ -138,7 +165,8 @@ def main():
     print(ethrpcApiUrl)
 
     global share_contract
-    share_contract = True if os.getenv('SHARE_CONTRACT', "false") == "true" else False
+    share_contract = True if os.getenv(
+        'SHARE_CONTRACT', "false") == "true" else False
     print(share_contract)
 
     accts = []
@@ -156,22 +184,22 @@ def main():
     if(share_contract):
         contract_address = deploy_contract(accts, priv_keys)
         print(contract_address)
-        for i in range(1,len(accts)):
-            run_erc20(priv_keys[i], contract_address)
-    
-    else:
-        for i in range(1,len(accts)):
-            t = threading.Thread(target=run_erc20, args=(priv_keys[i], None))
+        for i in range(1, len(accts)):
+            t = threading.Thread(target=run_erc20, args=(
+                priv_keys[i], contract_address, i))
             threads.append(t)
             t.start()
-        
-            
+    else:
+        for i in range(1, len(accts)):
+            t = threading.Thread(
+                target=run_erc20, args=(priv_keys[i], None, i))
+            threads.append(t)
+            t.start()
+
     for t in threads:
         t.join()
-        
-    
 
-
+    result_service(instance)
 
 
 if __name__ == "__main__":
