@@ -128,7 +128,9 @@ def run_erc20(priv_key, contract_address, i):
     print(stderr)
     # print(stdout)
     if(not p.returncode):
-        print("Dapp with port {} completed with status code {}".format(p.returncode, (port+i))) # is 0 if success
+        print("Dapp with port {} completed with status code {}".format((port+i), p.returncode)) # is 0 if success
+    
+    return (not p.returncode)
 
 
 # reads reports of all runs and write to final-report.json
@@ -153,22 +155,25 @@ def aggregate_report(instance):
             txStatus_list = data["txStatus"].split(",")
             for obj in txStatus_list:
                 obj_kv = obj.split("=")
-                aggregate_txStatus[obj_kv[0]] = aggregate_txStatus.get(obj_kv[0],0) + obj_kv[1]
+                aggregate_txStatus[obj_kv[0]] = aggregate_txStatus.get(obj_kv[0],0) + int(obj_kv[1])
             
-            txErrors_list = data["txErrors"].split(",")
-            for obj in txErrors_list:
-                obj_kv = obj.split("=")
-                aggregate_txErrors[obj_kv[0]] = aggregate_txErrors.get(obj_kv[0],0) + obj_kv[1]
+            if(data["txErrors"]):
+                txErrors_list = data["txErrors"].split(",")
+                for obj in txErrors_list:
+                    obj_kv = obj.split("=")
+                    aggregate_txErrors[obj_kv[0]] = aggregate_txErrors.get(obj_kv[0],0) + int(obj_kv[1])
 
-            receiptStatus_list = data["receiptStatus"].split(",")
-            for obj in receiptStatus_list:
-                obj_kv = obj.split("=")
-                aggregate_receiptStatus[obj_kv[0]] = aggregate_receiptStatus.get(obj_kv[0],0) + obj_kv[1]
+            if(data["receiptStatus"]):
+                receiptStatus_list = data["receiptStatus"].split(",")
+                for obj in receiptStatus_list:
+                    obj_kv = obj.split("=")
+                    aggregate_receiptStatus[obj_kv[0]] = aggregate_receiptStatus.get(obj_kv[0],0) + int(obj_kv[1])
             
-            receiptErrors_list = data["receiptErrors"].split(",")
-            for obj in receiptErrors_list:
-                obj_kv = obj.split("=")
-                aggregate_receiptErrors[obj_kv[0]] = aggregate_receiptErrors.get(obj_kv[0],0) + obj_kv[1]
+            if(data["receiptErrors"]):
+                receiptErrors_list = data["receiptErrors"].split(",")
+                for obj in receiptErrors_list:
+                    obj_kv = obj.split("=")
+                    aggregate_receiptErrors[obj_kv[0]] = aggregate_receiptErrors.get(obj_kv[0],0) + int(obj_kv[1])
 
     json_obj = {}
     json_obj['aggregate_tx'] = aggregate_tx
@@ -187,12 +192,12 @@ def aggregate_report(instance):
 
 def main():
     instance = int(os.getenv('DAPP_INSTANCES', 1))
-    print(instance)
+    print("No of dapp Instances ",instance)
 
     global ethrpcApiUrl
     ethrpcApiUrl = os.getenv('WEB3J_ETHCLIENT_PROTOCOL', "http") + "://" + os.getenv(
         'WEB3J_ETHCLIENT_HOST', "localhost") + ":" + os.getenv('WEB3J_ETHCLIENT_PORT', "8545")
-    print(ethrpcApiUrl)
+    print("Ethereum Endpoint ",ethrpcApiUrl)
 
     global share_contract
     share_contract = True if os.getenv(
@@ -206,12 +211,11 @@ def main():
         accts.append(acct.address[2:].lower())
         priv_keys.append(acct.privateKey.hex()[2:].lower())
 
-    print(accts)
-    print(priv_keys)
+    print("Account address list = ",accts)
 
     threads = []
 
-    if(share_contract):
+    if(share_contract and instance>1):
         contract_address = deploy_contract(accts, priv_keys)
         print("Contract Address -",contract_address)
         distribute_tokes(accts, priv_keys, contract_address)
