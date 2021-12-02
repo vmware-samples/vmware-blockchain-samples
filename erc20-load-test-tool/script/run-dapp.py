@@ -27,11 +27,13 @@ bin = None
 # compiling securityToken source file
 def compile_security_token():
     install_solc("0.6.0")
-    global abi,bin
-    compiled_sol = compile_files(["../../hardhat/contracts/SecurityToken.sol"], solc_version="0.6.0", optimize=True)
+    global abi, bin
+    compiled_sol = compile_files(
+        ["../../hardhat/contracts/SecurityToken.sol"], solc_version="0.6.0", optimize=True)
     print("compiled sources ")
     bin = compiled_sol['../../hardhat/contracts/SecurityToken.sol:SecurityToken']['bin']
     abi = compiled_sol['../../hardhat/contracts/SecurityToken.sol:SecurityToken']['abi']
+
 
 # function to validate tx hash and poll for receipt
 def tx_receipt_poll(construct_txn, acc_priv_key):
@@ -44,6 +46,7 @@ def tx_receipt_poll(construct_txn, acc_priv_key):
 
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
     print("Transaction receipt: '{}'".format(tx_receipt))
+    assert tx_receipt.status == 1, "transaction failed"
     return tx_receipt
 
 
@@ -55,8 +58,6 @@ def deploy_contract(contract_deploy_account, contract_deploy_account_key, ethrpc
     w3 = Web3(Web3.HTTPProvider(ethrpcApiUrl,
               request_kwargs={"verify": False}))
     w3.middleware_onion.inject(geth_poa_middleware, layer=0)
-
-    contract_deploy_status = False
     contract = w3.eth.contract(abi=abi, bytecode=bin)
 
     # deploying contract
@@ -69,17 +70,9 @@ def deploy_contract(contract_deploy_account, contract_deploy_account_key, ethrpc
             "chainId": 5000,
         }
     )
-
     tx_receipt = tx_receipt_poll(construct_txn, contract_deploy_account_key)
-    if tx_receipt.status == 1:
-        print(
-            "smart contract deploy success, contract address: '{}'".format(
-                tx_receipt.contractAddress
-            )
-        )
-        contract_deploy_status = True
-    else:
-        assert contract_deploy_status, "smart contract deploy failed"
+    print("smart contract deploy success, contract address: '{}'".format(
+        tx_receipt.contractAddress))
 
     contractAddress = tx_receipt.contractAddress
     dapp_contract = w3.eth.contract(address=contractAddress, abi=abi)
@@ -102,10 +95,7 @@ def distribute_tokens(accts, priv_keys, contractAddress):
             'nonce': w3.eth.get_transaction_count(accts[0]),
             'chainId': 5000
         })
-
         tx_receipt = tx_receipt_poll(construct_txn, priv_keys[0])
-        assert tx_receipt.status == 1, "transaction failed"
-
         acc_balance = dapp_contract.functions.balanceOf(accts[i]).call()
         print("Account {} has balance of {} tokens \n".format(
             accts[i], acc_balance))
@@ -124,8 +114,9 @@ def run_dapp(priv_key, contract_address, port):
     stdout, stderr = p.communicate()
     print(stderr)
     if(not p.returncode):
-        print("Dapp with port {} completed with status code {}".format((port), p.returncode)) # is 0 if success
-    
+        print("Dapp with port {} completed with status code {}".format(
+            (port), p.returncode))  # is 0 if success
+
     return (not p.returncode)
 
 
@@ -133,12 +124,12 @@ def run_dapp(priv_key, contract_address, port):
 def list_to_kv(inp_list, inp_dict):
     for obj in inp_list:
         obj_kv = obj.split("=")
-        inp_dict[obj_kv[0]] = inp_dict.get(obj_kv[0],0) + int(obj_kv[1])
+        inp_dict[obj_kv[0]] = inp_dict.get(obj_kv[0], 0) + int(obj_kv[1])
 
 
 # reads reports of all runs and write to aggregate-report.json
 def aggregate_report(instance):
-    port= 8080
+    port = 8080
     filename = "../output/result/report-"
     aggregate_throughput = 0
     aggregate_latency = 0
@@ -158,7 +149,7 @@ def aggregate_report(instance):
 
             txStatus_list = data["txStatus"].split(",")
             list_to_kv(txStatus_list, aggregate_txStatus)
-            
+
             if(data["txErrors"]):
                 txErrors_list = data["txErrors"].split(",")
                 list_to_kv(txErrors_list, aggregate_txErrors)
@@ -166,11 +157,11 @@ def aggregate_report(instance):
             if(data["receiptStatus"]):
                 receiptStatus_list = data["receiptStatus"].split(",")
                 list_to_kv(receiptStatus_list, aggregate_receiptStatus)
-            
+
             if(data["receiptErrors"]):
                 receiptErrors_list = data["receiptErrors"].split(",")
                 list_to_kv(receiptErrors_list, aggregate_receiptErrors)
-                
+
     json_obj = {}
     json_obj['aggregate_tx'] = aggregate_tx
     json_obj['aggregate_throughput'] = aggregate_throughput
@@ -187,51 +178,45 @@ def aggregate_report(instance):
 
 
 def main():
-    instance = int(os.getenv('DAPP_INSTANCES', 1))
-    print("No of dapp Instances ",instance)
+    host = os.environ['WEB3J_ETHCLIENT_HOST']
+    port = os.getenv('WEB3J_ETHCLIENT_PORT', 8585)
+    protocol = os.getenv('WEB3J_ETHCLIENT_PROTOCOL', "http")
+    dapp_count = int(os.getenv('DAPP_INSTANCES', 1))
+    share_contract = os.getenv(
+        'SHARE_CONTRACT', 'False') in ('true', 'True', 'TRUE')
+    ethrpc_url = "{0}://{1}:{2}/".format(protocol, host, port)
 
-    if(not os.getenv('WEB3J_ETHCLIENT_HOST')):
-        exit("Plz set WEB3J_ETHCLIENT_HOST env variable")
-
-    ethrpcApiUrl = os.getenv('WEB3J_ETHCLIENT_PROTOCOL', "http") + "://" + os.getenv(
-        'WEB3J_ETHCLIENT_HOST') + ":" + os.getenv('WEB3J_ETHCLIENT_PORT', "8545")
-    print("Ethereum Endpoint ",ethrpcApiUrl)
-
-    share_contract = os.getenv("SHARE_CONTRACT", 'False').lower() in ('true', '1', 't')
+    print("No of dapp Instances ", dapp_count)
+    print("Ethereum Endpoint ", ethrpc_url)
 
     accts = []
     priv_keys = []
-    for i in range(instance+1):
+    for i in range(dapp_count+1):
         acct = w3help.eth.account.create('KEYSMASH FJAFJKLDSKF7JKFDJ 1530')
         accts.append(Web3.toChecksumAddress(acct.address[2:].lower()))
         priv_keys.append(acct.privateKey.hex()[2:].lower())
-
     print("Account address list = ", accts)
 
-    threads = []
-    port = 8080
-    if(share_contract and instance>1):
-        contract_address = deploy_contract(accts[0], priv_keys[0], ethrpcApiUrl)
-        print("Contract Address -",contract_address)
+    contract_address = None
+    if share_contract:
+        assert dapp_count > 1, "At least 2 instances should run to share contract."
+        contract_address = deploy_contract(accts[0], priv_keys[0], ethrpc_url)
+        print("Contract Address -", contract_address)
         distribute_tokens(accts, priv_keys, contract_address)
         print("tokens distributed among senders")
 
-        for i in range(1, len(accts)):
-            t = threading.Thread(target=run_dapp, args=(
-                priv_keys[i], contract_address, port+i))
-            threads.append(t)
-            t.start()
-    else:
-        for i in range(1, len(accts)):
-            t = threading.Thread(
-                target=run_dapp, args=(priv_keys[i], None, port+i))
-            threads.append(t)
-            t.start()
+    threads = []
+    port = 8080
+    for i in range(1, len(accts)):
+        t = threading.Thread(target=run_dapp, args=(
+            priv_keys[i], contract_address, port+i))
+        threads.append(t)
+        t.start()
 
     for t in threads:
         t.join()
 
-    aggregate_report(instance)
+    aggregate_report(dapp_count)
 
 
 if __name__ == "__main__":
