@@ -12,6 +12,7 @@ import json
 import os
 import subprocess
 import threading
+
 import urllib3
 from solcx import compile_files, install_solc
 from web3 import Web3
@@ -22,16 +23,17 @@ urllib3.disable_warnings()
 
 w3 = None
 abi = None
-bin = None
+bytecode = None
+
 
 # compiling securityToken source file
 def compile_security_token():
     install_solc("0.6.0")
-    global abi, bin
+    global abi, bytecode
     compiled_sol = compile_files(
-        ["../../hardhat/contracts/SecurityToken.sol"], solc_version="0.6.0", optimize=True)
+        ["../../hardhat/contracts/SecurityToken.sol"], solc_version='0.6.0', optimize=True)
     print("compiled sources ")
-    bin = compiled_sol['../../hardhat/contracts/SecurityToken.sol:SecurityToken']['bin']
+    bytecode = compiled_sol['../../hardhat/contracts/SecurityToken.sol:SecurityToken']['bin']
     abi = compiled_sol['../../hardhat/contracts/SecurityToken.sol:SecurityToken']['abi']
 
 
@@ -51,14 +53,14 @@ def tx_receipt_poll(construct_txn, acc_priv_key):
 
 
 # function to deploy contract address and distribute tokens among all senders
-def deploy_contract(contract_deploy_account, contract_deploy_account_key, ethrpcApiUrl):
+def deploy_contract(contract_deploy_account, contract_deploy_account_key, ethrpc_url):
     # connecting to end point
     compile_security_token()
     global w3
-    w3 = Web3(Web3.HTTPProvider(ethrpcApiUrl,
-              request_kwargs={"verify": False}))
+    w3 = Web3(Web3.HTTPProvider(ethrpc_url,
+                                request_kwargs={"verify": False}))
     w3.middleware_onion.inject(geth_poa_middleware, layer=0)
-    contract = w3.eth.contract(abi=abi, bytecode=bin)
+    contract = w3.eth.contract(abi=abi, bytecode=bytecode)
 
     # deploying contract
     construct_txn = contract.constructor("ERC20", "ERC20", 1000000000000).buildTransaction(
@@ -74,19 +76,19 @@ def deploy_contract(contract_deploy_account, contract_deploy_account_key, ethrpc
     print("smart contract deploy success, contract address: '{}'".format(
         tx_receipt.contractAddress))
 
-    contractAddress = tx_receipt.contractAddress
-    dapp_contract = w3.eth.contract(address=contractAddress, abi=abi)
+    contract_address = tx_receipt.contractAddress
+    dapp_contract = w3.eth.contract(address=contract_address, abi=abi)
     acc_balance = dapp_contract.functions.balanceOf(
         contract_deploy_account).call()
     print("Account {} has balance of {} tokens \n".format(
         contract_deploy_account, acc_balance))
 
-    return contractAddress
+    return contract_address
 
 
 # distributing token to senders
-def distribute_tokens(accts, priv_keys, contractAddress):
-    dapp_contract = w3.eth.contract(address=contractAddress, abi=abi)
+def distribute_tokens(accts, priv_keys, contract_address):
+    dapp_contract = w3.eth.contract(address=contract_address, abi=abi)
     for i in range(1, len(accts)):
         construct_txn = dapp_contract.functions.transfer(accts[i], 10000000000000000000).buildTransaction({
             'from': accts[0],
@@ -95,7 +97,7 @@ def distribute_tokens(accts, priv_keys, contractAddress):
             'nonce': w3.eth.get_transaction_count(accts[0]),
             'chainId': 5000
         })
-        tx_receipt = tx_receipt_poll(construct_txn, priv_keys[0])
+        tx_receipt_poll(construct_txn, priv_keys[0])
         acc_balance = dapp_contract.functions.balanceOf(accts[i]).call()
         print("Account {} has balance of {} tokens \n".format(
             accts[i], acc_balance))
@@ -103,21 +105,21 @@ def distribute_tokens(accts, priv_keys, contractAddress):
 
 # function to run new ERC20 dapp instance
 def run_dapp(priv_key, contract_address, port):
-    print("start "+str(port))
-    if(contract_address):
+    print("start " + str(port))
+    if contract_address:
         os.environ["TOKEN_CONTRACT_ADDRESS"] = contract_address
 
     mvn = "cd .. ; mvn spring-boot:run -Dspring-boot.run.arguments='--server.port=" + \
-        str(port) + " --token.private-key=" + priv_key + "'"
+          str(port) + " --token.private-key=" + priv_key + "'"
 
     p = subprocess.Popen(mvn, shell=True, stdout=subprocess.PIPE)
     stdout, stderr = p.communicate()
     print(stderr)
-    if(not p.returncode):
+    if not p.returncode:
         print("Dapp with port {} completed with status code {}".format(
-            (port), p.returncode))  # is 0 if success
+            port, p.returncode))  # is 0 if success
 
-    return (not p.returncode)
+    return not p.returncode
 
 
 # extract kv from list and adds them to dictionary
@@ -127,7 +129,7 @@ def list_to_kv(inp_list, inp_dict):
         inp_dict[obj_kv[0]] = inp_dict.get(obj_kv[0], 0) + int(obj_kv[1])
 
 
-# reads reports of all runs and write to aggregate-report.json
+# Read reports of all runs and write to aggregate-report.json
 def aggregate_report(instance):
     port = 8080
     filename = "../output/result/report-"
@@ -135,42 +137,38 @@ def aggregate_report(instance):
     aggregate_latency = 0
     aggregate_tx = 0
     aggregate_loadfactor = 0
-    aggregate_txStatus = {}
-    aggregate_txErrors = {}
-    aggregate_receiptStatus = {}
-    aggregate_receiptErrors = {}
-    for i in range(1, instance+1):
-        with open(filename+str(port+i)+'.json', 'r') as f:
+    aggregate_tx_status = {}
+    aggregate_tx_errors = {}
+    aggregate_receipt_status = {}
+    aggregate_receipt_errors = {}
+    for i in range(1, instance + 1):
+        with open(filename + str(port + i) + '.json', 'r') as f:
             data = json.load(f)
             aggregate_tx += data['txTotal']
             aggregate_throughput += data['averageThroughput']
             aggregate_latency += data['averageLatency']
             aggregate_loadfactor += data['loadFactor']
 
-            txStatus_list = data["txStatus"].split(",")
-            list_to_kv(txStatus_list, aggregate_txStatus)
+            tx_status_list = data["txStatus"].split(",")
+            list_to_kv(tx_status_list, aggregate_tx_status)
 
-            if(data["txErrors"]):
-                txErrors_list = data["txErrors"].split(",")
-                list_to_kv(txErrors_list, aggregate_txErrors)
+            if data["txErrors"]:
+                tx_errors_list = data["txErrors"].split(",")
+                list_to_kv(tx_errors_list, aggregate_tx_errors)
 
-            if(data["receiptStatus"]):
-                receiptStatus_list = data["receiptStatus"].split(",")
-                list_to_kv(receiptStatus_list, aggregate_receiptStatus)
+            if data["receiptStatus"]:
+                receipt_status_list = data["receiptStatus"].split(",")
+                list_to_kv(receipt_status_list, aggregate_receipt_status)
 
-            if(data["receiptErrors"]):
-                receiptErrors_list = data["receiptErrors"].split(",")
-                list_to_kv(receiptErrors_list, aggregate_receiptErrors)
+            if data["receiptErrors"]:
+                receipt_errors_list = data["receiptErrors"].split(",")
+                list_to_kv(receipt_errors_list, aggregate_receipt_errors)
 
-    json_obj = {}
-    json_obj['aggregate_tx'] = aggregate_tx
-    json_obj['aggregate_throughput'] = aggregate_throughput
-    json_obj['aggregate_latency'] = int(aggregate_latency/instance)
-    json_obj['aggregate_loadfactor'] = aggregate_loadfactor
-    json_obj['aggregate_txStatus'] = aggregate_txStatus
-    json_obj['aggregate_txErrors'] = aggregate_txErrors
-    json_obj['aggregate_receiptStatus'] = aggregate_receiptStatus
-    json_obj['aggregate_receiptErrors'] = aggregate_receiptErrors
+    json_obj = {'aggregate_tx': aggregate_tx, 'aggregate_throughput': aggregate_throughput,
+                'aggregate_latency': int(aggregate_latency / instance), 'aggregate_loadfactor': aggregate_loadfactor,
+                'aggregate_txStatus': aggregate_tx_status, 'aggregate_txErrors': aggregate_tx_errors,
+                'aggregate_receiptStatus': aggregate_receipt_status, 'aggregate_receiptErrors': aggregate_receipt_errors
+                }
 
     filename = "../output/result/aggregate-report.json"
     with open(filename, 'w') as f:
@@ -191,7 +189,7 @@ def main():
 
     accts = []
     priv_keys = []
-    for i in range(dapp_count+1):
+    for i in range(dapp_count + 1):
         acct = w3help.eth.account.create('KEYSMASH FJAFJKLDSKF7JKFDJ 1530')
         accts.append(Web3.toChecksumAddress(acct.address[2:].lower()))
         priv_keys.append(acct.privateKey.hex()[2:].lower())
@@ -209,7 +207,7 @@ def main():
     port = 8080
     for i in range(1, len(accts)):
         t = threading.Thread(target=run_dapp, args=(
-            priv_keys[i], contract_address, port+i))
+            priv_keys[i], contract_address, port + i))
         threads.append(t)
         t.start()
 
