@@ -190,10 +190,12 @@ def aggregate_report(instance):
 
 
 # function to start wavefront proxy
-def start_wavefront_proxy():
+def start_wavefront_proxy(wavefront_token):
+    os.environ["MANAGEMENT_METRICS_EXPORT_WAVEFRONT_ENABLED"] = 'true'
     cmd = 'docker run -d -p 2878:2878 -e WAVEFRONT_URL=https://vmware.wavefront.com/api -e ' \
-          'WAVEFRONT_TOKEN=$WAVEFRONT_TOKEN -e JAVA_HEAP_USAGE=4G -e JVM_USE_CONTAINER_OPTS=false --name ' \
-          'wavefront-proxy athena-docker-local.artifactory.eng.vmware.com/wavefront-proxy:9.7 '
+          'WAVEFRONT_TOKEN=' + wavefront_token + ' -e JAVA_HEAP_USAGE=4G -e JVM_USE_CONTAINER_OPTS=false --name ' \
+          'wavefront-proxy athena-docker-local.artifactory.eng.vmware.com' \
+          '/wavefront-proxy:9.7 '
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     if not p.returncode:
         print("wavefront proxy started")
@@ -216,9 +218,10 @@ def main():
     share_contract = os.getenv(
         'SHARE_CONTRACT', 'False') in ('true', 'True', 'TRUE')
     ethrpc_url = "{0}://{1}:{2}/".format(protocol, host, port)
+    wavefront_token = os.getenv('WAVEFRONT_TOKEN')
 
-    if os.getenv('WAVEFRONT_TOKEN'):
-        start_wavefront_proxy()
+    if wavefront_token:
+        start_wavefront_proxy(wavefront_token)
 
     print("No of dapp Instances ", dapp_count)
     print("Ethereum Endpoint ", ethrpc_url)
