@@ -196,16 +196,16 @@ def start_wavefront_proxy(wavefront_token):
           'WAVEFRONT_TOKEN=' + wavefront_token + ' -e JAVA_HEAP_USAGE=4G -e JVM_USE_CONTAINER_OPTS=false --name ' \
           'wavefront-proxy athena-docker-local.artifactory.eng.vmware.com' \
           '/wavefront-proxy:9.7 '
-    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-    if not p.returncode:
+    p = subprocess.call(cmd, shell=True, stdout=subprocess.PIPE)
+    if not p:
         print("wavefront proxy started")
 
 
 # set environment variables inside .env
 def set_env_var():
     cmd = 'source .env'
-    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-    if not p.returncode:
+    p = subprocess.call(cmd, shell=True, stdout=subprocess.PIPE)
+    if not p:
         print("env variables set")
 
 
