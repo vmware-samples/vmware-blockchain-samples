@@ -26,13 +26,18 @@ package com.vmware.ethereum.config;
  * #L%
  */
 
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
+import okio.Buffer;
 
 import java.io.IOException;
-import java.util.UUID;
 
+@Slf4j
 public class CorrelationInterceptor implements Interceptor {
 
   private String prefix;
@@ -41,12 +46,19 @@ public class CorrelationInterceptor implements Interceptor {
     this.prefix = prefix;
   }
 
+  @SneakyThrows
   @Override
   public Response intercept(Chain chain) throws IOException {
-    UUID uuid = UUID.randomUUID();
-    Request request =
-        chain.request().newBuilder().addHeader("cid", this.prefix + "-"+uuid).build();
+    Request request = chain.request();
+    Buffer requestBuffer = new Buffer();
+    request.body().writeTo(requestBuffer);
+    String payload = requestBuffer.readUtf8();
+    JSONParser parser = new JSONParser(777);
+    JSONObject json = (JSONObject) parser.parse(payload);
+    String cid = this.prefix + json.get("id").toString();
+    log.info("payload - {}", cid);
 
-    return chain.proceed(request);
+    Request newRequest = request.newBuilder().addHeader("cid", cid).build();
+    return chain.proceed(newRequest);
   }
 }

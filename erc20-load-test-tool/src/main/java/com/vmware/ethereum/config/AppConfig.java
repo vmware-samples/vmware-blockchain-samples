@@ -82,24 +82,22 @@ public class AppConfig {
   private OkHttpClient okHttpClient(String senderAddress) throws GeneralSecurityException {
     TrustManager[] trustManagers = InsecureTrustManagerFactory.INSTANCE.getTrustManagers();
 
-    if(config.getEthClient().isCorrelate()) {
+    if (config.getEthClient().isCorrelate()) {
       int generatedInteger = 1 + (int) (new Random().nextFloat() * (1000 - 1));
       return new OkHttpClient.Builder()
-        .sslSocketFactory(sslSocketFactory(), (X509TrustManager) trustManagers[0])
-        .hostnameVerifier((hostname, session) -> true)
-        .addInterceptor(
-          new CorrelationInterceptor(senderAddress.substring(2, 7) + "-" + generatedInteger))
-        .addInterceptor(new HttpLoggingInterceptor().setLevel(config.getLogLevel()))
-        .build();
-    }
-    else {
+          .sslSocketFactory(sslSocketFactory(), (X509TrustManager) trustManagers[0])
+          .hostnameVerifier((hostname, session) -> true)
+          .addInterceptor(
+              new CorrelationInterceptor(senderAddress.substring(2, 7) + "-" + generatedInteger))
+          .addInterceptor(new HttpLoggingInterceptor().setLevel(config.getLogLevel()))
+          .build();
+    } else {
       return new OkHttpClient.Builder()
-        .sslSocketFactory(sslSocketFactory(), (X509TrustManager) trustManagers[0])
-        .hostnameVerifier((hostname, session) -> true)
-        .addInterceptor(new HttpLoggingInterceptor().setLevel(config.getLogLevel()))
-        .build();
+          .sslSocketFactory(sslSocketFactory(), (X509TrustManager) trustManagers[0])
+          .hostnameVerifier((hostname, session) -> true)
+          .addInterceptor(new HttpLoggingInterceptor().setLevel(config.getLogLevel()))
+          .build();
     }
-
   }
 
   @Bean
@@ -173,7 +171,7 @@ public class AppConfig {
     int port = ethClient.getPort();
     if (protocol.equals("grpc")) {
       ManagedChannel channel = forAddress(host, port).usePlaintext().build();
-      return new GrpcService(channel);
+      return new GrpcService(channel, "");
     } else {
       String url = protocol + "://" + host + ":" + port;
       OkHttpClient httpClient = okHttpClient(senderAddress);
