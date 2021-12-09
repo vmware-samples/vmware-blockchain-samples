@@ -209,7 +209,7 @@ def set_env_var():
 def main():
     set_env_var()
     host = os.environ['WEB3J_ETHCLIENT_HOST']
-    port = os.getenv('WEB3J_ETHCLIENT_PORT', 8585)
+    port = os.getenv('WEB3J_ETHCLIENT_PORT', 8545)
     protocol = os.getenv('WEB3J_ETHCLIENT_PROTOCOL', "http")
     dapp_count = int(os.getenv('DAPP_INSTANCES', 1))
     share_contract = os.getenv(
