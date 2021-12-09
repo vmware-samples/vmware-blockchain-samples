@@ -120,10 +120,7 @@ def run_dapp(priv_key, contract_address, port):
     mvn = "cd .. ; mvn spring-boot:run -Dspring-boot.run.arguments='--server.port=" + \
           str(port) + " --token.private-key=" + priv_key + "'"
 
-    p = subprocess.Popen(mvn, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = p.communicate()
-    if stderr[1:3]!="''":
-        print("{} error - {}".format(port, stderr))
+    p = subprocess.run(mvn, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
     if not p.returncode:
         print("Dapp with port {} completed with status code {}".format(
             port, p.returncode))  # is 0 if success
@@ -163,7 +160,7 @@ def aggregate_report(instance):
                 list_to_kv(tx_status_list, aggregate_tx_status)
 
                 if data["txErrors"]:
-                    tx_errors_list = data["txErrors"].split(",")
+                    tx_errors_list = data["txErrors"].split("<br>")
                     list_to_kv(tx_errors_list, aggregate_tx_errors)
 
                 if data["receiptStatus"]:
@@ -171,7 +168,7 @@ def aggregate_report(instance):
                     list_to_kv(receipt_status_list, aggregate_receipt_status)
 
                 if data["receiptErrors"]:
-                    receipt_errors_list = data["receiptErrors"].split(",")
+                    receipt_errors_list = data["receiptErrors"].split("<br>")
                     list_to_kv(receipt_errors_list, aggregate_receipt_errors)
         except IOError:
             print("result file not available for run {}".format(port + i))
@@ -192,8 +189,8 @@ def start_wavefront_proxy():
     wavefront_token = os.environ['WAVEFRONT_TOKEN']
     cmd = 'docker run -d -p 2878:2878 -e WAVEFRONT_URL=https://vmware.wavefront.com/api -e ' \
           'WAVEFRONT_TOKEN=' + wavefront_token + ' -e JAVA_HEAP_USAGE=4G -e JVM_USE_CONTAINER_OPTS=false --name ' \
-          'wavefront-proxy athena-docker-local.artifactory.eng.vmware.com' \
-          '/wavefront-proxy:9.7 '
+                                                 'wavefront-proxy athena-docker-local.artifactory.eng.vmware.com' \
+                                                 '/wavefront-proxy:9.7 '
     subprocess.call(cmd, shell=True, stdout=subprocess.PIPE)
 
 
