@@ -115,7 +115,7 @@ def expose_port(port):
 # function to run new ERC20 dapp instance
 def run_dapp(priv_key, contract_address, port):
     print("start run on port " + str(port))
-    if os.getenv('EXPOSE_UI_PORT_EXTERNALLY'):
+    if os.getenv('EXPOSE_UI_PORT_EXTERNALLY', 'False') in ('true', 'True', 'TRUE'):
         expose_port(port)
     if contract_address:
         os.environ["TOKEN_CONTRACT_ADDRESS"] = contract_address
@@ -125,7 +125,7 @@ def run_dapp(priv_key, contract_address, port):
 
     p = subprocess.Popen(mvn, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = p.communicate()
-    print("{} error - {}".format(port, stderr))
+    # print("{} error - {}".format(port, stderr))
     if not p.returncode:
         print("Dapp with port {} completed with status code {}".format(
             port, p.returncode))  # is 0 if success
