@@ -24,6 +24,7 @@ $ mvn clean install
 
 # Run
 
+## Single Instance
 Configure [application.yml](src/main/resources/config/application.yml) as per your test requirement
 and Ethereum client deployment. Run the following command to start the load test.
 
@@ -31,6 +32,8 @@ and Ethereum client deployment. Run the following command to start the load test
 $ mvn spring-boot:run
 # Ctrl+C to stop once the test is done. 
 ```
+## Multiple Instances
+Check out [multi-dapp-script](script/)
 
 # Monitor
 
@@ -40,3 +43,15 @@ exporting metrics to one or more monitoring tools.
 * [Chart.js](https://www.chartjs.org/) (default)
 * [Wavefront Proxy](https://hub.docker.com/r/wavefronthq/proxy)
 * [Prometheus](https://prometheus.io/docs/prometheus/latest/installation/)
+
+# Logs and Results
+
+For logs 
+```shell
+$ cd output/logs/ 
+```
+
+For results
+```shell
+$ cd output/result/ 
+```

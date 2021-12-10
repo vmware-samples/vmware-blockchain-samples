@@ -1,27 +1,29 @@
-# ERC20 Multiple Dapp Script
+# Multi-Dapp Run Script
 
-## Steps to run
-1. Inside `/erc20-load-test-tool` directory run
+# Overview
+
+Python script to run multiple instances of ERC20 load test tool, with option to share contract address among them.
+
+# Setup
+
+Install the dependencies.
 ```bash
-  mvn clean install
+  pip3 install -r requirements.txt
 ```
-2. Navigate to `script` folder
-```bash
-  cd script
-```
-3. Edit `.env` file, to change ENVIRONMENT variable values
+
+# RUN
+
+1. Edit `.env` file, to change ENVIRONMENT variables
 ```bash
   vi .env
 ```
-4. Load ENVIRONMENT variables
+
+2. Load ENVIRONMENT variables
 ```bash
   source .env
 ```
-5. Run the script
+
+3. Run the script
 ```bash
   python run-dapp.py
-```
-## To check Result
-```bash
-  cat ../output/result/aggregate-report.json
 ```
