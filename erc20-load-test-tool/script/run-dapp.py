@@ -117,10 +117,9 @@ def run_dapp(priv_key, contract_address, port):
     if contract_address:
         os.environ["TOKEN_CONTRACT_ADDRESS"] = contract_address
 
-    mvn = "cd .. ; mvn spring-boot:run -Dspring-boot.run.arguments='--server.port=" + \
-          str(port) + " --token.private-key=" + priv_key + "'"
+    cmd = "cd ..; java -jar -Dserver.port=" + str(port) + " -Dtoken.private-key=" + priv_key + " target/web3j-1.0-SNAPSHOT.jar"
 
-    p = subprocess.run(mvn, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+    p = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
     if not p.returncode:
         print("Dapp with port {} completed with status code {}".format(
             port, p.returncode))  # is 0 if success
