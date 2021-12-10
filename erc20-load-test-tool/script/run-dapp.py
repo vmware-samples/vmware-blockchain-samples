@@ -105,11 +105,8 @@ def distribute_tokens(accts, priv_keys, contract_address):
 
 # expose port on photon/linux machines
 def expose_port(port):
-    cmd = 'sudo iptables -A INPUT -p tcp --dport' + str(port) + '-j ACCEPT'
-    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
-    p.communicate(input=os.getenv('VM_PASS'))
-    if not p.returncode:
-        print("port {} exposed".format(port))
+    cmd = 'sudo iptables -A INPUT -p tcp --dport ' + str(port) + ' -j ACCEPT'
+    subprocess.call(cmd, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
 
 
 # function to run new ERC20 dapp instance
@@ -120,12 +117,9 @@ def run_dapp(priv_key, contract_address, port):
     if contract_address:
         os.environ["TOKEN_CONTRACT_ADDRESS"] = contract_address
 
-    mvn = "cd .. ; mvn spring-boot:run -Dspring-boot.run.arguments='--server.port=" + \
-          str(port) + " --token.private-key=" + priv_key + "'"
+    cmd = "cd ..; java -jar -Dserver.port=" + str(port) + " -Dtoken.private-key=" + priv_key + " target/web3j-1.0-SNAPSHOT.jar"
 
-    p = subprocess.Popen(mvn, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = p.communicate()
-    # print("{} error - {}".format(port, stderr))
+    p = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
     if not p.returncode:
         print("Dapp with port {} completed with status code {}".format(
             port, p.returncode))  # is 0 if success
@@ -165,7 +159,7 @@ def aggregate_report(instance):
                 list_to_kv(tx_status_list, aggregate_tx_status)
 
                 if data["txErrors"]:
-                    tx_errors_list = data["txErrors"].split(",")
+                    tx_errors_list = data["txErrors"].split("<br>")
                     list_to_kv(tx_errors_list, aggregate_tx_errors)
 
                 if data["receiptStatus"]:
@@ -173,9 +167,9 @@ def aggregate_report(instance):
                     list_to_kv(receipt_status_list, aggregate_receipt_status)
 
                 if data["receiptErrors"]:
-                    receipt_errors_list = data["receiptErrors"].split(",")
+                    receipt_errors_list = data["receiptErrors"].split("<br>")
                     list_to_kv(receipt_errors_list, aggregate_receipt_errors)
-        except:
+        except IOError:
             print("result file not available for run {}".format(port + i))
 
     json_obj = {'aggregate_tx': aggregate_tx, 'aggregate_throughput': aggregate_throughput,
@@ -191,20 +185,18 @@ def aggregate_report(instance):
 
 # function to start wavefront proxy
 def start_wavefront_proxy():
+    wavefront_token = os.environ['WAVEFRONT_TOKEN']
     cmd = 'docker run -d -p 2878:2878 -e WAVEFRONT_URL=https://vmware.wavefront.com/api -e ' \
-          'WAVEFRONT_TOKEN=$WAVEFRONT_TOKEN -e JAVA_HEAP_USAGE=4G -e JVM_USE_CONTAINER_OPTS=false --name ' \
-          'wavefront-proxy athena-docker-local.artifactory.eng.vmware.com/wavefront-proxy:9.7 '
-    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-    if not p.returncode:
-        print("wavefront proxy started")
+          'WAVEFRONT_TOKEN=' + wavefront_token + ' -e JAVA_HEAP_USAGE=4G -e JVM_USE_CONTAINER_OPTS=false --name ' \
+                                                 'wavefront-proxy athena-docker-local.artifactory.eng.vmware.com' \
+                                                 '/wavefront-proxy:9.7 '
+    subprocess.call(cmd, shell=True, stdout=subprocess.PIPE)
 
 
 # set environment variables inside .env
 def set_env_var():
-    cmd = 'source .env'
-    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-    if not p.returncode:
-        print("env variables set")
+    cmd = 'source ./.env'
+    subprocess.call(cmd, shell=True, stdout=subprocess.PIPE)
 
 
 def main():
@@ -216,12 +208,13 @@ def main():
     share_contract = os.getenv(
         'SHARE_CONTRACT', 'False') in ('true', 'True', 'TRUE')
     ethrpc_url = "{0}://{1}:{2}/".format(protocol, host, port)
-
-    if os.getenv('WAVEFRONT_TOKEN'):
-        start_wavefront_proxy()
+    wavefront_enabled = os.getenv('MANAGEMENT_METRICS_EXPORT_WAVEFRONT_ENABLED', 'False') in ('true', 'True', 'TRUE')
 
     print("No of dapp Instances ", dapp_count)
     print("Ethereum Endpoint ", ethrpc_url)
+
+    if wavefront_enabled:
+        start_wavefront_proxy()
 
     accts = []
     priv_keys = []
