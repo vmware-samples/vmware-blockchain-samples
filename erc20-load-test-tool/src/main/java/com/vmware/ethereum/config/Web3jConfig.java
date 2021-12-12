@@ -53,6 +53,7 @@ public class Web3jConfig {
   @Setter
   @Getter
   public static class EthClient {
+    @NotNull private boolean correlate;
     @NotBlank private String protocol;
     @NotBlank private String host;
     @NotNull private int port;

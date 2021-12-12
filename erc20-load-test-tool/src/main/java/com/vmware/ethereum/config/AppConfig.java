@@ -26,15 +26,15 @@ package com.vmware.ethereum.config;
  * #L%
  */
 
-import static com.vmware.ethereum.model.ReceiptMode.DEFERRED;
-import static com.vmware.ethereum.model.ReceiptMode.IMMEDIATE;
-import static com.vmware.ethereum.model.ReceiptMode.NONE;
+import static com.vmware.ethereum.model.ReceiptMode.*;
 import static io.grpc.ManagedChannelBuilder.forAddress;
+import static java.lang.String.format;
 
 import com.vmware.ethereum.config.Web3jConfig.Receipt;
 import com.vmware.ethereum.model.ReceiptMode;
 import com.vmware.ethereum.service.MetricsService;
 import com.vmware.web3j.protocol.grpc.GrpcService;
+import com.vmware.web3j.protocol.http.CorrelationInterceptor;
 import io.grpc.ManagedChannel;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.okhttp3.OkHttpConnectionPoolMetrics;
@@ -43,6 +43,7 @@ import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -63,11 +64,7 @@ import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.FastRawTransactionManager;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.TransactionManager;
-import org.web3j.tx.response.Callback;
-import org.web3j.tx.response.EmptyTransactionReceiptX;
-import org.web3j.tx.response.GenericTransactionReceiptProcessor;
-import org.web3j.tx.response.QueuingTransactionReceiptProcessor;
-import org.web3j.tx.response.TransactionReceiptProcessor;
+import org.web3j.tx.response.*;
 
 @Slf4j
 @Component
@@ -83,11 +80,12 @@ public class AppConfig {
     return sslContext.getSocketFactory();
   }
 
-  private OkHttpClient okHttpClient() throws GeneralSecurityException {
+  private OkHttpClient okHttpClient(String correlationPrefix) throws GeneralSecurityException {
     TrustManager[] trustManagers = InsecureTrustManagerFactory.INSTANCE.getTrustManagers();
     return new OkHttpClient.Builder()
         .sslSocketFactory(sslSocketFactory(), (X509TrustManager) trustManagers[0])
         .hostnameVerifier((hostname, session) -> true)
+        .addInterceptor(new CorrelationInterceptor(correlationPrefix))
         .addInterceptor(new HttpLoggingInterceptor().setLevel(config.getLogLevel()))
         .build();
   }
@@ -155,17 +153,18 @@ public class AppConfig {
   }
 
   @Bean
-  public Web3jService web3jService(MeterRegistry registry) throws GeneralSecurityException {
+  public Web3jService web3jService(MeterRegistry registry, String correlationPrefix)
+      throws GeneralSecurityException {
     Web3jConfig.EthClient ethClient = config.getEthClient();
     String protocol = ethClient.getProtocol();
     String host = ethClient.getHost();
     int port = ethClient.getPort();
     if (protocol.equals("grpc")) {
       ManagedChannel channel = forAddress(host, port).usePlaintext().build();
-      return new GrpcService(channel);
+      return new GrpcService(channel, correlationPrefix);
     } else {
       String url = protocol + "://" + host + ":" + port;
-      OkHttpClient httpClient = okHttpClient();
+      OkHttpClient httpClient = okHttpClient(correlationPrefix);
       new OkHttpConnectionPoolMetrics(httpClient.connectionPool()).bindTo(registry);
       return new HttpService(url, httpClient);
     }
@@ -198,5 +197,13 @@ public class AppConfig {
       return DEFERRED;
     }
     return receipt.getAttempts() == 0 ? NONE : IMMEDIATE;
+  }
+
+  @Bean
+  private String correlationPrefix(String senderAddress) {
+    if (config.getEthClient().isCorrelate()) {
+      return format("%s-%d", senderAddress.substring(32), new Random().nextInt(100));
+    }
+    return "";
   }
 }
