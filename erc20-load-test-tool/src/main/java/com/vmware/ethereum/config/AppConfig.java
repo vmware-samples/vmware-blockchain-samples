@@ -28,6 +28,7 @@ package com.vmware.ethereum.config;
 
 import static com.vmware.ethereum.model.ReceiptMode.*;
 import static io.grpc.ManagedChannelBuilder.forAddress;
+import static java.lang.String.format;
 
 import com.vmware.ethereum.config.Web3jConfig.Receipt;
 import com.vmware.ethereum.model.ReceiptMode;
@@ -81,15 +82,10 @@ public class AppConfig {
 
   private OkHttpClient okHttpClient(String correlationPrefix) throws GeneralSecurityException {
     TrustManager[] trustManagers = InsecureTrustManagerFactory.INSTANCE.getTrustManagers();
-    OkHttpClient.Builder okHttpClientBuilder =
-        new OkHttpClient.Builder()
-            .sslSocketFactory(sslSocketFactory(), (X509TrustManager) trustManagers[0])
-            .hostnameVerifier((hostname, session) -> true);
-    if (config.getEthClient().isCorrelate()) {
-      okHttpClientBuilder.addInterceptor(new CorrelationInterceptor(correlationPrefix));
-    }
-
-    return okHttpClientBuilder
+    return new OkHttpClient.Builder()
+        .sslSocketFactory(sslSocketFactory(), (X509TrustManager) trustManagers[0])
+        .hostnameVerifier((hostname, session) -> true)
+        .addInterceptor(new CorrelationInterceptor(correlationPrefix))
         .addInterceptor(new HttpLoggingInterceptor().setLevel(config.getLogLevel()))
         .build();
   }
@@ -165,16 +161,12 @@ public class AppConfig {
     int port = ethClient.getPort();
     if (protocol.equals("grpc")) {
       ManagedChannel channel = forAddress(host, port).usePlaintext().build();
-      if (config.getEthClient().isCorrelate()) {
-        return new GrpcService(channel, correlationPrefix);
-      }
-      return new GrpcService(channel);
+      return new GrpcService(channel, correlationPrefix);
     } else {
       String url = protocol + "://" + host + ":" + port;
       OkHttpClient httpClient = okHttpClient(correlationPrefix);
       new OkHttpConnectionPoolMetrics(httpClient.connectionPool()).bindTo(registry);
-      HttpService httpService = new HttpService(url, httpClient);
-      return httpService;
+      return new HttpService(url, httpClient);
     }
   }
 
@@ -209,7 +201,9 @@ public class AppConfig {
 
   @Bean
   private String correlationPrefix(String senderAddress) {
-    int generatedInteger = 1 + (int) (new Random().nextFloat() * (1000 - 1));
-    return senderAddress.substring(2, 7) + "-" + generatedInteger;
+    if (config.getEthClient().isCorrelate()) {
+      return format("%s-%d", senderAddress.substring(32), new Random().nextInt(100));
+    }
+    return "";
   }
 }
