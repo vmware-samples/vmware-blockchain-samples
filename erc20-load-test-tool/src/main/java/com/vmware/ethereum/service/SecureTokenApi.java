@@ -35,13 +35,11 @@ import static org.springframework.util.ReflectionUtils.setField;
 import com.vmware.ethereum.config.TokenConfig;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.web3j.model.SecurityToken;
@@ -91,25 +89,41 @@ public class SecureTokenApi {
     return token.transfer(recipients.next(), valueOf(config.getAmount())).sendAsync();
   }
 
-  @SneakyThrows(IOException.class)
   public String getNetVersion() {
-    return web3j.netVersion().send().getNetVersion();
+    try {
+      return web3j.netVersion().send().getNetVersion();
+    } catch (IOException e) {
+      log.warn("{}", e.getMessage());
+      return "Unknown";
+    }
   }
 
-  @SneakyThrows(IOException.class)
-  private BigInteger getGasPrice() {
-    return web3j.ethGasPrice().send().getGasPrice();
+  private long getGasPrice() {
+    try {
+      return web3j.ethGasPrice().send().getGasPrice().longValue();
+    } catch (IOException e) {
+      log.warn("{}", e.getMessage());
+      return 0;
+    }
   }
 
-  @SneakyThrows(IOException.class)
   public String getClientVersion() {
-    return web3j.web3ClientVersion().send().getWeb3ClientVersion();
+    try {
+      return web3j.web3ClientVersion().send().getWeb3ClientVersion();
+    } catch (IOException e) {
+      log.warn("{}", e.getMessage());
+      return "Unknown";
+    }
   }
 
   /** Get current block number. */
-  @SneakyThrows(IOException.class)
   public long getBlockNumber() {
-    return web3j.ethBlockNumber().send().getBlockNumber().longValue();
+    try {
+      return web3j.ethBlockNumber().send().getBlockNumber().longValue();
+    } catch (IOException e) {
+      log.warn("{}", e.getMessage());
+      return 0;
+    }
   }
 
   /** Get token balance of the sender. */
@@ -123,8 +137,12 @@ public class SecureTokenApi {
   }
 
   /** Get token balance of the given address. */
-  @SneakyThrows(Exception.class)
   private long getBalance(String account) {
-    return token.balanceOf(account).send().longValue();
+    try {
+      return token.balanceOf(account).send().longValue();
+    } catch (Exception e) {
+      log.warn("{}", e.getMessage());
+      return 0;
+    }
   }
 }
