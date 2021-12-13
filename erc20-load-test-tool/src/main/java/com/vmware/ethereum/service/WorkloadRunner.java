@@ -26,6 +26,12 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
+import static com.vmware.ethereum.config.WorkloadModel.OPEN;
+import static com.vmware.ethereum.model.ReceiptMode.DEFERRED;
+import static com.vmware.ethereum.model.ReceiptMode.IMMEDIATE;
+import static java.time.Instant.now;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.vmware.ethereum.config.TokenConfig;
@@ -33,22 +39,15 @@ import com.vmware.ethereum.config.Web3jConfig;
 import com.vmware.ethereum.config.WorkloadConfig;
 import com.vmware.ethereum.model.ProgressReport;
 import com.vmware.ethereum.model.ReceiptMode;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.concurrent.CountDownLatch;
-
-import static com.vmware.ethereum.config.WorkloadModel.OPEN;
-import static com.vmware.ethereum.model.ReceiptMode.DEFERRED;
-import static com.vmware.ethereum.model.ReceiptMode.IMMEDIATE;
-import static java.time.Instant.now;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Slf4j
 @Service
@@ -110,12 +109,12 @@ public class WorkloadRunner {
 
   /** Print token balance of the sender and the receiver. */
   private void printBalance() {
-//    log.info("Block number: {}", api.getBlockNumber());
-//    log.info("Sender has {} tokens", api.getSenderBalance());
-//    long[] recipientBalances = api.getRecipientBalance();
-//    for (int i = 0; i < tokenConfig.getRecipients().length; i++) {
-//      log.info("Recipient {} has {} tokens", i + 1, recipientBalances[i]);
-//    }
+    //    log.info("Block number: {}", api.getBlockNumber());
+    //    log.info("Sender has {} tokens", api.getSenderBalance());
+    //    long[] recipientBalances = api.getRecipientBalance();
+    //    for (int i = 0; i < tokenConfig.getRecipients().length; i++) {
+    //      log.info("Recipient {} has {} tokens", i + 1, recipientBalances[i]);
+    //    }
   }
 
   /** Print report */
