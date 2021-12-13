@@ -26,20 +26,7 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static com.google.common.collect.Iterators.cycle;
-import static java.math.BigInteger.valueOf;
-import static java.util.Objects.requireNonNull;
-import static org.springframework.util.ReflectionUtils.findField;
-import static org.springframework.util.ReflectionUtils.setField;
-
 import com.vmware.ethereum.config.TokenConfig;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.concurrent.CompletableFuture;
-import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +35,20 @@ import org.web3j.model.SecurityToken;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.TransactionManager;
+
+import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.concurrent.CompletableFuture;
+
+import static com.google.common.collect.Iterators.cycle;
+import static java.math.BigInteger.valueOf;
+import static java.util.Objects.requireNonNull;
+import static org.springframework.util.ReflectionUtils.findField;
+import static org.springframework.util.ReflectionUtils.setField;
 
 @Slf4j
 @Service
@@ -91,9 +92,13 @@ public class SecureTokenApi {
     return token.transfer(recipients.next(), valueOf(config.getAmount())).sendAsync();
   }
 
-  @SneakyThrows(IOException.class)
   public String getNetVersion() {
-    return web3j.netVersion().send().getNetVersion();
+    try {
+      return web3j.netVersion().send().getNetVersion();
+    } catch (IOException e) {
+      log.error(e.getMessage());
+      return "Unknown";
+    }
   }
 
   @SneakyThrows(IOException.class)
@@ -101,15 +106,23 @@ public class SecureTokenApi {
     return web3j.ethGasPrice().send().getGasPrice();
   }
 
-  @SneakyThrows(IOException.class)
   public String getClientVersion() {
-    return web3j.web3ClientVersion().send().getWeb3ClientVersion();
+    try {
+      return web3j.web3ClientVersion().send().getWeb3ClientVersion();
+    } catch (IOException e) {
+      log.error(e.getMessage());
+      return "Unknown";
+    }
   }
 
   /** Get current block number. */
-  @SneakyThrows(IOException.class)
   public long getBlockNumber() {
-    return web3j.ethBlockNumber().send().getBlockNumber().longValue();
+    try {
+      return web3j.ethBlockNumber().send().getBlockNumber().longValue();
+    } catch (IOException e) {
+      log.error(e.getMessage());
+      return 0;
+    }
   }
 
   /** Get token balance of the sender. */
@@ -123,8 +136,12 @@ public class SecureTokenApi {
   }
 
   /** Get token balance of the given address. */
-  @SneakyThrows(Exception.class)
   private long getBalance(String account) {
-    return token.balanceOf(account).send().longValue();
+    try {
+      return token.balanceOf(account).send().longValue();
+    } catch (Exception e) {
+      log.error(e.getMessage());
+      return 0;
+    }
   }
 }

@@ -109,12 +109,12 @@ public class WorkloadRunner {
 
   /** Print token balance of the sender and the receiver. */
   private void printBalance() {
-    //    log.info("Block number: {}", api.getBlockNumber());
-    //    log.info("Sender has {} tokens", api.getSenderBalance());
-    //    long[] recipientBalances = api.getRecipientBalance();
-    //    for (int i = 0; i < tokenConfig.getRecipients().length; i++) {
-    //      log.info("Recipient {} has {} tokens", i + 1, recipientBalances[i]);
-    //    }
+    log.info("Block number: {}", api.getBlockNumber());
+    log.info("Sender has {} tokens", api.getSenderBalance());
+    long[] recipientBalances = api.getRecipientBalance();
+    for (int i = 0; i < tokenConfig.getRecipients().length; i++) {
+      log.info("Recipient {} has {} tokens", i + 1, recipientBalances[i]);
+    }
   }
 
   /** Print report */
