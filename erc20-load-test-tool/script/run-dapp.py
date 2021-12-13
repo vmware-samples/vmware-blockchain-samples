@@ -10,8 +10,10 @@ export SHARE_CONTRACT=<boolean>  default value=false
 """
 import json
 import os
+import random
 import subprocess
 import threading
+import time
 
 import urllib3
 from solcx import compile_files, install_solc
@@ -136,7 +138,7 @@ def list_to_kv(inp_list, inp_dict):
 
 # Read reports of all runs and write to aggregate-report.json
 def aggregate_report(instance):
-    port = 8080
+    port = 8000
     filename = "../output/result/report-"
     aggregate_throughput = 0
     aggregate_latency = 0
@@ -233,8 +235,9 @@ def main():
         print("tokens distributed among senders")
 
     threads = []
-    port = 8080
+    port = 8000
     for i in range(1, len(accts)):
+        time.sleep(random.randint(1, 5))
         t = threading.Thread(target=run_dapp, args=(
             priv_keys[i], contract_address, port + i))
         threads.append(t)
