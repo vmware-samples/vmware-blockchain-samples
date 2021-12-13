@@ -26,7 +26,20 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
+import static com.google.common.collect.Iterators.cycle;
+import static java.math.BigInteger.valueOf;
+import static java.util.Objects.requireNonNull;
+import static org.springframework.util.ReflectionUtils.findField;
+import static org.springframework.util.ReflectionUtils.setField;
+
 import com.vmware.ethereum.config.TokenConfig;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.concurrent.CompletableFuture;
+import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -35,20 +48,6 @@ import org.web3j.model.SecurityToken;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.TransactionManager;
-
-import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.concurrent.CompletableFuture;
-
-import static com.google.common.collect.Iterators.cycle;
-import static java.math.BigInteger.valueOf;
-import static java.util.Objects.requireNonNull;
-import static org.springframework.util.ReflectionUtils.findField;
-import static org.springframework.util.ReflectionUtils.setField;
 
 @Slf4j
 @Service
