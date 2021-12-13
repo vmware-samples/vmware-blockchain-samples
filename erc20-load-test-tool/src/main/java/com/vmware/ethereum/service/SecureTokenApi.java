@@ -41,7 +41,6 @@ import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.web3j.model.SecurityToken;
@@ -95,21 +94,25 @@ public class SecureTokenApi {
     try {
       return web3j.netVersion().send().getNetVersion();
     } catch (IOException e) {
-      log.error(e.getMessage());
+      log.warn("{}", e.getMessage());
       return "Unknown";
     }
   }
 
-  @SneakyThrows(IOException.class)
   private BigInteger getGasPrice() {
-    return web3j.ethGasPrice().send().getGasPrice();
+    try {
+      return web3j.ethGasPrice().send().getGasPrice();
+    } catch (IOException e) {
+      log.warn("{}", e.getMessage());
+      return BigInteger.valueOf(0);
+    }
   }
 
   public String getClientVersion() {
     try {
       return web3j.web3ClientVersion().send().getWeb3ClientVersion();
     } catch (IOException e) {
-      log.error(e.getMessage());
+      log.warn("{}", e.getMessage());
       return "Unknown";
     }
   }
@@ -119,7 +122,7 @@ public class SecureTokenApi {
     try {
       return web3j.ethBlockNumber().send().getBlockNumber().longValue();
     } catch (IOException e) {
-      log.error(e.getMessage());
+      log.warn("{}", e.getMessage());
       return 0;
     }
   }
@@ -139,7 +142,7 @@ public class SecureTokenApi {
     try {
       return token.balanceOf(account).send().longValue();
     } catch (Exception e) {
-      log.error(e.getMessage());
+      log.warn("{}", e.getMessage());
       return 0;
     }
   }
