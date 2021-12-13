@@ -33,7 +33,6 @@ import static org.springframework.util.ReflectionUtils.findField;
 import static org.springframework.util.ReflectionUtils.setField;
 
 import com.vmware.ethereum.config.TokenConfig;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -92,7 +91,7 @@ public class SecureTokenApi {
   public String getNetVersion() {
     try {
       return web3j.netVersion().send().getNetVersion();
-    } catch (IOException e) {
+    } catch (Exception e) {
       log.warn("{}", e.getMessage());
       return "Unknown";
     }
@@ -101,7 +100,7 @@ public class SecureTokenApi {
   private long getGasPrice() {
     try {
       return web3j.ethGasPrice().send().getGasPrice().longValue();
-    } catch (IOException e) {
+    } catch (Exception e) {
       log.warn("{}", e.getMessage());
       return 0;
     }
@@ -110,7 +109,7 @@ public class SecureTokenApi {
   public String getClientVersion() {
     try {
       return web3j.web3ClientVersion().send().getWeb3ClientVersion();
-    } catch (IOException e) {
+    } catch (Exception e) {
       log.warn("{}", e.getMessage());
       return "Unknown";
     }
@@ -120,7 +119,7 @@ public class SecureTokenApi {
   public long getBlockNumber() {
     try {
       return web3j.ethBlockNumber().send().getBlockNumber().longValue();
-    } catch (IOException e) {
+    } catch (Exception e) {
       log.warn("{}", e.getMessage());
       return 0;
     }
