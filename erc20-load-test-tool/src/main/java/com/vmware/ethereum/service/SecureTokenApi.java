@@ -103,7 +103,7 @@ public class SecureTokenApi {
       return web3j.ethGasPrice().send().getGasPrice().longValue();
     } catch (IOException e) {
       log.warn("{}", e.getMessage());
-      return (0);
+      return 0;
     }
   }
 
