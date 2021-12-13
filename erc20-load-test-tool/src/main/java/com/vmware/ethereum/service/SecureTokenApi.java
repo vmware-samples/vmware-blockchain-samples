@@ -35,7 +35,6 @@ import static org.springframework.util.ReflectionUtils.setField;
 import com.vmware.ethereum.config.TokenConfig;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
@@ -99,12 +98,12 @@ public class SecureTokenApi {
     }
   }
 
-  private BigInteger getGasPrice() {
+  private long getGasPrice() {
     try {
-      return web3j.ethGasPrice().send().getGasPrice();
+      return web3j.ethGasPrice().send().getGasPrice().longValue();
     } catch (IOException e) {
       log.warn("{}", e.getMessage());
-      return BigInteger.valueOf(0);
+      return (0);
     }
   }
 
