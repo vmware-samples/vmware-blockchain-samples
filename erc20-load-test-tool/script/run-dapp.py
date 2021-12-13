@@ -204,13 +204,14 @@ def set_env_var():
 def main():
     set_env_var()
     host = os.environ['WEB3J_ETHCLIENT_HOST']
-    port = os.getenv('WEB3J_ETHCLIENT_PORT', 8545)
+    client_port = os.getenv('WEB3J_ETHCLIENT_PORT', 8545)
     protocol = os.getenv('WEB3J_ETHCLIENT_PROTOCOL', "http")
     dapp_count = int(os.getenv('DAPP_INSTANCES', 1))
     share_contract = os.getenv(
         'SHARE_CONTRACT', 'False') in ('true', 'True', 'TRUE')
-    ethrpc_url = "{0}://{1}:{2}/".format(protocol, host, port)
+    ethrpc_url = "{0}://{1}:{2}/".format(protocol, host, client_port)
     wavefront_enabled = os.getenv('MANAGEMENT_METRICS_EXPORT_WAVEFRONT_ENABLED', 'False') in ('true', 'True', 'TRUE')
+    max_sleep_time = int(os.getenv('MAX_SLEEP_TIME', 5))
 
     print("No of dapp Instances ", dapp_count)
     print("Ethereum Endpoint ", ethrpc_url)
@@ -237,7 +238,7 @@ def main():
     threads = []
     port = 8000
     for i in range(1, len(accts)):
-        time.sleep(random.randint(1, 5))
+        time.sleep(random.randint(1, max_sleep_time))
         t = threading.Thread(target=run_dapp, args=(
             priv_keys[i], contract_address, port + i))
         threads.append(t)
