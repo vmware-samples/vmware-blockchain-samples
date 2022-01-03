@@ -14,12 +14,17 @@ $ pip3 install -r requirements.txt
 
 # RUN
 
-Edit `.env` to change ENVIRONMENT variables
+1. Edit `.env` file, to change ENVIRONMENT variables
 ```bash
 $ vi .env
 ```
 
-Run the script
+2. Load ENVIRONMENT variables
 ```bash
-$ python run-dapp.py
+$ source .env
+```
+
+3. Run the script
+```bash
+$ python3 run-dapp.py
 ```
