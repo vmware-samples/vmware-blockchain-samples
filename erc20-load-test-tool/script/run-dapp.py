@@ -212,18 +212,18 @@ def set_env_var():
 
 def main():
     set_env_var()
-    download_artifact = os.getenv('DOWNLOAD_JAR', 'false')
+    download_artifact = os.getenv('DOWNLOAD_JAR', 'False') in ('true', 'True', 'TRUE')
     host = os.environ['WEB3J_ETHCLIENT_HOST']
     client_port = os.getenv('WEB3J_ETHCLIENT_PORT', 8545)
     protocol = os.getenv('WEB3J_ETHCLIENT_PROTOCOL', "http")
     dapp_count = int(os.getenv('DAPP_INSTANCES', 1))
-    share_contract = os.getenv(
-        'SHARE_CONTRACT', 'False') in ('true', 'True', 'TRUE')
+    share_contract = os.getenv('SHARE_CONTRACT', 'False') in ('true', 'True', 'TRUE')
     ethrpc_url = "{0}://{1}:{2}/".format(protocol, host, client_port)
     wavefront_enabled = os.getenv('MANAGEMENT_METRICS_EXPORT_WAVEFRONT_ENABLED', 'False') in ('true', 'True', 'TRUE')
     max_sleep_time = int(os.getenv('MAX_SLEEP_TIME', 5))
 
     if download_artifact:
+      print("Downloading JAR from artifactory ..")
       download_jar()
 
     print("No of dapp Instances ", dapp_count)
