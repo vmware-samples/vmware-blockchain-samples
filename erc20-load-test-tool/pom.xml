@@ -17,7 +17,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.6.1</version>
+    <version>2.6.2</version>
   </parent>
 
   <dependencies>
@@ -179,12 +179,5 @@
       <url>https://build-artifactory.eng.vmware.com/artifactory/athena-maven-snapshot</url>
     </repository>
   </repositories>
-
-  <distributionManagement>
-    <snapshotRepository>
-      <id>blockchain-snapshot</id>
-      <url>https://build-artifactory.eng.vmware.com/artifactory/athena-maven-snapshot</url>
-    </snapshotRepository>
-  </distributionManagement>
 
 </project>

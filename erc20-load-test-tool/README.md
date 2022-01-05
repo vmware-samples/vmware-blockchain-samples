@@ -22,15 +22,6 @@ $ cd vmware-blockchain-samples/erc20-load-test-tool
 $ mvn clean install
 ```
 
-# Deploy
-
-Deploy the [snapshot jar](https://build-artifactory.eng.vmware.com/artifactory/athena-maven-snapshot/com/vmware/erc20-benchmark/1.0-SNAPSHOT/)
-to the configured artifactory. Refer [maven-deploy-plugin](https://maven.apache.org/plugins/maven-deploy-plugin/usage.html).
-
-```shell
-$ mvn deploy
-```
-
 # Run
 
 ## Single Instance
