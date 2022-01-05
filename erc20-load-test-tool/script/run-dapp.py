@@ -119,7 +119,7 @@ def run_dapp(priv_key, contract_address, port):
     if contract_address:
         os.environ["TOKEN_CONTRACT_ADDRESS"] = contract_address
 
-    jar = "../target/erc20-benchmark-1.0-SNAPSHOT.jar"
+    jar = "target/erc20-benchmark-1.0-SNAPSHOT.jar"
     cmd = "cd ..; java -jar -Dserver.port=" + str(port) + " -Dtoken.private-key=" + priv_key + " " + jar
 
     p = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
