@@ -111,14 +111,6 @@ def expose_port(port):
     subprocess.call(cmd, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
 
 
-def download_jar():
-  repo = 'https://build-artifactory.eng.vmware.com/artifactory/athena-maven-snapshot'
-  artifact = 'com.vmware:erc20-benchmark:1.0-SNAPSHOT'
-  params = "-Dartifact={0} -Dtransitive={1} -DremoteRepositories={2}".format(artifact, 'false', repo)
-  cmd = "mvn org.apache.maven.plugins:maven-dependency-plugin:3.2.0:get " + params
-  subprocess.call(cmd, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
-
-
 # function to run new ERC20 dapp instance
 def run_dapp(priv_key, contract_address, port):
     print("start run on port " + str(port))
@@ -127,7 +119,7 @@ def run_dapp(priv_key, contract_address, port):
     if contract_address:
         os.environ["TOKEN_CONTRACT_ADDRESS"] = contract_address
 
-    jar = "~/.m2/repository/com/vmware/erc20-benchmark/1.0-SNAPSHOT/erc20-benchmark-1.0-SNAPSHOT.jar"
+    jar = "target/erc20-benchmark-1.0-SNAPSHOT.jar"
     cmd = "cd ..; java -jar -Dserver.port=" + str(port) + " -Dtoken.private-key=" + priv_key + " " + jar
 
     p = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
@@ -212,7 +204,6 @@ def set_env_var():
 
 def main():
     set_env_var()
-    download_artifact = os.getenv('DOWNLOAD_JAR', 'False') in ('true', 'True', 'TRUE')
     host = os.environ['WEB3J_ETHCLIENT_HOST']
     client_port = os.getenv('WEB3J_ETHCLIENT_PORT', 8545)
     protocol = os.getenv('WEB3J_ETHCLIENT_PROTOCOL', "http")
@@ -221,10 +212,6 @@ def main():
     ethrpc_url = "{0}://{1}:{2}/".format(protocol, host, client_port)
     wavefront_enabled = os.getenv('MANAGEMENT_METRICS_EXPORT_WAVEFRONT_ENABLED', 'False') in ('true', 'True', 'TRUE')
     max_sleep_time = int(os.getenv('MAX_SLEEP_TIME', 5))
-
-    if download_artifact:
-      print("Downloading JAR from artifactory ..")
-      download_jar()
 
     print("No of dapp Instances ", dapp_count)
     print("Ethereum Endpoint ", ethrpc_url)
