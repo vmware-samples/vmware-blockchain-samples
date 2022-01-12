@@ -55,11 +55,12 @@ def tx_receipt_poll(construct_txn, acc_priv_key):
 
 
 # function to deploy contract address and distribute tokens among all senders
-def deploy_contract(contract_deploy_account, contract_deploy_account_key, ethrpc_url):
+def deploy_contract(contract_deploy_account, contract_deploy_account_key, host):
     # connecting to end point
+    url = "http://" + host + ":8545"
     compile_security_token()
     global w3
-    w3 = Web3(Web3.HTTPProvider(ethrpc_url,
+    w3 = Web3(Web3.HTTPProvider(url,
                                 request_kwargs={"verify": False}))
     w3.middleware_onion.inject(geth_poa_middleware, layer=0)
     contract = w3.eth.contract(abi=abi, bytecode=bytecode)
@@ -158,8 +159,9 @@ def aggregate_report(instance):
                 aggregate_latency += data['averageLatency']
                 aggregate_loadfactor += data['loadFactor']
 
-                tx_status_list = data["txStatus"].split(",")
-                list_to_kv(tx_status_list, aggregate_tx_status)
+                if data["txStatus"]:
+                    tx_status_list = data["txStatus"].split(",")
+                    list_to_kv(tx_status_list, aggregate_tx_status)
 
                 if data["txErrors"]:
                     tx_errors_list = data["txErrors"].split("<br>")
@@ -230,7 +232,7 @@ def main():
     contract_address = None
     if share_contract:
         assert dapp_count > 1, "At least 2 instances should run to share contract."
-        contract_address = deploy_contract(accts[0], priv_keys[0], ethrpc_url)
+        contract_address = deploy_contract(accts[0], priv_keys[0], host)
         print("Contract Address -", contract_address)
         distribute_tokens(accts, priv_keys, contract_address)
         print("tokens distributed among senders")
