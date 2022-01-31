@@ -32,6 +32,13 @@ and Ethereum client deployment. Run the following command to start the load test
 $ mvn spring-boot:run
 # Ctrl+C to stop once the test is done. 
 ```
+
+Running from JAR file
+
+```shell
+$ java -jar target/erc20-benchmark-1.0-SNAPSHOT.jar
+```
+
 ## Multiple Instances
 Check out [multi-dapp-script](script/)
 

@@ -26,10 +26,7 @@ package com.vmware.ethereum.config;
  * #L%
  */
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -54,6 +51,7 @@ public class TokenConfig {
   @NotEmpty private String[] recipients;
 
   @Positive private long amount;
-  @Positive private long gasPrice;
+  @PositiveOrZero private long gasPrice;
   @Positive private long gasLimit;
+  @NotNull private boolean gasFreeMode;
 }
