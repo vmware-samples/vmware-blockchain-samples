@@ -61,7 +61,7 @@ public class SecureTokenFactory {
 
     Transaction tx = Transaction.createEthCallTransaction(null, null, null);
     BigInteger gasEstimate = web3j.ethEstimateGas(tx).send().getAmountUsed();
-    BigInteger gasPrice = getGasPrice();
+    BigInteger gasPrice = web3j.ethGasPrice().send().getGasPrice();
     log.info("Gas Estimate {}", gasEstimate);
     log.info("Gas Price {}", gasPrice);
 
@@ -90,16 +90,6 @@ public class SecureTokenFactory {
             tokenConfig.getSymbol(),
             valueOf(tokenConfig.getInitialSupply()))
         .send();
-  }
-
-  /** Returns gas price */
-  private BigInteger getGasPrice() {
-    try {
-      return web3j.ethGasPrice().send().getGasPrice();
-    } catch (Exception e) {
-      log.warn("{}", e.getMessage());
-      return valueOf(0);
-    }
   }
 
   /** Get contract address from DB. */
