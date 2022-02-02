@@ -32,24 +32,16 @@ import com.vmware.ethereum.config.DatabaseConfig;
 import com.vmware.ethereum.config.TokenConfig;
 import com.vmware.ethereum.model.Contract;
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
-import org.web3j.abi.FunctionEncoder;
-import org.web3j.abi.datatypes.Address;
-import org.web3j.abi.datatypes.Function;
-import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
 import org.web3j.model.SecurityToken;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.request.Transaction;
-import org.web3j.protocol.core.methods.response.EthEstimateGas;
-import org.web3j.protocol.core.methods.response.EthGasPrice;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
 
@@ -62,44 +54,17 @@ public class SecureTokenFactory {
   private final DatabaseConfig dbConfig;
   private final Web3j web3j;
   private final Credentials credentials;
-  private final String senderAddress;
 
   /** Get SecureToken contract either by loading or deploying. */
   @SneakyThrows(Exception.class)
   public SecurityToken getSecureToken() {
-    BigInteger gasEstimate = valueOf(tokenConfig.getGasLimit());
-    BigInteger gasPrice = valueOf(tokenConfig.getGasPrice());
-    if (tokenConfig.isGasFreeMode()) {
-      Function function =
-          new Function(
-              "transfer",
-              Arrays.asList(
-                  new Address(tokenConfig.getRecipients()[0]),
-                  new Uint256(valueOf(tokenConfig.getAmount()))),
-              Collections.emptyList());
-      String txData = FunctionEncoder.encode(function);
-      Transaction tx =
-          Transaction.createFunctionCallTransaction(
-              senderAddress,
-              valueOf(1),
-              valueOf(tokenConfig.getGasPrice()),
-              valueOf(tokenConfig.getGasLimit()),
-              tokenConfig.getRecipients()[0],
-              txData);
-      EthEstimateGas ethGasEstimate = web3j.ethEstimateGas(tx).send();
-      EthGasPrice ethGasPrice = web3j.ethGasPrice().send();
 
-      try {
-        gasEstimate = ethGasEstimate.getAmountUsed();
-        gasPrice = ethGasPrice.getGasPrice();
-      } catch (Exception e) {
-        log.warn("{}", e.getMessage());
-        gasPrice = valueOf(0);
-        gasEstimate = valueOf(tokenConfig.getGasLimit());
-      }
-      log.info("gasFree mode GasEstimate {}", gasEstimate);
-      log.info("gasFree mode GasPrice {}", gasPrice);
-    }
+    Transaction tx = Transaction.createEthCallTransaction(null, null, null);
+    BigInteger gasEstimate = web3j.ethEstimateGas(tx).send().getAmountUsed();
+    BigInteger gasPrice = getGasPrice();
+    log.info("Gas Estimate {}", gasEstimate);
+    log.info("Gas Price {}", gasPrice);
+
     ContractGasProvider gasProvider = new StaticGasProvider(gasPrice, gasEstimate);
 
     // Contract address from config
@@ -125,6 +90,16 @@ public class SecureTokenFactory {
             tokenConfig.getSymbol(),
             valueOf(tokenConfig.getInitialSupply()))
         .send();
+  }
+
+  /** Returns gas price */
+  private BigInteger getGasPrice() {
+    try {
+      return web3j.ethGasPrice().send().getGasPrice();
+    } catch (Exception e) {
+      log.warn("{}", e.getMessage());
+      return valueOf(0);
+    }
   }
 
   /** Get contract address from DB. */
