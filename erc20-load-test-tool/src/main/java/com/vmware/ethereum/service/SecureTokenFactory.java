@@ -31,6 +31,7 @@ import static java.math.BigInteger.valueOf;
 import com.vmware.ethereum.config.DatabaseConfig;
 import com.vmware.ethereum.config.TokenConfig;
 import com.vmware.ethereum.model.Contract;
+import java.math.BigInteger;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,7 @@ import org.sql2o.Sql2o;
 import org.web3j.crypto.Credentials;
 import org.web3j.model.SecurityToken;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
 
@@ -56,9 +58,14 @@ public class SecureTokenFactory {
   /** Get SecureToken contract either by loading or deploying. */
   @SneakyThrows(Exception.class)
   public SecurityToken getSecureToken() {
-    ContractGasProvider gasProvider =
-        new StaticGasProvider(
-            valueOf(tokenConfig.getGasPrice()), valueOf(tokenConfig.getGasLimit()));
+
+    Transaction tx = Transaction.createEthCallTransaction(null, null, null);
+    BigInteger gasEstimate = web3j.ethEstimateGas(tx).send().getAmountUsed();
+    BigInteger gasPrice = web3j.ethGasPrice().send().getGasPrice();
+    log.info("Gas Estimate {}", gasEstimate);
+    log.info("Gas Price {}", gasPrice);
+
+    ContractGasProvider gasProvider = new StaticGasProvider(gasPrice, gasEstimate);
 
     // Contract address from config
     String contractAddress = tokenConfig.getContractAddress();
@@ -74,6 +81,7 @@ public class SecureTokenFactory {
     }
 
     log.info("Deploying token {} ..", tokenConfig.getSymbol());
+
     return SecurityToken.deploy(
             web3j,
             credentials,

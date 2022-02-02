@@ -28,8 +28,6 @@ token:
     - 45412868cB693e231DfD4ABCCA29D9001801d062
     - 1Ff482D42D8727258A1680192Fa4ba925C46Bc43
   amount: 5 # amount of tokens transferred in one transaction
-  gas-price: 4_100_000_000 # gas price
-  gas-limit: 9_000_000 # gas limit
 
 database:
   url: # postgres database url (Ex: jdbc:postgresql://127.0.0.1:5432/postgres)

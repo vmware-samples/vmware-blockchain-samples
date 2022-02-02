@@ -62,7 +62,6 @@ public class SecureTokenApi {
   @PostConstruct
   public void init() {
     log.info("Client version: {}", getClientVersion());
-    log.info("Gas price: {}", getGasPrice());
     log.info("Net version: {}", getNetVersion());
     log.info("Sender address: {}", senderAddress);
     recipients = cycle(config.getRecipients());
@@ -94,15 +93,6 @@ public class SecureTokenApi {
     } catch (Exception e) {
       log.warn("{}", e.getMessage());
       return "Unknown";
-    }
-  }
-
-  private long getGasPrice() {
-    try {
-      return web3j.ethGasPrice().send().getGasPrice().longValue();
-    } catch (Exception e) {
-      log.warn("{}", e.getMessage());
-      return 0;
     }
   }
 

@@ -54,6 +54,4 @@ public class TokenConfig {
   @NotEmpty private String[] recipients;
 
   @Positive private long amount;
-  @Positive private long gasPrice;
-  @Positive private long gasLimit;
 }
