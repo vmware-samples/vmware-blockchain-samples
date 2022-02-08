@@ -38,6 +38,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.protocol.exceptions.JsonRpcError;
 import org.web3j.tx.response.EmptyTransactionReceipt;
 
 @Slf4j
@@ -72,7 +73,17 @@ public class WorkloadCommand implements Runnable {
               }
 
               if (throwable != null) {
-                log.warn("{}", throwable.toString());
+                if (throwable instanceof JsonRpcError) {
+                  JsonRpcError error = (JsonRpcError) throwable;
+                  log.warn(
+                      "JSON-RPC code {}, data: {}, message: {}",
+                      error.getCode(),
+                      error.getData(),
+                      error.getMessage());
+                } else {
+                  log.warn("{}", throwable.toString());
+                }
+
                 metrics.record(duration, throwable);
               }
 
