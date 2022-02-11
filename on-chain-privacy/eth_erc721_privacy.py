@@ -61,10 +61,10 @@ def main():
     gas_price = 0
 
     global abi1
-    with open("/var/jenkins/workspace/vmware-blockchain-samples/on-chain-privacy/contracts/SupplyChainItemPrivacy.abi/SupplyChainItem.abi", "r") as f:
+    with open("./contracts/SupplyChainItemPrivacy.abi/SupplyChainItem.abi", "r") as f:
         abi1 = f.read()
     global bin1
-    with open("/var/jenkins/workspace/vmware-blockchain-samples/on-chain-privacy/contracts/SupplyChainItemPrivacy.bin/SupplyChainItem.bin", "r") as f:
+    with open("./contracts/SupplyChainItemPrivacy.bin/SupplyChainItem.bin", "r") as f:
         bin1 = f.read()
 
     if (contract_deploy):
