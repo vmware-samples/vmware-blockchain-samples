@@ -26,19 +26,23 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static com.vmware.ethereum.service.MetricsConstant.STATUS_UNKNOWN;
-import static java.time.Duration.between;
-import static java.time.Instant.now;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.BatchRequest;
+import org.web3j.protocol.core.BatchResponse;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.tx.response.EmptyTransactionReceipt;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
-import org.web3j.tx.response.EmptyTransactionReceipt;
+
+import static com.vmware.ethereum.service.MetricsConstant.STATUS_UNKNOWN;
+import static java.time.Duration.between;
+import static java.time.Instant.now;
 
 @Slf4j
 @Service
@@ -48,10 +52,17 @@ public class WorkloadCommand implements Runnable {
   private final SecureTokenApi api;
   private final CountDownLatch countDownLatch;
   private final MetricsService metrics;
+  private final Web3j web3j;
+  BatchRequest batch;
 
   @Override
   public void run() {
-    transferAsync();
+    if (false) {
+      log.info("inside workload command transfer batch async");
+      transferBatchAsync();
+    } else {
+      transferAsync();
+    }
   }
 
   /** Transfer token asynchronously. */
@@ -77,6 +88,24 @@ public class WorkloadCommand implements Runnable {
               }
 
               countDownLatch.countDown();
+            });
+  }
+
+  public CompletableFuture<BatchResponse> transferBatchAsync() {
+    log.info("adding batch requests upto 5");
+    batch = web3j.newBatch();
+    for (int i = 0; i < 5; i++) {
+      log.info("i = {}", i);
+      api.addBatchRequests(batch);
+    }
+    log.info("batch requests added");
+    return api.transferBatchAsync(batch)
+        .whenComplete(
+            (response, throwable) -> {
+              for (int i = 0; i < response.getResponses().size(); i++) {
+                countDownLatch.countDown();
+                log.info("response batch {}", response.getResponses().toString());
+              }
             });
   }
 }

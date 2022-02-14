@@ -26,25 +26,29 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static com.google.common.collect.Iterators.cycle;
-import static java.math.BigInteger.valueOf;
-import static java.util.Objects.requireNonNull;
-import static org.springframework.util.ReflectionUtils.findField;
-import static org.springframework.util.ReflectionUtils.setField;
-
 import com.vmware.ethereum.config.TokenConfig;
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.concurrent.CompletableFuture;
-import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.web3j.model.SecurityToken;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.BatchRequest;
+import org.web3j.protocol.core.BatchResponse;
+import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.TransactionManager;
+
+import javax.annotation.PostConstruct;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.concurrent.CompletableFuture;
+
+import static com.google.common.collect.Iterators.cycle;
+import static java.math.BigInteger.valueOf;
+import static java.util.Objects.requireNonNull;
+import static org.springframework.util.ReflectionUtils.findField;
+import static org.springframework.util.ReflectionUtils.setField;
 
 @Slf4j
 @Service
@@ -85,6 +89,39 @@ public class SecureTokenApi {
   /** Transfer token asynchronously. */
   public CompletableFuture<TransactionReceipt> transferAsync() {
     return token.transfer(recipients.next(), valueOf(config.getAmount())).sendAsync();
+  }
+
+  public void addBatchRequests(BatchRequest batch) {
+    log.info("inside addBatchRequests function");
+    //    Function function =
+    //        new Function(
+    //            "transfer",
+    //            Arrays.asList(
+    //                new Address(config.getRecipients()[0]), new
+    // Uint256(valueOf(config.getAmount()))),
+    //            Collections.emptyList());
+    log.info("{}", token.transfer(recipients.next(), valueOf(config.getAmount())).toString());
+    String txData =
+        token.transfer(recipients.next(), valueOf(config.getAmount())).encodeFunctionCall();
+    log.info("txData - {}", txData);
+    Transaction tx =
+        Transaction.createFunctionCallTransaction(
+            senderAddress,
+            valueOf(2),
+            valueOf(1000),
+            valueOf(5300),
+            config.getRecipients()[0],
+            txData);
+
+    log.info("{}", web3j.ethSendTransaction(tx));
+    log.info("{}", batch.getRequests());
+    batch.add(web3j.ethSendTransaction(tx));
+    log.info("batched-requests {}", batch.getRequests());
+  }
+
+  public CompletableFuture<BatchResponse> transferBatchAsync(BatchRequest batch) {
+    log.info("inside transfer batch async");
+    return batch.sendAsync();
   }
 
   public String getNetVersion() {
