@@ -57,7 +57,7 @@ public class WorkloadCommand implements Runnable {
 
   @Override
   public void run() {
-    if (false) {
+    if (true) {
       log.info("inside workload command transfer batch async");
       transferBatchAsync();
     } else {

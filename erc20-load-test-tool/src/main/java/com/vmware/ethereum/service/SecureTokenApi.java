@@ -100,7 +100,7 @@ public class SecureTokenApi {
     //                new Address(config.getRecipients()[0]), new
     // Uint256(valueOf(config.getAmount()))),
     //            Collections.emptyList());
-    log.info("{}", token.transfer(recipients.next(), valueOf(config.getAmount())).toString());
+    log.info("{}", token.transfer(recipients.next(), valueOf(config.getAmount())));
     String txData =
         token.transfer(recipients.next(), valueOf(config.getAmount())).encodeFunctionCall();
     log.info("txData - {}", txData);
@@ -113,7 +113,9 @@ public class SecureTokenApi {
             config.getRecipients()[0],
             txData);
 
-    log.info("{}", web3j.ethSendTransaction(tx));
+    log.info("tx - {}", tx.toString());
+//    JSONRPC2Request.parse(web3j.ethSendTransaction(tx).toString());
+    log.info("{} {}", web3j.ethSendTransaction(tx).getMethod(), web3j.ethSendTransaction(tx).getParams().toString());
     log.info("{}", batch.getRequests());
     batch.add(web3j.ethSendTransaction(tx));
     log.info("batched-requests {}", batch.getRequests());
