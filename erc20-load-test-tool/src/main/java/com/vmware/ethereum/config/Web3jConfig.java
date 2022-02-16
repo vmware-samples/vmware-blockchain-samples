@@ -49,6 +49,7 @@ public class Web3jConfig {
   @NotNull private Receipt receipt;
   @NotNull private Level logLevel;
   @NotNull private boolean manageNonce;
+  @NotNull private Batching batching;
 
   @Setter
   @Getter
@@ -67,5 +68,12 @@ public class Web3jConfig {
     @PositiveOrZero private int attempts;
     @NotNull private long interval;
     @NotNull private boolean defer;
+  }
+
+  @Setter
+  @Getter
+  public static class Batching {
+    @NotNull private boolean enable;
+    @NotNull private int batchSize;
   }
 }

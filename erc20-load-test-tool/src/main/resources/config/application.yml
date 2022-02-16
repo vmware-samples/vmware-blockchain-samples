@@ -1,7 +1,7 @@
 workload:
   model: OPEN  # either OPEN or CLOSED workload model
-  transactions: 5 # total transactions to be done
-  load-factor: 1 # arrival rate for OPEN model & concurrency for CLOSED model
+  transactions: 1_000 # total transactions to be done
+  load-factor: 10 # arrival rate for OPEN model & concurrency for CLOSED model
   progress-interval: 5s # interval for updating progress in web UI
 
 web3j:
@@ -19,7 +19,7 @@ web3j:
     interval: 1000 # sleep interval (ms) between polling attempts
     defer: false # set true for queued polling of transaction receipt
   manage-nonce: true # Managing nonce would avoid the overhead of calling eth_getTransactionCount.
-  log-level: BODY # NONE, BASIC, HEADERS, BODY
+  log-level: NONE # NONE, BASIC, HEADERS, BODY
 
 token:
   name: SecureToken

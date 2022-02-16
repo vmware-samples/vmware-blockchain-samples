@@ -26,29 +26,40 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import com.vmware.ethereum.config.TokenConfig;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.web3j.model.SecurityToken;
-import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.BatchRequest;
-import org.web3j.protocol.core.BatchResponse;
-import org.web3j.protocol.core.methods.request.Transaction;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
-import org.web3j.tx.TransactionManager;
-
-import javax.annotation.PostConstruct;
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.concurrent.CompletableFuture;
-
 import static com.google.common.collect.Iterators.cycle;
 import static java.math.BigInteger.valueOf;
 import static java.util.Objects.requireNonNull;
 import static org.springframework.util.ReflectionUtils.findField;
 import static org.springframework.util.ReflectionUtils.setField;
+
+import com.vmware.ethereum.config.TokenConfig;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.concurrent.CompletableFuture;
+import javax.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.web3j.abi.FunctionEncoder;
+import org.web3j.abi.datatypes.Address;
+import org.web3j.abi.datatypes.Function;
+import org.web3j.abi.datatypes.generated.Uint256;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.RawTransaction;
+import org.web3j.crypto.TransactionEncoder;
+import org.web3j.model.SecurityToken;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.BatchRequest;
+import org.web3j.protocol.core.BatchResponse;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.methods.request.Transaction;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.tx.TransactionManager;
+import org.web3j.utils.Numeric;
 
 @Slf4j
 @Service
@@ -60,19 +71,38 @@ public class SecureTokenApi {
   private final TransactionManager transactionManager;
   private final SecureTokenFactory tokenFactory;
   private final String senderAddress;
+  private final Credentials credentials;
   private SecurityToken token;
   private Iterator<String> recipients;
+  private BigInteger nonce;
+  private BigInteger gasEstimate;
+  private BigInteger gasPrice;
+  private String contractAddress;
 
   @PostConstruct
-  public void init() {
+  public void init() throws IOException {
     log.info("Client version: {}", getClientVersion());
     log.info("Net version: {}", getNetVersion());
     log.info("Sender address: {}", senderAddress);
     recipients = cycle(config.getRecipients());
 
     token = tokenFactory.getSecureToken();
-    token.getTransactionReceipt().ifPresent(receipt -> log.info("Receipt: {}", receipt));
+    token
+        .getTransactionReceipt()
+        .ifPresent(
+            receipt -> {
+              log.info("Receipt: {}", receipt);
+              contractAddress = receipt.getContractAddress();
+            });
     setTransactionManager();
+    nonce =
+        web3j
+            .ethGetTransactionCount(senderAddress, DefaultBlockParameterName.PENDING)
+            .send()
+            .getTransactionCount();
+    Transaction tx = Transaction.createEthCallTransaction(null, null, null);
+    gasEstimate = web3j.ethEstimateGas(tx).send().getAmountUsed();
+    gasPrice = web3j.ethGasPrice().send().getGasPrice();
   }
 
   /**
@@ -93,31 +123,44 @@ public class SecureTokenApi {
 
   public void addBatchRequests(BatchRequest batch) {
     log.info("inside addBatchRequests function");
-    //    Function function =
-    //        new Function(
-    //            "transfer",
-    //            Arrays.asList(
-    //                new Address(config.getRecipients()[0]), new
-    // Uint256(valueOf(config.getAmount()))),
-    //            Collections.emptyList());
-    log.info("{}", token.transfer(recipients.next(), valueOf(config.getAmount())));
-    String txData =
-        token.transfer(recipients.next(), valueOf(config.getAmount())).encodeFunctionCall();
-    log.info("txData - {}", txData);
-    Transaction tx =
-        Transaction.createFunctionCallTransaction(
-            senderAddress,
-            valueOf(2),
-            valueOf(1000),
-            valueOf(5300),
-            config.getRecipients()[0],
-            txData);
+    Function function =
+        new Function(
+            "transfer",
+            Arrays.asList(
+                new Address(config.getRecipients()[0]), new Uint256(valueOf(config.getAmount()))),
+            Collections.emptyList());
 
-    log.info("tx - {}", tx.toString());
-//    JSONRPC2Request.parse(web3j.ethSendTransaction(tx).toString());
-    log.info("{} {}", web3j.ethSendTransaction(tx).getMethod(), web3j.ethSendTransaction(tx).getParams().toString());
+    //    log.info("{}", token.transfer(recipients.next(), valueOf(config.getAmount())));
+    //    String txData =
+    //        token.transfer(recipients.next(), valueOf(config.getAmount())).encodeFunctionCall();
+    String txData = FunctionEncoder.encode(function);
+    log.info("txData - {}", txData);
+
+    //    String txHash =
+    //      transactionManager
+    //        .(
+    //          valueOf(config.getGasPrice()),
+    //          valueOf(config.getGasLimit()),
+    //          contractAddress,
+    //          txData,
+    //          BigInteger.ZERO)
+    //        .getTransactionHash();
+
+    log.info("nonce - {}", nonce);
+    RawTransaction rawTransaction =
+        RawTransaction.createTransaction(nonce, gasPrice, gasEstimate, contractAddress, txData);
+    //    EthSendTransaction ethSendTransaction =
+    //      sendTransaction(gasPrice, gasEstimate, contractAddress, txData, null, constructor);
+    nonce = nonce.add(BigInteger.ONE);
+
+    String signedMessage =
+        Numeric.toHexString(TransactionEncoder.signMessage(rawTransaction, 5000, credentials));
+    log.info("tx - {}", rawTransaction.toString());
+    //    JSONRPC2Request.parse(web3j.ethSendTransaction(tx).toString());
+    //    log.info("{} {}", web3j.ethSendTransaction(tx).getMethod(),
+    // web3j.ethSendTransaction(tx).getParams().toString());
     log.info("{}", batch.getRequests());
-    batch.add(web3j.ethSendTransaction(tx));
+    batch.add(web3j.ethSendRawTransaction(signedMessage));
     log.info("batched-requests {}", batch.getRequests());
   }
 
