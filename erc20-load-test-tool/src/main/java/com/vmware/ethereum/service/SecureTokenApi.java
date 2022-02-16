@@ -37,17 +37,12 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.web3j.abi.FunctionEncoder;
-import org.web3j.abi.datatypes.Address;
-import org.web3j.abi.datatypes.Function;
-import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
@@ -122,50 +117,32 @@ public class SecureTokenApi {
   }
 
   public void addBatchRequests(BatchRequest batch) {
-    log.info("inside addBatchRequests function");
-    Function function =
-        new Function(
-            "transfer",
-            Arrays.asList(
-                new Address(config.getRecipients()[0]), new Uint256(valueOf(config.getAmount()))),
-            Collections.emptyList());
+    log.debug("inside addBatchRequests function");
+    //    Function function =
+    //        new Function(
+    //            "transfer",
+    //            Arrays.asList(
+    //                new Address(config.getRecipients()[0]), new
+    // Uint256(valueOf(config.getAmount()))),
+    //            Collections.emptyList());
+    //    String txData = FunctionEncoder.encode(function);
 
-    //    log.info("{}", token.transfer(recipients.next(), valueOf(config.getAmount())));
-    //    String txData =
-    //        token.transfer(recipients.next(), valueOf(config.getAmount())).encodeFunctionCall();
-    String txData = FunctionEncoder.encode(function);
-    log.info("txData - {}", txData);
-
-    //    String txHash =
-    //      transactionManager
-    //        .(
-    //          valueOf(config.getGasPrice()),
-    //          valueOf(config.getGasLimit()),
-    //          contractAddress,
-    //          txData,
-    //          BigInteger.ZERO)
-    //        .getTransactionHash();
-
-    log.info("nonce - {}", nonce);
+    String txData =
+        token.transfer(recipients.next(), valueOf(config.getAmount())).encodeFunctionCall();
+    log.debug("txData - {}", txData);
+    log.debug("nonce - {}", nonce);
     RawTransaction rawTransaction =
         RawTransaction.createTransaction(nonce, gasPrice, gasEstimate, contractAddress, txData);
-    //    EthSendTransaction ethSendTransaction =
-    //      sendTransaction(gasPrice, gasEstimate, contractAddress, txData, null, constructor);
     nonce = nonce.add(BigInteger.ONE);
 
     String signedMessage =
         Numeric.toHexString(TransactionEncoder.signMessage(rawTransaction, 5000, credentials));
-    log.info("tx - {}", rawTransaction.toString());
-    //    JSONRPC2Request.parse(web3j.ethSendTransaction(tx).toString());
-    //    log.info("{} {}", web3j.ethSendTransaction(tx).getMethod(),
-    // web3j.ethSendTransaction(tx).getParams().toString());
-    log.info("{}", batch.getRequests());
     batch.add(web3j.ethSendRawTransaction(signedMessage));
-    log.info("batched-requests {}", batch.getRequests());
+    log.debug("batched-requests {}", batch.getRequests());
   }
 
   public CompletableFuture<BatchResponse> transferBatchAsync(BatchRequest batch) {
-    log.info("inside transfer batch async");
+    log.debug("inside transfer batch async");
     return batch.sendAsync();
   }
 

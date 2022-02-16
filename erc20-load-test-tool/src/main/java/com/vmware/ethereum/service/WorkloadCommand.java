@@ -26,17 +26,8 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static com.vmware.ethereum.service.MetricsConstant.STATUS_UNKNOWN;
-import static java.time.Duration.between;
-import static java.time.Instant.now;
-
 import com.vmware.ethereum.config.Web3jConfig;
 import com.vmware.ethereum.config.WorkloadConfig;
-import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -47,6 +38,16 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.tx.response.EmptyTransactionReceipt;
 import org.web3j.tx.response.TransactionReceiptProcessor;
+
+import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+
+import static com.vmware.ethereum.service.MetricsConstant.STATUS_UNKNOWN;
+import static java.time.Duration.between;
+import static java.time.Instant.now;
 
 @Slf4j
 @Service
@@ -99,23 +100,24 @@ public class WorkloadCommand implements Runnable {
   }
 
   public CompletableFuture<BatchResponse> transferBatchAsync() {
-    log.info("adding batch requests upto 5");
+    log.debug("adding batch requests upto 5");
+    Instant startTime = now();
     batch = web3j.newBatch();
     for (int i = 0; i < web3jConfig.getBatching().getBatchSize(); i++) {
-      log.info("i = {}", i);
       api.addBatchRequests(batch);
       if (countDownLatch.getCount() == workloadConfig.getTransactions()) {
         break;
       }
     }
-    log.info("batch requests added");
+    log.debug("batch requests added");
+
     return api.transferBatchAsync(batch)
         .whenComplete(
             (response, throwable) -> {
+              TransactionReceipt receipt = null;
               for (int i = 0; i < response.getResponses().size(); i++) {
-                countDownLatch.countDown();
                 String transactionHash = String.valueOf(response.getResponses().get(i).getResult());
-                TransactionReceipt receipt = null;
+
                 try {
                   receipt = transactionReceiptProcessor.waitForTransactionReceipt(transactionHash);
                 } catch (IOException e) {
@@ -123,8 +125,25 @@ public class WorkloadCommand implements Runnable {
                 } catch (TransactionException e) {
                   e.printStackTrace();
                 }
-                log.info("response batch {}", transactionHash);
-                log.info("response Transaction Receipt {}", receipt);
+
+                Duration duration = between(startTime, now());
+
+                if (receipt != null) {
+                  log.trace("Receipt: {}", receipt);
+                  String status =
+                      receipt instanceof EmptyTransactionReceipt
+                          ? STATUS_UNKNOWN
+                          : receipt.getStatus();
+                  metrics.record(duration, status);
+                }
+
+                if (throwable != null) {
+                  log.warn("{}", throwable.toString());
+                  metrics.record(duration, throwable);
+                }
+                countDownLatch.countDown();
+                log.debug("response batch {}", transactionHash);
+                log.debug("response Transaction Receipt {}", receipt);
               }
             });
   }
