@@ -34,7 +34,6 @@ import com.vmware.ethereum.config.Web3jConfig.Receipt;
 import com.vmware.ethereum.model.ReceiptMode;
 import com.vmware.ethereum.service.MetricsService;
 import com.vmware.web3j.protocol.grpc.GrpcService;
-import com.vmware.web3j.protocol.http.CorrelationInterceptor;
 import io.grpc.ManagedChannel;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.okhttp3.OkHttpConnectionPoolMetrics;
@@ -85,7 +84,7 @@ public class AppConfig {
     return new OkHttpClient.Builder()
         .sslSocketFactory(sslSocketFactory(), (X509TrustManager) trustManagers[0])
         .hostnameVerifier((hostname, session) -> true)
-        .addInterceptor(new CorrelationInterceptor(correlationPrefix))
+        //        .addInterceptor(new CorrelationInterceptor(correlationPrefix))
         .addInterceptor(new HttpLoggingInterceptor().setLevel(config.getLogLevel()))
         .build();
   }
@@ -174,6 +173,11 @@ public class AppConfig {
   public Web3j web3j(Web3jService web3jService) {
     return Web3j.build(web3jService);
   }
+
+  //  @Bean
+  //  public BatchRequest batch(Web3jService web3jService) {
+  //    return new BatchRequest(web3jService);
+  //  }
 
   @Bean
   public CountDownLatch countDownLatch(WorkloadConfig config) {

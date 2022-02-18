@@ -45,6 +45,12 @@ public class ClosedWorkload implements WorkloadService {
     for (int i = 0; i < transactions; i++) {
       semaphore.acquireUninterruptibly();
       command.transferAsync().whenComplete((receipt, throwable) -> semaphore.release());
+      //      if(true){
+      //        command.transferBatchAsync().whenComplete((response, throwable) ->
+      // semaphore.release());
+      //      } else{
+      //        command.transferAsync().whenComplete((receipt, throwable) -> semaphore.release());
+      //      }
     }
     log.info("Transactions submitted");
   }

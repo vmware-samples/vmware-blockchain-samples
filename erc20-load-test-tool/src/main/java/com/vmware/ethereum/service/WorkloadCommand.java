@@ -26,8 +26,17 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
+import static com.vmware.ethereum.service.MetricsConstant.STATUS_UNKNOWN;
+import static java.time.Duration.between;
+import static java.time.Instant.now;
+
 import com.vmware.ethereum.config.Web3jConfig;
 import com.vmware.ethereum.config.WorkloadConfig;
+import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,16 +47,6 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.tx.response.EmptyTransactionReceipt;
 import org.web3j.tx.response.TransactionReceiptProcessor;
-
-import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
-
-import static com.vmware.ethereum.service.MetricsConstant.STATUS_UNKNOWN;
-import static java.time.Duration.between;
-import static java.time.Instant.now;
 
 @Slf4j
 @Service
@@ -61,13 +60,19 @@ public class WorkloadCommand implements Runnable {
   private final Web3jConfig web3jConfig;
   private final WorkloadConfig workloadConfig;
   private final TransactionReceiptProcessor transactionReceiptProcessor;
-  BatchRequest batch;
+  static BatchRequest batch = null;
 
   @Override
   public void run() {
     if (web3jConfig.getBatching().isEnable()) {
-      log.info("inside workload command transfer batch async");
-      transferBatchAsync();
+      log.debug("inside workload command transfer batch async");
+      if (((workloadConfig.getTransactions() - countDownLatch.getCount())
+                  % web3jConfig.getBatching().getBatchSize()
+              == 0)
+          || countDownLatch.getCount() == 0) {
+        batch = web3j.newBatch();
+      }
+      transferBatchAsync(batch);
     } else {
       transferAsync();
     }
@@ -99,16 +104,10 @@ public class WorkloadCommand implements Runnable {
             });
   }
 
-  public CompletableFuture<BatchResponse> transferBatchAsync() {
+  public CompletableFuture<BatchResponse> transferBatchAsync(BatchRequest batch) {
     log.debug("adding batch requests upto 5");
     Instant startTime = now();
-    batch = web3j.newBatch();
-    for (int i = 0; i < web3jConfig.getBatching().getBatchSize(); i++) {
-      api.addBatchRequests(batch);
-      if (countDownLatch.getCount() == workloadConfig.getTransactions()) {
-        break;
-      }
-    }
+    api.addBatchRequests(batch);
     log.debug("batch requests added");
 
     return api.transferBatchAsync(batch)
@@ -120,9 +119,7 @@ public class WorkloadCommand implements Runnable {
 
                 try {
                   receipt = transactionReceiptProcessor.waitForTransactionReceipt(transactionHash);
-                } catch (IOException e) {
-                  e.printStackTrace();
-                } catch (TransactionException e) {
+                } catch (IOException | TransactionException e) {
                   e.printStackTrace();
                 }
 
