@@ -39,6 +39,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -73,6 +74,7 @@ public class SecureTokenApi {
   private BigInteger gasEstimate;
   private BigInteger gasPrice;
   private String contractAddress;
+  private final CountDownLatch countDownLatch;
 
   @PostConstruct
   public void init() throws IOException {
@@ -117,7 +119,7 @@ public class SecureTokenApi {
   }
 
   public void addBatchRequests(BatchRequest batch) {
-    log.debug("inside addBatchRequests function");
+    log.info("inside addBatchRequests function");
     //    Function function =
     //        new Function(
     //            "transfer",
@@ -126,7 +128,6 @@ public class SecureTokenApi {
     // Uint256(valueOf(config.getAmount()))),
     //            Collections.emptyList());
     //    String txData = FunctionEncoder.encode(function);
-
     String txData =
         token.transfer(recipients.next(), valueOf(config.getAmount())).encodeFunctionCall();
     log.debug("txData - {}", txData);
@@ -138,11 +139,15 @@ public class SecureTokenApi {
     String signedMessage =
         Numeric.toHexString(TransactionEncoder.signMessage(rawTransaction, 5000, credentials));
     batch.add(web3j.ethSendRawTransaction(signedMessage));
-    log.debug("batched-requests {}", batch.getRequests());
+    countDownLatch.countDown();
+    log.info("batched-requests {}", batch.getRequests());
   }
 
   public CompletableFuture<BatchResponse> transferBatchAsync(BatchRequest batch) {
-    log.debug("inside transfer batch async");
+    log.info("inside transfer batch async");
+    //    for(int i=0; i<batch.getRequests().size();i++){
+    //      countDownLatch.countDown();
+    //    }
     return batch.sendAsync();
   }
 

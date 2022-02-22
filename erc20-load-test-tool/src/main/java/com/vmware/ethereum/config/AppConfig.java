@@ -174,10 +174,10 @@ public class AppConfig {
     return Web3j.build(web3jService);
   }
 
-  //  @Bean
-  //  public BatchRequest batch(Web3jService web3jService) {
-  //    return new BatchRequest(web3jService);
-  //  }
+  @Bean
+  public BatchRequestAdv batch(Web3jService web3jService) {
+    return new BatchRequestAdv(web3jService);
+  }
 
   @Bean
   public CountDownLatch countDownLatch(WorkloadConfig config) {

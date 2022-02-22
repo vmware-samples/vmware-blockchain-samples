@@ -34,6 +34,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.vmware.ethereum.config.BatchRequestAdv;
 import com.vmware.ethereum.config.TokenConfig;
 import com.vmware.ethereum.config.Web3jConfig;
 import com.vmware.ethereum.config.WorkloadConfig;
@@ -64,6 +65,8 @@ public class WorkloadRunner {
   private final MetricsService metrics;
   private final ProgressService progress;
   private final ReceiptMode receiptMode;
+
+  private final BatchRequestAdv batchRequestAdv;
 
   @Value("${server.port}")
   private int serverPort;
@@ -104,7 +107,12 @@ public class WorkloadRunner {
           command, workloadConfig.getTransactions(), workloadConfig.getLoadFactor());
     }
     return new ClosedWorkload(
-        command, workloadConfig.getTransactions(), workloadConfig.getLoadFactor());
+        command,
+        workloadConfig.getTransactions(),
+        workloadConfig.getLoadFactor(),
+        web3jConfig.getBatching().getBatchSize(),
+        api,
+        batchRequestAdv);
   }
 
   /** Print token balance of the sender and the receiver. */
