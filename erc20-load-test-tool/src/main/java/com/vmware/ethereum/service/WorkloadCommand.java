@@ -30,9 +30,7 @@ import static com.vmware.ethereum.service.MetricsConstant.STATUS_UNKNOWN;
 import static java.time.Duration.between;
 import static java.time.Instant.now;
 
-import com.vmware.ethereum.config.BatchRequestAdv;
 import com.vmware.ethereum.config.Web3jConfig;
-import com.vmware.ethereum.config.WorkloadConfig;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
@@ -42,6 +40,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.BatchRequest;
 import org.web3j.protocol.core.BatchResponse;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.exceptions.TransactionException;
@@ -53,61 +52,32 @@ import org.web3j.tx.response.TransactionReceiptProcessor;
 @RequiredArgsConstructor
 public class WorkloadCommand implements Runnable {
 
-  private final CountDownLatch countDownLatch;
   private final MetricsService metrics;
   private final Web3j web3j;
   private final Web3jConfig web3jConfig;
-  private final WorkloadConfig workloadConfig;
   private final TransactionReceiptProcessor transactionReceiptProcessor;
+  private final SecureTokenApi api;
+  private final CountDownLatch countDownLatch;
+  private BatchRequest batchRequest = null;
 
   @Override
   public void run() {
-    //    if (web3jConfig.getBatching().isEnable()) {
-    //      log.info("inside workload command transfer batch async");
-    //      if (((workloadConfig.getTransactions() - countDownLatch.getCount())
-    //        % web3jConfig.getBatching().getBatchSize()
-    //        == 0)
-    //        || countDownLatch.getCount() == 0) {
-    //        transferBatchAsync();
-    //      }
-    //    } else {
-    //      transferAsync();
-    //    }
+    if (batchRequest == null) {
+      batchRequest = web3j.newBatch();
+    }
+    api.addBatchRequests(batchRequest);
+    if (batchRequest.getRequests().size() == web3jConfig.getBatchSize()
+        || countDownLatch.getCount() == 1) {
+      transferBatchAsync(batchRequest);
+      batchRequest = web3j.newBatch();
+    }
   }
 
-  /** Transfer token asynchronously. */
-  public CompletableFuture<TransactionReceipt> transferAsync(SecureTokenApi api) {
-    Instant startTime = now();
-    return api.transferAsync()
-        .whenComplete(
-            (receipt, throwable) -> {
-              Duration duration = between(startTime, now());
-
-              if (receipt != null) {
-                log.trace("Receipt: {}", receipt);
-                String status =
-                    receipt instanceof EmptyTransactionReceipt
-                        ? STATUS_UNKNOWN
-                        : receipt.getStatus();
-                metrics.record(duration, status);
-              }
-
-              if (throwable != null) {
-                log.warn("{}", throwable.toString());
-                metrics.record(duration, throwable);
-              }
-
-              countDownLatch.countDown();
-            });
-  }
-
-  public CompletableFuture<BatchResponse> transferBatchAsync(
-      SecureTokenApi api, BatchRequestAdv batchRequestAdv) {
-    log.debug("adding batch requests upto 5");
+  public CompletableFuture<BatchResponse> transferBatchAsync(BatchRequest batchRequest) {
     Instant startTime = now();
     log.debug("batch requests added");
 
-    return api.transferBatchAsync(batchRequestAdv)
+    return api.transferBatchAsync(batchRequest)
         .whenComplete(
             (response, throwable) -> {
               TransactionReceipt receipt = null;
@@ -137,8 +107,41 @@ public class WorkloadCommand implements Runnable {
                 }
                 log.debug("response batch {}", transactionHash);
                 log.debug("response Transaction Receipt {}", receipt);
+                countDownLatch.countDown();
               }
-              batchRequestAdv.clear();
+            });
+  }
+
+  /** Transfer token asynchronously. */
+  public CompletableFuture<TransactionReceipt> transferAsync(
+      SecureTokenApi api, CountDownLatch countDownLatch) {
+    Instant startTime = now();
+    return api.transferAsync()
+        .whenComplete(
+            (receipt, throwable) -> {
+              Duration duration = between(startTime, now());
+
+              if (receipt != null) {
+                log.trace("Receipt: {}", receipt);
+                String status =
+                    receipt instanceof EmptyTransactionReceipt
+                        ? STATUS_UNKNOWN
+                        : receipt.getStatus();
+                metrics.record(duration, status);
+              }
+
+              if (throwable != null) {
+                log.warn("{}", throwable.toString());
+                metrics.record(duration, throwable);
+              }
+
+              countDownLatch.countDown();
             });
   }
 }
+
+// tx - token
+// req - http - one or many tx
+//
+// rps - req / sec
+// tps - rps*batching / sec

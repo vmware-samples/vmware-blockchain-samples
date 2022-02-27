@@ -28,6 +28,7 @@ package com.vmware.ethereum.config;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
@@ -49,7 +50,7 @@ public class Web3jConfig {
   @NotNull private Receipt receipt;
   @NotNull private Level logLevel;
   @NotNull private boolean manageNonce;
-  @NotNull private Batching batching;
+  @Positive @NotNull private int batchSize;
 
   @Setter
   @Getter
@@ -68,12 +69,5 @@ public class Web3jConfig {
     @PositiveOrZero private int attempts;
     @NotNull private long interval;
     @NotNull private boolean defer;
-  }
-
-  @Setter
-  @Getter
-  public static class Batching {
-    @NotNull private boolean enable;
-    @NotNull private int batchSize;
   }
 }

@@ -34,7 +34,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.vmware.ethereum.config.BatchRequestAdv;
 import com.vmware.ethereum.config.TokenConfig;
 import com.vmware.ethereum.config.Web3jConfig;
 import com.vmware.ethereum.config.WorkloadConfig;
@@ -49,6 +48,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.web3j.protocol.Web3j;
 
 @Slf4j
 @Service
@@ -66,7 +66,7 @@ public class WorkloadRunner {
   private final ProgressService progress;
   private final ReceiptMode receiptMode;
 
-  private final BatchRequestAdv batchRequestAdv;
+  private final Web3j web3j;
 
   @Value("${server.port}")
   private int serverPort;
@@ -110,9 +110,10 @@ public class WorkloadRunner {
         command,
         workloadConfig.getTransactions(),
         workloadConfig.getLoadFactor(),
-        web3jConfig.getBatching().getBatchSize(),
         api,
-        batchRequestAdv);
+        web3j,
+        web3jConfig,
+        countDownLatch);
   }
 
   /** Print token balance of the sender and the receiver. */

@@ -169,14 +169,14 @@ public class AppConfig {
     }
   }
 
+  //  @Bean
+  //  public BatchRequest batchRequest(Web3j web3j){
+  //    return web3j.newBatch();
+  //  }
+
   @Bean
   public Web3j web3j(Web3jService web3jService) {
     return Web3j.build(web3jService);
-  }
-
-  @Bean
-  public BatchRequestAdv batch(Web3jService web3jService) {
-    return new BatchRequestAdv(web3jService);
   }
 
   @Bean

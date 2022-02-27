@@ -26,10 +26,13 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import com.vmware.ethereum.config.BatchRequestAdv;
+import com.vmware.ethereum.config.Web3jConfig;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.BatchRequest;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -38,32 +41,35 @@ public class ClosedWorkload implements WorkloadService {
   private final WorkloadCommand command;
   private final long transactions;
   private final int concurrency;
-  private final int batchSize;
   private final SecureTokenApi api;
-  private final BatchRequestAdv batchRequestAdv;
+  private final Web3j web3j;
+  private final Web3jConfig web3jConfig;
+  private final CountDownLatch countDownLatch;
+  private BatchRequest batchRequest = null;
 
   @Override
   public void start() {
     log.info("Running {} transaction at concurrency {} ..", transactions, concurrency);
     Semaphore semaphore = new Semaphore(concurrency);
-    for (int i = 0; i <= transactions; i++) {
-
-      //      command.transferAsync().whenComplete((receipt, throwable) -> semaphore.release());
-      if (true) {
-        api.addBatchRequests(batchRequestAdv);
-        if ((i != 0 && (i % batchSize) == 0) || i == transactions) {
-          semaphore.acquireUninterruptibly();
-          command
-              .transferBatchAsync(api, batchRequestAdv)
-              .whenComplete((response, throwable) -> semaphore.release());
-        }
-
+    for (int i = 0; i < transactions; i++) {
+      semaphore.acquireUninterruptibly();
+      if (batchRequest == null) {
+        batchRequest = web3j.newBatch();
+      }
+      api.addBatchRequests(batchRequest);
+      if (batchRequest.getRequests().size() == web3jConfig.getBatchSize()
+          || countDownLatch.getCount() == 1) {
+        command
+            .transferBatchAsync(batchRequest)
+            .whenComplete((response, throwable) -> semaphore.release());
+        batchRequest = web3j.newBatch();
       } else {
-        semaphore.acquireUninterruptibly();
-        command.transferAsync(api).whenComplete((receipt, throwable) -> semaphore.release());
+        semaphore.release();
       }
     }
     log.info("Transactions submitted");
+    //    log.info("latch {}", countDownLatch.getCount());
+
   }
 
   @Override

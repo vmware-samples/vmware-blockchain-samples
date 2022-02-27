@@ -118,16 +118,8 @@ public class SecureTokenApi {
     return token.transfer(recipients.next(), valueOf(config.getAmount())).sendAsync();
   }
 
-  public void addBatchRequests(BatchRequest batch) {
+  public void addBatchRequests(BatchRequest batchRequest) {
     log.info("inside addBatchRequests function");
-    //    Function function =
-    //        new Function(
-    //            "transfer",
-    //            Arrays.asList(
-    //                new Address(config.getRecipients()[0]), new
-    // Uint256(valueOf(config.getAmount()))),
-    //            Collections.emptyList());
-    //    String txData = FunctionEncoder.encode(function);
     String txData =
         token.transfer(recipients.next(), valueOf(config.getAmount())).encodeFunctionCall();
     log.debug("txData - {}", txData);
@@ -135,20 +127,16 @@ public class SecureTokenApi {
     RawTransaction rawTransaction =
         RawTransaction.createTransaction(nonce, gasPrice, gasEstimate, contractAddress, txData);
     nonce = nonce.add(BigInteger.ONE);
-
     String signedMessage =
         Numeric.toHexString(TransactionEncoder.signMessage(rawTransaction, 5000, credentials));
-    batch.add(web3j.ethSendRawTransaction(signedMessage));
-    countDownLatch.countDown();
-    log.info("batched-requests {}", batch.getRequests());
+    batchRequest.add(web3j.ethSendRawTransaction(signedMessage));
+
+    log.debug("batched-requests {}", batchRequest.getRequests());
   }
 
-  public CompletableFuture<BatchResponse> transferBatchAsync(BatchRequest batch) {
+  public CompletableFuture<BatchResponse> transferBatchAsync(BatchRequest batchRequest) {
     log.info("inside transfer batch async");
-    //    for(int i=0; i<batch.getRequests().size();i++){
-    //      countDownLatch.countDown();
-    //    }
-    return batch.sendAsync();
+    return batchRequest.sendAsync();
   }
 
   public String getNetVersion() {
