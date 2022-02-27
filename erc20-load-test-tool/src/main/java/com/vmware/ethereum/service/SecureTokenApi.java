@@ -41,19 +41,18 @@ import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.web3j.crypto.Credentials;
-import org.web3j.crypto.RawTransaction;
-import org.web3j.crypto.TransactionEncoder;
 import org.web3j.model.SecurityToken;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.BatchRequest;
 import org.web3j.protocol.core.BatchResponse;
-import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.methods.request.Transaction;
+import org.web3j.protocol.core.methods.response.EthSendTransaction;
+import org.web3j.tx.BatchTransactionManager;
 import org.web3j.tx.TransactionManager;
-import org.web3j.utils.Numeric;
 
 @Slf4j
 @Service
@@ -63,12 +62,11 @@ public class SecureTokenApi {
   private final TokenConfig config;
   private final Web3j web3j;
   private final TransactionManager transactionManager;
+  private final BatchTransactionManager batchTransactionManager;
   private final SecureTokenFactory tokenFactory;
   private final String senderAddress;
-  private final Credentials credentials;
   private SecurityToken token;
   private Iterator<String> recipients;
-  private BigInteger nonce;
   private BigInteger gasEstimate;
   private BigInteger gasPrice;
   private String contractAddress;
@@ -89,11 +87,6 @@ public class SecureTokenApi {
               contractAddress = receipt.getContractAddress();
             });
     setTransactionManager();
-    nonce =
-        web3j
-            .ethGetTransactionCount(senderAddress, DefaultBlockParameterName.PENDING)
-            .send()
-            .getTransactionCount();
     Transaction tx = Transaction.createEthCallTransaction(null, null, null);
     gasEstimate = web3j.ethEstimateGas(tx).send().getAmountUsed();
     gasPrice = web3j.ethGasPrice().send().getGasPrice();
@@ -110,18 +103,17 @@ public class SecureTokenApi {
     setField(field, token, transactionManager);
   }
 
-  public void addBatchRequests(BatchRequest batchRequest) {
-    log.debug("inside addBatchRequests function");
+  public Request<?, EthSendTransaction> createTransaction() throws IOException {
     String txData =
         token.transfer(recipients.next(), valueOf(config.getAmount())).encodeFunctionCall();
     log.debug("txData - {}", txData);
-    log.debug("nonce - {}", nonce);
-    RawTransaction rawTransaction =
-        RawTransaction.createTransaction(nonce, gasPrice, gasEstimate, contractAddress, txData);
-    nonce = nonce.add(BigInteger.ONE);
-    String signedMessage =
-        Numeric.toHexString(TransactionEncoder.signMessage(rawTransaction, 5000, credentials));
-    batchRequest.add(web3j.ethSendRawTransaction(signedMessage));
+    return batchTransactionManager.sendTransactionRequest(
+        gasPrice, gasEstimate, contractAddress, txData, BigInteger.ZERO, web3j);
+  }
+
+  @SneakyThrows
+  public void addBatchRequests(BatchRequest batchRequest) {
+    batchRequest.add(createTransaction());
     log.debug("batched-requests {}", batchRequest.getRequests());
   }
 
