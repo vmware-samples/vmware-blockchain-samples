@@ -27,7 +27,6 @@ package com.vmware.ethereum.service;
  */
 
 import com.vmware.ethereum.config.Web3jConfig;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +43,6 @@ public class ClosedWorkload implements WorkloadService {
   private final SecureTokenApi api;
   private final Web3j web3j;
   private final Web3jConfig web3jConfig;
-  private final CountDownLatch countDownLatch;
   private BatchRequest batchRequest = null;
 
   @Override
@@ -58,7 +56,7 @@ public class ClosedWorkload implements WorkloadService {
       }
       api.addBatchRequests(batchRequest);
       if (batchRequest.getRequests().size() == web3jConfig.getBatchSize()
-          || countDownLatch.getCount() == 1) {
+          || i == transactions - 1) {
         command
             .transferBatchAsync(batchRequest)
             .whenComplete((response, throwable) -> semaphore.release());

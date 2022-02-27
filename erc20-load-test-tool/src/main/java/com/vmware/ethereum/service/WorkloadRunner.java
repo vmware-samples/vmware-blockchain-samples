@@ -112,8 +112,7 @@ public class WorkloadRunner {
         workloadConfig.getLoadFactor(),
         api,
         web3j,
-        web3jConfig,
-        countDownLatch);
+        web3jConfig);
   }
 
   /** Print token balance of the sender and the receiver. */
