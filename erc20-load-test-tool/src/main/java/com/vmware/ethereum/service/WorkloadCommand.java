@@ -73,6 +73,7 @@ public class WorkloadCommand implements Runnable {
     }
   }
 
+  /** Transfer token asynchronously. */
   public CompletableFuture<BatchResponse> transferBatchAsync(BatchRequest batchRequest) {
     Instant startTime = now();
     log.debug("batch requests added");
@@ -111,37 +112,4 @@ public class WorkloadCommand implements Runnable {
               }
             });
   }
-
-  /** Transfer token asynchronously. */
-  public CompletableFuture<TransactionReceipt> transferAsync(
-      SecureTokenApi api, CountDownLatch countDownLatch) {
-    Instant startTime = now();
-    return api.transferAsync()
-        .whenComplete(
-            (receipt, throwable) -> {
-              Duration duration = between(startTime, now());
-
-              if (receipt != null) {
-                log.trace("Receipt: {}", receipt);
-                String status =
-                    receipt instanceof EmptyTransactionReceipt
-                        ? STATUS_UNKNOWN
-                        : receipt.getStatus();
-                metrics.record(duration, status);
-              }
-
-              if (throwable != null) {
-                log.warn("{}", throwable.toString());
-                metrics.record(duration, throwable);
-              }
-
-              countDownLatch.countDown();
-            });
-  }
 }
-
-// tx - token
-// req - http - one or many tx
-//
-// rps - req / sec
-// tps - rps*batching / sec

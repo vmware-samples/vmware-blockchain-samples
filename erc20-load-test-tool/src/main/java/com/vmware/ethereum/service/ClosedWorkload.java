@@ -68,8 +68,6 @@ public class ClosedWorkload implements WorkloadService {
       }
     }
     log.info("Transactions submitted");
-    //    log.info("latch {}", countDownLatch.getCount());
-
   }
 
   @Override

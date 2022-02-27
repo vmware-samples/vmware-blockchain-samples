@@ -39,7 +39,6 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +52,6 @@ import org.web3j.protocol.core.BatchRequest;
 import org.web3j.protocol.core.BatchResponse;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.request.Transaction;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.TransactionManager;
 import org.web3j.utils.Numeric;
 
@@ -74,7 +72,6 @@ public class SecureTokenApi {
   private BigInteger gasEstimate;
   private BigInteger gasPrice;
   private String contractAddress;
-  private final CountDownLatch countDownLatch;
 
   @PostConstruct
   public void init() throws IOException {
@@ -113,13 +110,8 @@ public class SecureTokenApi {
     setField(field, token, transactionManager);
   }
 
-  /** Transfer token asynchronously. */
-  public CompletableFuture<TransactionReceipt> transferAsync() {
-    return token.transfer(recipients.next(), valueOf(config.getAmount())).sendAsync();
-  }
-
   public void addBatchRequests(BatchRequest batchRequest) {
-    log.info("inside addBatchRequests function");
+    log.debug("inside addBatchRequests function");
     String txData =
         token.transfer(recipients.next(), valueOf(config.getAmount())).encodeFunctionCall();
     log.debug("txData - {}", txData);
@@ -130,12 +122,12 @@ public class SecureTokenApi {
     String signedMessage =
         Numeric.toHexString(TransactionEncoder.signMessage(rawTransaction, 5000, credentials));
     batchRequest.add(web3j.ethSendRawTransaction(signedMessage));
-
     log.debug("batched-requests {}", batchRequest.getRequests());
   }
 
+  /** Transfer token asynchronously. */
   public CompletableFuture<BatchResponse> transferBatchAsync(BatchRequest batchRequest) {
-    log.info("inside transfer batch async");
+    log.debug("inside transfer batch async");
     return batchRequest.sendAsync();
   }
 
