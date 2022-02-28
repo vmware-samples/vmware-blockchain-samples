@@ -72,6 +72,9 @@ public class ProgressReport {
 
   /** Format duration as words. */
   private String format(Duration duration) {
+    if (duration.isNegative()) {
+      duration = Duration.ZERO;
+    }
     return formatDurationWords(duration.toMillis(), true, true);
   }
 }
