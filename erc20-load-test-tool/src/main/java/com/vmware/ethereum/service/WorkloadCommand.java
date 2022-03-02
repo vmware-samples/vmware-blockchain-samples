@@ -30,7 +30,7 @@ import static com.vmware.ethereum.service.MetricsConstant.STATUS_UNKNOWN;
 import static java.time.Duration.between;
 import static java.time.Instant.now;
 
-import com.vmware.ethereum.config.Web3jConfig;
+import com.vmware.ethereum.config.WorkloadConfig;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
@@ -54,7 +54,7 @@ public class WorkloadCommand implements Runnable {
 
   private final MetricsService metrics;
   private final Web3j web3j;
-  private final Web3jConfig web3jConfig;
+  private final WorkloadConfig workloadConfig;
   private final TransactionReceiptProcessor transactionReceiptProcessor;
   private final SecureTokenApi api;
   private final CountDownLatch countDownLatch;
@@ -66,7 +66,7 @@ public class WorkloadCommand implements Runnable {
       batchRequest = web3j.newBatch();
     }
     api.addBatchRequests(batchRequest);
-    if (batchRequest.getRequests().size() == web3jConfig.getBatchSize()
+    if (batchRequest.getRequests().size() == workloadConfig.getBatchSize()
         || countDownLatch.getCount() == 1) {
       transferBatchAsync(batchRequest);
       batchRequest = web3j.newBatch();

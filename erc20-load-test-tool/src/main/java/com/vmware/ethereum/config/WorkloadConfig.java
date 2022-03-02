@@ -47,4 +47,5 @@ public class WorkloadConfig {
   @NotNull private WorkloadModel model;
   @PositiveOrZero private int loadFactor;
   @NotNull private Duration progressInterval;
+  @Positive @NotNull private int batchSize;
 }
