@@ -84,8 +84,8 @@ public class SecureTokenApi {
         .ifPresent(
             receipt -> {
               log.info("Receipt: {}", receipt);
-              contractAddress = receipt.getContractAddress();
             });
+    contractAddress = token.getContractAddress();
     setTransactionManager();
     Transaction tx = Transaction.createEthCallTransaction(null, null, null);
     gasEstimate = web3j.ethEstimateGas(tx).send().getAmountUsed();
