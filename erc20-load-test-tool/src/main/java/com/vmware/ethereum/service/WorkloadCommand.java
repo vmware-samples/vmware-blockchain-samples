@@ -30,6 +30,7 @@ import static com.vmware.ethereum.service.MetricsConstant.STATUS_UNKNOWN;
 import static java.time.Duration.between;
 import static java.time.Instant.now;
 
+import com.vmware.ethereum.config.Web3jConfig;
 import com.vmware.ethereum.config.WorkloadConfig;
 import java.io.IOException;
 import java.time.Duration;
@@ -58,6 +59,7 @@ public class WorkloadCommand implements Runnable {
   private final TransactionReceiptProcessor transactionReceiptProcessor;
   private final SecureTokenApi api;
   private final CountDownLatch countDownLatch;
+  private final Web3jConfig web3jConfig;
   private BatchRequest batchRequest = null;
 
   @Override
@@ -81,34 +83,67 @@ public class WorkloadCommand implements Runnable {
     return api.transferBatchAsync(batchRequest)
         .whenComplete(
             (response, throwable) -> {
+              BatchRequest receiptBatchRequest = web3j.newBatch();
               TransactionReceipt receipt = null;
+              Duration duration;
               for (int i = 0; i < response.getResponses().size(); i++) {
                 String transactionHash = String.valueOf(response.getResponses().get(i).getResult());
+                receiptBatchRequest.add(web3j.ethGetTransactionReceipt(transactionHash));
+                if (web3jConfig.getReceipt().isDefer()
+                    || web3jConfig.getReceipt().getAttempts() == 0) {
+                  try {
+                    receipt =
+                        transactionReceiptProcessor.waitForTransactionReceipt(transactionHash);
+                  } catch (IOException | TransactionException e) {
+                    e.printStackTrace();
+                  }
+                  duration = between(startTime, now());
+                  if (receipt != null) {
+                    log.trace("Receipt: {}", receipt);
+                    String status =
+                        receipt instanceof EmptyTransactionReceipt
+                            ? STATUS_UNKNOWN
+                            : receipt.getStatus();
+                    metrics.record(duration, status);
+                  }
+
+                  if (throwable != null) {
+                    log.warn("{}", throwable.toString());
+                    metrics.record(duration, throwable);
+                  }
+                  log.debug("response batch {}", transactionHash);
+                  log.debug("response Transaction Receipt {}", receipt);
+                  countDownLatch.countDown();
+                }
+              }
+              if (!web3jConfig.getReceipt().isDefer()
+                  && web3jConfig.getReceipt().getAttempts() != 0) {
+                BatchResponse receiptBatchResponse = null;
 
                 try {
-                  receipt = transactionReceiptProcessor.waitForTransactionReceipt(transactionHash);
-                } catch (IOException | TransactionException e) {
+                  receiptBatchResponse = receiptBatchRequest.send();
+                  duration = between(startTime, now());
+                  for (int i = 0; i < receiptBatchResponse.getResponses().size(); i++) {
+                    receipt =
+                        (TransactionReceipt) receiptBatchResponse.getResponses().get(i).getResult();
+                    log.debug("receipt = {}", receipt);
+                    if (receipt != null) {
+                      log.trace("Receipt: {}", receipt);
+                      String status = receipt.getStatus();
+                      metrics.record(duration, status);
+                    }
+
+                    if (throwable != null) {
+                      log.warn("{}", throwable.toString());
+                      metrics.record(duration, throwable);
+                    }
+                    log.debug("response Transaction Receipt {}", receipt);
+                    countDownLatch.countDown();
+                  }
+
+                } catch (IOException e) {
                   e.printStackTrace();
                 }
-
-                Duration duration = between(startTime, now());
-
-                if (receipt != null) {
-                  log.trace("Receipt: {}", receipt);
-                  String status =
-                      receipt instanceof EmptyTransactionReceipt
-                          ? STATUS_UNKNOWN
-                          : receipt.getStatus();
-                  metrics.record(duration, status);
-                }
-
-                if (throwable != null) {
-                  log.warn("{}", throwable.toString());
-                  metrics.record(duration, throwable);
-                }
-                log.debug("response batch {}", transactionHash);
-                log.debug("response Transaction Receipt {}", receipt);
-                countDownLatch.countDown();
               }
             });
   }
