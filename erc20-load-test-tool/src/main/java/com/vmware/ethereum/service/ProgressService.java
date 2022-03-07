@@ -26,17 +26,18 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static com.vmware.ethereum.service.MetricsConstant.STATE_ACTIVE;
-import static com.vmware.ethereum.service.MetricsConstant.STATE_IDLE;
-import static java.util.stream.Collectors.joining;
-
 import com.vmware.ethereum.config.WorkloadConfig;
 import com.vmware.ethereum.model.ProgressReport;
 import com.vmware.ethereum.model.ReceiptMode;
-import java.util.Map;
-import java.util.Map.Entry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
+import java.util.Map.Entry;
+
+import static com.vmware.ethereum.service.MetricsConstant.STATE_ACTIVE;
+import static com.vmware.ethereum.service.MetricsConstant.STATE_IDLE;
+import static java.util.stream.Collectors.joining;
 
 @Service
 @RequiredArgsConstructor
@@ -62,6 +63,8 @@ public class ProgressService {
         .loadFactor(config.getLoadFactor())
         .averageThroughput(metrics.getAverageThroughput())
         .averageLatency(metrics.getAverageLatency())
+        .averageWriteThroughput(metrics.getAverageWriteThroughput())
+        .batchSize(config.getBatchSize())
         .activeConnections(metrics.getHttpConnections(STATE_ACTIVE))
         .idleConnections(metrics.getHttpConnections(STATE_IDLE))
         .build();

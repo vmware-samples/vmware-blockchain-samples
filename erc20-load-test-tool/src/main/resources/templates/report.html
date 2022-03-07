@@ -114,6 +114,14 @@
         <td th:text="${progress.averageThroughput}"></td>
       </tr>
       <tr>
+        <th>Average Write Requests Throughput (/s)</th>
+        <td th:text="${progress.averageWriteThroughput}"></td>
+      </tr>
+      <tr>
+        <th>Average Write Throughput (/s)</th>
+        <td th:text="${progress.averageWriteThroughput} * ${progress.getBatchSize()}"></td>
+      </tr>
+      <tr>
         <th>Average Latency (ms)</th>
         <td th:text="${progress.averageLatency}"></td>
       </tr>

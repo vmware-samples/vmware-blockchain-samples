@@ -26,18 +26,8 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static com.vmware.ethereum.service.MetricsConstant.STATUS_UNKNOWN;
-import static java.time.Duration.between;
-import static java.time.Instant.now;
-
 import com.vmware.ethereum.config.Web3jConfig;
 import com.vmware.ethereum.config.WorkloadConfig;
-import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -48,6 +38,17 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.tx.response.EmptyTransactionReceipt;
 import org.web3j.tx.response.TransactionReceiptProcessor;
+
+import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+
+import static com.vmware.ethereum.service.MetricsConstant.STATUS_UNKNOWN;
+import static java.time.Duration.between;
+import static java.time.Instant.now;
 
 @Slf4j
 @Service
@@ -78,19 +79,21 @@ public class WorkloadCommand implements Runnable {
 
   /** Transfer token asynchronously. */
   public CompletableFuture<BatchResponse> transferBatchAsync(BatchRequest batchRequest) {
-    Instant startTime = now();
+    Instant startWriteTime = now();
     log.debug("batch requests added");
 
     return api.transferBatchAsync(batchRequest)
-        .whenComplete((response, throwable) -> receiptProcessor(startTime, response, throwable));
+        .whenComplete((response, throwable) -> receiptProcessor(startWriteTime, response, throwable));
   }
 
-  private void receiptProcessor(Instant startTime, BatchResponse response, Throwable throwable) {
+  private void receiptProcessor(Instant startWriteTime, BatchResponse response, Throwable throwable) {
     ArrayList<TransactionReceipt> receipt = new ArrayList<>();
     Duration duration;
-
+    duration = between(startWriteTime, now());
+    metrics.recordWrite(duration, "0x1");
     BatchRequest receiptBatchRequest = web3j.newBatch();
 
+    Instant startTime = now();
     for (int i = 0; i < response.getResponses().size(); i++) {
       String transactionHash = String.valueOf(response.getResponses().get(i).getResult());
 
@@ -113,15 +116,16 @@ public class WorkloadCommand implements Runnable {
         e.printStackTrace();
       }
 
+
       for (int i = 0;
           receiptBatchResponse != null && i < receiptBatchResponse.getResponses().size();
           i++) {
         receipt.add((TransactionReceipt) receiptBatchResponse.getResponses().get(i).getResult());
       }
     }
+    duration = between(startTime, now());
 
     for (int i = 0; i < receipt.size(); i++) {
-      duration = between(startTime, now());
       if (receipt.get(i) != null) {
         log.trace("Receipt: {}", receipt);
         String status =
