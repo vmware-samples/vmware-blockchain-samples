@@ -30,53 +30,112 @@ import static com.vmware.ethereum.service.MetricsConstant.STATUS_UNKNOWN;
 import static java.time.Duration.between;
 import static java.time.Instant.now;
 
+import com.vmware.ethereum.config.Web3jConfig;
+import com.vmware.ethereum.config.WorkloadConfig;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.BatchRequest;
+import org.web3j.protocol.core.BatchResponse;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.tx.response.EmptyTransactionReceipt;
+import org.web3j.tx.response.TransactionReceiptProcessor;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class WorkloadCommand implements Runnable {
 
+  private final MetricsService metrics;
+  private final Web3j web3j;
+  private final WorkloadConfig workloadConfig;
+  private final TransactionReceiptProcessor transactionReceiptProcessor;
   private final SecureTokenApi api;
   private final CountDownLatch countDownLatch;
-  private final MetricsService metrics;
+  private final Web3jConfig web3jConfig;
+  private BatchRequest batchRequest = null;
 
   @Override
   public void run() {
-    transferAsync();
+    if (batchRequest == null) {
+      batchRequest = web3j.newBatch();
+    }
+    api.addBatchRequests(batchRequest);
+    if (batchRequest.getRequests().size() == workloadConfig.getBatchSize()
+        || countDownLatch.getCount() == 1) {
+      transferBatchAsync(batchRequest);
+      batchRequest = web3j.newBatch();
+    }
   }
 
   /** Transfer token asynchronously. */
-  public CompletableFuture<TransactionReceipt> transferAsync() {
+  public CompletableFuture<BatchResponse> transferBatchAsync(BatchRequest batchRequest) {
     Instant startTime = now();
-    return api.transferAsync()
-        .whenComplete(
-            (receipt, throwable) -> {
-              Duration duration = between(startTime, now());
+    log.debug("batch requests added");
 
-              if (receipt != null) {
-                log.trace("Receipt: {}", receipt);
-                String status =
-                    receipt instanceof EmptyTransactionReceipt
-                        ? STATUS_UNKNOWN
-                        : receipt.getStatus();
-                metrics.record(duration, status);
-              }
+    return api.transferBatchAsync(batchRequest)
+        .whenComplete((response, throwable) -> receiptProcessor(startTime, response, throwable));
+  }
 
-              if (throwable != null) {
-                log.warn("{}", throwable.toString());
-                metrics.record(duration, throwable);
-              }
+  private void receiptProcessor(Instant startTime, BatchResponse response, Throwable throwable) {
+    ArrayList<TransactionReceipt> receipt = new ArrayList<>();
+    Duration duration;
 
-              countDownLatch.countDown();
-            });
+    BatchRequest receiptBatchRequest = web3j.newBatch();
+
+    for (int i = 0; i < response.getResponses().size(); i++) {
+      String transactionHash = String.valueOf(response.getResponses().get(i).getResult());
+
+      if (web3jConfig.getReceipt().isDefer() || web3jConfig.getReceipt().getAttempts() == 0) {
+        try {
+          receipt.add(transactionReceiptProcessor.waitForTransactionReceipt(transactionHash));
+        } catch (IOException | TransactionException e) {
+          e.printStackTrace();
+        }
+      } else {
+        receiptBatchRequest.add(web3j.ethGetTransactionReceipt(transactionHash));
+      }
+    }
+
+    if (receiptBatchRequest.getRequests().size() != 0) {
+      BatchResponse receiptBatchResponse = null;
+      try {
+        receiptBatchResponse = receiptBatchRequest.send();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+
+      for (int i = 0;
+          receiptBatchResponse != null && i < receiptBatchResponse.getResponses().size();
+          i++) {
+        receipt.add((TransactionReceipt) receiptBatchResponse.getResponses().get(i).getResult());
+      }
+    }
+
+    for (int i = 0; i < receipt.size(); i++) {
+      duration = between(startTime, now());
+      if (receipt.get(i) != null) {
+        log.trace("Receipt: {}", receipt);
+        String status =
+            receipt.get(i) instanceof EmptyTransactionReceipt
+                ? STATUS_UNKNOWN
+                : receipt.get(i).getStatus();
+        metrics.record(duration, status);
+      }
+
+      if (throwable != null) {
+        log.warn("{}", throwable.toString());
+        metrics.record(duration, throwable);
+      }
+      countDownLatch.countDown();
+    }
   }
 }

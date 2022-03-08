@@ -180,7 +180,8 @@ def aggregate_report(instance):
     json_obj = {'aggregate_tx': aggregate_tx, 'aggregate_throughput': aggregate_throughput,
                 'aggregate_latency': int(aggregate_latency / instance), 'aggregate_loadfactor': aggregate_loadfactor,
                 'aggregate_txStatus': aggregate_tx_status, 'aggregate_txErrors': aggregate_tx_errors,
-                'aggregate_receiptStatus': aggregate_receipt_status, 'aggregate_receiptErrors': aggregate_receipt_errors
+                'aggregate_receiptStatus': aggregate_receipt_status, 'aggregate_receiptErrors': aggregate_receipt_errors,
+                'batch_size' : os.environ['WORKLOAD_BATCH_SIZE']
                 }
 
     filename = "../output/result/aggregate-report.json"

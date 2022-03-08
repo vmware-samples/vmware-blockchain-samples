@@ -1,12 +1,13 @@
 workload:
   model: CLOSED  # either OPEN or CLOSED workload model
+  batch-size: 10 # Request size of batched transactions
   transactions: 1_000 # total transactions to be done
   load-factor: 1 # arrival rate for OPEN model & concurrency for CLOSED model
   progress-interval: 5s # interval for updating progress in web UI
 
 web3j:
   ethClient:
-    correlate: true # sets correlation id
+    correlate: false # sets correlation id
     protocol: http # supports grpc, http, https
     host: localhost # IP of the ethereum client Node
     port: 8545 # port number (50505 - gRPC, 8545 - ethRPC)

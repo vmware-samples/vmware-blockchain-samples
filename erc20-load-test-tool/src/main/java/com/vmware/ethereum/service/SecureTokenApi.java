@@ -33,17 +33,25 @@ import static org.springframework.util.ReflectionUtils.findField;
 import static org.springframework.util.ReflectionUtils.setField;
 
 import com.vmware.ethereum.config.TokenConfig;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.web3j.model.SecurityToken;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.protocol.core.BatchRequest;
+import org.web3j.protocol.core.BatchResponse;
+import org.web3j.protocol.core.Request;
+import org.web3j.protocol.core.methods.request.Transaction;
+import org.web3j.protocol.core.methods.response.EthSendTransaction;
+import org.web3j.tx.BatchTransactionManager;
 import org.web3j.tx.TransactionManager;
 
 @Slf4j
@@ -54,21 +62,34 @@ public class SecureTokenApi {
   private final TokenConfig config;
   private final Web3j web3j;
   private final TransactionManager transactionManager;
+  private final BatchTransactionManager batchTransactionManager;
   private final SecureTokenFactory tokenFactory;
   private final String senderAddress;
   private SecurityToken token;
   private Iterator<String> recipients;
+  private BigInteger gasEstimate;
+  private BigInteger gasPrice;
+  private String contractAddress;
 
   @PostConstruct
-  public void init() {
+  public void init() throws IOException {
     log.info("Client version: {}", getClientVersion());
     log.info("Net version: {}", getNetVersion());
     log.info("Sender address: {}", senderAddress);
     recipients = cycle(config.getRecipients());
 
     token = tokenFactory.getSecureToken();
-    token.getTransactionReceipt().ifPresent(receipt -> log.info("Receipt: {}", receipt));
+    token
+        .getTransactionReceipt()
+        .ifPresent(
+            receipt -> {
+              log.info("Receipt: {}", receipt);
+            });
+    contractAddress = token.getContractAddress();
     setTransactionManager();
+    Transaction tx = Transaction.createEthCallTransaction(null, null, null);
+    gasEstimate = web3j.ethEstimateGas(tx).send().getAmountUsed();
+    gasPrice = web3j.ethGasPrice().send().getGasPrice();
   }
 
   /**
@@ -82,9 +103,24 @@ public class SecureTokenApi {
     setField(field, token, transactionManager);
   }
 
+  public Request<?, EthSendTransaction> createTransaction() throws IOException {
+    String txData =
+        token.transfer(recipients.next(), valueOf(config.getAmount())).encodeFunctionCall();
+    log.debug("txData - {}", txData);
+    return batchTransactionManager.sendTransactionRequest(
+        gasPrice, gasEstimate, contractAddress, txData, BigInteger.ZERO, web3j);
+  }
+
+  @SneakyThrows
+  public void addBatchRequests(BatchRequest batchRequest) {
+    batchRequest.add(createTransaction());
+    log.debug("batched-requests {}", batchRequest.getRequests());
+  }
+
   /** Transfer token asynchronously. */
-  public CompletableFuture<TransactionReceipt> transferAsync() {
-    return token.transfer(recipients.next(), valueOf(config.getAmount())).sendAsync();
+  public CompletableFuture<BatchResponse> transferBatchAsync(BatchRequest batchRequest) {
+    log.debug("inside transfer batch async");
+    return batchRequest.sendAsync();
   }
 
   public String getNetVersion() {

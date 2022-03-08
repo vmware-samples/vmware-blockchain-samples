@@ -61,6 +61,7 @@ import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.tx.BatchTransactionManager;
 import org.web3j.tx.FastRawTransactionManager;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.TransactionManager;
@@ -150,6 +151,17 @@ public class AppConfig {
     }
 
     return new RawTransactionManager(web3j, credentials, chainId, transactionReceiptProcessor);
+  }
+
+  @Bean
+  public BatchTransactionManager batchTransactionManager(
+      Web3j web3j,
+      Credentials credentials,
+      TransactionReceiptProcessor transactionReceiptProcessor) {
+
+    int chainId = config.getEthClient().getChainId();
+
+    return new BatchTransactionManager(web3j, credentials, chainId, transactionReceiptProcessor);
   }
 
   @Bean

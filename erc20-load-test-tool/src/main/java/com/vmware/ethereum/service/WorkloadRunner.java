@@ -48,6 +48,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.web3j.protocol.Web3j;
 
 @Slf4j
 @Service
@@ -64,6 +65,8 @@ public class WorkloadRunner {
   private final MetricsService metrics;
   private final ProgressService progress;
   private final ReceiptMode receiptMode;
+
+  private final Web3j web3j;
 
   @Value("${server.port}")
   private int serverPort;
@@ -104,7 +107,12 @@ public class WorkloadRunner {
           command, workloadConfig.getTransactions(), workloadConfig.getLoadFactor());
     }
     return new ClosedWorkload(
-        command, workloadConfig.getTransactions(), workloadConfig.getLoadFactor());
+        command,
+        workloadConfig.getTransactions(),
+        workloadConfig.getLoadFactor(),
+        api,
+        web3j,
+        workloadConfig);
   }
 
   /** Print token balance of the sender and the receiver. */
