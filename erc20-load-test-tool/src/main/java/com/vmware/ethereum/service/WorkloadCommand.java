@@ -44,6 +44,7 @@ import org.springframework.stereotype.Service;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.BatchRequest;
 import org.web3j.protocol.core.BatchResponse;
+import org.web3j.protocol.core.Response;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.tx.response.EmptyTransactionReceipt;
@@ -112,11 +113,24 @@ public class WorkloadCommand implements Runnable {
       } catch (IOException e) {
         e.printStackTrace();
       }
-
+      Response<?> receiptResponse;
       for (int i = 0;
           receiptBatchResponse != null && i < receiptBatchResponse.getResponses().size();
           i++) {
-        receipt.add((TransactionReceipt) receiptBatchResponse.getResponses().get(i).getResult());
+        receiptResponse = receiptBatchResponse.getResponses().get(i);
+        if (!receiptResponse.hasError()) {
+          receipt.add((TransactionReceipt) receiptResponse.getResult());
+        } else {
+          TransactionReceipt errorReceiptResponse =
+              (TransactionReceipt) receiptResponse.getResult();
+          errorReceiptResponse.setStatus(String.valueOf(receiptResponse.getError().getCode()));
+          receipt.add(errorReceiptResponse);
+          log.info(
+              "error - {} {} {}",
+              receiptResponse.getError().getCode(),
+              receiptResponse.getError().getData(),
+              receiptResponse.getError().getMessage());
+        }
       }
     }
 
