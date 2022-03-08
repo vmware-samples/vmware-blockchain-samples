@@ -26,18 +26,8 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static com.vmware.ethereum.service.MetricsConstant.STATUS_UNKNOWN;
-import static java.time.Duration.between;
-import static java.time.Instant.now;
-
 import com.vmware.ethereum.config.Web3jConfig;
 import com.vmware.ethereum.config.WorkloadConfig;
-import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -49,6 +39,17 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.tx.response.EmptyTransactionReceipt;
 import org.web3j.tx.response.TransactionReceiptProcessor;
+
+import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+
+import static com.vmware.ethereum.service.MetricsConstant.STATUS_UNKNOWN;
+import static java.time.Duration.between;
+import static java.time.Instant.now;
 
 @Slf4j
 @Service
@@ -83,18 +84,28 @@ public class WorkloadCommand implements Runnable {
     log.debug("batch requests added");
 
     return api.transferBatchAsync(batchRequest)
-        .whenComplete((response, throwable) -> receiptProcessor(startTime, response, throwable));
+        .whenComplete(
+            (response, throwable) -> {
+              if (throwable != null) {
+                log.warn("{}", throwable.toString());
+                for (int i = 0; i < workloadConfig.getBatchSize(); i++) {
+                  metrics.record(between(startTime, now()), throwable);
+                  countDownLatch.countDown();
+                }
+                return;
+              }
+              receiptProcessor(startTime, response);
+            });
   }
 
-  private void receiptProcessor(Instant startTime, BatchResponse response, Throwable throwable) {
-    ArrayList<TransactionReceipt> receipt = new ArrayList<>();
+  private void receiptProcessor(Instant startTime, BatchResponse response) {
     Duration duration;
-
+    ArrayList<TransactionReceipt> receipt = new ArrayList<>();
+    ArrayList<Throwable> errors = new ArrayList<>();
     BatchRequest receiptBatchRequest = web3j.newBatch();
 
     for (int i = 0; i < response.getResponses().size(); i++) {
       String transactionHash = String.valueOf(response.getResponses().get(i).getResult());
-
       if (web3jConfig.getReceipt().isDefer() || web3jConfig.getReceipt().getAttempts() == 0) {
         try {
           receipt.add(transactionReceiptProcessor.waitForTransactionReceipt(transactionHash));
@@ -118,18 +129,15 @@ public class WorkloadCommand implements Runnable {
           receiptBatchResponse != null && i < receiptBatchResponse.getResponses().size();
           i++) {
         receiptResponse = receiptBatchResponse.getResponses().get(i);
-        if (!receiptResponse.hasError()) {
-          receipt.add((TransactionReceipt) receiptResponse.getResult());
-        } else {
-          TransactionReceipt errorReceiptResponse =
-              (TransactionReceipt) receiptResponse.getResult();
-          errorReceiptResponse.setStatus(String.valueOf(receiptResponse.getError().getCode()));
-          receipt.add(errorReceiptResponse);
-          log.info(
+        if (receiptResponse.hasError()) {
+          errors.add(new Throwable(receiptResponse.getError().getMessage()));
+          log.warn(
               "error - {} {} {}",
               receiptResponse.getError().getCode(),
               receiptResponse.getError().getData(),
               receiptResponse.getError().getMessage());
+        } else {
+          receipt.add((TransactionReceipt) receiptResponse.getResult());
         }
       }
     }
@@ -144,10 +152,14 @@ public class WorkloadCommand implements Runnable {
                 : receipt.get(i).getStatus();
         metrics.record(duration, status);
       }
+      countDownLatch.countDown();
+    }
 
-      if (throwable != null) {
-        log.warn("{}", throwable.toString());
-        metrics.record(duration, throwable);
+    for (Throwable error : errors) {
+      duration = between(startTime, now());
+      if (error != null) {
+        log.trace("Error: {}", error.getMessage());
+        metrics.record(duration, error);
       }
       countDownLatch.countDown();
     }
