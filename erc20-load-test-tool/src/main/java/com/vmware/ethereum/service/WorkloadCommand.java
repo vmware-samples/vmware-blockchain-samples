@@ -26,8 +26,18 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
+import static com.vmware.ethereum.service.MetricsConstant.STATUS_UNKNOWN;
+import static java.time.Duration.between;
+import static java.time.Instant.now;
+
 import com.vmware.ethereum.config.Web3jConfig;
 import com.vmware.ethereum.config.WorkloadConfig;
+import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,20 +46,10 @@ import org.web3j.protocol.core.BatchRequest;
 import org.web3j.protocol.core.BatchResponse;
 import org.web3j.protocol.core.Response;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.protocol.exceptions.JsonRpcError;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.tx.response.EmptyTransactionReceipt;
 import org.web3j.tx.response.TransactionReceiptProcessor;
-
-import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
-
-import static com.vmware.ethereum.service.MetricsConstant.STATUS_UNKNOWN;
-import static java.time.Duration.between;
-import static java.time.Instant.now;
 
 @Slf4j
 @Service
@@ -78,7 +78,7 @@ public class WorkloadCommand implements Runnable {
     }
   }
 
-  /** Transfer token asynchronously. */
+  /** Transfer batched Transactions asynchronously. */
   public CompletableFuture<BatchResponse> transferBatchAsync(BatchRequest batchRequest) {
     Instant startTime = now();
     log.debug("batch requests added");
@@ -87,7 +87,16 @@ public class WorkloadCommand implements Runnable {
         .whenComplete(
             (response, throwable) -> {
               if (throwable != null) {
-                log.warn("{}", throwable.toString());
+                if (throwable instanceof JsonRpcError) {
+                  JsonRpcError error = (JsonRpcError) throwable;
+                  log.warn(
+                      "JSON-RPC code {}, data: {}, message: {}",
+                      error.getCode(),
+                      error.getData(),
+                      error.getMessage());
+                } else {
+                  log.warn("{}", throwable.toString());
+                }
                 for (int i = 0; i < workloadConfig.getBatchSize(); i++) {
                   metrics.record(between(startTime, now()), throwable);
                   countDownLatch.countDown();
@@ -98,6 +107,7 @@ public class WorkloadCommand implements Runnable {
             });
   }
 
+  /** Create batch request for Receipt polling and process the batched response */
   private void receiptProcessor(Instant startTime, BatchResponse response) {
     Duration duration;
     ArrayList<TransactionReceipt> receipt = new ArrayList<>();
@@ -110,6 +120,7 @@ public class WorkloadCommand implements Runnable {
         try {
           receipt.add(transactionReceiptProcessor.waitForTransactionReceipt(transactionHash));
         } catch (IOException | TransactionException e) {
+          log.warn("{}", e.toString());
           errors.add(e);
         }
       } else {
@@ -122,6 +133,7 @@ public class WorkloadCommand implements Runnable {
       try {
         receiptBatchResponse = receiptBatchRequest.send();
       } catch (IOException e) {
+        log.warn("{}", e.toString());
         for (int i = 0; i < workloadConfig.getBatchSize(); i++) {
           errors.add(e);
         }
@@ -134,7 +146,7 @@ public class WorkloadCommand implements Runnable {
         if (receiptResponse.hasError()) {
           errors.add(new Throwable(receiptResponse.getError().getMessage()));
           log.warn(
-              "error - {} {} {}",
+              "JSON-RPC code {}, data: {}, message: {}",
               receiptResponse.getError().getCode(),
               receiptResponse.getError().getData(),
               receiptResponse.getError().getMessage());
