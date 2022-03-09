@@ -110,7 +110,7 @@ public class WorkloadCommand implements Runnable {
         try {
           receipt.add(transactionReceiptProcessor.waitForTransactionReceipt(transactionHash));
         } catch (IOException | TransactionException e) {
-          e.printStackTrace();
+          errors.add(e);
         }
       } else {
         receiptBatchRequest.add(web3j.ethGetTransactionReceipt(transactionHash));
@@ -122,7 +122,9 @@ public class WorkloadCommand implements Runnable {
       try {
         receiptBatchResponse = receiptBatchRequest.send();
       } catch (IOException e) {
-        e.printStackTrace();
+        for (int i = 0; i < workloadConfig.getBatchSize(); i++) {
+          errors.add(e);
+        }
       }
       Response<?> receiptResponse;
       for (int i = 0;

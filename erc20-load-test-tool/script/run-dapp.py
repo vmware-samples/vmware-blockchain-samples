@@ -187,7 +187,7 @@ def aggregate_report(instance):
     filename = "../output/result/aggregate-report.json"
     with open(filename, 'w') as f:
         json.dump(json_obj, f, indent=4)
-
+    print("Aggregated Result - \n"+json.dumps(json_obj, indent=4))
 
 # function to start wavefront proxy
 def start_wavefront_proxy():
