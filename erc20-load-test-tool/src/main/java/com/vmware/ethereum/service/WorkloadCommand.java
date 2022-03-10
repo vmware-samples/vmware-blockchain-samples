@@ -44,7 +44,9 @@ import org.springframework.stereotype.Service;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.BatchRequest;
 import org.web3j.protocol.core.BatchResponse;
+import org.web3j.protocol.core.Response;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.protocol.exceptions.JsonRpcError;
 import org.web3j.protocol.exceptions.TransactionException;
 import org.web3j.tx.response.EmptyTransactionReceipt;
 import org.web3j.tx.response.TransactionReceiptProcessor;
@@ -76,29 +78,50 @@ public class WorkloadCommand implements Runnable {
     }
   }
 
-  /** Transfer token asynchronously. */
+  /** Transfer batched Transactions asynchronously. */
   public CompletableFuture<BatchResponse> transferBatchAsync(BatchRequest batchRequest) {
     Instant startTime = now();
     log.debug("batch requests added");
 
     return api.transferBatchAsync(batchRequest)
-        .whenComplete((response, throwable) -> receiptProcessor(startTime, response, throwable));
+        .whenComplete(
+            (response, throwable) -> {
+              if (throwable != null) {
+                if (throwable instanceof JsonRpcError) {
+                  JsonRpcError error = (JsonRpcError) throwable;
+                  log.warn(
+                      "JSON-RPC code {}, data: {}, message: {}",
+                      error.getCode(),
+                      error.getData(),
+                      error.getMessage());
+                } else {
+                  log.warn("{}", throwable.toString());
+                }
+                for (int i = 0; i < workloadConfig.getBatchSize(); i++) {
+                  metrics.record(between(startTime, now()), throwable);
+                  countDownLatch.countDown();
+                }
+                return;
+              }
+              receiptProcessor(startTime, response);
+            });
   }
 
-  private void receiptProcessor(Instant startTime, BatchResponse response, Throwable throwable) {
-    ArrayList<TransactionReceipt> receipt = new ArrayList<>();
+  /** Create batch request for Receipt polling and process the batched response */
+  private void receiptProcessor(Instant startTime, BatchResponse response) {
     Duration duration;
-
+    ArrayList<TransactionReceipt> receipt = new ArrayList<>();
+    ArrayList<Throwable> errors = new ArrayList<>();
     BatchRequest receiptBatchRequest = web3j.newBatch();
 
     for (int i = 0; i < response.getResponses().size(); i++) {
       String transactionHash = String.valueOf(response.getResponses().get(i).getResult());
-
       if (web3jConfig.getReceipt().isDefer() || web3jConfig.getReceipt().getAttempts() == 0) {
         try {
           receipt.add(transactionReceiptProcessor.waitForTransactionReceipt(transactionHash));
         } catch (IOException | TransactionException e) {
-          e.printStackTrace();
+          log.warn("{}", e.toString());
+          errors.add(e);
         }
       } else {
         receiptBatchRequest.add(web3j.ethGetTransactionReceipt(transactionHash));
@@ -110,13 +133,26 @@ public class WorkloadCommand implements Runnable {
       try {
         receiptBatchResponse = receiptBatchRequest.send();
       } catch (IOException e) {
-        e.printStackTrace();
+        log.warn("{}", e.toString());
+        for (int i = 0; i < workloadConfig.getBatchSize(); i++) {
+          errors.add(e);
+        }
       }
-
+      Response<?> receiptResponse;
       for (int i = 0;
           receiptBatchResponse != null && i < receiptBatchResponse.getResponses().size();
           i++) {
-        receipt.add((TransactionReceipt) receiptBatchResponse.getResponses().get(i).getResult());
+        receiptResponse = receiptBatchResponse.getResponses().get(i);
+        if (receiptResponse.hasError()) {
+          errors.add(new Throwable(receiptResponse.getError().getMessage()));
+          log.warn(
+              "JSON-RPC code {}, data: {}, message: {}",
+              receiptResponse.getError().getCode(),
+              receiptResponse.getError().getData(),
+              receiptResponse.getError().getMessage());
+        } else {
+          receipt.add((TransactionReceipt) receiptResponse.getResult());
+        }
       }
     }
 
@@ -130,10 +166,14 @@ public class WorkloadCommand implements Runnable {
                 : receipt.get(i).getStatus();
         metrics.record(duration, status);
       }
+      countDownLatch.countDown();
+    }
 
-      if (throwable != null) {
-        log.warn("{}", throwable.toString());
-        metrics.record(duration, throwable);
+    for (Throwable error : errors) {
+      duration = between(startTime, now());
+      if (error != null) {
+        log.trace("Error: {}", error.getMessage());
+        metrics.record(duration, error);
       }
       countDownLatch.countDown();
     }

@@ -78,7 +78,11 @@ public class SecureTokenApi {
     log.info("Sender address: {}", senderAddress);
     recipients = cycle(config.getRecipients());
 
-    token = tokenFactory.getSecureToken();
+    setGas();
+    log.info("Gas Estimate {}", gasEstimate);
+    log.info("Gas Price {}", gasPrice);
+
+    token = tokenFactory.getSecureToken(gasEstimate, gasPrice);
     token
         .getTransactionReceipt()
         .ifPresent(
@@ -87,9 +91,6 @@ public class SecureTokenApi {
             });
     contractAddress = token.getContractAddress();
     setTransactionManager();
-    Transaction tx = Transaction.createEthCallTransaction(null, null, null);
-    gasEstimate = web3j.ethEstimateGas(tx).send().getAmountUsed();
-    gasPrice = web3j.ethGasPrice().send().getGasPrice();
   }
 
   /**
@@ -103,6 +104,14 @@ public class SecureTokenApi {
     setField(field, token, transactionManager);
   }
 
+  /** Sets gasEstimate and gasPrice. */
+  private void setGas() throws IOException {
+    Transaction tx = Transaction.createEthCallTransaction(null, null, null);
+    gasEstimate = web3j.ethEstimateGas(tx).send().getAmountUsed();
+    gasPrice = web3j.ethGasPrice().send().getGasPrice();
+  }
+
+  /** Creates token transfer transaction request. */
   public Request<?, EthSendTransaction> createTransaction() throws IOException {
     String txData =
         token.transfer(recipients.next(), valueOf(config.getAmount())).encodeFunctionCall();
@@ -111,13 +120,14 @@ public class SecureTokenApi {
         gasPrice, gasEstimate, contractAddress, txData, BigInteger.ZERO, web3j);
   }
 
-  @SneakyThrows
+  /** Adds transaction request to the batch. */
+  @SneakyThrows(IOException.class)
   public void addBatchRequests(BatchRequest batchRequest) {
     batchRequest.add(createTransaction());
     log.debug("batched-requests {}", batchRequest.getRequests());
   }
 
-  /** Transfer token asynchronously. */
+  /** Transfer Batched transactions asynchronously. */
   public CompletableFuture<BatchResponse> transferBatchAsync(BatchRequest batchRequest) {
     log.debug("inside transfer batch async");
     return batchRequest.sendAsync();

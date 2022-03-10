@@ -187,7 +187,7 @@ def aggregate_report(instance):
     filename = "../output/result/aggregate-report.json"
     with open(filename, 'w') as f:
         json.dump(json_obj, f, indent=4)
-
+    print("Aggregated Result - \n"+json.dumps(json_obj, indent=4))
 
 # function to start wavefront proxy
 def start_wavefront_proxy():
@@ -195,7 +195,7 @@ def start_wavefront_proxy():
     cmd = 'docker run -d -p 2878:2878 -e WAVEFRONT_URL=https://vmware.wavefront.com/api -e ' \
           'WAVEFRONT_TOKEN=' + wavefront_token + ' -e JAVA_HEAP_USAGE=4G -e JVM_USE_CONTAINER_OPTS=false --name ' \
                                                  'wavefront-proxy athena-docker-local.artifactory.eng.vmware.com' \
-                                                 '/wavefront-proxy:9.7 '
+                                                 '/wavefront-proxy:10.12 '
     subprocess.call(cmd, shell=True, stdout=subprocess.PIPE)
 
 

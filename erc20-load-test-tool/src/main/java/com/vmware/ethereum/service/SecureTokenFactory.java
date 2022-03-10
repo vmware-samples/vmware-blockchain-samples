@@ -41,7 +41,6 @@ import org.sql2o.Sql2o;
 import org.web3j.crypto.Credentials;
 import org.web3j.model.SecurityToken;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
 
@@ -57,13 +56,7 @@ public class SecureTokenFactory {
 
   /** Get SecureToken contract either by loading or deploying. */
   @SneakyThrows(Exception.class)
-  public SecurityToken getSecureToken() {
-
-    Transaction tx = Transaction.createEthCallTransaction(null, null, null);
-    BigInteger gasEstimate = web3j.ethEstimateGas(tx).send().getAmountUsed();
-    BigInteger gasPrice = web3j.ethGasPrice().send().getGasPrice();
-    log.info("Gas Estimate {}", gasEstimate);
-    log.info("Gas Price {}", gasPrice);
+  public SecurityToken getSecureToken(BigInteger gasEstimate, BigInteger gasPrice) {
 
     ContractGasProvider gasProvider = new StaticGasProvider(gasPrice, gasEstimate);
 
