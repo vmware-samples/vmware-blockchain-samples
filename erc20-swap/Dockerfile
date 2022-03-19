@@ -16,7 +16,7 @@ COPY . /workspace/erc20-swap
 
 
 # Install Dependencies
-RUN apk add --update nodejs=14.18.1-r0
+RUN apk add --update nodejs=14.19.0-r0
 RUN apk add --update npm=7.17.0-r0
 
 # Run build Commands
