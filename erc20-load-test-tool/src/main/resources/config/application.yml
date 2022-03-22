@@ -18,6 +18,7 @@ web3j:
     defer: false # set true for queued polling of transaction receipt
   manage-nonce: true # Managing nonce would avoid the overhead of calling eth_getTransactionCount.
   log-level: NONE # NONE, BASIC, HEADERS, BODY
+  okhttp-read-timeout: 10 # read timeout in seconds
 
 token:
   name: SecureToken
@@ -75,6 +76,10 @@ logging:
       micrometer:
         influx: info
       grpc: error
+  logback:
+    rollingpolicy:
+      max-file-size: 1GB
+      max-history: 10
 
 server:
   port: 8080 # web UI port for tracking progress

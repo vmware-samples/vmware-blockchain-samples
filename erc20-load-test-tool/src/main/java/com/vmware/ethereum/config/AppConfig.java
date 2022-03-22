@@ -45,6 +45,7 @@ import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
@@ -84,6 +85,7 @@ public class AppConfig {
   private OkHttpClient okHttpClient(String correlationPrefix) throws GeneralSecurityException {
     TrustManager[] trustManagers = InsecureTrustManagerFactory.INSTANCE.getTrustManagers();
     return new OkHttpClient.Builder()
+        .readTimeout(config.getOkhttpReadTimeout(), TimeUnit.SECONDS)
         .sslSocketFactory(sslSocketFactory(), (X509TrustManager) trustManagers[0])
         .hostnameVerifier((hostname, session) -> true)
         .addInterceptor(new CorrelationInterceptor(correlationPrefix))
