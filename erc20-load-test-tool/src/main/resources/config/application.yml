@@ -80,6 +80,7 @@ logging:
     rollingpolicy:
       max-file-size: 1GB
       max-history: 10
+      file-name-pattern: ${LOG_FILE}.%d{yyyy-MM}.%i.gz
 
 server:
   port: 8080 # web UI port for tracking progress
