@@ -7,7 +7,7 @@ workload:
 
 web3j:
   ethClient:
-    correlate: false # sets correlation id
+    correlate: true # sets correlation id
     protocol: http # supports grpc, http, https
     host: localhost # IP of the ethereum client Node
     port: 8545 # port number (50505 - gRPC, 8545 - ethRPC)
