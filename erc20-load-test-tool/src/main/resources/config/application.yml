@@ -18,7 +18,7 @@ web3j:
     defer: false # set true for queued polling of transaction receipt
   manage-nonce: true # Managing nonce would avoid the overhead of calling eth_getTransactionCount.
   log-level: NONE # NONE, BASIC, HEADERS, BODY
-  okhttp-read-timeout: 10 # read timeout in seconds
+  okhttp-read-timeout: 20 # read timeout in seconds
 
 token:
   name: SecureToken
