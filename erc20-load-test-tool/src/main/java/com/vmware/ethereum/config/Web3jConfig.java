@@ -28,6 +28,7 @@ package com.vmware.ethereum.config;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
@@ -49,6 +50,7 @@ public class Web3jConfig {
   @NotNull private Receipt receipt;
   @NotNull private Level logLevel;
   @NotNull private boolean manageNonce;
+  @Positive private int okhttpReadTimeout;
 
   @Setter
   @Getter
