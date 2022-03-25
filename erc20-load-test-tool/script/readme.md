@@ -30,5 +30,10 @@ $ source .env
 
 3. Run the script
 ```bash
-$ python3 run-dapp.py
+$ nohup python3 run-dapp.py &
+```
+
+3. Check the progress
+```bash
+$ cat nohup.out
 ```
