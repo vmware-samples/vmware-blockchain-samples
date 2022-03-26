@@ -23,17 +23,12 @@ Install the following tools.
 $ vi .env
 ```
 
-2. Load ENVIRONMENT variables
+2. Run the script
 ```bash
-$ source .env
+$ ./run.sh
 ```
 
-3. Run the script
-```bash
-$ nohup python3 run-dapp.py &
-```
-
-3. Check the progress
+3. To check the logs
 ```bash
 $ cat nohup.out
 ```
