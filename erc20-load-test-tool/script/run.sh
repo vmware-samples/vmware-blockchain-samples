@@ -7,5 +7,3 @@ if [[ "$version" == "11"* ]]; then
 else
     echo Java version is not 11
 fi
-
-
