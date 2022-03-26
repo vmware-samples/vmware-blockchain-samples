@@ -55,9 +55,11 @@ def tx_receipt_poll(construct_txn, acc_priv_key):
 
 
 # function to deploy contract address and distribute tokens among all senders
-def deploy_contract(contract_deploy_account, contract_deploy_account_key, host):
+def deploy_contract(contract_deploy_account, contract_deploy_account_key, host, port, protocol):
     # connecting to end point
-    url = "http://" + host + ":8545"
+    if protocol == "grpc":
+        port = "8545"
+    url = "http://" + host + ":" + port
     compile_security_token()
     global w3
     w3 = Web3(Web3.HTTPProvider(url,
@@ -233,7 +235,7 @@ def main():
     contract_address = None
     if share_contract:
         assert dapp_count > 1, "At least 2 instances should run to share contract."
-        contract_address = deploy_contract(accts[0], priv_keys[0], host)
+        contract_address = deploy_contract(accts[0], priv_keys[0], host, client_port, protocol)
         print("Contract Address -", contract_address)
         distribute_tokens(accts, priv_keys, contract_address)
         print("tokens distributed among senders")
