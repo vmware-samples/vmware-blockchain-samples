@@ -84,6 +84,7 @@ public class WorkloadRunner {
   private void start(WorkloadService workload) {
     printBalance();
     metrics.setStartTime(now());
+    metrics.setStartWriteTime(now());
     workload.start();
   }
 
@@ -91,6 +92,7 @@ public class WorkloadRunner {
   @SneakyThrows(InterruptedException.class)
   private void stop(WorkloadService workload) {
     workload.stop();
+    metrics.setEndTime(now());
     metrics.setEndTime(now());
     SECONDS.sleep(1);
     printReport();
@@ -155,6 +157,7 @@ public class WorkloadRunner {
 
     log.info("Avg throughput: {}/sec", metrics.getAverageThroughput());
     log.info("Avg latency:  {} ms", metrics.getAverageLatency());
+    log.info("getAverageWriteThroughputRequests {}", metrics.getAverageWriteThroughput());
   }
 
   /** Save report */

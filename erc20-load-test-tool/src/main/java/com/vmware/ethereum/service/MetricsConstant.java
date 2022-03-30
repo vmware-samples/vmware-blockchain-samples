@@ -31,6 +31,9 @@ public interface MetricsConstant {
   String TOKEN_TRANSFER_TIMER = "transfer.latency";
   String TOKEN_RECEIPT_COUNTER = "receipt.count";
 
+  String WRITE_REQUEST_COUNTER = "write.count";
+  String WRITE_TRANSFER_TIMER = "write.transfer.latency";
+
   String STATUS_TAG = "status";
   String STATUS_UNKNOWN = "0x0";
   String STATUS_OK = "0x1";

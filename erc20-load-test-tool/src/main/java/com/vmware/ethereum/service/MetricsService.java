@@ -26,12 +26,7 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static com.vmware.ethereum.service.MetricsConstant.OKHTTP_CONNECTION_COUNT;
-import static com.vmware.ethereum.service.MetricsConstant.STATE_TAG;
-import static com.vmware.ethereum.service.MetricsConstant.STATUS_OK;
-import static com.vmware.ethereum.service.MetricsConstant.STATUS_TAG;
-import static com.vmware.ethereum.service.MetricsConstant.TOKEN_RECEIPT_COUNTER;
-import static com.vmware.ethereum.service.MetricsConstant.TOKEN_TRANSFER_TIMER;
+import static com.vmware.ethereum.service.MetricsConstant.*;
 import static io.micrometer.core.aop.TimedAspect.EXCEPTION_TAG;
 import static java.lang.Math.max;
 import static java.time.Duration.between;
@@ -43,11 +38,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.stream.Collectors.toMap;
 
 import com.vmware.ethereum.config.WorkloadConfig;
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.Gauge;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Tag;
-import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.*;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import java.time.Duration;
 import java.time.Instant;
@@ -69,6 +60,9 @@ public class MetricsService {
   @Setter private Instant startTime;
   @Setter private Instant endTime;
 
+  @Setter private Instant startWriteTime;
+  @Setter private Instant endWriteTime;
+
   /** Record the latency timer for successful tx. */
   public void record(Duration duration, String status) {
     record(duration, statusTag(status));
@@ -82,6 +76,15 @@ public class MetricsService {
   /** Record the latency timer with given tags. */
   private void record(Duration duration, Iterable<Tag> tags) {
     Timer.builder(TOKEN_TRANSFER_TIMER).tags(tags).register(composite).record(duration);
+  }
+
+  /** Record the latency timer for successful tx. */
+  public void recordWrite(Duration duration, String status) {
+    recordWrite(duration, statusTag(status));
+  }
+
+  private void recordWrite(Duration duration, Iterable<Tag> tags) {
+    Timer.builder(WRITE_TRANSFER_TIMER).tags(tags).register(composite).record(duration);
   }
 
   /** Increment the receipt counter for successful tx. */
@@ -99,9 +102,22 @@ public class MetricsService {
     Counter.builder(TOKEN_RECEIPT_COUNTER).tags(tags).register(composite).increment();
   }
 
+  /** Increment the receipt counter for successful tx. */
+  public void incrementWrite(String status) {
+    incrementWrite(statusTag(status));
+  }
+
+  private void incrementWrite(Iterable<Tag> tags) {
+    Counter.builder(WRITE_REQUEST_COUNTER).tags(tags).register(composite).increment();
+  }
+
   /** Get "count" group by "status code" for latency timer. */
   public Map<String, Long> getTimerStatusToCount() {
     return getTimerTagValueToCount(STATUS_TAG);
+  }
+
+  public Map<String, Long> getWriteTimerStatusToCount() {
+    return getWriteTimerTagValueToCount(STATUS_TAG);
   }
 
   /** Get "count" group by "exception class" for latency timer. */
@@ -115,9 +131,19 @@ public class MetricsService {
         .collect(toMap(timer -> timer.getId().getTag(tagName), Timer::count));
   }
 
+  private Map<String, Long> getWriteTimerTagValueToCount(String tagName) {
+    return simple.find(WRITE_TRANSFER_TIMER).tagKeys(tagName).timers().stream()
+        .collect(toMap(timer -> timer.getId().getTag(tagName), Timer::count));
+  }
+
   /** Get "count" group by "status code" for receipt counter. */
   public Map<String, Long> getCounterStatusToCount() {
     return getCounterTagValueToCount(STATUS_TAG);
+  }
+
+  /** Get "count" group by "status code" for receipt counter. */
+  public Map<String, Long> getWriteCounterStatusToCount() {
+    return getWriteCounterTagValueToCount(STATUS_TAG);
   }
 
   /** Get "count" group by "exception class" for receipt counter. */
@@ -128,6 +154,13 @@ public class MetricsService {
   /** Get "count" group by the given tag name for receipt counter. */
   private Map<String, Long> getCounterTagValueToCount(String tagName) {
     return simple.find(TOKEN_RECEIPT_COUNTER).tagKeys(tagName).counters().stream()
+        .collect(
+            toMap(counter -> counter.getId().getTag(tagName), counter -> (long) counter.count()));
+  }
+
+  /** Get "count" group by the given tag name for receipt counter. */
+  private Map<String, Long> getWriteCounterTagValueToCount(String tagName) {
+    return simple.find(WRITE_REQUEST_COUNTER).tagKeys(tagName).counters().stream()
         .collect(
             toMap(counter -> counter.getId().getTag(tagName), counter -> (long) counter.count()));
   }
@@ -155,6 +188,14 @@ public class MetricsService {
     return between(startTime, now());
   }
 
+  /** Get elapsed time of the test. */
+  public Duration getWriteElapsedTime() {
+    if (endWriteTime != null) {
+      return between(startWriteTime, endWriteTime);
+    }
+    return between(startWriteTime, now());
+  }
+
   /** Get remaining time of the test. */
   public Duration getRemainingTime() {
     return ofSeconds(getPendingCount() / max(getAverageThroughput(), 1));
@@ -164,6 +205,11 @@ public class MetricsService {
   public long getCompletionCount() {
     return sum(getTimerStatusToCount().values()) + sum(getTimerErrorToCount().values());
   }
+
+  public long getWriteCompletionCount() {
+    return sum(getWriteTimerStatusToCount().values());
+  }
+
   /** Get total pending transactions. */
   public long getPendingCount() {
     return config.getTransactions() - getCompletionCount();
@@ -174,9 +220,22 @@ public class MetricsService {
     return getCompletionCount() / max(getElapsedTime().getSeconds(), 1);
   }
 
+  /** Throughput for the test duration. */
+  public long getAverageWriteThroughput() {
+    return getWriteCompletionCount() / max(getWriteElapsedTime().getSeconds(), 1);
+  }
+
   /** Latency for the test duration. */
   public long getAverageLatency() {
     Collection<Timer> timers = simple.find(TOKEN_TRANSFER_TIMER).timers();
+    double totalTime = timers.stream().mapToDouble(timer -> timer.totalTime(MILLISECONDS)).sum();
+    long count = timers.stream().mapToLong(Timer::count).sum();
+    return count == 0 ? 0 : (long) (totalTime / count);
+  }
+
+  /** Latency for the test duration. */
+  public long getWriteAverageLatency() {
+    Collection<Timer> timers = simple.find(WRITE_TRANSFER_TIMER).timers();
     double totalTime = timers.stream().mapToDouble(timer -> timer.totalTime(MILLISECONDS)).sum();
     long count = timers.stream().mapToLong(Timer::count).sum();
     return count == 0 ? 0 : (long) (totalTime / count);

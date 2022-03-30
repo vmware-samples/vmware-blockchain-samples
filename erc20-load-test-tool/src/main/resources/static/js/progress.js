@@ -86,8 +86,9 @@ function updateReport(progress) {
 
   update("metrics", 0, progress.averageThroughput);
   update("metrics", 1, progress.averageLatency);
-  update("metrics", 2, progress.activeConnections);
-  update("metrics", 3, progress.idleConnections);
+  update("metrics", 2, progress.averageWriteThroughput);
+  update("metrics", 3, progress.activeConnections);
+  update("metrics", 4, progress.idleConnections);
 }
 
 progress = new LoadProgress();
@@ -97,7 +98,8 @@ progress = new LoadProgress();
  */
 window.onload = function () {
   progress.start();
-  console.log("Progress started")
+  console.log("Progress started ggs")
+  console.log("avg write throughput added")
 }
 
 window.onbeforeunload = function () {
