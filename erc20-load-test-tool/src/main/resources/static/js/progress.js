@@ -87,8 +87,9 @@ function updateReport(progress) {
   update("metrics", 0, progress.averageThroughput);
   update("metrics", 1, progress.averageLatency);
   update("metrics", 2, progress.averageWriteThroughput);
-  update("metrics", 3, progress.activeConnections);
-  update("metrics", 4, progress.idleConnections);
+  update("metrics", 3, progress.averageWriteLatency);
+  update("metrics", 4, progress.activeConnections);
+  update("metrics", 5, progress.idleConnections);
 }
 
 progress = new LoadProgress();

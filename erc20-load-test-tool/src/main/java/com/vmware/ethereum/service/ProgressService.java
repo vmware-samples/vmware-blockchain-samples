@@ -63,6 +63,7 @@ public class ProgressService {
         .averageThroughput(metrics.getAverageThroughput())
         .averageLatency(metrics.getAverageLatency())
         .averageWriteThroughput(metrics.getAverageWriteThroughput())
+        .averageWriteLatency(metrics.getWriteAverageLatency())
         .activeConnections(metrics.getHttpConnections(STATE_ACTIVE))
         .idleConnections(metrics.getHttpConnections(STATE_IDLE))
         .build();
