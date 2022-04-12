@@ -84,7 +84,6 @@ public class WorkloadRunner {
   private void start(WorkloadService workload) {
     printBalance();
     metrics.setStartTime(now());
-    metrics.setStartReadTime(now());
     workload.start();
   }
 
@@ -155,9 +154,10 @@ public class WorkloadRunner {
       log.info("Concurrency: {}", workloadConfig.getLoadFactor());
     }
 
-    log.info("Avg throughput: {}/sec", metrics.getAverageThroughput());
-    log.info("Avg latency:  {} ms", metrics.getAverageLatency());
-    log.info("getReadAverageThroughput {}", metrics.getReadAverageThroughput());
+    log.info("Avg write throughput: {}/sec", metrics.getAverageThroughput());
+    log.info("Avg write latency:  {} ms", metrics.getAverageLatency());
+    log.info("Avg read throughput {}", metrics.getReadAverageThroughput());
+    log.info("Avg read latency {}", metrics.getReadAverageLatency());
   }
 
   /** Save report */

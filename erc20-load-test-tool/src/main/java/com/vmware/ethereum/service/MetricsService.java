@@ -60,15 +60,12 @@ public class MetricsService {
   @Setter private Instant startTime;
   @Setter private Instant endTime;
 
-  @Setter private Instant startReadTime;
-  @Setter private Instant endReadTime;
-
-  /** Record the latency timer for successful tx. */
+  /** Record the latency timer for successful write tx. */
   public void record(Duration duration, String status) {
     record(duration, statusTag(status));
   }
 
-  /** Record the latency timer for failed tx. */
+  /** Record the latency timer for failed write tx. */
   public void record(Duration duration, Throwable throwable) {
     record(duration, exceptionTag(throwable));
   }
@@ -78,16 +75,17 @@ public class MetricsService {
     Timer.builder(WRITE_REQUEST_TIMER).tags(tags).register(composite).record(duration);
   }
 
-  /** Record the latency timer for successful tx. */
+  /** Record the latency timer for successful read requests. */
   public void recordRead(Duration duration, String status) {
     recordRead(duration, statusTag(status));
   }
 
-  /** Record the latency timer for failed tx. */
+  /** Record the latency timer for failed read requests. */
   public void recordRead(Duration duration, Throwable throwable) {
     recordRead(duration, exceptionTag(throwable));
   }
 
+  /** Record the latency timer with given tags. */
   private void recordRead(Duration duration, Iterable<Tag> tags) {
     Timer.builder(READ_REQUEST_TIMER).tags(tags).register(composite).record(duration);
   }
@@ -102,15 +100,17 @@ public class MetricsService {
     incrementRead(exceptionTag(throwable));
   }
 
+  /** Increment the receipt counter with given tags. */
   private void incrementRead(Iterable<Tag> tags) {
     Counter.builder(TOKEN_RECEIPT_COUNTER).tags(tags).register(composite).increment();
   }
 
-  /** Get "count" group by "status code" for latency timer. */
+  /** Get "count" group by "status code" for Write latency timer. */
   public Map<String, Long> getTimerStatusToCount() {
     return getTimerTagValueToCount(STATUS_TAG);
   }
 
+  /** Get "count" group by "status code" for Read latency timer. */
   public Map<String, Long> getReadTimerStatusToCount() {
     return getReadTimerTagValueToCount(STATUS_TAG);
   }
@@ -120,7 +120,7 @@ public class MetricsService {
     return getTimerTagValueToCount(EXCEPTION_TAG);
   }
 
-  /** Get "count" group by "exception class" for latency timer. */
+  /** Get "count" group by "exception class" for Read latency timer. */
   public Map<String, Long> getReadTimerErrorToCount() {
     return getReadTimerTagValueToCount(EXCEPTION_TAG);
   }
@@ -131,6 +131,7 @@ public class MetricsService {
         .collect(toMap(timer -> timer.getId().getTag(tagName), Timer::count));
   }
 
+  /** Get "count" group by the given tag name for read latency timer. */
   private Map<String, Long> getReadTimerTagValueToCount(String tagName) {
     return simple.find(READ_REQUEST_TIMER).tagKeys(tagName).timers().stream()
         .collect(toMap(timer -> timer.getId().getTag(tagName), Timer::count));
@@ -176,24 +177,17 @@ public class MetricsService {
     return between(startTime, now());
   }
 
-  /** Get elapsed time of the test. */
-  public Duration getReadElapsedTime() {
-    if (endReadTime != null) {
-      return between(startReadTime, endReadTime);
-    }
-    return between(startReadTime, now());
-  }
-
   /** Get remaining time of the test. */
   public Duration getRemainingTime() {
     return ofSeconds(getPendingCount() / max(getAverageThroughput(), 1));
   }
 
-  /** Get total completed transactions. */
+  /** Get total completed write transactions. */
   public long getCompletionCount() {
     return sum(getTimerStatusToCount().values()) + sum(getTimerErrorToCount().values());
   }
 
+  /** Get total completed read receipts. */
   public long getReadCompletionCount() {
     return sum(getReadTimerStatusToCount().values()) + sum(getReadTimerErrorToCount().values());
   }
@@ -203,17 +197,17 @@ public class MetricsService {
     return config.getTransactions() - getCompletionCount();
   }
 
-  /** Throughput for the test duration. */
+  /** Throughput for the write requests. */
   public long getAverageThroughput() {
     return getCompletionCount() / max(getElapsedTime().getSeconds(), 1);
   }
 
-  /** Throughput for the test duration. */
+  /** Throughput for the read requests. */
   public long getReadAverageThroughput() {
-    return getReadCompletionCount() / max(getReadElapsedTime().getSeconds(), 1);
+    return getReadCompletionCount() / max(getElapsedTime().getSeconds(), 1);
   }
 
-  /** Latency for the test duration. */
+  /** Latency for the write requests. */
   public long getAverageLatency() {
     Collection<Timer> timers = simple.find(WRITE_REQUEST_TIMER).timers();
     double totalTime = timers.stream().mapToDouble(timer -> timer.totalTime(MILLISECONDS)).sum();
@@ -221,7 +215,7 @@ public class MetricsService {
     return count == 0 ? 0 : (long) (totalTime / count);
   }
 
-  /** Latency for the test duration. */
+  /** Latency for the read requests. */
   public long getReadAverageLatency() {
     Collection<Timer> timers = simple.find(READ_REQUEST_TIMER).timers();
     double totalTime = timers.stream().mapToDouble(timer -> timer.totalTime(MILLISECONDS)).sum();
