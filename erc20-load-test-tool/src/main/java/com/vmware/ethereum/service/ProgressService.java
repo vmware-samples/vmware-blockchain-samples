@@ -26,18 +26,17 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import com.vmware.ethereum.config.WorkloadConfig;
-import com.vmware.ethereum.model.ProgressReport;
-import com.vmware.ethereum.model.ReceiptMode;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
-import java.util.Map;
-import java.util.Map.Entry;
-
 import static com.vmware.ethereum.service.MetricsConstant.STATE_ACTIVE;
 import static com.vmware.ethereum.service.MetricsConstant.STATE_IDLE;
 import static java.util.stream.Collectors.joining;
+
+import com.vmware.ethereum.config.WorkloadConfig;
+import com.vmware.ethereum.model.ProgressReport;
+import com.vmware.ethereum.model.ReceiptMode;
+import java.util.Map;
+import java.util.Map.Entry;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -58,8 +57,6 @@ public class ProgressService {
         .readErrors(toString(metrics.getReadTimerErrorToCount()))
         .receiptStatus(toString(metrics.getReadCounterStatusToCount()))
         .receiptErrors(toString(metrics.getReadCounterErrorToCount()))
-//        .writeReqStatus(toString(metrics.getCounterStatusToCount()))
-//        .writeReqErrors(toString(metrics.getCounterErrorToCount()))
         .txPending(metrics.getPendingCount())
         .elapsedTime(metrics.getElapsedTime())
         .remainingTime(metrics.getRemainingTime())

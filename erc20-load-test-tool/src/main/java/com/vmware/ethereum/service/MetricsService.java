@@ -26,19 +26,6 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import com.vmware.ethereum.config.WorkloadConfig;
-import io.micrometer.core.instrument.*;
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import org.springframework.stereotype.Service;
-
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-
 import static com.vmware.ethereum.service.MetricsConstant.*;
 import static io.micrometer.core.aop.TimedAspect.EXCEPTION_TAG;
 import static java.lang.Math.max;
@@ -49,6 +36,18 @@ import static java.util.Collections.singleton;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.stream.Collectors.toMap;
+
+import com.vmware.ethereum.config.WorkloadConfig;
+import io.micrometer.core.instrument.*;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -92,21 +91,6 @@ public class MetricsService {
   private void recordRead(Duration duration, Iterable<Tag> tags) {
     Timer.builder(READ_REQUEST_TIMER).tags(tags).register(composite).record(duration);
   }
-
-//  /** Increment the receipt counter for successful tx. */
-//  public void increment(String status) {
-//    increment(statusTag(status));
-//  }
-//
-//  /** Increment the receipt counter for failed tx. */
-//  public void increment(Throwable throwable) {
-//    increment(exceptionTag(throwable));
-//  }
-//
-//  /** Increment the receipt counter with given tags. */
-//  private void increment(Iterable<Tag> tags) {
-//    Counter.builder(WRITE_REQUEST_COUNTER).tags(tags).register(composite).increment();
-//  }
 
   /** Increment the receipt counter for successful tx. */
   public void incrementRead(String status) {
@@ -152,32 +136,15 @@ public class MetricsService {
         .collect(toMap(timer -> timer.getId().getTag(tagName), Timer::count));
   }
 
-//  /** Get "count" group by "status code" for receipt counter. */
-//  public Map<String, Long> getCounterStatusToCount() {
-//    return getCounterTagValueToCount(STATUS_TAG);
-//  }
-
   /** Get "count" group by "status code" for receipt counter. */
   public Map<String, Long> getReadCounterStatusToCount() {
     return getReadCounterTagValueToCount(STATUS_TAG);
   }
 
-//  /** Get "count" group by "exception class" for receipt counter. */
-//  public Map<String, Long> getCounterErrorToCount() {
-//    return getCounterTagValueToCount(EXCEPTION_TAG);
-//  }
-
   /** Get "count" group by "exception class" for receipt counter. */
   public Map<String, Long> getReadCounterErrorToCount() {
     return getReadCounterTagValueToCount(EXCEPTION_TAG);
   }
-
-//  /** Get "count" group by the given tag name for receipt counter. */
-//  private Map<String, Long> getCounterTagValueToCount(String tagName) {
-//    return simple.find(WRITE_REQUEST_COUNTER).tagKeys(tagName).counters().stream()
-//        .collect(
-//            toMap(counter -> counter.getId().getTag(tagName), counter -> (long) counter.count()));
-//  }
 
   /** Get "count" group by the given tag name for receipt counter. */
   private Map<String, Long> getReadCounterTagValueToCount(String tagName) {
