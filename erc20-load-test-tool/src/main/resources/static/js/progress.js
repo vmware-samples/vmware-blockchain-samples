@@ -79,7 +79,7 @@ function updateReport(progress) {
   update("transactions", 2, progress.txErrors);
   update("transactions", 3, progress.readStatus);
   update("transactions", 4, progress.readErrors);
-  update("transactions", 3, progress.txPending);
+  update("transactions", 5, progress.txPending);
 
   if (progress.receiptMode === 'DEFERRED') {
     update("receipts", 0, progress.receiptStatus);
