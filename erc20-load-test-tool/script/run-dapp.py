@@ -144,12 +144,16 @@ def list_to_kv(inp_list, inp_dict):
 def aggregate_report(instance):
     port = 8000
     filename = "../output/result/report-"
-    aggregate_throughput = 0
-    aggregate_latency = 0
+    aggregate_write_throughput = 0
+    aggregate_read_throughput = 0
+    aggregate_write_latency = 0
+    aggregate_read_latency = 0
     aggregate_tx = 0
     aggregate_loadfactor = 0
-    aggregate_tx_status = {}
-    aggregate_tx_errors = {}
+    aggregate_write_req_status = {}
+    aggregate_read_req_status = {}
+    aggregate_write_req_errors = {}
+    aggregate_read_req_errors = {}
     aggregate_receipt_status = {}
     aggregate_receipt_errors = {}
     for i in range(1, instance + 1):
@@ -157,17 +161,27 @@ def aggregate_report(instance):
             with open(filename + str(port + i) + '.json', 'r') as f:
                 data = json.load(f)
                 aggregate_tx += data['txTotal']
-                aggregate_throughput += data['averageThroughput']
-                aggregate_latency += data['averageLatency']
+                aggregate_write_throughput += data['averageThroughput']
+                aggregate_read_throughput += data['averageReadThroughput']
+                aggregate_write_latency += data['averageLatency']
+                aggregate_read_latency += data['averageReadLatency']
                 aggregate_loadfactor += data['loadFactor']
 
                 if data["txStatus"]:
                     tx_status_list = data["txStatus"].split(",")
-                    list_to_kv(tx_status_list, aggregate_tx_status)
+                    list_to_kv(tx_status_list, aggregate_write_req_status)
 
                 if data["txErrors"]:
                     tx_errors_list = data["txErrors"].split("<br>")
-                    list_to_kv(tx_errors_list, aggregate_tx_errors)
+                    list_to_kv(tx_errors_list, aggregate_write_req_errors)
+
+                if data["readStatus"]:
+                    tx_status_list = data["readStatus"].split(",")
+                    list_to_kv(tx_status_list, aggregate_read_req_status)
+
+                if data["readErrors"]:
+                    tx_errors_list = data["readErrors"].split("<br>")
+                    list_to_kv(tx_errors_list, aggregate_read_req_errors)
 
                 if data["receiptStatus"]:
                     receipt_status_list = data["receiptStatus"].split(",")
@@ -179,17 +193,25 @@ def aggregate_report(instance):
         except IOError:
             print("result file not available for run {}".format(port + i))
 
-    json_obj = {'aggregate_tx': aggregate_tx, 'aggregate_throughput': aggregate_throughput,
-                'aggregate_latency': int(aggregate_latency / instance), 'aggregate_loadfactor': aggregate_loadfactor,
-                'aggregate_txStatus': aggregate_tx_status, 'aggregate_txErrors': aggregate_tx_errors,
-                'aggregate_receiptStatus': aggregate_receipt_status, 'aggregate_receiptErrors': aggregate_receipt_errors,
-                'batch_size' : os.environ['WORKLOAD_BATCH_SIZE']
+    json_obj = {'aggregate_tx': aggregate_tx, 'aggregate_write_throughput': aggregate_write_throughput,
+                'aggregate_read_throughput': aggregate_read_throughput,
+                'aggregate_write_latency': int(aggregate_write_latency / instance),
+                'aggregate_read_latency': int(aggregate_read_latency / instance),
+                'aggregate_loadfactor': aggregate_loadfactor,
+                'aggregate_write_req_status': aggregate_write_req_status,
+                'aggregate_read_req_status': aggregate_read_req_status,
+                'aggregate_write_req_errors': aggregate_write_req_errors,
+                'aggregate_read_req_errors': aggregate_read_req_errors,
+                'aggregate_receiptStatus': aggregate_receipt_status,
+                'aggregate_receiptErrors': aggregate_receipt_errors,
+                'batch_size': os.environ['WORKLOAD_BATCH_SIZE']
                 }
 
     filename = "../output/result/aggregate-report.json"
     with open(filename, 'w') as f:
         json.dump(json_obj, f, indent=4)
     print("Aggregated Result - \n"+json.dumps(json_obj, indent=4))
+
 
 # function to start wavefront proxy
 def start_wavefront_proxy():
