@@ -26,17 +26,18 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static com.vmware.ethereum.service.MetricsConstant.STATE_ACTIVE;
-import static com.vmware.ethereum.service.MetricsConstant.STATE_IDLE;
-import static java.util.stream.Collectors.joining;
-
 import com.vmware.ethereum.config.WorkloadConfig;
 import com.vmware.ethereum.model.ProgressReport;
 import com.vmware.ethereum.model.ReceiptMode;
-import java.util.Map;
-import java.util.Map.Entry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
+import java.util.Map.Entry;
+
+import static com.vmware.ethereum.service.MetricsConstant.STATE_ACTIVE;
+import static com.vmware.ethereum.service.MetricsConstant.STATE_IDLE;
+import static java.util.stream.Collectors.joining;
 
 @Service
 @RequiredArgsConstructor
@@ -52,9 +53,13 @@ public class ProgressService {
         .receiptMode(receiptMode)
         .txTotal(config.getTransactions())
         .txStatus(toString(metrics.getTimerStatusToCount()))
+        .readStatus(toString(metrics.getReadTimerStatusToCount()))
         .txErrors(toString(metrics.getTimerErrorToCount()))
-        .receiptStatus(toString(metrics.getCounterStatusToCount()))
-        .receiptErrors(toString(metrics.getCounterErrorToCount()))
+        .readErrors(toString(metrics.getReadTimerErrorToCount()))
+        .receiptStatus(toString(metrics.getReadCounterStatusToCount()))
+        .receiptErrors(toString(metrics.getReadCounterErrorToCount()))
+//        .writeReqStatus(toString(metrics.getCounterStatusToCount()))
+//        .writeReqErrors(toString(metrics.getCounterErrorToCount()))
         .txPending(metrics.getPendingCount())
         .elapsedTime(metrics.getElapsedTime())
         .remainingTime(metrics.getRemainingTime())
@@ -62,8 +67,8 @@ public class ProgressService {
         .loadFactor(config.getLoadFactor())
         .averageThroughput(metrics.getAverageThroughput())
         .averageLatency(metrics.getAverageLatency())
-        .averageWriteThroughput(metrics.getAverageWriteThroughput())
-        .averageWriteLatency(metrics.getWriteAverageLatency())
+        .averageReadThroughput(metrics.getReadAverageThroughput())
+        .averageReadLatency(metrics.getReadAverageLatency())
         .activeConnections(metrics.getHttpConnections(STATE_ACTIVE))
         .idleConnections(metrics.getHttpConnections(STATE_IDLE))
         .build();

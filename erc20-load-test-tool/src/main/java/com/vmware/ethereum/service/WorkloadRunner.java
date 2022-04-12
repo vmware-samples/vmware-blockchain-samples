@@ -26,12 +26,6 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static com.vmware.ethereum.config.WorkloadModel.OPEN;
-import static com.vmware.ethereum.model.ReceiptMode.DEFERRED;
-import static com.vmware.ethereum.model.ReceiptMode.IMMEDIATE;
-import static java.time.Instant.now;
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.vmware.ethereum.config.TokenConfig;
@@ -39,16 +33,23 @@ import com.vmware.ethereum.config.Web3jConfig;
 import com.vmware.ethereum.config.WorkloadConfig;
 import com.vmware.ethereum.model.ProgressReport;
 import com.vmware.ethereum.model.ReceiptMode;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.web3j.protocol.Web3j;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.concurrent.CountDownLatch;
+
+import static com.vmware.ethereum.config.WorkloadModel.OPEN;
+import static com.vmware.ethereum.model.ReceiptMode.DEFERRED;
+import static com.vmware.ethereum.model.ReceiptMode.IMMEDIATE;
+import static java.time.Instant.now;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Slf4j
 @Service
@@ -84,7 +85,7 @@ public class WorkloadRunner {
   private void start(WorkloadService workload) {
     printBalance();
     metrics.setStartTime(now());
-    metrics.setStartWriteTime(now());
+    metrics.setStartReadTime(now());
     workload.start();
   }
 
@@ -143,8 +144,8 @@ public class WorkloadRunner {
       long receiptDelayMs = web3jConfig.getReceipt().getInterval();
       Thread.sleep(receiptDelayMs);
       log.info("Receipts:");
-      log.info("\tStatus: {}", metrics.getCounterStatusToCount());
-      log.info("\tErrors: {}", metrics.getCounterErrorToCount());
+      log.info("\tStatus: {}", metrics.getReadCounterStatusToCount());
+      log.info("\tErrors: {}", metrics.getReadCounterErrorToCount());
     }
 
     log.info("Test duration: {}", metrics.getElapsedTime());
@@ -157,7 +158,7 @@ public class WorkloadRunner {
 
     log.info("Avg throughput: {}/sec", metrics.getAverageThroughput());
     log.info("Avg latency:  {} ms", metrics.getAverageLatency());
-    log.info("getAverageWriteThroughputRequests {}", metrics.getAverageWriteThroughput());
+    log.info("getReadAverageThroughput {}", metrics.getReadAverageThroughput());
   }
 
   /** Save report */

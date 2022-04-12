@@ -28,11 +28,11 @@ package com.vmware.ethereum.service;
 
 public interface MetricsConstant {
 
-  String TOKEN_TRANSFER_TIMER = "transfer.latency";
-  String TOKEN_RECEIPT_COUNTER = "receipt.count";
-
+  String WRITE_REQUEST_TIMER = "write.transfer.latency";
   String WRITE_REQUEST_COUNTER = "write.count";
-  String WRITE_TRANSFER_TIMER = "write.transfer.latency";
+
+  String READ_REQUEST_TIMER = "read.transfer.latency";
+  String TOKEN_RECEIPT_COUNTER = "receipt.count";
 
   String STATUS_TAG = "status";
   String STATUS_UNKNOWN = "0x0";

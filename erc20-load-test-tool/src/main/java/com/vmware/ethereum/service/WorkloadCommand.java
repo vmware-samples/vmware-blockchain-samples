@@ -91,7 +91,7 @@ public class WorkloadCommand implements Runnable {
                 if (throwable instanceof JsonRpcError) {
                   JsonRpcError error = (JsonRpcError) throwable;
                   log.warn(
-                      "JSON-RPC code {}, data: {}, message: {}",
+                      "JSON-RPC write-request code {}, data: {}, message: {}",
                       error.getCode(),
                       error.getData(),
                       error.getMessage());
@@ -99,13 +99,13 @@ public class WorkloadCommand implements Runnable {
                   log.warn("{}", throwable.toString());
                 }
                 for (int i = 0; i < workloadConfig.getBatchSize(); i++) {
-                  metrics.recordWrite(between(startWriteTime, now()), "0x-1");
+                  metrics.record(between(startWriteTime, now()), throwable);
                   countDownLatch.countDown();
                 }
                 return;
               }
               for (int i = 0; i < workloadConfig.getBatchSize(); i++) {
-                metrics.recordWrite(between(startWriteTime, now()), "0x1");
+                metrics.record(between(startWriteTime, now()), "0x1");
                 countDownLatch.countDown();
               }
               receiptProcessor(response);
@@ -152,7 +152,7 @@ public class WorkloadCommand implements Runnable {
         if (receiptResponse.hasError()) {
           errors.add(new Throwable(receiptResponse.getError().getMessage()));
           log.warn(
-              "JSON-RPC code {}, data: {}, message: {}",
+              "JSON-RPC read request code {}, data: {}, message: {}",
               receiptResponse.getError().getCode(),
               receiptResponse.getError().getData(),
               receiptResponse.getError().getMessage());
@@ -170,7 +170,7 @@ public class WorkloadCommand implements Runnable {
             receipt.get(i) instanceof EmptyTransactionReceipt
                 ? STATUS_UNKNOWN
                 : receipt.get(i).getStatus();
-        metrics.record(duration, status);
+        metrics.recordRead(duration, status);
       }
       countDownLatch.countDown();
     }
@@ -179,7 +179,7 @@ public class WorkloadCommand implements Runnable {
       duration = between(startTime, now());
       if (error != null) {
         log.trace("Error: {}", error.getMessage());
-        metrics.record(duration, error);
+        metrics.recordRead(duration, error);
       }
       countDownLatch.countDown();
     }

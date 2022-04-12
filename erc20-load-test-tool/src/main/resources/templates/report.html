@@ -77,12 +77,20 @@
         <td th:text="${progress.txTotal}"></td>
       </tr>
       <tr>
-        <th>Status</th>
+        <th>Write Req Status</th>
         <td th:text="${progress.txStatus}"></td>
       </tr>
       <tr>
-        <th>Errors</th>
+        <th>Write Req Errors</th>
         <td th:text="${progress.txErrors}"></td>
+      </tr>
+      <tr>
+        <th>Read Req Status</th>
+        <td th:text="${progress.readStatus}"></td>
+      </tr>
+      <tr>
+        <th>Read Req Errors</th>
+        <td th:text="${progress.readErrors}"></td>
       </tr>
       <tr>
         <th>Pending</th>
@@ -92,7 +100,7 @@
     </table>
 
     <span th:if="${progress.receiptMode.name() == 'DEFERRED'}">
-      <h4>Deferred Receipts</h4>
+      <h4>Read Receipts</h4>
       <table class="table table-dark" id="receipts">
         <tbody>
         <tr>
@@ -110,20 +118,20 @@
     <h4>Metrics</h4>
     <table class="table table-dark" id="metrics">
       <tr>
-        <th>Average Throughput (/s)</th>
+        <th>Average Write Throughput (/s)</th>
         <td th:text="${progress.averageThroughput}"></td>
       </tr>
       <tr>
-        <th>Average Latency (ms)</th>
+        <th>Average Write Latency (ms)</th>
         <td th:text="${progress.averageLatency}"></td>
       </tr>
       <tr>
-        <th>Average Write Throughput(/s)</th>
-        <td th:text="${progress.averageWriteThroughput}"></td>
+        <th>Average Read Throughput(/s)</th>
+        <td th:text="${progress.averageReadThroughput}"></td>
       </tr>
       <tr>
-        <th>Average Write Latency (ms)</th>
-        <td th:text="${progress.averageWriteLatency}"></td>
+        <th>Average Read Latency (ms)</th>
+        <td th:text="${progress.averageReadLatency}"></td>
       </tr>
       <tr>
         <th>Active Connections</th>

@@ -77,6 +77,8 @@ function updateReport(progress) {
   // 0 - Total Transactions
   update("transactions", 1, progress.txStatus);
   update("transactions", 2, progress.txErrors);
+  update("transactions", 3, progress.readStatus);
+  update("transactions", 4, progress.readErrors);
   update("transactions", 3, progress.txPending);
 
   if (progress.receiptMode === 'DEFERRED') {
@@ -86,8 +88,8 @@ function updateReport(progress) {
 
   update("metrics", 0, progress.averageThroughput);
   update("metrics", 1, progress.averageLatency);
-  update("metrics", 2, progress.averageWriteThroughput);
-  update("metrics", 3, progress.averageWriteLatency);
+  update("metrics", 2, progress.averageReadThroughput);
+  update("metrics", 3, progress.averageReadLatency);
   update("metrics", 4, progress.activeConnections);
   update("metrics", 5, progress.idleConnections);
 }
