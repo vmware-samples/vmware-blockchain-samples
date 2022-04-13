@@ -77,7 +77,9 @@ function updateReport(progress) {
   // 0 - Total Transactions
   update("transactions", 1, progress.txStatus);
   update("transactions", 2, progress.txErrors);
-  update("transactions", 3, progress.txPending);
+  update("transactions", 3, progress.readStatus);
+  update("transactions", 4, progress.readErrors);
+  update("transactions", 5, progress.txPending);
 
   if (progress.receiptMode === 'DEFERRED') {
     update("receipts", 0, progress.receiptStatus);
@@ -86,8 +88,10 @@ function updateReport(progress) {
 
   update("metrics", 0, progress.averageThroughput);
   update("metrics", 1, progress.averageLatency);
-  update("metrics", 2, progress.activeConnections);
-  update("metrics", 3, progress.idleConnections);
+  update("metrics", 2, progress.averageReadThroughput);
+  update("metrics", 3, progress.averageReadLatency);
+  update("metrics", 4, progress.activeConnections);
+  update("metrics", 5, progress.idleConnections);
 }
 
 progress = new LoadProgress();
@@ -97,7 +101,8 @@ progress = new LoadProgress();
  */
 window.onload = function () {
   progress.start();
-  console.log("Progress started")
+  console.log("Progress started ggs")
+  console.log("avg write throughput added")
 }
 
 window.onbeforeunload = function () {

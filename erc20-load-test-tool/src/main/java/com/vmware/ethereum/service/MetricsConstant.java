@@ -28,7 +28,8 @@ package com.vmware.ethereum.service;
 
 public interface MetricsConstant {
 
-  String TOKEN_TRANSFER_TIMER = "transfer.latency";
+  String WRITE_REQUEST_TIMER = "write.transfer.latency";
+  String READ_REQUEST_TIMER = "read.transfer.latency";
   String TOKEN_RECEIPT_COUNTER = "receipt.count";
 
   String STATUS_TAG = "status";

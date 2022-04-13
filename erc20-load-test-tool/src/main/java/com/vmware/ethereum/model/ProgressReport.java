@@ -47,6 +47,9 @@ public class ProgressReport {
   private final String txStatus;
   private final String txErrors;
 
+  private final String readStatus;
+  private final String readErrors;
+
   private final String receiptStatus;
   private final String receiptErrors;
 
@@ -58,6 +61,9 @@ public class ProgressReport {
 
   private final long averageThroughput;
   private final long averageLatency;
+
+  private final long averageReadThroughput;
+  private final long averageReadLatency;
 
   private final long activeConnections;
   private final long idleConnections;

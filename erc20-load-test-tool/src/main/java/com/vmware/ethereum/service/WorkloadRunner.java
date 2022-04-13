@@ -92,6 +92,7 @@ public class WorkloadRunner {
   private void stop(WorkloadService workload) {
     workload.stop();
     metrics.setEndTime(now());
+    metrics.setEndTime(now());
     SECONDS.sleep(1);
     printReport();
     printBalance();
@@ -141,8 +142,8 @@ public class WorkloadRunner {
       long receiptDelayMs = web3jConfig.getReceipt().getInterval();
       Thread.sleep(receiptDelayMs);
       log.info("Receipts:");
-      log.info("\tStatus: {}", metrics.getCounterStatusToCount());
-      log.info("\tErrors: {}", metrics.getCounterErrorToCount());
+      log.info("\tStatus: {}", metrics.getReadCounterStatusToCount());
+      log.info("\tErrors: {}", metrics.getReadCounterErrorToCount());
     }
 
     log.info("Test duration: {}", metrics.getElapsedTime());
@@ -153,8 +154,10 @@ public class WorkloadRunner {
       log.info("Concurrency: {}", workloadConfig.getLoadFactor());
     }
 
-    log.info("Avg throughput: {}/sec", metrics.getAverageThroughput());
-    log.info("Avg latency:  {} ms", metrics.getAverageLatency());
+    log.info("Avg write throughput: {}/sec", metrics.getAverageThroughput());
+    log.info("Avg write latency:  {} ms", metrics.getAverageLatency());
+    log.info("Avg read throughput {}", metrics.getReadAverageThroughput());
+    log.info("Avg read latency {}", metrics.getReadAverageLatency());
   }
 
   /** Save report */

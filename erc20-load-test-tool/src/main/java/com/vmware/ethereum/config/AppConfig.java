@@ -105,13 +105,13 @@ public class AppConfig {
       @Override
       public void accept(TransactionReceipt receipt) {
         log.trace("Receipt: {}", receipt);
-        metrics.increment(receipt.getStatus());
+        metrics.incrementRead(receipt.getStatus());
       }
 
       @Override
       public void exception(Exception exception) {
         log.warn("{}", exception.toString());
-        metrics.increment(exception);
+        metrics.incrementRead(exception);
       }
     };
   }
