@@ -1,0 +1,3 @@
+{
+    "admin_authentication_key": "hex-encoded string representing the public half of the key"
+}
