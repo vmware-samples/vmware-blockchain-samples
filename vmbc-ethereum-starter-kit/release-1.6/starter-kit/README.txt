@@ -1,4 +1,10 @@
-VMBC Internal Deployment ( Developer Mode )
+Host system pre-requisites
+    Docker version 18.06.1-ce, build e68fc7a or above
+    minikube v1.24.0 or more
+    VirtualBox 5.2 or later ( only for OSX )
+    kubectl alias ( https://minikube.sigs.k8s.io/docs/handbook/kubectl/ )
+
+VMBC Deployment
 
     1. Deploy minikube
         To start minikube
@@ -7,7 +13,16 @@ VMBC Internal Deployment ( Developer Mode )
     2. Deploy VMBC on minikube  
         To Build and launch VMBC components
             cd vmbc/script 
-            ./k8s-launch.sh internal
+            ./k8s-launch.sh
+
+        Check all the PoDs are running (try below command in new terminal)
+            watch -n0.01 kubectl get pods --all-namespaces -o wide
+        
+        To test VMBC 
+            cd ../testing
+            In eth_erc20.py, change ethrpcApiUrl ipaddress to your http://`minikube ip`:30545
+            ./testerc20.sh
+
         To destroy VMBC components
             cd vmbc/script
             ./k8s-destroy.sh
@@ -15,20 +30,7 @@ VMBC Internal Deployment ( Developer Mode )
         cd minikube
         ./minikube-delete.sh
 
-VMBC External Deployment ( Customer Mode )
-    Deploy VMBC on existing minikube using orchestrator
-        To Create Blockchain
-            cd vmbc/script
-            python3 orchestrator.py --create
-        To Delete last created Blockchain
-            cd vmbc/script
-            python3 orchestrator.py --delete
-        To Delete Blockchain for the given blockchainID
-            cd vmbc/script
-            python3 orchestrator.py --delete blockchainID
-            eg: python3 orchestrator.py --delete vmbc-747759c9-2afa-489c-b4ea-ea3fda8d392b
-
-Common Components deployment ( Internal & External )
+Common Components deployment 
     Deploy DAPP
         To launch dapp
             cd dapp
@@ -37,7 +39,7 @@ Common Components deployment ( Internal & External )
             cd dapp
             ./k8s-dapp-destroy.sh
         To get URL
-            minikube service erc20-swap --url --namespace vmbc
+            minikube service erc20-swap --url --namespace vmbc-dapp
     Deploy Explorer
         To launch explorer
             cd explorer
@@ -46,7 +48,7 @@ Common Components deployment ( Internal & External )
             cd explorer
             ./k8s-explorer-destroy.sh
         To get URL
-            minikube service vmbc-explorer --url --namespace vmbc
+            minikube service vmbc-explorer --url --namespace vmbc-explorer
     Deploy ELK stack
         To launch elasticsearch
             cd elk

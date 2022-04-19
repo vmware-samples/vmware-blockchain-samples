@@ -27,15 +27,16 @@ sed $OPTS "s!erc20swap_repo!${erc20swap_repo}!ig
 
 echo ''
 echo '---------------- Creating DAPP Configmaps ----------------'
-kubectl create cm dapp-configmap --from-env-file=../vmbc/.env.config --namespace vmbc
+kubectl create namespace vmbc-dapp
+kubectl create cm dapp-configmap --from-env-file=../vmbc/.env.config --namespace vmbc-dapp
 sleep 5 
 
 echo ''
 echo '---------------- Creating DAPP PoD ----------------'
-kubectl apply -f erc20-swap-dapp.yml --namespace vmbc
+kubectl apply -f erc20-swap-dapp.yml --namespace vmbc-dapp
 sleep 10
 echo ''
 echo '---------------- Get the URL   ----------------'
-minikube service erc20-swap --url --namespace vmbc
+minikube service erc20-swap --url --namespace vmbc-dapp
 echo '========================== DONE ==========================='
 echo ''
