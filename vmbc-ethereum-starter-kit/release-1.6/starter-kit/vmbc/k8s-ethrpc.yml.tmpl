@@ -1,0 +1,110 @@
+apiVersion: v1
+items:
+  - apiVersion: v1
+    kind: ServiceAccount
+    metadata:
+      name: ethrpc1
+  - apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRole
+    metadata:
+      name: ethrpc1
+    rules:
+    - apiGroups: [""]
+      resources: ["services", "endpoints", "pods", "pods/log", "deployments", "configmaps", "secrets"]
+      verbs: ["create", "get", "watch", "list", "update", "delete"]
+  - apiVersion: rbac.authorization.k8s.io/v1
+    kind: RoleBinding
+    metadata:
+      name: ethrpc1
+    subjects:
+    - kind: ServiceAccount
+      name: ethrpc1
+      apiGroup: ""
+    roleRef:
+      kind: ClusterRole
+      name: ethrpc1
+      apiGroup: ""
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      labels:
+        service: ethrpc1
+      name: ethrpc1
+    spec:
+      type: NodePort
+      ports:
+        - name: "8545"
+          port: 8545
+          targetPort: 8545
+          nodePort: 30545
+      selector:
+        service: ethrpc1
+    status:
+      loadBalancer: {}
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      labels:
+        service: ethrpc1
+      name: ethrpc1
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          service: ethrpc1
+      strategy:
+        type: Recreate
+      template:
+        metadata:
+          labels:
+            service: ethrpc1
+        spec:
+          containers:
+            - name: ethrpc1
+              args:
+                - java
+                - -jar
+                - concord-ethrpc.jar
+                - --ConcordAuthorities=concord1.vmbc-replica1.svc.cluster.local:5458
+                - --security.require-ssl=false
+              env:
+                - name: CONCORDCLIENT_BLOCKING
+                  value: "true"
+                - name: CONCORDCLIENT_ENABLE
+                  value: "true"
+                - name: CONCORDCLIENT_HOST
+                  value: clientservice1.vmbc-client1.svc.cluster.local
+                - name: CONCORDCLIENT_PORT
+                  value: "50505"
+                - name: CONCORDCLIENT_TIMEOUT
+                  value: 5s
+                - name: MOCKRESPONSE
+                  value: "false"
+              image: ethrpc_repo:ethrpc_tag
+              resources:
+                requests:
+                  memory: "1Gi"
+                  cpu: "250m"
+                limits:
+                  memory: "1Gi"
+                  cpu: "250m"
+              imagePullPolicy: Never
+              ports:
+                - containerPort: 8545
+              resources: {}
+              volumeMounts:
+                - mountPath: /config
+                  name: ethrpc-config
+                  readOnly: true
+          restartPolicy: Always
+          volumes:
+            - name: ethrpc-config
+              secret:
+                secretName: ethrpc-secret
+                items:
+                - key: keystore.p12
+                  path: keystore.p12
+
+    status: {}
+kind: List
+metadata: {}

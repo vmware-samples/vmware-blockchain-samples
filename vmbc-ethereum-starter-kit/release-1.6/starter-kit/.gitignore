@@ -1,0 +1,12 @@
+vmbc/k8s-clientservice.yml
+vmbc/k8s-clientservice.ymlt
+vmbc/k8s-ethrpc.yml
+vmbc/k8s-ethrpc.ymlt
+vmbc/k8s-replica-node1.yml
+vmbc/k8s-replica-node1.ymlt
+vmbc/k8s-replica-node2.yml
+vmbc/k8s-replica-node2.ymlt
+vmbc/k8s-replica-node3.yml
+vmbc/k8s-replica-node3.ymlt
+vmbc/k8s-replica-node4.yml
+vmbc/k8s-replica-node4.ymlt
