@@ -27,15 +27,16 @@ sed $OPTS "s!explorer_repo!${explorer_repo}!ig
 
 echo ''
 echo '---------------- Creating DAPP Configmaps ----------------'
-kubectl create cm explorer-configmap --from-env-file=../vmbc/.env.config --namespace vmbc
+kubectl create namespace vmbc-explorer
+kubectl create cm explorer-configmap --from-env-file=../vmbc/.env.config --namespace vmbc-explorer
 sleep 5 
 
 echo ''
 echo '---------------- Creating Explorer PoD ----------------'
-kubectl apply -f k8s-explorer.yml --namespace vmbc
+kubectl apply -f k8s-explorer.yml --namespace vmbc-explorer
 sleep 10
 echo ''
 echo '---------------- Get the URL   ----------------'
-minikube service vmbc-explorer --url --namespace vmbc
+minikube service vmbc-explorer --url --namespace vmbc-explorer
 echo '========================== DONE ==========================='
 echo ''
