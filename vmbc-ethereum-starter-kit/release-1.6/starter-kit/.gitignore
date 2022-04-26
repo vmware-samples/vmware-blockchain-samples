@@ -1,3 +1,4 @@
+vmbc/runTest.yml
 vmbc/k8s-clientservice.yml
 vmbc/k8s-clientservice.ymlt
 vmbc/k8s-ethrpc.yml

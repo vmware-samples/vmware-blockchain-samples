@@ -63,6 +63,8 @@ items:
           labels:
             service: concord1
         spec:
+          imagePullSecrets:
+          - name: regcred-concord1
           containers:
             - image: concord_repo:concord_tag
               resources:
@@ -72,7 +74,7 @@ items:
                 limits:
                   memory: "2Gi"
                   cpu: "500m"
-              imagePullPolicy: Never
+              imagePullPolicy: Always
               name: concord1
               ports:
                 - containerPort: 5458
