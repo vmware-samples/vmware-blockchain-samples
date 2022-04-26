@@ -30,8 +30,10 @@ items:
       labels:
         service: ethrpc1
       name: ethrpc1
+      annotations:
+        service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: "preserve_client_ip.enabled=false" 
     spec:
-      type: NodePort
+      type: LoadBalancer
       ports:
         - name: "8545"
           port: 8545
@@ -59,6 +61,8 @@ items:
           labels:
             service: ethrpc1
         spec:
+          imagePullSecrets:
+          - name: regcred-ethrpc1
           containers:
             - name: ethrpc1
               args:
@@ -88,7 +92,7 @@ items:
                 limits:
                   memory: "1Gi"
                   cpu: "250m"
-              imagePullPolicy: Never
+              imagePullPolicy: Always
               ports:
                 - containerPort: 8545
               resources: {}

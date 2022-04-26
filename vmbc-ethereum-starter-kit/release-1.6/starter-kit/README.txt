@@ -19,9 +19,9 @@ VMBC Deployment
             watch -n0.01 kubectl get pods --all-namespaces -o wide
         
         To test VMBC 
-            cd ../testing
-            In eth_erc20.py, change ethrpcApiUrl ipaddress to your http://`minikube ip`:30545
-            ./testerc20.sh
+            cd vmbc/script
+            ./runTest.sh
+            Check the PoD log for test results, eg: kubectl logs erc20test-969fb7657-4v5px --namespace vmbc-client1 
 
         To destroy VMBC components
             cd vmbc/script

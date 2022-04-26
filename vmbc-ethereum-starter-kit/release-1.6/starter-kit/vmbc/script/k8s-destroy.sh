@@ -19,9 +19,11 @@ cd $CWD/../config
 rm -rf devdata
 cd - 
 
-echo ''
-echo '---------------- Delete .env ----------------'
-rm ../.env.config
+if [ -f ../.env.config ]; then
+   echo ''
+   echo '---------------- Delete .env ----------------'
+   rm ../.env.config
+fi
 
 echo ''
 echo '---------------- Delete tmp files ----------------'

@@ -35,22 +35,6 @@ pullVmbcImages() {
   docker pull ${clientservice_repo}:${clientservice_tag}
 }
 
-# 
-# Pull VMBC docker images for Minikube
-# for release mode, we should do docker login for JFrog artifactory
-#
-pullVmbcImgesForMinikube() 
-{
-  eval $(minikube docker-env)
-  if [ "$MODE" == "release" ]; then
-      echo "vuskIH\$N&^a7" > dockerpass.txt
-      cat dockerpass.txt |  docker login --username vmbc-ro-token --password-stdin  vmwaresaas.jfrog.io
-      rm dockerpass.txt
-  fi
-  pullVmbcImages
-  eval $(minikube docker-env -u)
-}
-
 #
 # Perhaps there could be a new VMBC images, so we have to generate new .env 
 # and pull new version of docker iamges from vmwathena and generate TLS certs.
@@ -162,6 +146,7 @@ createConcordConfigmaps()
   kubectl create cm concord-signing-configmap-1 --from-file=../config/transaction_signing_keys/1 --namespace=${namespace}
   kubectl create cm concord-signing-configmap-2 --from-file=../config/transaction_signing_keys/2 --namespace=${namespace}
   kubectl create cm concord-signing-operator --from-file=../config/operator_signing_keys --namespace=${namespace}
+  kubectl create secret docker-registry regcred-concord${concord} --docker-server=vmwaresaas.jfrog.io --docker-username=vmbc-ro-token --docker-password="vuskIH\$N&^a7" --docker-email=vijayaprakam@vmware.com --namespace=${namespace}
   createTLSConfigmaps $2
   echo ''
   echo '---------------- Creating Persistent Volume Claims ----------------'
@@ -210,6 +195,7 @@ createEthrpcSecret() {
   echo ''
   echo '---------------- Creating ethrpc Secret ----------------'
   kubectl create secret generic ethrpc-secret --from-file=../config/config-ethrpc1/keystore.p12 --namespace=vmbc-client1
+  kubectl create secret docker-registry regcred-ethrpc1 --docker-server=vmwaresaas.jfrog.io --docker-username=vmbc-ro-token --docker-password="vuskIH\$N&^a7" --docker-email=vijayaprakam@vmware.com --namespace=vmbc-client1 
 }
 
 #
@@ -222,6 +208,7 @@ createClientServiceConfigMap() {
   kubectl create cm ethrpc-participant --from-file=../config/config-participant0 --namespace=vmbc-client1
   kubectl create cm ethrpc-configmap-trcerts --from-file=../config/clientservice/tr_certs/clientservice1 --namespace=vmbc-client1
   kubectl create cm concord-signing-configmap-1 --from-file=../config/transaction_signing_keys/1 --namespace=vmbc-client1
+  kubectl create secret docker-registry regcred-clientservice1 --docker-server=vmwaresaas.jfrog.io --docker-username=vmbc-ro-token --docker-password="vuskIH\$N&^a7" --docker-email=vijayaprakam@vmware.com --namespace=vmbc-client1 
   createTLSConfigmaps "client1"
 }
 
@@ -263,8 +250,6 @@ displayConfigFile() {
   echo "MINIKUBE_PORT=${MINPORT}" >> ${CONFIG_FILE}
   echo "VMBC_URL=http://${MINIP}:${MINPORT}" >> ${CONFIG_FILE}
   cat ${CONFIG_FILE}
-  echo '========================== DONE ==========================='
-  echo ''
 }
 
 #
@@ -295,6 +280,7 @@ replaceConcordWithNamespace()
   done
   
 }
+
 ########################### M A I N ############################
 # Generate config files if it is internal mode
 generateConfigFiles
@@ -310,9 +296,6 @@ copyYmlFromTmplate
 
 # Replace docker image template text with actual docker image
 replaceTemplWithImage
-
-# Pull docker images in minikube env
-pullVmbcImgesForMinikube
 
 # Create k8s namespaces
 createNamespaces
@@ -332,5 +315,8 @@ createClientservicePod
 # Create ethrpc PoD
 createEthrpcPod
 
-# Display Config file for reference
+# Display Config file for reference only for minikube
 displayConfigFile
+
+echo ''
+echo '========================== DONE ==========================='

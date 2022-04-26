@@ -13,7 +13,7 @@ urllib3.disable_warnings()
 ethrpcApiUrl = ""
 w3 = None
 chainid = 5000
-ethrpcApiUrl =  'http://192.168.59.160:30545'
+ethrpcApiUrl =  'http://ethrpc1.vmbc-client1.svc.cluster.local:8545'
 w3 = Web3(Web3.HTTPProvider(ethrpcApiUrl, request_kwargs={"verify": False}))
 
 # Test isConnected ?
