@@ -5,6 +5,8 @@ REPLICA_COUNT=4
 CLIENT_NODE_COUNT=1
 BFT_CLIENT_COUNT=50
 
+JFROG_PASSWORD=""
+
 ARCH=$(uname -s)
 if [ "$ARCH" == "Darwin" ]; then
   OPTS="-it"
@@ -146,7 +148,7 @@ createConcordConfigmaps()
   kubectl create cm concord-signing-configmap-1 --from-file=../config/transaction_signing_keys/1 --namespace=${namespace}
   kubectl create cm concord-signing-configmap-2 --from-file=../config/transaction_signing_keys/2 --namespace=${namespace}
   kubectl create cm concord-signing-operator --from-file=../config/operator_signing_keys --namespace=${namespace}
-  kubectl create secret docker-registry regcred-concord${concord} --docker-server=vmwaresaas.jfrog.io --docker-username=vmbc-ro-token --docker-password="vuskIH\$N&^a7" --docker-email=vijayaprakam@vmware.com --namespace=${namespace}
+  kubectl create secret docker-registry regcred-concord${concord} --docker-server=vmwaresaas.jfrog.io --docker-username=vmbc-ro-token --docker-password=${JFROG_PASSWORD} --docker-email=ask_VMware_blockchain@VMware.com --namespace=${namespace}
   createTLSConfigmaps $2
   echo ''
   echo '---------------- Creating Persistent Volume Claims ----------------'
@@ -195,7 +197,7 @@ createEthrpcSecret() {
   echo ''
   echo '---------------- Creating ethrpc Secret ----------------'
   kubectl create secret generic ethrpc-secret --from-file=../config/config-ethrpc1/keystore.p12 --namespace=vmbc-client1
-  kubectl create secret docker-registry regcred-ethrpc1 --docker-server=vmwaresaas.jfrog.io --docker-username=vmbc-ro-token --docker-password="vuskIH\$N&^a7" --docker-email=vijayaprakam@vmware.com --namespace=vmbc-client1 
+  kubectl create secret docker-registry regcred-ethrpc1 --docker-server=vmwaresaas.jfrog.io --docker-username=vmbc-ro-token --docker-password=${JFROG_PASSWORD} --docker-email=ask_VMware_blockchain@VMware.com --namespace=vmbc-client1 
 }
 
 #
@@ -208,7 +210,7 @@ createClientServiceConfigMap() {
   kubectl create cm ethrpc-participant --from-file=../config/config-participant0 --namespace=vmbc-client1
   kubectl create cm ethrpc-configmap-trcerts --from-file=../config/clientservice/tr_certs/clientservice1 --namespace=vmbc-client1
   kubectl create cm concord-signing-configmap-1 --from-file=../config/transaction_signing_keys/1 --namespace=vmbc-client1
-  kubectl create secret docker-registry regcred-clientservice1 --docker-server=vmwaresaas.jfrog.io --docker-username=vmbc-ro-token --docker-password="vuskIH\$N&^a7" --docker-email=vijayaprakam@vmware.com --namespace=vmbc-client1 
+  kubectl create secret docker-registry regcred-clientservice1 --docker-server=vmwaresaas.jfrog.io --docker-username=vmbc-ro-token --docker-password=${JFROG_PASSWORD} --docker-email=ask_VMware_blockchain@VMware.com --namespace=vmbc-client1 
   createTLSConfigmaps "client1"
 }
 
