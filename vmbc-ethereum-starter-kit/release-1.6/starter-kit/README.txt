@@ -3,6 +3,7 @@ Host system pre-requisites
     minikube v1.24.0 or more
     VirtualBox 5.2 or later ( only for OSX )
     kubectl alias ( https://minikube.sigs.k8s.io/docs/handbook/kubectl/ )
+    Send an email to ask_VMware_blockchain@VMware.com to get JFROG_PASSWORD and replace the password in vmbc/script/k8s-launch.sh
 
 VMBC Deployment
 
