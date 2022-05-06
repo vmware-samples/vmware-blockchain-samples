@@ -1,6 +1,8 @@
-# Deploy Uniswap V2 contracts
+# [WIP]Deploy Uniswap V2 contracts
 
 This is a Hardhat setup to deploy the necessary contracts of Uniswap v2.
+
+***Note - Uniswap on VMBC is work in progress.***
 
 ## Get Started
 
