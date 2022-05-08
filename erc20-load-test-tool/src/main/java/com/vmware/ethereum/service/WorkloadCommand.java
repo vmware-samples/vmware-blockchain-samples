@@ -96,7 +96,7 @@ public class WorkloadCommand implements Runnable {
                       error.getData(),
                       error.getMessage());
                 } else {
-                  log.warn("{}", throwable.toString());
+                  log.warn("Write batch request send error - {}", throwable.toString());
                 }
                 for (int i = 0; i < workloadConfig.getBatchSize(); i++) {
                   metrics.record(between(startWriteTime, now()), throwable);
@@ -121,22 +121,30 @@ public class WorkloadCommand implements Runnable {
     BatchRequest receiptBatchRequest = web3j.newBatch();
 
     for (int i = 0; i < response.getResponses().size(); i++) {
-      String transactionHash = String.valueOf(response.getResponses().get(i).getResult());
-      if (!transactionHash.isEmpty()) log.info("transactionHash = {}", transactionHash);
-      else {
+      Response<?> responseSingle = response.getResponses().get(i);
+      if (responseSingle.hasError()) {
+        errors.add(new JsonRpcError(responseSingle.getError()));
+        log.warn(
+            "JSON-RPC write request code {}, data: {}, message: {}",
+            responseSingle.getError().getCode(),
+            responseSingle.getError().getData(),
+            responseSingle.getError().getMessage());
         log.warn("error in transaction hash result is - {}", response.getResponses().get(i));
         log.info("retrieving from write batch, hash is - {}", writeRequest.getRequests().get(i));
-        // retry logic here
-      }
-      if (web3jConfig.getReceipt().isDefer() || web3jConfig.getReceipt().getAttempts() == 0) {
-        try {
-          receipt.add(transactionReceiptProcessor.waitForTransactionReceipt(transactionHash));
-        } catch (IOException | TransactionException e) {
-          log.warn("{}", e.toString());
-          errors.add(e);
-        }
+        // retry logic
       } else {
-        receiptBatchRequest.add(web3j.ethGetTransactionReceipt(transactionHash));
+        String transactionHash = String.valueOf(response.getResponses().get(i).getResult());
+        log.info("transactionHash = {}", transactionHash);
+        if (web3jConfig.getReceipt().isDefer() || web3jConfig.getReceipt().getAttempts() == 0) {
+          try {
+            receipt.add(transactionReceiptProcessor.waitForTransactionReceipt(transactionHash));
+          } catch (IOException | TransactionException e) {
+            log.warn("{}", e.toString());
+            errors.add(e);
+          }
+        } else {
+          receiptBatchRequest.add(web3j.ethGetTransactionReceipt(transactionHash));
+        }
       }
     }
 
@@ -156,7 +164,8 @@ public class WorkloadCommand implements Runnable {
           i++) {
         receiptResponse = receiptBatchResponse.getResponses().get(i);
         if (receiptResponse.hasError()) {
-          errors.add(new Throwable(receiptResponse.getError().getMessage()));
+          //          errors.add(new Throwable(receiptResponse.getError().getMessage()));
+          errors.add(new JsonRpcError(receiptResponse.getError()));
           log.warn(
               "JSON-RPC read request code {}, data: {}, message: {}",
               receiptResponse.getError().getCode(),
