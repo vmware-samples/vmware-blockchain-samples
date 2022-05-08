@@ -108,12 +108,12 @@ public class WorkloadCommand implements Runnable {
                 metrics.record(between(startWriteTime, now()), "0x1");
                 countDownLatch.countDown();
               }
-              receiptProcessor(response);
+              receiptProcessor(response, batchRequest);
             });
   }
 
   /** Create batch request for Receipt polling and process the batched response */
-  private void receiptProcessor(BatchResponse response) {
+  private void receiptProcessor(BatchResponse response, BatchRequest writeRequest) {
     Instant startTime = now();
     Duration duration;
     ArrayList<TransactionReceipt> receipt = new ArrayList<>();
@@ -122,6 +122,12 @@ public class WorkloadCommand implements Runnable {
 
     for (int i = 0; i < response.getResponses().size(); i++) {
       String transactionHash = String.valueOf(response.getResponses().get(i).getResult());
+      if (!transactionHash.isEmpty()) log.info("transactionHash = {}", transactionHash);
+      else {
+        log.warn("error in transaction hash result is - {}", response.getResponses().get(i));
+        log.info("retrieving from write batch, hash is - {}", writeRequest.getRequests().get(i));
+        // retry logic here
+      }
       if (web3jConfig.getReceipt().isDefer() || web3jConfig.getReceipt().getAttempts() == 0) {
         try {
           receipt.add(transactionReceiptProcessor.waitForTransactionReceipt(transactionHash));
