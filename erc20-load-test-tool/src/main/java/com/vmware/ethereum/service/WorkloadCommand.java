@@ -41,6 +41,7 @@ import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.web3j.crypto.Hash;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.BatchRequest;
 import org.web3j.protocol.core.BatchResponse;
@@ -64,6 +65,7 @@ public class WorkloadCommand implements Runnable {
   private final CountDownLatch countDownLatch;
   private final Web3jConfig web3jConfig;
   private BatchRequest batchRequest = null;
+  //  private ArrayList<String> batchTxHash = new ArrayList<>();
 
   @Override
   public void run() {
@@ -88,32 +90,20 @@ public class WorkloadCommand implements Runnable {
         .whenComplete(
             (response, throwable) -> {
               if (throwable != null) {
-                if (throwable instanceof JsonRpcError) {
-                  JsonRpcError error = (JsonRpcError) throwable;
-                  log.warn(
-                      "JSON-RPC write-request code {}, data: {}, message: {}",
-                      error.getCode(),
-                      error.getData(),
-                      error.getMessage());
-                } else {
-                  log.warn("Write batch request send error - {}", throwable.toString());
-                }
+                log.warn("Write batch request send error - {}", throwable.toString());
                 for (int i = 0; i < workloadConfig.getBatchSize(); i++) {
                   metrics.record(between(startWriteTime, now()), throwable);
                   countDownLatch.countDown();
                 }
                 return;
               }
-              for (int i = 0; i < workloadConfig.getBatchSize(); i++) {
-                metrics.record(between(startWriteTime, now()), "0x1");
-                countDownLatch.countDown();
-              }
-              receiptProcessor(response, batchRequest);
+              receiptProcessor(response, batchRequest, startWriteTime);
             });
   }
 
   /** Create batch request for Receipt polling and process the batched response */
-  private void receiptProcessor(BatchResponse response, BatchRequest writeRequest) {
+  private void receiptProcessor(
+      BatchResponse response, BatchRequest writeRequest, Instant startWriteTime) {
     Instant startTime = now();
     Duration duration;
     ArrayList<TransactionReceipt> receipt = new ArrayList<>();
@@ -122,18 +112,30 @@ public class WorkloadCommand implements Runnable {
 
     for (int i = 0; i < response.getResponses().size(); i++) {
       Response<?> responseSingle = response.getResponses().get(i);
+      String transactionHash;
       if (responseSingle.hasError()) {
-        errors.add(new JsonRpcError(responseSingle.getError()));
+        metrics.record(between(startWriteTime, now()), new JsonRpcError(responseSingle.getError()));
+        //        errors.add(new JsonRpcError(responseSingle.getError()));
         log.warn(
             "JSON-RPC write request code {}, data: {}, message: {}",
             responseSingle.getError().getCode(),
             responseSingle.getError().getData(),
             responseSingle.getError().getMessage());
-        log.warn("error in transaction hash result is - {}", response.getResponses().get(i));
-        log.info("retrieving from write batch, hash is - {}", writeRequest.getRequests().get(i));
-        // retry logic
+        log.warn(
+            "error in transaction hash result is - {}",
+            response.getResponses().get(i).getRawResponse());
+        log.info(
+            "retrieving from write batch, hash is - {}",
+            writeRequest.getRequests().get(i).getParams().toString());
+        // poll receipt
+        //
+        // TransactionUtils.generateTransactionHashHexEncoded(RawTransaction.createTransaction(null.null, writeRequest.getRequests().get(i).))
+        transactionHash = Hash.sha3(writeRequest.getRequests().get(i).getParams().toString());
+        log.info("txHash local for failed tx - {}", transactionHash);
+        receiptBatchRequest.add(web3j.ethGetTransactionReceipt(transactionHash));
       } else {
-        String transactionHash = String.valueOf(response.getResponses().get(i).getResult());
+        metrics.record(between(startWriteTime, now()), "0x1");
+        transactionHash = String.valueOf(response.getResponses().get(i).getResult());
         log.info("transactionHash = {}", transactionHash);
         if (web3jConfig.getReceipt().isDefer() || web3jConfig.getReceipt().getAttempts() == 0) {
           try {
