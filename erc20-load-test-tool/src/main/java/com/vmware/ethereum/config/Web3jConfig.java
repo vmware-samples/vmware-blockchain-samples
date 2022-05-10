@@ -69,5 +69,6 @@ public class Web3jConfig {
     @PositiveOrZero private int attempts;
     @NotNull private long interval;
     @NotNull private boolean defer;
+    @NotNull private boolean checkWritetxFailed;
   }
 }

@@ -65,7 +65,6 @@ public class WorkloadCommand implements Runnable {
   private final CountDownLatch countDownLatch;
   private final Web3jConfig web3jConfig;
   private BatchRequest batchRequest = null;
-  //  private ArrayList<String> batchTxHash = new ArrayList<>();
 
   @Override
   public void run() {
@@ -110,46 +109,49 @@ public class WorkloadCommand implements Runnable {
     ArrayList<Throwable> errors = new ArrayList<>();
     BatchRequest receiptBatchRequest = web3j.newBatch();
 
+    // process writeBatchRequest response
     for (int i = 0; i < response.getResponses().size(); i++) {
       Response<?> responseSingle = response.getResponses().get(i);
-      String transactionHash;
+      String transactionHash = null;
+
+      // check if response has error
       if (responseSingle.hasError()) {
         metrics.record(between(startWriteTime, now()), new JsonRpcError(responseSingle.getError()));
-        //        errors.add(new JsonRpcError(responseSingle.getError()));
         log.warn(
             "JSON-RPC write request code {}, data: {}, message: {}",
             responseSingle.getError().getCode(),
             responseSingle.getError().getData(),
             responseSingle.getError().getMessage());
-        log.warn(
-            "error in transaction hash result is - {}",
-            response.getResponses().get(i).getRawResponse());
         log.info(
             "retrieving from write batch, hash is - {}",
             writeRequest.getRequests().get(i).getParams().toString());
-        // poll receipt
-        //
-        // TransactionUtils.generateTransactionHashHexEncoded(RawTransaction.createTransaction(null.null, writeRequest.getRequests().get(i).))
+
+        // calculate txHash locally for failed write Tx
         transactionHash = Hash.sha3(writeRequest.getRequests().get(i).getParams().toString());
         log.info("txHash local for failed tx - {}", transactionHash);
-        receiptBatchRequest.add(web3j.ethGetTransactionReceipt(transactionHash));
       } else {
         metrics.record(between(startWriteTime, now()), "0x1");
         transactionHash = String.valueOf(response.getResponses().get(i).getResult());
         log.info("transactionHash = {}", transactionHash);
-        if (web3jConfig.getReceipt().isDefer() || web3jConfig.getReceipt().getAttempts() == 0) {
-          try {
-            receipt.add(transactionReceiptProcessor.waitForTransactionReceipt(transactionHash));
-          } catch (IOException | TransactionException e) {
-            log.warn("{}", e.toString());
-            errors.add(e);
-          }
-        } else {
-          receiptBatchRequest.add(web3j.ethGetTransactionReceipt(transactionHash));
+      }
+
+      // based on the conditions poll for the receipt
+      if (web3jConfig.getReceipt().isDefer()
+          || web3jConfig.getReceipt().getAttempts() == 0
+          || (web3jConfig.getReceipt().getAttempts() == 0
+              && !web3jConfig.getReceipt().isCheckWritetxFailed())) {
+        try {
+          receipt.add(transactionReceiptProcessor.waitForTransactionReceipt(transactionHash));
+        } catch (IOException | TransactionException e) {
+          log.warn("{}", e.toString());
+          errors.add(e);
         }
+      } else {
+        receiptBatchRequest.add(web3j.ethGetTransactionReceipt(transactionHash));
       }
     }
 
+    // send poll TxRecipt batch request
     if (receiptBatchRequest.getRequests().size() != 0) {
       BatchResponse receiptBatchResponse = null;
       try {
@@ -166,7 +168,6 @@ public class WorkloadCommand implements Runnable {
           i++) {
         receiptResponse = receiptBatchResponse.getResponses().get(i);
         if (receiptResponse.hasError()) {
-          //          errors.add(new Throwable(receiptResponse.getError().getMessage()));
           errors.add(new JsonRpcError(receiptResponse.getError()));
           log.warn(
               "JSON-RPC read request code {}, data: {}, message: {}",
@@ -179,6 +180,7 @@ public class WorkloadCommand implements Runnable {
       }
     }
 
+    // record receipt status and countdown tx
     for (int i = 0; i < receipt.size(); i++) {
       duration = between(startTime, now());
       if (receipt.get(i) != null) {
@@ -192,6 +194,7 @@ public class WorkloadCommand implements Runnable {
       countDownLatch.countDown();
     }
 
+    // record errors and countdown tx
     for (Throwable error : errors) {
       duration = between(startTime, now());
       if (error != null) {
