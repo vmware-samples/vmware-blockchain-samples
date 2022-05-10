@@ -122,32 +122,30 @@ public class WorkloadCommand implements Runnable {
             responseSingle.getError().getCode(),
             responseSingle.getError().getData(),
             responseSingle.getError().getMessage());
-        log.info(
-            "retrieving from write batch, hash is - {}",
-            writeRequest.getRequests().get(i).getParams().toString());
 
         // calculate txHash locally for failed write Tx
         transactionHash = Hash.sha3(writeRequest.getRequests().get(i).getParams().toString());
-        log.info("txHash local for failed tx - {}", transactionHash);
+        log.debug("txHash local for failed tx - {}", transactionHash);
+
+        // if isCheckWritetxFailed is true, poll for the receipt
+        if (web3jConfig.getReceipt().isCheckWritetxFailed())
+          receiptBatchRequest.add(web3j.ethGetTransactionReceipt(transactionHash));
       } else {
         metrics.record(between(startWriteTime, now()), "0x1");
         transactionHash = String.valueOf(response.getResponses().get(i).getResult());
-        log.info("transactionHash = {}", transactionHash);
-      }
+        log.debug("transactionHash = {}", transactionHash);
 
-      // based on the conditions poll for the receipt
-      if (web3jConfig.getReceipt().isDefer()
-          || web3jConfig.getReceipt().getAttempts() == 0
-          || (web3jConfig.getReceipt().getAttempts() == 0
-              && !web3jConfig.getReceipt().isCheckWritetxFailed())) {
-        try {
-          receipt.add(transactionReceiptProcessor.waitForTransactionReceipt(transactionHash));
-        } catch (IOException | TransactionException e) {
-          log.warn("{}", e.toString());
-          errors.add(e);
+        // based on the conditions poll for the receipt
+        if (web3jConfig.getReceipt().isDefer() || web3jConfig.getReceipt().getAttempts() == 0) {
+          try {
+            receipt.add(transactionReceiptProcessor.waitForTransactionReceipt(transactionHash));
+          } catch (IOException | TransactionException e) {
+            log.warn("{}", e.toString());
+            errors.add(e);
+          }
+        } else {
+          receiptBatchRequest.add(web3j.ethGetTransactionReceipt(transactionHash));
         }
-      } else {
-        receiptBatchRequest.add(web3j.ethGetTransactionReceipt(transactionHash));
       }
     }
 
