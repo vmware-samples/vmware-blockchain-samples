@@ -10,7 +10,7 @@ case "$OSTYPE" in
 esac
 
 echo "Using driver $driver..."
-minikube start --vm-driver=$driver
+minikube start --vm-driver=$driver --cpus 4 --memory 12288
 
 echo '========================== DONE ==========================='
 echo ''
