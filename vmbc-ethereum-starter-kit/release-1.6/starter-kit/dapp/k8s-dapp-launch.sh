@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+JFROG_PASSWORD=""
+
 ARCH=$(uname -s)
 if [ "$ARCH" == "Darwin" ]; then
   OPTS="-it"
@@ -13,15 +15,6 @@ cp erc20-swap-dapp.yml.tmpl erc20-swap-dapp.yml
 # For erc20-swap always pull images from JFrog
 . ../vmbc/.env.release
 
-echo ''
-echo "---------------- Pulling image ${erc20swap_repo}:${erc20swap_tag} ----------------"
-eval $(minikube docker-env)
-echo "vuskIH\$N&^a7" > dockerpass.txt
-cat dockerpass.txt |  docker login --username vmbc-ro-token --password-stdin  vmwaresaas.jfrog.io
-docker pull ${erc20swap_repo}:${erc20swap_tag}
-rm dockerpass.txt
-eval $(minikube docker-env -u)
-
 sed $OPTS "s!erc20swap_repo!${erc20swap_repo}!ig
         s!erc20swap_tag!${erc20swap_tag}!ig"  erc20-swap-dapp.yml;
 
@@ -29,6 +22,7 @@ echo ''
 echo '---------------- Creating DAPP Configmaps ----------------'
 kubectl create namespace vmbc-dapp
 kubectl create cm dapp-configmap --from-env-file=../vmbc/.env.config --namespace vmbc-dapp
+kubectl create secret docker-registry regcred-dapp --docker-server=vmwaresaas.jfrog.io --docker-username=vmbc-ro-token --docker-password=${JFROG_PASSWORD} --docker-email=ask_VMware_blockchain@VMware.com --namespace=vmbc-dapp
 sleep 5 
 
 echo ''
