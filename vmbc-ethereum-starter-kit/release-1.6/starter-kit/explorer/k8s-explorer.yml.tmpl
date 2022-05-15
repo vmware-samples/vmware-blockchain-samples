@@ -27,6 +27,8 @@ items:
           labels:
             app: vmbc-explorer
         spec:
+          imagePullSecrets:
+          - name: regcred-explorer
           containers:
             - name: vmbc-explorer
               env:
@@ -36,7 +38,7 @@ items:
                       name: explorer-configmap
                       key: VMBC_URL
               image: explorer_repo:explorer_tag
-              imagePullPolicy: Never
+              imagePullPolicy: Always
               ports:
                 - containerPort: 80
           restartPolicy: Always

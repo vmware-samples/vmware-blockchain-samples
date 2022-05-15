@@ -27,6 +27,8 @@ items:
           labels:
             app: erc20-swap
         spec:
+          imagePullSecrets:
+          - name: regcred-dapp
           containers:
             - name: erc20-swap
               env:
@@ -38,7 +40,7 @@ items:
                       name: dapp-configmap
                       key: VMBC_URL
               image: erc20swap_repo:erc20swap_tag
-              imagePullPolicy: Never
+              imagePullPolicy: Always
               ports:
                 - containerPort: 3000
           restartPolicy: Always

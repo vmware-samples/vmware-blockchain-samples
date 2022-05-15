@@ -34,7 +34,7 @@ items:
           containers:
             - name: elasticsearch
               image: docker.elastic.co/elasticsearch/elasticsearch:7.9.0
-              imagePullPolicy: Never
+              imagePullPolicy: Always
               env:
                 - name: discovery.type
                   value: single-node
