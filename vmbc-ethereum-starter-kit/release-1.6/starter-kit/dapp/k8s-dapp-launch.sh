@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-JFROG_PASSWORD=""
+#Make sure you have set your env variable JFROG_PASSWORD
 
 ARCH=$(uname -s)
 if [ "$ARCH" == "Darwin" ]; then

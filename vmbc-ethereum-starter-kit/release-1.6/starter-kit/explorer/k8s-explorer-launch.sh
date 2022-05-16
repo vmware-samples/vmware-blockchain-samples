@@ -8,7 +8,7 @@ else
   OPTS="-i"
 fi
 
-JFROG_PASSWORD=""
+#Make sure you have set your env variable JFROG_PASSWORD
 
 cp k8s-explorer.yml.tmpl k8s-explorer.yml
 

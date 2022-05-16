@@ -5,7 +5,7 @@ REPLICA_COUNT=4
 CLIENT_NODE_COUNT=1
 BFT_CLIENT_COUNT=50
 
-JFROG_PASSWORD=""
+#Make sure you have set your env variable JFROG_PASSWORD
 
 ARCH=$(uname -s)
 if [ "$ARCH" == "Darwin" ]; then
