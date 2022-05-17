@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Hash;
@@ -108,6 +109,7 @@ public class WorkloadCommand implements Runnable {
     ArrayList<TransactionReceipt> receipt = new ArrayList<>();
     ArrayList<Throwable> errors = new ArrayList<>();
     BatchRequest receiptBatchRequest = web3j.newBatch();
+    BatchRequest retryBatchRequest = web3j.newBatch();
 
     // process writeBatchRequest response
     for (int i = 0; i < response.getResponses().size(); i++) {
@@ -129,7 +131,7 @@ public class WorkloadCommand implements Runnable {
 
         // if isCheckWritetxFailed is true, poll for the receipt
         if (web3jConfig.getReceipt().isCheckWritetxFailed())
-          receiptBatchRequest.add(web3j.ethGetTransactionReceipt(transactionHash));
+          retryBatchRequest.add(web3j.ethGetTransactionReceipt(transactionHash));
       } else {
         metrics.record(between(startWriteTime, now()), "0x1");
         transactionHash = String.valueOf(response.getResponses().get(i).getResult());
@@ -147,6 +149,12 @@ public class WorkloadCommand implements Runnable {
           receiptBatchRequest.add(web3j.ethGetTransactionReceipt(transactionHash));
         }
       }
+    }
+
+    // check if retryBatchReq is not zero
+    // function for retry
+    if (receiptBatchRequest.getRequests().size() != 0) {
+      retryReadCheck(retryBatchRequest, startTime);
     }
 
     // send poll TxRecipt batch request
@@ -200,6 +208,49 @@ public class WorkloadCommand implements Runnable {
         metrics.recordRead(duration, error);
       }
       countDownLatch.countDown();
+    }
+  }
+
+  @SneakyThrows(InterruptedException.class)
+  private void retryReadCheck(BatchRequest retryBatchRequest, Instant startTime) {
+    BatchResponse receiptBatchResponse = null;
+    boolean success = false;
+    for (int retry = 0; retry < web3jConfig.getReceipt().getAttempts() && !success; retry++) {
+      success = true;
+      try {
+        receiptBatchResponse = retryBatchRequest.send();
+      } catch (IOException e) {
+        log.warn("{}", e.toString());
+        success = false;
+      }
+
+      if (success) {
+        Response<?> receiptResponse;
+        for (int i = 0;
+            receiptBatchResponse != null && i < receiptBatchResponse.getResponses().size();
+            i++) {
+          receiptResponse = receiptBatchResponse.getResponses().get(i);
+          if (receiptResponse.hasError()) {
+            success = false;
+            log.warn(
+                "JSON-RPC retry write req read code {}, data: {}, message: {}",
+                receiptResponse.getError().getCode(),
+                receiptResponse.getError().getData(),
+                receiptResponse.getError().getMessage());
+            break;
+          } else {
+            // something
+            Duration duration = between(startTime, now());
+            TransactionReceipt receipt = (TransactionReceipt) receiptResponse.getResult();
+            metrics.recordRead(duration, receipt.getStatus());
+            countDownLatch.countDown();
+          }
+        }
+      }
+
+      if (!success) {
+        Thread.sleep(1000L * (retry));
+      }
     }
   }
 }
