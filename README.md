@@ -26,7 +26,7 @@ Refer to `README.md` inside sample directory for detailed description.
 | [Token Swap](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/erc20-swap) | ERC-20 Token Creation and Swap with React Sample |
 | [Token Deploy](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/hardhat) | Deploying ERC 20 Token using Hardhat |
 | [Ocen Bound Plastics](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/obp) | Supply Chain Sample Smart Contract with Solidity and Truffle|
-| [Supply Chain With](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/on-chain-privacy) | Supply Chain example with On-Chain Privacy |
+| [On-Chain Privacy](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/on-chain-privacy) | Supply Chain example with On-Chain Privacy |
 | [Web3 Python](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/simple-examples)| Sample App on Python using Web3 |
 | [Supply Chain DApp](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/supply-chain)| Extensive Supply Chain DApp Sample |
 | [Truffle Sample](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/truffle) | Basic Truffle Contract Migration Sample |
