@@ -153,7 +153,7 @@ public class WorkloadCommand implements Runnable {
 
     // check if retryBatchReq is not zero
     // function for retry
-    if (receiptBatchRequest.getRequests().size() != 0) {
+    if (retryBatchRequest.getRequests().size() != 0) {
       retryReadCheck(retryBatchRequest, startTime);
     }
 
@@ -215,7 +215,7 @@ public class WorkloadCommand implements Runnable {
   private void retryReadCheck(BatchRequest retryBatchRequest, Instant startTime) {
     BatchResponse receiptBatchResponse = null;
     boolean success = false;
-    for (int retry = 0; retry < web3jConfig.getReceipt().getAttempts() && !success; retry++) {
+    for (int retry = 0; retry < 5 && !success; retry++) {
       success = true;
       try {
         receiptBatchResponse = retryBatchRequest.send();
@@ -224,6 +224,7 @@ public class WorkloadCommand implements Runnable {
         success = false;
       }
 
+      Duration duration = between(startTime, now());
       if (success) {
         Response<?> receiptResponse;
         for (int i = 0;
@@ -237,10 +238,10 @@ public class WorkloadCommand implements Runnable {
                 receiptResponse.getError().getCode(),
                 receiptResponse.getError().getData(),
                 receiptResponse.getError().getMessage());
+            metrics.recordRead(duration, new JsonRpcError(receiptResponse.getError()));
             break;
           } else {
             // something
-            Duration duration = between(startTime, now());
             TransactionReceipt receipt = (TransactionReceipt) receiptResponse.getResult();
             metrics.recordRead(duration, receipt.getStatus());
             countDownLatch.countDown();
