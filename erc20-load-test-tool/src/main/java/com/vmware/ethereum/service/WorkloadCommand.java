@@ -234,7 +234,8 @@ public class WorkloadCommand implements Runnable {
           if (receiptResponse.hasError()) {
             success = false;
             log.warn(
-                "JSON-RPC retry write req read code {}, data: {}, message: {}",
+                "JSON-RPC retry {} write req read code {}, data: {}, message: {}",
+                retry,
                 receiptResponse.getError().getCode(),
                 receiptResponse.getError().getData(),
                 receiptResponse.getError().getMessage());
@@ -250,7 +251,12 @@ public class WorkloadCommand implements Runnable {
       }
 
       if (!success) {
-        Thread.sleep(1000L * (retry));
+        if (retry == 4) {
+          while (countDownLatch.getCount() != 0) countDownLatch.countDown();
+        }
+        Thread.sleep(10000 * (retry));
+      } else {
+        break;
       }
     }
   }
