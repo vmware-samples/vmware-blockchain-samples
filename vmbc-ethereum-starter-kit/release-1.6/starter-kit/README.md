@@ -10,6 +10,8 @@ Make sure to provide additional resources.
 
 > **Note**: minikube creates a VM using a selected driver and depends on what you have installed. It could be docker, vmware etc. Please [see this list](https://minikube.sigs.k8s.io/docs/drivers/) and you may need to provide this underlying dependency with additional resources if necessary.
 
+See scripts under`minikube` folder that provide convinience scripts to start and delete minikube.
+
 This example using Virtual Box.
 
 ```
