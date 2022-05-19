@@ -38,6 +38,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -114,7 +115,7 @@ public class WorkloadCommand implements Runnable {
     // process writeBatchRequest response
     for (int i = 0; i < response.getResponses().size(); i++) {
       Response<?> responseSingle = response.getResponses().get(i);
-      String transactionHash = null;
+      String transactionHash;
 
       // check if response has error
       if (responseSingle.hasError()) {
@@ -214,8 +215,8 @@ public class WorkloadCommand implements Runnable {
   @SneakyThrows(InterruptedException.class)
   private void retryReadCheck(BatchRequest retryBatchRequest, Instant startTime) {
     BatchResponse receiptBatchResponse = null;
-    boolean success = false;
-    for (int retry = 0; retry < 5 && !success; retry++) {
+    boolean success;
+    for (long retry = 1; retry <= 5; retry++) {
       success = true;
       try {
         receiptBatchResponse = retryBatchRequest.send();
@@ -251,10 +252,13 @@ public class WorkloadCommand implements Runnable {
       }
 
       if (!success) {
-        if (retry == 4) {
-          while (countDownLatch.getCount() != 0) countDownLatch.countDown();
+        if (retry == 5) {
+          log.warn("Stopping the run");
+          System.exit(-1);
         }
-        Thread.sleep(10000 * (retry));
+        log.info("Sleeping now {}", now());
+        TimeUnit.SECONDS.sleep(10 * retry);
+        log.info("Woke now {}", now());
       } else {
         break;
       }
