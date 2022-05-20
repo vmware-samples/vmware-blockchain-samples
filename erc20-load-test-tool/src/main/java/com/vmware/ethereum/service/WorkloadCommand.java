@@ -257,7 +257,7 @@ public class WorkloadCommand implements Runnable {
           System.exit(-1);
         }
         log.info("Sleeping now {}", now());
-        TimeUnit.SECONDS.sleep(10 * retry);
+        TimeUnit.SECONDS.sleep((long) Math.pow(5, retry));
         log.info("Woke now {}", now());
       } else {
         break;
