@@ -256,9 +256,8 @@ public class WorkloadCommand implements Runnable {
           log.warn("Stopping the run");
           System.exit(-1);
         }
-        log.info("Sleeping now {}", now());
-        TimeUnit.SECONDS.sleep((long) Math.pow(5, retry));
-        log.info("Woke now {}", now());
+        TimeUnit.SECONDS.sleep(
+            (long) Math.pow(web3jConfig.getReceipt().getRetryWritetxSleep(), retry));
       } else {
         break;
       }

@@ -16,7 +16,8 @@ web3j:
     attempts: 1 # maximum number of polling attempts to get receipt
     interval: 1000 # sleep interval (ms) between polling attempts
     defer: false # set true for queued polling of transaction receipt
-    check-writetx-failed: true #check for transaction receipt only during write transaction failure
+    check-writetx-failed: true # check for transaction receipt only during write transaction failure
+    retry-writetx-sleep: 5 # sleep time in seconds when polling for failed write tx (exponential backoff)
   manage-nonce: true # Managing nonce would avoid the overhead of calling eth_getTransactionCount.
   log-level: NONE # NONE, BASIC, HEADERS, BODY
   okhttp-read-timeout: 20 # read timeout in seconds
