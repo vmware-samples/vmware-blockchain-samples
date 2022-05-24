@@ -43,7 +43,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.web3j.crypto.Hash;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.BatchRequest;
 import org.web3j.protocol.core.BatchResponse;
@@ -67,22 +66,25 @@ public class WorkloadCommand implements Runnable {
   private final CountDownLatch countDownLatch;
   private final Web3jConfig web3jConfig;
   private BatchRequest batchRequest = null;
+  private ArrayList<String> signedBatchRequest = new ArrayList<>();
 
   @Override
   public void run() {
     if (batchRequest == null) {
       batchRequest = web3j.newBatch();
     }
-    api.addBatchRequests(batchRequest);
+    api.addBatchRequests(batchRequest, signedBatchRequest);
     if (batchRequest.getRequests().size() == workloadConfig.getBatchSize()
         || countDownLatch.getCount() == 1) {
-      transferBatchAsync(batchRequest);
+      transferBatchAsync(batchRequest, signedBatchRequest);
       batchRequest = web3j.newBatch();
+      signedBatchRequest = new ArrayList<>();
     }
   }
 
   /** Transfer batched Transactions asynchronously. */
-  public CompletableFuture<BatchResponse> transferBatchAsync(BatchRequest batchRequest) {
+  public CompletableFuture<BatchResponse> transferBatchAsync(
+      BatchRequest batchRequest, ArrayList<String> signedBatchRequest) {
 
     Instant startWriteTime = now();
     log.debug("batch requests added");
@@ -98,13 +100,16 @@ public class WorkloadCommand implements Runnable {
                 }
                 return;
               }
-              receiptProcessor(response, batchRequest, startWriteTime);
+              receiptProcessor(response, batchRequest, startWriteTime, signedBatchRequest);
             });
   }
 
   /** Create batch request for Receipt polling and process the batched response */
   private void receiptProcessor(
-      BatchResponse response, BatchRequest writeRequest, Instant startWriteTime) {
+      BatchResponse response,
+      BatchRequest writeRequest,
+      Instant startWriteTime,
+      ArrayList<String> signedBatchRequest) {
     Instant startTime = now();
     Duration duration;
     ArrayList<TransactionReceipt> receipt = new ArrayList<>();
@@ -127,16 +132,17 @@ public class WorkloadCommand implements Runnable {
             responseSingle.getError().getMessage());
 
         // calculate txHash locally for failed write Tx
-        transactionHash = Hash.sha3(writeRequest.getRequests().get(i).getParams().toString());
+        transactionHash = signedBatchRequest.get(i);
         log.debug("txHash local for failed tx - {}", transactionHash);
 
         // if isCheckWritetxFailed is true, poll for the receipt
-        if (web3jConfig.getReceipt().isCheckWritetxFailed())
+        if (web3jConfig.getReceipt().isCheckWriteTxFailed())
           retryBatchRequest.add(web3j.ethGetTransactionReceipt(transactionHash));
       } else {
         metrics.record(between(startWriteTime, now()), "0x1");
         transactionHash = String.valueOf(response.getResponses().get(i).getResult());
-        log.debug("transactionHash = {}", transactionHash);
+        log.info("transactionHash = {}", transactionHash);
+        log.info("transactionHash2 = {}", signedBatchRequest.get(i));
 
         // based on the conditions poll for the receipt
         if (web3jConfig.getReceipt().isDefer() || web3jConfig.getReceipt().getAttempts() == 0) {
@@ -155,7 +161,7 @@ public class WorkloadCommand implements Runnable {
     // check if retryBatchReq is not zero
     // function for retry
     if (retryBatchRequest.getRequests().size() != 0) {
-      retryReadCheck(retryBatchRequest, startTime);
+      retryReadCheck(retryBatchRequest, startTime, writeRequest, signedBatchRequest);
     }
 
     // send poll TxRecipt batch request
@@ -213,10 +219,15 @@ public class WorkloadCommand implements Runnable {
   }
 
   @SneakyThrows(InterruptedException.class)
-  private void retryReadCheck(BatchRequest retryBatchRequest, Instant startTime) {
+  private void retryReadCheck(
+      BatchRequest retryBatchRequest,
+      Instant startTime,
+      BatchRequest writeRequest,
+      ArrayList<String> signedBatchRequest) {
     BatchResponse receiptBatchResponse = null;
+    int noOfRetries = web3jConfig.getReceipt().getNoWriteTxRetry();
     boolean success;
-    for (long retry = 1; retry <= 5; retry++) {
+    for (long retry = 1; retry <= noOfRetries; retry++) {
       success = true;
       try {
         receiptBatchResponse = retryBatchRequest.send();
@@ -234,7 +245,7 @@ public class WorkloadCommand implements Runnable {
           receiptResponse = receiptBatchResponse.getResponses().get(i);
           if (receiptResponse.hasError()) {
             success = false;
-            log.warn(
+            log.info(
                 "JSON-RPC retry {} write req read code {}, data: {}, message: {}",
                 retry,
                 receiptResponse.getError().getCode(),
@@ -243,7 +254,6 @@ public class WorkloadCommand implements Runnable {
             metrics.recordRead(duration, new JsonRpcError(receiptResponse.getError()));
             break;
           } else {
-            // something
             TransactionReceipt receipt = (TransactionReceipt) receiptResponse.getResult();
             metrics.recordRead(duration, receipt.getStatus());
             countDownLatch.countDown();
@@ -252,14 +262,16 @@ public class WorkloadCommand implements Runnable {
       }
 
       if (!success) {
-        if (retry == 5) {
-          log.warn("Stopping the run");
-          System.exit(-1);
+        if (retry == noOfRetries) {
+          log.warn("Rewriting the request");
+          // Retry the write request
+          transferBatchAsync(writeRequest, signedBatchRequest);
+          return;
         }
         TimeUnit.SECONDS.sleep(
-            (long) Math.pow(web3jConfig.getReceipt().getRetryWritetxSleep(), retry));
+            (long) Math.pow(web3jConfig.getReceipt().getRetryWriteTxSleep(), retry));
       } else {
-        break;
+        return;
       }
     }
   }

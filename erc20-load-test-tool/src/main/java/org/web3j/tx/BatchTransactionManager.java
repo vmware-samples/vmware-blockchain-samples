@@ -44,20 +44,22 @@ public class BatchTransactionManager extends FastRawTransactionManager {
     super(web3j, credentials, chainId, transactionReceiptProcessor);
   }
 
-  public Request<?, EthSendTransaction> sendTransactionRequest(
-      BigInteger gasPrice,
-      BigInteger gasLimit,
-      String to,
-      String data,
-      BigInteger value,
-      Web3j web3j)
+  public RawTransaction sendTransactionRequest(
+      BigInteger gasPrice, BigInteger gasLimit, String to, String data, BigInteger value)
       throws IOException {
 
     BigInteger nonce = getNonce();
 
-    RawTransaction rawTransaction =
-        RawTransaction.createTransaction(nonce, gasPrice, gasLimit, to, value, data);
+    return RawTransaction.createTransaction(nonce, gasPrice, gasLimit, to, value, data);
+  }
 
-    return web3j.ethSendRawTransaction(sign(rawTransaction));
+  public String signTransactionRequest(RawTransaction rawTransaction) {
+    return sign(rawTransaction);
+  }
+
+  public Request<?, EthSendTransaction> sendSignedTransactionRequest(
+      String signedTransactionRequest, Web3j web3j) {
+
+    return web3j.ethSendRawTransaction(signedTransactionRequest);
   }
 }
