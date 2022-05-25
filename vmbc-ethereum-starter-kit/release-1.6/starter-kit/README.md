@@ -10,7 +10,7 @@ Make sure to provide additional resources.
 
 > **Note**: minikube creates a VM using a selected driver and depends on what you have installed. It could be docker, vmware etc. Please [see this list](https://minikube.sigs.k8s.io/docs/drivers/) and you may need to provide this underlying dependency with additional resources if necessary.
 
-See scripts under`minikube` folder that provide convinience scripts to start and delete minikube.
+See scripts under `minikube` folder that provide convinience scripts to start and delete minikube.
 
 This example using Virtual Box.
 
@@ -51,7 +51,7 @@ Run a simple command like this to get a respone:
 ```
 % curl -X POST --data '{"jsonrpc":"2.0","method":"eth_gasPrice","id":1}' --header "Content-Type: application/json" http://192.168.1.2:30545
 
-{"id":13,"jsonrpc":"2.0","method":"eth_gasPrice","result":"0x9999999999"}
+{"id":1,"jsonrpc":"2.0","method":"eth_gasPrice","result":"0x0"}
 ```
         
 To test VMBC 
