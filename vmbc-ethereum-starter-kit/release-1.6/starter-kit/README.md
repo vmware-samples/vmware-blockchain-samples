@@ -29,7 +29,15 @@ export JFROG_PASSWORD=<secret>
 
 # VMBC Deployment
 
-Clone this repo and `cd vmbc/script`. All subsequent commands are at this location.
+Clone this repo.
+
+For easier testing it is recommended you enable free gas price by updating the `vmbc/config/genesis.json` file as follows:
+
+```
+"gasLimit": "0x7FFFFFFFFFFFFFFF"
+```
+
+ Now `cd vmbc/script` as all subsequent commands are at this location.
 
 Make sure your kube config is pointed to minikube (eg: use `kubectx` to verify). Deploy VMBC with:
 ```
