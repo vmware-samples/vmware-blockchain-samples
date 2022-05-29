@@ -26,6 +26,19 @@ urllib3.disable_warnings()
 w3 = None
 abi = None
 bytecode = None
+abi_permissioning = None
+bytecode_permissioning = None
+
+
+# compiling securityToken source file
+def compile_account_permissioning():
+    install_solc("0.8.0")
+    global abi_permissioning, bytecode_permissioning
+    compiled_sol = compile_files(
+        ["contracts/Permissioning.sol"], solc_version='0.8.0', optimize=True)
+    print("compiled permissioning sources ")
+    bytecode_permissioning = compiled_sol['contracts/Permissioning.sol:Permissioning']['bin']
+    abi_permissioning = compiled_sol['contracts/Permissioning.sol:Permissioning']['abi']
 
 
 # compiling securityToken source file
@@ -56,16 +69,21 @@ def tx_receipt_poll(construct_txn, acc_priv_key):
 
 # function to deploy contract address and distribute tokens among all senders
 def deploy_contract(contract_deploy_account, contract_deploy_account_key, host, port, protocol):
+    contract_deploy_account = "0x784e2c4D95c9Be66Cb0B9cda5b39d72e7630bCa8"
+    contract_deploy_account_key = "5094f257d3462083bcbc02c61d98c038cfa71cdd497834c5f38cd75010ddb7a5"
     # connecting to end point
     if protocol == "grpc":
         port = "8545"
     url = "http://" + host + ":" + port
     compile_security_token()
+    compile_account_permissioning()
+
     global w3
     w3 = Web3(Web3.HTTPProvider(url,
                                 request_kwargs={"verify": False}))
     w3.middleware_onion.inject(geth_poa_middleware, layer=0)
     contract = w3.eth.contract(abi=abi, bytecode=bytecode)
+    permissioning_contract = w3.eth.contract(abi=abi_permissioning, bytecode=bytecode_permissioning)
 
     # deploying contract
     construct_txn = contract.constructor("ERC20", "ERC20", 1000000000000).buildTransaction(
@@ -78,15 +96,40 @@ def deploy_contract(contract_deploy_account, contract_deploy_account_key, host, 
         }
     )
     tx_receipt = tx_receipt_poll(construct_txn, contract_deploy_account_key)
-    print("smart contract deploy success, contract address: '{}'".format(
-        tx_receipt.contractAddress))
+    print("Security token smart contract deploy success, contract address: '{}'".format(
+      tx_receipt.contractAddress))
+
+    # deploying perm contract
+    construct_perm_txn = permissioning_contract.constructor(["0x784e2c4D95c9Be66Cb0B9cda5b39d72e7630bCa8","0xF4d5B303A15b04D7C6b7510b24c62D393805B8d7","0x67C94d4a4fab02697513e4611A4742a98879aD56","0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db"]).buildTransaction(
+      {
+        "from": contract_deploy_account,
+        "gas": 2000000,
+        "gasPrice": 0,
+        "nonce": w3.eth.get_transaction_count(contract_deploy_account),
+        "chainId": 5000,
+      }
+    )
+
+    tx_receipt_perm = tx_receipt_poll(construct_perm_txn, contract_deploy_account_key)
+    print("Account Perm smart contract deploy success, contract address: '{}'".format(
+      tx_receipt_perm.contractAddress))
 
     contract_address = tx_receipt.contractAddress
+    perm_contract_address = tx_receipt_perm.contractAddress
+
     dapp_contract = w3.eth.contract(address=contract_address, abi=abi)
+    perm_dapp_contract = w3.eth.contract(address=perm_contract_address, abi=abi_permissioning)
+
     acc_balance = dapp_contract.functions.balanceOf(
         contract_deploy_account).call()
     print("Account {} has balance of {} tokens \n".format(
         contract_deploy_account, acc_balance))
+
+    is_super_admin = perm_dapp_contract.functions.isSuperAdmin().call()
+    print("Perm Account {} is_super_admin = {}".format(contract_deploy_account, is_super_admin))
+
+    reader_role_keccak = perm_dapp_contract.functions.READER_ROLE().call()
+    print("Reader-role = {}".format(reader_role_keccak))
 
     return contract_address
 
@@ -259,22 +302,22 @@ def main():
         assert dapp_count > 1, "At least 2 instances should run to share contract."
         contract_address = deploy_contract(accts[0], priv_keys[0], host, client_port, protocol)
         print("Contract Address -", contract_address)
-        distribute_tokens(accts, priv_keys, contract_address)
-        print("tokens distributed among senders")
+        # distribute_tokens(accts, priv_keys, contract_address)
+        # print("tokens distributed among senders")
 
-    threads = []
-    port = 8000
-    for i in range(1, len(accts)):
-        time.sleep(random.randint(1, max_sleep_time))
-        t = threading.Thread(target=run_dapp, args=(
-            priv_keys[i], contract_address, port + i))
-        threads.append(t)
-        t.start()
-
-    for t in threads:
-        t.join()
-
-    aggregate_report(dapp_count)
+    # threads = []
+    # port = 8000
+    # for i in range(1, len(accts)):
+    #     time.sleep(random.randint(1, max_sleep_time))
+    #     t = threading.Thread(target=run_dapp, args=(
+    #         priv_keys[i], contract_address, port + i))
+    #     threads.append(t)
+    #     t.start()
+    #
+    # for t in threads:
+    #     t.join()
+    #
+    # aggregate_report(dapp_count)
 
 
 if __name__ == "__main__":
