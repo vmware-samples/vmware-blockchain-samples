@@ -38,6 +38,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -227,6 +228,7 @@ public class WorkloadCommand implements Runnable {
     BatchResponse receiptBatchResponse = null;
     int noOfRetries = web3jConfig.getReceipt().getNoWriteTxRetry();
     boolean success;
+    int lastErrorCode = 0;
     for (long retry = 1; retry <= noOfRetries; retry++) {
       success = true;
       try {
@@ -245,6 +247,7 @@ public class WorkloadCommand implements Runnable {
           receiptResponse = receiptBatchResponse.getResponses().get(i);
           if (receiptResponse.hasError()) {
             success = false;
+            lastErrorCode = receiptResponse.getError().getCode();
             log.info(
                 "JSON-RPC retry {} write req read code {}, data: {}, message: {}",
                 retry,
@@ -265,11 +268,14 @@ public class WorkloadCommand implements Runnable {
         if (retry == noOfRetries) {
           log.warn("Rewriting the request");
           // Retry the write request
+          if (lastErrorCode == (-32603)) {
+            System.exit(-1);
+          }
           transferBatchAsync(writeRequest, signedBatchRequest);
           return;
         }
-        TimeUnit.SECONDS.sleep(
-            (long) Math.pow(web3jConfig.getReceipt().getRetryWriteTxSleep(), retry));
+        int sleepTime = (int) Math.pow(web3jConfig.getReceipt().getRetryWriteTxSleep(), retry);
+        TimeUnit.SECONDS.sleep(sleepTime + ThreadLocalRandom.current().nextInt(sleepTime / 2 + 1));
       } else {
         return;
       }
