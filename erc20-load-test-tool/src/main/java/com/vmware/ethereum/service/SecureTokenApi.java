@@ -33,9 +33,11 @@ import static org.springframework.util.ReflectionUtils.findField;
 import static org.springframework.util.ReflectionUtils.setField;
 
 import com.vmware.ethereum.config.TokenConfig;
+import com.vmware.ethereum.config.Web3jConfig;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
@@ -44,13 +46,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.Hash;
+import org.web3j.crypto.RawTransaction;
 import org.web3j.model.SecurityToken;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.BatchRequest;
 import org.web3j.protocol.core.BatchResponse;
-import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.methods.request.Transaction;
-import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.tx.BatchTransactionManager;
 import org.web3j.tx.TransactionManager;
 
@@ -60,11 +63,13 @@ import org.web3j.tx.TransactionManager;
 public class SecureTokenApi {
 
   private final TokenConfig config;
+  private final Web3jConfig web3jConfig;
   private final Web3j web3j;
   private final TransactionManager transactionManager;
   private final BatchTransactionManager batchTransactionManager;
   private final SecureTokenFactory tokenFactory;
   private final String senderAddress;
+  private final Credentials credentials;
   private SecurityToken token;
   private Iterator<String> recipients;
   private BigInteger gasEstimate;
@@ -112,18 +117,22 @@ public class SecureTokenApi {
   }
 
   /** Creates token transfer transaction request. */
-  public Request<?, EthSendTransaction> createTransaction() throws IOException {
+  public RawTransaction createTransaction() throws IOException {
     String txData =
         token.transfer(recipients.next(), valueOf(config.getAmount())).encodeFunctionCall();
     log.debug("txData - {}", txData);
     return batchTransactionManager.sendTransactionRequest(
-        gasPrice, gasEstimate, contractAddress, txData, BigInteger.ZERO, web3j);
+        gasPrice, gasEstimate, contractAddress, txData, BigInteger.ZERO);
   }
 
   /** Adds transaction request to the batch. */
   @SneakyThrows(IOException.class)
-  public void addBatchRequests(BatchRequest batchRequest) {
-    batchRequest.add(createTransaction());
+  public void addBatchRequests(BatchRequest batchRequest, ArrayList<String> signedBatchRequest) {
+    RawTransaction rawTransaction = createTransaction();
+    String signedTransaction = batchTransactionManager.signTransactionRequest(rawTransaction);
+    signedBatchRequest.add(Hash.sha3(signedTransaction));
+    batchRequest.add(
+        batchTransactionManager.sendSignedTransactionRequest(signedTransaction, web3j));
     log.debug("batched-requests {}", batchRequest.getRequests());
   }
 

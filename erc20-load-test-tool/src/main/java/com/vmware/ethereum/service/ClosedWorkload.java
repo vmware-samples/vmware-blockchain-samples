@@ -27,6 +27,7 @@ package com.vmware.ethereum.service;
  */
 
 import com.vmware.ethereum.config.WorkloadConfig;
+import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +45,7 @@ public class ClosedWorkload implements WorkloadService {
   private final Web3j web3j;
   private final WorkloadConfig workloadConfig;
   private BatchRequest batchRequest = null;
+  private ArrayList<String> signedBatchRequest = new ArrayList<>();
 
   @Override
   public void start() {
@@ -54,13 +56,14 @@ public class ClosedWorkload implements WorkloadService {
       if (batchRequest == null) {
         batchRequest = web3j.newBatch();
       }
-      api.addBatchRequests(batchRequest);
+      api.addBatchRequests(batchRequest, signedBatchRequest);
       if (batchRequest.getRequests().size() == workloadConfig.getBatchSize()
           || i == transactions - 1) {
         command
-            .transferBatchAsync(batchRequest)
+            .transferBatchAsync(batchRequest, signedBatchRequest)
             .whenComplete((response, throwable) -> semaphore.release());
         batchRequest = web3j.newBatch();
+        signedBatchRequest = new ArrayList<>();
       } else {
         semaphore.release();
       }
