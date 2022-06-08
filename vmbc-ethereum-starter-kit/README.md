@@ -3,6 +3,9 @@ We need a Kubernetes environment to deploy. You could use a remote cluster or lo
 
 Before you start, please send an email to ask_VMware_blockchain@VMware.com to get JFROG_PASSWORD. This will be required in the next steps.
 
+# Important Note
+This is still under development
+
 # k8s environment
 Install minikube (https://minikube.sigs.k8s.io/docs/start/). 
 
@@ -12,10 +15,9 @@ Make sure to provide additional resources.
 
 See scripts under`minikube` folder that provide convinience scripts to start and delete minikube.
 
-This example using Virtual Box.
-
 ```
-minikube start --cpus 4 --memory 12288 --disk-size 50g --vm-driver virtualbox
+cd minikube 
+./minikube-start.sh
 ```
 
 Install [`kubectl`](https://kubernetes.io/docs/tasks/tools/) to interact and you can also use a tool like [Lens](https://k8slens.dev/) or once minikube is started run `minikube dashboard` to see your cluster view in a browser.
@@ -50,7 +52,9 @@ You can use Lens or `watch -n0.1 kubectl get pods --all-namespaces -o wide` to s
 Run a simple command like this to get a respone:
 ```
 % curl -X POST --data '{"jsonrpc":"2.0","method":"eth_gasPrice","id":1}' --header "Content-Type: application/json" http://192.168.1.2:30545
-
+```
+Expected Output:
+```
 {"id":13,"jsonrpc":"2.0","method":"eth_gasPrice","result":"0x9999999999"}
 ```
         
@@ -60,10 +64,15 @@ To test VMBC
 ```
 This deploys a erc20test container in the client namespace. Watch the logs with `kubectl log` 
 ```
-kubectl logs <erc20test-xxxx> --n vmbc-client1 
+kubectl logs <erc20test-xxxx> -n vmbc-client1 
 ```
 
 # Cleanup
+
+Since erc-20 test is running continuosly, you can delete it at any point of time:
+```
+./deleteTest.sh
+```
 
 After you are done, to destroy VMBC components:
 ```
