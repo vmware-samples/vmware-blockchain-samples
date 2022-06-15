@@ -103,7 +103,11 @@
             </goals>
             <configuration>
               <soliditySourceFiles>
-                <directory>../hardhat/contracts</directory>
+                <directory>../</directory>
+                <includes>
+                  <include>hardhat/contracts/*.sol</include>
+                  <include>erc20-load-test-tool/script/contracts/*.sol</include>
+                </includes>
               </soliditySourceFiles>
               <sourceDestination>target/generated-sources</sourceDestination>
             </configuration>

@@ -34,6 +34,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.vmware.ethereum.config.PermissioningConfig;
 import com.vmware.ethereum.config.TokenConfig;
 import com.vmware.ethereum.config.Web3jConfig;
 import com.vmware.ethereum.config.WorkloadConfig;
@@ -48,6 +49,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 
 @Slf4j
@@ -58,8 +60,11 @@ public class WorkloadRunner {
   private final WorkloadConfig workloadConfig;
   private final TokenConfig tokenConfig;
   private final Web3jConfig web3jConfig;
+  private final PermissioningConfig permissioningConfig;
   private final WorkloadCommand command;
   private final SecureTokenApi api;
+  private final PermissioningApi permissioningApi;
+  private final Credentials credentials;
 
   private final CountDownLatch countDownLatch;
   private final MetricsService metrics;
@@ -74,10 +79,32 @@ public class WorkloadRunner {
   /** Run the workload. */
   @SneakyThrows(InterruptedException.class)
   public void run() {
+
+    if (permissioningConfig.isEnable()) {
+      try {
+        permissioningSetup();
+      } catch (Exception e) {
+        log.error(e.toString());
+      }
+    }
     WorkloadService workload = createWorkload();
     start(workload);
     countDownLatch.await();
     stop(workload);
+  }
+
+  private void permissioningSetup() throws Exception {
+    String address = credentials.getAddress();
+    permissioningApi.getReadWritePermission(address);
+
+    for (String key : permissioningConfig.getSuperAdmins()) {
+      permissioningApi.approvePermission(address, Credentials.create(key));
+    }
+
+    Boolean checkWrite = permissioningApi.checkWritePermission(credentials);
+    log.info("write permission granted: {}", checkWrite);
+    Boolean checkRead = permissioningApi.checkReadPermission(credentials);
+    log.info("read permission granted: {}", checkRead);
   }
 
   /** Start the workload. */
