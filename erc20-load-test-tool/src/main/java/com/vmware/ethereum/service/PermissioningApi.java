@@ -30,7 +30,6 @@ import com.vmware.ethereum.config.PermissioningConfig;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,15 +71,16 @@ public class PermissioningApi {
     }
   }
 
-  public CompletableFuture<TransactionReceipt> getReadWritePermission(String newUser)
+  public TransactionReceipt getReadWritePermission(String newUser, Credentials credentials)
       throws Exception {
-    return contract.addUser(newUser, readWriteKeccak).sendAsync();
+    contract = Permissioning.load(contractAddress, web3j, credentials, gasProvider);
+    return contract.addUser(newUser, readWriteKeccak).send();
   }
 
-  public CompletableFuture<TransactionReceipt> approvePermission(
-      String newUser, Credentials approverCreds) throws Exception {
+  public TransactionReceipt approvePermission(String newUser, Credentials approverCreds)
+      throws Exception {
     contract = Permissioning.load(contractAddress, web3j, approverCreds, gasProvider);
-    return contract.approveUserRequest(newUser).sendAsync();
+    return contract.approveUserRequest(newUser).send();
   }
 
   public Boolean checkWritePermission(Credentials writerCreds) throws Exception {

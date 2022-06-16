@@ -51,10 +51,10 @@ def setup_w3(host, port, protocol):
 
 # compiling securityToken source file
 def compile_account_permissioning():
-    install_solc("0.8.0")
+    install_solc("0.7.6")
     global abi_permissioning, bytecode_permissioning
     compiled_sol = compile_files(
-        ["contracts/Permissioning.sol"], solc_version='0.8.0', optimize=True)
+        ["contracts/Permissioning.sol"], solc_version='0.7.6', optimize=True)
     print("compiled permissioning sources ")
     bytecode_permissioning = compiled_sol['contracts/Permissioning.sol:Permissioning']['bin']
     abi_permissioning = compiled_sol['contracts/Permissioning.sol:Permissioning']['abi']
@@ -327,9 +327,7 @@ def main():
     ethrpc_url = "{0}://{1}:{2}/".format(protocol, host, client_port)
     wavefront_enabled = os.getenv('MANAGEMENT_METRICS_EXPORT_WAVEFRONT_ENABLED', 'False') in ('true', 'True', 'TRUE')
     max_sleep_time = int(os.getenv('MAX_SLEEP_TIME', 5))
-    recipients = os.environ['TOKEN_RECIPIENTS']
 
-    print("recipients = ", recipients)
     print("No of dapp Instances ", dapp_count)
     print("Ethereum Endpoint ", ethrpc_url)
 

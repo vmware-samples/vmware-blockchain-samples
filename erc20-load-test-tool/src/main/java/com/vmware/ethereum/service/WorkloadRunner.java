@@ -51,6 +51,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
 @Slf4j
 @Service
@@ -82,9 +83,9 @@ public class WorkloadRunner {
 
     if (permissioningConfig.isEnable()) {
       try {
-        permissioningSetup();
+        if (!checkPermissions()) permissioningSetup();
       } catch (Exception e) {
-        log.error(e.toString());
+        log.error("permissioning Setup error = {}", e.toString());
       }
     }
     WorkloadService workload = createWorkload();
@@ -95,16 +96,29 @@ public class WorkloadRunner {
 
   private void permissioningSetup() throws Exception {
     String address = credentials.getAddress();
-    permissioningApi.getReadWritePermission(address);
+    TransactionReceipt permTxReceipt =
+        permissioningApi.getReadWritePermission(
+            address, Credentials.create(permissioningConfig.getSuperAdmins()[0]));
+    log.info("getReadWrite permission tx receipt - {}", permTxReceipt);
 
-    for (String key : permissioningConfig.getSuperAdmins()) {
-      permissioningApi.approvePermission(address, Credentials.create(key));
+    TransactionReceipt approveTxReceipt = null;
+    for (int i = 1; i < permissioningConfig.getSuperAdmins().length; i++) {
+      approveTxReceipt =
+          permissioningApi.approvePermission(
+              address, Credentials.create(permissioningConfig.getSuperAdmins()[i]));
+      log.debug("approve perm tx receipt - {}", approveTxReceipt);
     }
+    checkPermissions();
+  }
 
+  private Boolean checkPermissions() throws Exception {
     Boolean checkWrite = permissioningApi.checkWritePermission(credentials);
     log.info("write permission granted: {}", checkWrite);
     Boolean checkRead = permissioningApi.checkReadPermission(credentials);
     log.info("read permission granted: {}", checkRead);
+    if (checkWrite && checkRead) return true;
+
+    return false;
   }
 
   /** Start the workload. */
