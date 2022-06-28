@@ -32,3 +32,11 @@ $ ./run.sh
 ```bash
 $ cat nohup.out
 ```
+
+4. (optional) To enable wavefront, login into vmwaresaas.jfrog.io and set WAVEFRONT_TOKEN in .env file
+```bash
+$ docker login vmwaresaas.jfrog.io -u '<username>' -p '<password>'
+$ vi .env
+$ export MANAGEMENT_METRICS_EXPORT_WAVEFRONT_ENABLED=true
+$ export WAVEFRONT_TOKEN=<your_token>
+```
