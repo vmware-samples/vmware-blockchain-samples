@@ -142,8 +142,6 @@ public class WorkloadCommand implements Runnable {
       } else {
         metrics.record(between(startWriteTime, now()), "0x1");
         transactionHash = String.valueOf(response.getResponses().get(i).getResult());
-        log.info("transactionHash = {}", transactionHash);
-        log.info("transactionHash2 = {}", signedBatchRequest.get(i));
 
         // based on the conditions poll for the receipt
         if (web3jConfig.getReceipt().isDefer() || web3jConfig.getReceipt().getAttempts() == 0) {

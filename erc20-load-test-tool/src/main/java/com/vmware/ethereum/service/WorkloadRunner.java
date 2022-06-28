@@ -34,6 +34,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.vmware.ethereum.config.PermissioningConfig;
 import com.vmware.ethereum.config.TokenConfig;
 import com.vmware.ethereum.config.Web3jConfig;
 import com.vmware.ethereum.config.WorkloadConfig;
@@ -48,7 +49,9 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
 @Slf4j
 @Service
@@ -58,8 +61,11 @@ public class WorkloadRunner {
   private final WorkloadConfig workloadConfig;
   private final TokenConfig tokenConfig;
   private final Web3jConfig web3jConfig;
+  private final PermissioningConfig permissioningConfig;
   private final WorkloadCommand command;
   private final SecureTokenApi api;
+  private final PermissioningApi permissioningApi;
+  private final Credentials credentials;
 
   private final CountDownLatch countDownLatch;
   private final MetricsService metrics;
@@ -74,10 +80,45 @@ public class WorkloadRunner {
   /** Run the workload. */
   @SneakyThrows(InterruptedException.class)
   public void run() {
+
+    if (permissioningConfig.isEnable()) {
+      try {
+        if (!checkPermissions()) permissioningSetup();
+      } catch (Exception e) {
+        log.error("permissioning Setup error = {}", e.toString());
+      }
+    }
     WorkloadService workload = createWorkload();
     start(workload);
     countDownLatch.await();
     stop(workload);
+  }
+
+  private void permissioningSetup() throws Exception {
+    String address = credentials.getAddress();
+    TransactionReceipt permTxReceipt =
+        permissioningApi.getReadWritePermission(
+            address, Credentials.create(permissioningConfig.getSuperAdmins()[0]));
+    log.info("getReadWrite permission tx receipt - {}", permTxReceipt);
+
+    TransactionReceipt approveTxReceipt = null;
+    for (int i = 1; i < permissioningConfig.getSuperAdmins().length - 1; i++) {
+      approveTxReceipt =
+          permissioningApi.approvePermission(
+              address, Credentials.create(permissioningConfig.getSuperAdmins()[i]));
+      log.debug("approve perm tx receipt - {}", approveTxReceipt);
+    }
+    checkPermissions();
+  }
+
+  private Boolean checkPermissions() throws Exception {
+    Boolean checkWrite = permissioningApi.checkWritePermission(credentials);
+    log.info("write permission granted: {}", checkWrite);
+    Boolean checkRead = permissioningApi.checkReadPermission(credentials);
+    log.info("read permission granted: {}", checkRead);
+    if (checkWrite && checkRead) return true;
+
+    return false;
   }
 
   /** Start the workload. */

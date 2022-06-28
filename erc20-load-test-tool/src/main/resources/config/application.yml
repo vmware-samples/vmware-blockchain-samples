@@ -34,6 +34,15 @@ token:
     - 1Ff482D42D8727258A1680192Fa4ba925C46Bc43
   amount: 5 # amount of tokens transferred in one transaction
 
+permissioning:
+    enable: false # give read-write permission to sender
+    contract-address: # permissioning contract address (without 0x in starting)
+    super-admins:
+      - 5094f257d3462083bcbc02c61d98c038cfa71cdd497834c5f38cd75010ddb7a5
+      - 78785c4ab4ba44b83509296af86af56ff00db79ba26a292d0556a4b4e8cea87c
+      - 417fbb670417375f2916a4b0110dc7d68d81ea15aad3e6eb69f166b5bed6503f
+      - 9112ecbfc0a7c1fd7fdad5679dccec3b85b4ab32fe4268fe11f38cf8e5f44c39
+
 database:
   url: # postgres database url (Ex: jdbc:postgresql://127.0.0.1:5432/postgres)
   username: postgres # postgres database username

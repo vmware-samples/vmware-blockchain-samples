@@ -26,6 +26,36 @@ urllib3.disable_warnings()
 w3 = None
 abi = None
 bytecode = None
+abi_permissioning = None
+bytecode_permissioning = None
+
+super_admins = ["0x784e2c4D95c9Be66Cb0B9cda5b39d72e7630bCa8", "0xF4d5B303A15b04D7C6b7510b24c62D393805B8d7",
+                "0x67C94d4a4fab02697513e4611A4742a98879aD56", "0x90Dc522189C4a368471C5AB3592f4789C21c560a"]
+super_admins_key = ["5094f257d3462083bcbc02c61d98c038cfa71cdd497834c5f38cd75010ddb7a5",
+                    "78785c4ab4ba44b83509296af86af56ff00db79ba26a292d0556a4b4e8cea87c",
+                    "417fbb670417375f2916a4b0110dc7d68d81ea15aad3e6eb69f166b5bed6503f",
+                    "9112ecbfc0a7c1fd7fdad5679dccec3b85b4ab32fe4268fe11f38cf8e5f44c39"]
+
+
+# setup w3 http provider
+def setup_w3(host, port, protocol):
+    if protocol == "grpc":
+        port = "8545"
+    url = "http://" + host + ":" + port
+    global w3
+    w3 = Web3(Web3.HTTPProvider(url, request_kwargs={"verify": False}))
+    w3.middleware_onion.inject(geth_poa_middleware, layer=0)
+
+
+# compiling securityToken source file
+def compile_account_permissioning():
+    install_solc("0.7.6")
+    global abi_permissioning, bytecode_permissioning
+    compiled_sol = compile_files(
+        ["contracts/Permissioning.sol"], solc_version='0.7.6', optimize=True)
+    print("compiled permissioning sources ")
+    bytecode_permissioning = compiled_sol['contracts/Permissioning.sol:Permissioning']['bin']
+    abi_permissioning = compiled_sol['contracts/Permissioning.sol:Permissioning']['abi']
 
 
 # compiling securityToken source file
@@ -39,32 +69,9 @@ def compile_security_token():
     abi = compiled_sol['../../hardhat/contracts/SecurityToken.sol:SecurityToken']['abi']
 
 
-# function to validate tx hash and poll for receipt
-def tx_receipt_poll(construct_txn, acc_priv_key):
-    signed_txn = w3.eth.account.sign_transaction(
-        construct_txn, acc_priv_key)
-    # Validating transaction hash
-    tx_hash_send = signed_txn.hash
-    tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-    assert tx_hash_send == tx_hash, "tx hash mismatch"
-
-    tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-    print("Transaction receipt: '{}'".format(tx_receipt))
-    assert tx_receipt.status == 1, "transaction failed"
-    return tx_receipt
-
-
 # function to deploy contract address and distribute tokens among all senders
-def deploy_contract(contract_deploy_account, contract_deploy_account_key, host, port, protocol):
-    # connecting to end point
-    if protocol == "grpc":
-        port = "8545"
-    url = "http://" + host + ":" + port
+def deploy_contract(contract_deploy_account, contract_deploy_account_key):
     compile_security_token()
-    global w3
-    w3 = Web3(Web3.HTTPProvider(url,
-                                request_kwargs={"verify": False}))
-    w3.middleware_onion.inject(geth_poa_middleware, layer=0)
     contract = w3.eth.contract(abi=abi, bytecode=bytecode)
 
     # deploying contract
@@ -78,8 +85,8 @@ def deploy_contract(contract_deploy_account, contract_deploy_account_key, host, 
         }
     )
     tx_receipt = tx_receipt_poll(construct_txn, contract_deploy_account_key)
-    print("smart contract deploy success, contract address: '{}'".format(
-        tx_receipt.contractAddress))
+    print("Security token smart contract deploy success, contract address: '{}'".format(
+      tx_receipt.contractAddress))
 
     contract_address = tx_receipt.contractAddress
     dapp_contract = w3.eth.contract(address=contract_address, abi=abi)
@@ -89,6 +96,72 @@ def deploy_contract(contract_deploy_account, contract_deploy_account_key, host, 
         contract_deploy_account, acc_balance))
 
     return contract_address
+
+
+# function to deploy contract address and distribute tokens among all senders
+def deploy_contract_permissioning():
+    compile_account_permissioning()
+    permissioning_contract = w3.eth.contract(abi=abi_permissioning, bytecode=bytecode_permissioning)
+
+    # deploying perm contract
+    construct_perm_txn = permissioning_contract.constructor(super_admins).buildTransaction(
+      {
+        "from": super_admins[0],
+        "gas": 2000000,
+        "gasPrice": 0,
+        "nonce": w3.eth.get_transaction_count(super_admins[0]),
+        "chainId": 5000,
+      }
+    )
+
+    tx_receipt_perm = tx_receipt_poll(construct_perm_txn, super_admins_key[0])
+    print("\nAccount Permissioning smart contract deploy success, contract address: '{}'".format(
+      tx_receipt_perm.contractAddress))
+
+    perm_contract_address = tx_receipt_perm.contractAddress
+    permissioning_dapp = w3.eth.contract(address=perm_contract_address, abi=abi_permissioning)
+
+    return perm_contract_address, permissioning_dapp
+
+
+# send tx to raise write read access from super_admin[0] account
+def write_read_access(permissioning_dapp, accts):
+    for acct in accts:
+        print("\ngiving write and read access to", acct)
+        construct_txn = permissioning_dapp.functions.addUser(acct, [2, 3]).buildTransaction(
+            {
+                'from': super_admins[0],
+                'gas': 2000000,
+                'gasPrice': 0,
+                'nonce': w3.eth.get_transaction_count(super_admins[0]),
+                'chainId': 5000
+            })
+        tx_receipt_poll(construct_txn, super_admins_key[0])
+
+        for i in range(1, len(super_admins)-1):
+            approve_access(permissioning_dapp, acct, super_admins[i], super_admins_key[i])
+
+
+# approve read write access by 2 other super admins
+def approve_access(perm_dapp_contract, acct, super_admin_addr, super_admin_key):
+    print("\napproving access for", acct, "by", super_admin_addr)
+    construct_txn = perm_dapp_contract.functions.approveUserRequest(acct, [2, 3]).buildTransaction(
+        {
+            'from': super_admin_addr,
+            'gas': 2000000,
+            'gasPrice': 0,
+            'nonce': w3.eth.get_transaction_count(super_admin_addr),
+            'chainId': 5000
+        })
+    tx_receipt_poll(construct_txn, super_admin_key)
+
+
+# checks if the account has read write access
+def check_write_read_access(perm_dapp_contract, accts):
+    for acct in accts:
+        is_writer = perm_dapp_contract.caller({'from': acct}).isWriter()
+        is_reader = perm_dapp_contract.caller({'from': acct}).isViewer()
+        print("\nAccount {} is_writer = {} and is_reader = {}".format(acct, is_writer, is_reader))
 
 
 # distributing token to senders
@@ -106,6 +179,21 @@ def distribute_tokens(accts, priv_keys, contract_address):
         acc_balance = dapp_contract.functions.balanceOf(accts[i]).call()
         print("Account {} has balance of {} tokens \n".format(
             accts[i], acc_balance))
+
+
+# function to validate tx hash and poll for receipt
+def tx_receipt_poll(construct_txn, acc_priv_key):
+    signed_txn = w3.eth.account.sign_transaction(
+        construct_txn, acc_priv_key)
+    # Validating transaction hash
+    tx_hash_send = signed_txn.hash
+    tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+    assert tx_hash_send == tx_hash, "tx hash mismatch"
+
+    tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+    print("\nTransaction receipt: '{}'".format(tx_receipt))
+    assert tx_receipt.status == 1, "transaction failed"
+    return tx_receipt
 
 
 # expose port on photon/linux machines
@@ -253,11 +341,24 @@ def main():
         accts.append(Web3.toChecksumAddress(acct.address[2:].lower()))
         priv_keys.append(acct.privateKey.hex()[2:].lower())
     print("Account address list = ", accts)
+    print("Account Private Keys = ", priv_keys)
+
+    # setup w3 config
+    setup_w3(host, client_port, protocol)
+
+    # deploy permissioning contract
+    perm_contract_addr, perm_dapp_contract = deploy_contract_permissioning()
+
+    # give writer acccess to all the generated sender accts
+    write_read_access(perm_dapp_contract, accts)
+
+    # check if all sender has the writer access
+    check_write_read_access(perm_dapp_contract, accts)
 
     contract_address = None
     if share_contract:
         assert dapp_count > 1, "At least 2 instances should run to share contract."
-        contract_address = deploy_contract(accts[0], priv_keys[0], host, client_port, protocol)
+        contract_address = deploy_contract(accts[0], priv_keys[0])
         print("Contract Address -", contract_address)
         distribute_tokens(accts, priv_keys, contract_address)
         print("tokens distributed among senders")
