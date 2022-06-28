@@ -36,10 +36,8 @@ super_admins_key = ["5094f257d3462083bcbc02c61d98c038cfa71cdd497834c5f38cd75010d
                     "417fbb670417375f2916a4b0110dc7d68d81ea15aad3e6eb69f166b5bed6503f",
                     "9112ecbfc0a7c1fd7fdad5679dccec3b85b4ab32fe4268fe11f38cf8e5f44c39"]
 
-WRITER_keccak = "0x73a9985316cd4cbfd13dadcaa0e6f773c85e933a0d88efbe60e4dc49da9176a0"
-READER_keccak = "0x15653fa27c6bf71f240f20cf7f43263ffe27c9b487bdaab88217cfc64504208d"
 
-
+# setup w3 http provider
 def setup_w3(host, port, protocol):
     if protocol == "grpc":
         port = "8545"
@@ -126,11 +124,11 @@ def deploy_contract_permissioning():
     return perm_contract_address, permissioning_dapp
 
 
+# send tx to raise write read access from super_admin[0] account
 def write_read_access(permissioning_dapp, accts):
     for acct in accts:
         print("\ngiving write and read access to", acct)
-        construct_txn = permissioning_dapp.functions.addUser(acct,
-            [WRITER_keccak, READER_keccak]).buildTransaction(
+        construct_txn = permissioning_dapp.functions.addUser(acct, [2, 3]).buildTransaction(
             {
                 'from': super_admins[0],
                 'gas': 2000000,
@@ -140,13 +138,14 @@ def write_read_access(permissioning_dapp, accts):
             })
         tx_receipt_poll(construct_txn, super_admins_key[0])
 
-        for i in range(1, len(super_admins)):
+        for i in range(1, len(super_admins)-1):
             approve_access(permissioning_dapp, acct, super_admins[i], super_admins_key[i])
 
 
+# approve read write access by 2 other super admins
 def approve_access(perm_dapp_contract, acct, super_admin_addr, super_admin_key):
     print("\napproving access for", acct, "by", super_admin_addr)
-    construct_txn = perm_dapp_contract.functions.approveUserRequest(acct).buildTransaction(
+    construct_txn = perm_dapp_contract.functions.approveUserRequest(acct, [2, 3]).buildTransaction(
         {
             'from': super_admin_addr,
             'gas': 2000000,
@@ -157,6 +156,7 @@ def approve_access(perm_dapp_contract, acct, super_admin_addr, super_admin_key):
     tx_receipt_poll(construct_txn, super_admin_key)
 
 
+# checks if the account has read write access
 def check_write_read_access(perm_dapp_contract, accts):
     for acct in accts:
         is_writer = perm_dapp_contract.caller({'from': acct}).isWriter()

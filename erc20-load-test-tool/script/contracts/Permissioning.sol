@@ -1,7 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0
-
 pragma solidity ~0.7.6;
-// import "hardhat/console.sol";
 
 contract Permissioning {
 
@@ -23,23 +20,23 @@ contract Permissioning {
         bool isActive;
     }
 
-    bytes32 public constant SUPER_ADMIN_ROLE = keccak256("SUPER_ADMIN");
-    bytes32 public constant WRITER_ROLE = keccak256("WRITER");
-    bytes32 public constant READER_ROLE = keccak256("READER");
-    bytes32 public constant DEPLOYER_ROLE = keccak256("DEPLOYER");
+    uint8 public  SUPER_ADMIN_ROLE = 1;
+    uint8 public  WRITER_ROLE = 2;
+    uint8 public  READER_ROLE = 3;
+    uint8 public  DEPLOYER_ROLE = 4; // smart-contract deployer
 
     struct RoleData {
         mapping(address => UserRoleData) members;
     }
 
     struct VotingData {
-        mapping(address => bool) voter;
+        mapping(address => mapping (uint => bool)) voter;
     }
 
-    mapping(bytes32 => RoleData) private _roles;
+    mapping(uint8 => RoleData) private _roles;
 
     struct NewUserRequest {
-        bytes32[] roles;
+        uint8[] roles;
         address submitter;
         uint8 approvalCount;
     }
@@ -49,9 +46,9 @@ contract Permissioning {
 
     event VoteUpdateEvent(address indexed _from, address indexed _userId);
 
-    event NewRequestEvent(address indexed _from, address indexed _userId, bytes32[] indexed _roles);
+    event NewRequestEvent(address indexed _from, address indexed _userId, uint8[] indexed _roles);
 
-    event NewUserEvent(address indexed _userId, bytes32 indexed _role);
+    event NewUserEvent(address indexed _userId, uint8 indexed _role);
 
     event UserStatusEvent(address indexed _from, address indexed _userId, UserStatus indexed _status);
 
@@ -80,8 +77,8 @@ contract Permissioning {
         _;
     }
 
-     modifier validRole(bytes32 roleId) {
-       if(!(roleId == WRITER_ROLE || roleId  == READER_ROLE))
+     modifier validRole(uint8 roleId) {
+       if(!(roleId == WRITER_ROLE || roleId  == READER_ROLE || roleId  == DEPLOYER_ROLE))
        {
            revert("Invalid Role");
        }
@@ -89,14 +86,14 @@ contract Permissioning {
     }
 
 
-    modifier validRoles(bytes32[] calldata roles) {
+    modifier validRoles(uint8[] calldata roles) {
         if(roles.length == 0)
         {
             revert("No Valid Role(s)");
         }
         for(uint8 i = 0; i < roles.length; i++){
-            bytes32 roleId = roles[i];
-            if(!(roleId == WRITER_ROLE || roleId  == READER_ROLE))
+            uint8 roleId = roles[i];
+            if(!(roleId == WRITER_ROLE || roleId  == READER_ROLE || roleId  == DEPLOYER_ROLE))
             {
                 revert("Invalid Role");
             }
@@ -105,11 +102,10 @@ contract Permissioning {
 
     }
 
-    modifier noExistingRequest(address user){
+    modifier noExistingRequest(address user) {
         NewUserRequest storage request =  newUserRequests[user];
         if(request.submitter != address(0))
         {
-            // console.log("existing request submitter %s user %s", request.submitter, user);
             revert("There is an existing request for the user in queue");
         }
         _;
@@ -123,7 +119,7 @@ contract Permissioning {
         return _approvalThreshold;
     }
 
-    function addUser(address newUser, bytes32[] calldata roles)
+    function addUser(address newUser, uint8[] calldata roles)
         external
         onlySuperAdmin
         noExistingRequest(newUser)
@@ -138,18 +134,20 @@ contract Permissioning {
         emit NewRequestEvent(msg.sender, newUser, roles);
     }
 
-    function approveUserRequest(address newUser) external onlySuperAdmin {
+    function approveUserRequest(address newUser, uint8[] memory roles) external onlySuperAdmin {
 
         NewUserRequest storage request =  newUserRequests[newUser];
 
-        if(request.submitter == msg.sender)
+        for(uint8 i = 0; i < roles.length; i++)
         {
-            revert("Submitter Cannot Approve");
-        }
-
-        if(approverVotes[newUser].voter[msg.sender])
-        {
-            revert("You have approved already");
+            uint8 role = roles[i];
+            if(approverVotes[newUser].voter[msg.sender][role])
+            {
+                revert("You have approved already");
+            } else {
+                approverVotes[newUser].voter[msg.sender][role] = true;
+                emit VoteUpdateEvent(msg.sender, newUser);
+            }
         }
 
         if(request.submitter == address(0))
@@ -157,15 +155,12 @@ contract Permissioning {
             revert("There is no valid request for given user");
         }
 
-        approverVotes[newUser].voter[msg.sender] = true;
-        emit VoteUpdateEvent(msg.sender, newUser);
-
         newUserRequests[newUser].approvalCount++;
-        if (newUserRequests[newUser].approvalCount > _approvalThreshold) {
-            bytes32[] memory roles = newUserRequests[newUser].roles;
-            for(uint8 i = 0; i < roles.length; i++)
+        if (newUserRequests[newUser].approvalCount >= _approvalThreshold) {
+            uint8[] memory uroles = newUserRequests[newUser].roles;
+            for(uint8 i = 0; i < uroles.length; i++)
             {
-                bytes32 role = roles[i];
+                uint8 role = uroles[i];
                 _roles[role].members[newUser] = UserRoleData(UserStatus
                 .Active, true);
                 emit NewUserEvent(newUser, role);
@@ -176,7 +171,7 @@ contract Permissioning {
         }
     }
 
-    function disableUser(address oldUser, bytes32 role)external
+    function disableUser(address oldUser, uint8 role)external
         onlySuperAdmin
         validRole(role) {
 
@@ -190,7 +185,7 @@ contract Permissioning {
         emit UserStatusEvent(msg.sender, oldUser, UserStatus.Inactive);
     }
 
-    function enableUser(address oldUser, bytes32 role)external
+    function enableUser(address oldUser, uint8 role)external
         onlySuperAdmin
         validRole(role) {
          if(_roles[role].members[oldUser].status != UserStatus.Inactive)
@@ -219,7 +214,9 @@ contract Permissioning {
         return _roles[DEPLOYER_ROLE].members[msg.sender].isActive;
     }
 
-    function checkUserAction(address from, address to, UserAction action) external view returns(bool) {
+    function checkUserAction(address from, UserAction action) external view returns(bool) {
+        require (action == UserAction.Read || action == UserAction.Write || action == UserAction.Deploy, "Invalid Action");
+
         if(action == UserAction.Deploy)
         {
             return _roles[DEPLOYER_ROLE].members[from].isActive;

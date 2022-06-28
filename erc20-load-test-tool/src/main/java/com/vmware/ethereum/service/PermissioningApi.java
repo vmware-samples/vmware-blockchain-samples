@@ -51,7 +51,7 @@ public class PermissioningApi {
   private Permissioning contract;
   private String contractAddress;
   private ContractGasProvider gasProvider;
-  private final List<byte[]> readWriteKeccak = new ArrayList<>();
+  private final List<BigInteger> readWriteRoles = new ArrayList<>();
 
   @PostConstruct
   public void init() throws Exception {
@@ -66,21 +66,21 @@ public class PermissioningApi {
       contractAddress = config.getContractAddress();
       Credentials credentials = Credentials.create(config.getSuperAdmins()[0]);
       contract = Permissioning.load(contractAddress, web3j, credentials, gasProvider);
-      readWriteKeccak.add(READER_ROLE());
-      readWriteKeccak.add(WRITER_ROLE());
+      readWriteRoles.add(BigInteger.valueOf(2));
+      readWriteRoles.add(BigInteger.valueOf(3));
     }
   }
 
   public TransactionReceipt getReadWritePermission(String newUser, Credentials credentials)
       throws Exception {
     contract = Permissioning.load(contractAddress, web3j, credentials, gasProvider);
-    return contract.addUser(newUser, readWriteKeccak).send();
+    return contract.addUser(newUser, readWriteRoles).send();
   }
 
   public TransactionReceipt approvePermission(String newUser, Credentials approverCreds)
       throws Exception {
     contract = Permissioning.load(contractAddress, web3j, approverCreds, gasProvider);
-    return contract.approveUserRequest(newUser).send();
+    return contract.approveUserRequest(newUser, readWriteRoles).send();
   }
 
   public Boolean checkWritePermission(Credentials writerCreds) throws Exception {
@@ -91,13 +91,5 @@ public class PermissioningApi {
   public Boolean checkReadPermission(Credentials readerCreds) throws Exception {
     contract = Permissioning.load(contractAddress, web3j, readerCreds, gasProvider);
     return contract.isViewer().send();
-  }
-
-  public byte[] READER_ROLE() throws Exception {
-    return contract.READER_ROLE().send();
-  }
-
-  public byte[] WRITER_ROLE() throws Exception {
-    return contract.WRITER_ROLE().send();
   }
 }

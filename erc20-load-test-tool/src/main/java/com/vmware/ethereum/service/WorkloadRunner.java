@@ -102,7 +102,7 @@ public class WorkloadRunner {
     log.info("getReadWrite permission tx receipt - {}", permTxReceipt);
 
     TransactionReceipt approveTxReceipt = null;
-    for (int i = 1; i < permissioningConfig.getSuperAdmins().length; i++) {
+    for (int i = 1; i < permissioningConfig.getSuperAdmins().length - 1; i++) {
       approveTxReceipt =
           permissioningApi.approvePermission(
               address, Credentials.create(permissioningConfig.getSuperAdmins()[i]));
