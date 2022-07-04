@@ -137,7 +137,7 @@ public class SecureTokenApi {
     String txData =
         tokenArray
             .get(index)
-            .transfer(recipients.next(), valueOf(config.getAmount()))
+            .transfer(config.getRecipients()[0], valueOf(config.getAmount()))
             .encodeFunctionCall();
     log.debug("txData - {}", txData);
     return batchTransactionManager

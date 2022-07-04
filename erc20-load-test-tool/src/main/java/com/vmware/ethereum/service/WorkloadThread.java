@@ -49,30 +49,25 @@ public class WorkloadThread implements Runnable {
   private ArrayList<String> signedBatchRequest = new ArrayList<>();
 
   public void run() {
-    try {
-      // Displaying the thread that is running
-      log.info("Running {} transactions in thread {} ..", transactions, index + 1);
-      Semaphore semaphore = new Semaphore(1);
-      for (int i = 0; i < transactions; i++) {
-        semaphore.acquireUninterruptibly();
-        if (batchRequest == null) {
-          batchRequest = web3j.get(index).newBatch();
-        }
-        api.addBatchRequests(batchRequest, signedBatchRequest, index);
-        if (batchRequest.getRequests().size() == workloadConfig.getBatchSize()
-            || i == transactions - 1) {
-          command
-              .transferBatchAsync(batchRequest, signedBatchRequest, index)
-              .whenComplete((response, throwable) -> semaphore.release());
-          batchRequest = web3j.get(index).newBatch();
-          signedBatchRequest = new ArrayList<>();
-        } else {
-          semaphore.release();
-        }
+    // Displaying the thread that is running
+    log.info("Running {} transactions in thread {} ..", transactions, index + 1);
+    Semaphore semaphore = new Semaphore(1);
+    for (int i = 0; i < transactions; i++) {
+      semaphore.acquireUninterruptibly();
+      if (batchRequest == null) {
+        batchRequest = web3j.get(index).newBatch();
       }
-    } catch (Exception e) {
-      // Throwing an exception
-      log.error("Exception is caught - {}\n{}", e.getCause(), e.getStackTrace());
+      api.addBatchRequests(batchRequest, signedBatchRequest, index);
+      if (batchRequest.getRequests().size() == workloadConfig.getBatchSize()
+          || i == transactions - 1) {
+        command
+            .transferBatchAsync(batchRequest, signedBatchRequest, index)
+            .whenComplete((response, throwable) -> semaphore.release());
+        batchRequest = web3j.get(index).newBatch();
+        signedBatchRequest = new ArrayList<>();
+      } else {
+        semaphore.release();
+      }
     }
   }
 }
