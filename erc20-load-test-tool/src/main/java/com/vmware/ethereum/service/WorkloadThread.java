@@ -28,7 +28,6 @@ package com.vmware.ethereum.service;
 
 import com.vmware.ethereum.config.WorkloadConfig;
 import java.util.ArrayList;
-import java.util.concurrent.Semaphore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.web3j.protocol.Web3j;
@@ -51,28 +50,23 @@ public class WorkloadThread implements Runnable {
   public void run() {
     try {
       // Displaying the thread that is running
-      log.info("Running {} transaction at concurrency {} ..", transactions, concurrency);
-      Semaphore semaphore = new Semaphore(1);
+      log.info("Running {} transaction in thread {} ..", transactions, index);
+
       for (int i = 0; i < transactions; i++) {
-        semaphore.acquireUninterruptibly();
         if (batchRequest == null) {
           batchRequest = web3j.get(index).newBatch();
         }
         api.addBatchRequests(batchRequest, signedBatchRequest, index);
         if (batchRequest.getRequests().size() == workloadConfig.getBatchSize()
             || i == transactions - 1) {
-          command
-              .transferBatchAsync(batchRequest, signedBatchRequest, index)
-              .whenComplete((response, throwable) -> semaphore.release());
+          command.transferBatchAsync(batchRequest, signedBatchRequest, index);
           batchRequest = web3j.get(index).newBatch();
           signedBatchRequest = new ArrayList<>();
-        } else {
-          semaphore.release();
         }
       }
     } catch (Exception e) {
       // Throwing an exception
-      log.error("Exception is caught - {} {}", e.getMessage(), e.getStackTrace());
+      log.error("Exception is caught - {}\n{}", e.getCause(), e.getStackTrace());
     }
   }
 }
