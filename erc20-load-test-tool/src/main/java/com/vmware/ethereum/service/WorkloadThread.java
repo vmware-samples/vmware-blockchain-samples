@@ -72,7 +72,7 @@ public class WorkloadThread implements Runnable {
       }
     } catch (Exception e) {
       // Throwing an exception
-      System.out.println("Exception is caught");
+      log.error("Exception is caught - {} {}", e.getMessage(), e.getStackTrace());
     }
   }
 }

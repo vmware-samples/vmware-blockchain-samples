@@ -26,6 +26,10 @@ package com.vmware.ethereum.config;
  * #L%
  */
 
+import static com.vmware.ethereum.model.ReceiptMode.*;
+import static io.grpc.ManagedChannelBuilder.forAddress;
+import static java.lang.String.format;
+
 import com.vmware.ethereum.config.Web3jConfig.Receipt;
 import com.vmware.ethereum.model.ReceiptMode;
 import com.vmware.ethereum.service.MetricsService;
@@ -36,6 +40,18 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.okhttp3.OkHttpConnectionPoolMetrics;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
@@ -55,23 +71,6 @@ import org.web3j.tx.FastRawTransactionManager;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.response.*;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.security.GeneralSecurityException;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
-import static com.vmware.ethereum.model.ReceiptMode.*;
-import static io.grpc.ManagedChannelBuilder.forAddress;
-import static java.lang.String.format;
 
 @Slf4j
 @Component
