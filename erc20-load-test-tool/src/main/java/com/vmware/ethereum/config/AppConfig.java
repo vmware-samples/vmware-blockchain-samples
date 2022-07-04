@@ -26,10 +26,6 @@ package com.vmware.ethereum.config;
  * #L%
  */
 
-import static com.vmware.ethereum.model.ReceiptMode.*;
-import static io.grpc.ManagedChannelBuilder.forAddress;
-import static java.lang.String.format;
-
 import com.vmware.ethereum.config.Web3jConfig.Receipt;
 import com.vmware.ethereum.model.ReceiptMode;
 import com.vmware.ethereum.service.MetricsService;
@@ -40,24 +36,15 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.okhttp3.OkHttpConnectionPoolMetrics;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.security.GeneralSecurityException;
-import java.security.SecureRandom;
-import java.util.*;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-import org.web3j.crypto.*;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.ECKeyPair;
+import org.web3j.crypto.Keys;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
@@ -68,6 +55,23 @@ import org.web3j.tx.FastRawTransactionManager;
 import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.response.*;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import static com.vmware.ethereum.model.ReceiptMode.*;
+import static io.grpc.ManagedChannelBuilder.forAddress;
+import static java.lang.String.format;
 
 @Slf4j
 @Component
@@ -258,35 +262,5 @@ public class AppConfig {
       return format("%s-%d", senderAddress.substring(32), new Random().nextInt(100));
     }
     return "";
-  }
-
-  @Bean
-  private String[] privateKeysAddresses(WorkloadConfig config) {
-    Map<String, String> addrKeys = new HashMap<>();
-    String[] addrSender = new String[10];
-    for (int i = 0; i < config.getLoadFactor(); i++) {
-      String seed = UUID.randomUUID().toString();
-      try {
-        ECKeyPair ecKeyPair = Keys.createEcKeyPair();
-        BigInteger privateKeyInDec = ecKeyPair.getPrivateKey();
-
-        String sPrivatekeyInHex = privateKeyInDec.toString(16);
-
-        WalletFile aWallet = Wallet.createLight(seed, ecKeyPair);
-        String sAddress = aWallet.getAddress();
-        log.info("addr = {} - privKey = {}", sAddress, sPrivatekeyInHex);
-        addrSender[i] = sAddress;
-        addrKeys.put("0x" + sAddress, sPrivatekeyInHex);
-        addrKeys.forEach(
-            (k, v) -> {
-              log.info("key: {} value: {}", k, v);
-            });
-
-      } catch (Exception e) {
-        log.error(String.valueOf(e));
-      }
-    }
-
-    return addrSender;
   }
 }
