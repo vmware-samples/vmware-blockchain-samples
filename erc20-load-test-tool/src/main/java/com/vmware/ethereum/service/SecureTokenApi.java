@@ -68,9 +68,10 @@ public class SecureTokenApi {
   private final WorkloadConfig workloadConfig;
   private final ArrayList<Web3j> web3j;
   private final TransactionManager transactionManager;
-  private final BatchTransactionManager batchTransactionManager;
+  private final ArrayList<BatchTransactionManager> batchTransactionManager;
   private final SecureTokenFactory tokenFactory;
   private final String senderAddress;
+  private final ArrayList<String> senderAddressArray;
   private final Credentials credentials;
   private final ArrayList<Credentials> credentialsArray;
   private SecurityToken token;
@@ -101,6 +102,11 @@ public class SecureTokenApi {
             });
     contractAddress = token.getContractAddress();
     for (int i = 0; i < workloadConfig.getLoadFactor(); i++) {
+      try {
+        token.transfer(senderAddressArray.get(i), BigInteger.valueOf(1000000000)).send();
+      } catch (Exception e) {
+        log.error("Error is transfer from deployer to sender - {}", e.getMessage());
+      }
       tokenArray.add(
           SecurityToken.load(contractAddress, web3j.get(i), credentialsArray.get(i), gasProvider));
     }
@@ -134,8 +140,9 @@ public class SecureTokenApi {
             .transfer(recipients.next(), valueOf(config.getAmount()))
             .encodeFunctionCall();
     log.debug("txData - {}", txData);
-    return batchTransactionManager.sendTransactionRequest(
-        gasPrice, gasEstimate, contractAddress, txData, BigInteger.ZERO);
+    return batchTransactionManager
+        .get(index)
+        .sendTransactionRequest(gasPrice, gasEstimate, contractAddress, txData, BigInteger.ZERO);
   }
 
   /** Adds transaction request to the batch. */
@@ -143,10 +150,13 @@ public class SecureTokenApi {
   public void addBatchRequests(
       BatchRequest batchRequest, ArrayList<String> signedBatchRequest, int index) {
     RawTransaction rawTransaction = createTransaction(index);
-    String signedTransaction = batchTransactionManager.signTransactionRequest(rawTransaction);
+    String signedTransaction =
+        batchTransactionManager.get(index).signTransactionRequest(rawTransaction);
     signedBatchRequest.add(Hash.sha3(signedTransaction));
     batchRequest.add(
-        batchTransactionManager.sendSignedTransactionRequest(signedTransaction, web3j.get(index)));
+        batchTransactionManager
+            .get(index)
+            .sendSignedTransactionRequest(signedTransaction, web3j.get(index)));
     log.debug("batched-requests {}", batchRequest.getRequests());
   }
 
@@ -187,6 +197,16 @@ public class SecureTokenApi {
   /** Get token balance of the sender. */
   public long getSenderBalance() {
     return getBalance(senderAddress);
+  }
+
+  /** Get token balance of the sender. */
+  public ArrayList<Long> getSenderArrayBalance(ArrayList<String> senderArray) {
+    ArrayList<Long> senderArrayBalance = new ArrayList<Long>();
+    for (String sender : senderArray) {
+      senderArrayBalance.add(getBalance(sender));
+    }
+
+    return senderArrayBalance;
   }
 
   /** Get token balance of the recipients. */

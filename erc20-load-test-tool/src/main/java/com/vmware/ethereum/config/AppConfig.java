@@ -176,15 +176,20 @@ public class AppConfig {
   }
 
   @Bean
-  public BatchTransactionManager batchTransactionManager(
+  public ArrayList<BatchTransactionManager> batchTransactionManager(
       ArrayList<Web3j> web3j,
-      Credentials credentials,
-      TransactionReceiptProcessor transactionReceiptProcessor) {
+      ArrayList<Credentials> credentials,
+      TransactionReceiptProcessor transactionReceiptProcessor,
+      WorkloadConfig workloadConfig) {
 
+    ArrayList<BatchTransactionManager> batchTransactionManagers = new ArrayList<>();
     int chainId = config.getEthClient().getChainId();
-
-    return new BatchTransactionManager(
-        web3j.get(0), credentials, chainId, transactionReceiptProcessor);
+    for (int i = 0; i < workloadConfig.getLoadFactor(); i++) {
+      batchTransactionManagers.add(
+          new BatchTransactionManager(
+              web3j.get(i), credentials.get(i), chainId, transactionReceiptProcessor));
+    }
+    return batchTransactionManagers;
   }
 
   @Bean

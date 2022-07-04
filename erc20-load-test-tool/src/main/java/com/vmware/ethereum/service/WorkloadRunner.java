@@ -74,6 +74,7 @@ public class WorkloadRunner {
   private final ReceiptMode receiptMode;
 
   private final ArrayList<Web3j> web3j;
+  private final ArrayList<String> senderAddressArray;
 
   @Value("${server.port}")
   private int serverPort;
@@ -161,7 +162,11 @@ public class WorkloadRunner {
   /** Print token balance of the sender and the receiver. */
   private void printBalance() {
     log.info("Block number: {}", api.getBlockNumber());
-    log.info("Sender has {} tokens", api.getSenderBalance());
+    log.info("Deployer has {} tokens", api.getSenderBalance());
+    ArrayList<Long> senderArrayBalnces = api.getSenderArrayBalance(senderAddressArray);
+    for (int i = 0; i < senderAddressArray.size(); i++) {
+      log.info("Sender {} has {} tokens", i + 1, senderArrayBalnces.get(i));
+    }
     long[] recipientBalances = api.getRecipientBalance();
     for (int i = 0; i < tokenConfig.getRecipients().length; i++) {
       log.info("Recipient {} has {} tokens", i + 1, recipientBalances[i]);
