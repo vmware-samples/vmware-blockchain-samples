@@ -43,6 +43,7 @@ import com.vmware.ethereum.model.ReceiptMode;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -72,7 +73,7 @@ public class WorkloadRunner {
   private final ProgressService progress;
   private final ReceiptMode receiptMode;
 
-  private final Web3j web3j;
+  private final ArrayList<Web3j> web3j;
 
   @Value("${server.port}")
   private int serverPort;

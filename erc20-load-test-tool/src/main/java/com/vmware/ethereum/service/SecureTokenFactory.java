@@ -32,6 +32,7 @@ import com.vmware.ethereum.config.DatabaseConfig;
 import com.vmware.ethereum.config.TokenConfig;
 import com.vmware.ethereum.model.Contract;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +52,7 @@ public class SecureTokenFactory {
 
   private final TokenConfig tokenConfig;
   private final DatabaseConfig dbConfig;
-  private final Web3j web3j;
+  private final ArrayList<Web3j> web3j;
   private final Credentials credentials;
 
   /** Get SecureToken contract either by loading or deploying. */
@@ -70,13 +71,13 @@ public class SecureTokenFactory {
 
     if (!contractAddress.isBlank()) {
       log.info("Loading token from address {} ..", contractAddress);
-      return SecurityToken.load(contractAddress, web3j, credentials, gasProvider);
+      return SecurityToken.load(contractAddress, web3j.get(0), credentials, gasProvider);
     }
 
     log.info("Deploying token {} ..", tokenConfig.getSymbol());
 
     return SecurityToken.deploy(
-            web3j,
+            web3j.get(0),
             credentials,
             gasProvider,
             tokenConfig.getName(),

@@ -33,7 +33,7 @@ import static org.springframework.util.ReflectionUtils.findField;
 import static org.springframework.util.ReflectionUtils.setField;
 
 import com.vmware.ethereum.config.TokenConfig;
-import com.vmware.ethereum.config.Web3jConfig;
+import com.vmware.ethereum.config.WorkloadConfig;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
@@ -56,6 +56,8 @@ import org.web3j.protocol.core.BatchResponse;
 import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.tx.BatchTransactionManager;
 import org.web3j.tx.TransactionManager;
+import org.web3j.tx.gas.ContractGasProvider;
+import org.web3j.tx.gas.StaticGasProvider;
 
 @Slf4j
 @Service
@@ -63,18 +65,21 @@ import org.web3j.tx.TransactionManager;
 public class SecureTokenApi {
 
   private final TokenConfig config;
-  private final Web3jConfig web3jConfig;
-  private final Web3j web3j;
+  private final WorkloadConfig workloadConfig;
+  private final ArrayList<Web3j> web3j;
   private final TransactionManager transactionManager;
   private final BatchTransactionManager batchTransactionManager;
   private final SecureTokenFactory tokenFactory;
   private final String senderAddress;
   private final Credentials credentials;
+  private final ArrayList<Credentials> credentialsArray;
   private SecurityToken token;
   private Iterator<String> recipients;
   private BigInteger gasEstimate;
   private BigInteger gasPrice;
   private String contractAddress;
+  private ContractGasProvider gasProvider;
+  private final ArrayList<SecurityToken> tokenArray = new ArrayList<>();
 
   @PostConstruct
   public void init() throws IOException {
@@ -95,6 +100,10 @@ public class SecureTokenApi {
               log.info("Receipt: {}", receipt);
             });
     contractAddress = token.getContractAddress();
+    for (int i = 0; i < workloadConfig.getLoadFactor(); i++) {
+      tokenArray.add(
+          SecurityToken.load(contractAddress, web3j.get(i), credentialsArray.get(i), gasProvider));
+    }
     setTransactionManager();
   }
 
@@ -112,14 +121,18 @@ public class SecureTokenApi {
   /** Sets gasEstimate and gasPrice. */
   private void setGas() throws IOException {
     Transaction tx = Transaction.createEthCallTransaction(null, null, null);
-    gasEstimate = web3j.ethEstimateGas(tx).send().getAmountUsed();
-    gasPrice = web3j.ethGasPrice().send().getGasPrice();
+    gasEstimate = web3j.get(0).ethEstimateGas(tx).send().getAmountUsed();
+    gasPrice = web3j.get(0).ethGasPrice().send().getGasPrice();
+    gasProvider = new StaticGasProvider(gasPrice, gasEstimate);
   }
 
   /** Creates token transfer transaction request. */
-  public RawTransaction createTransaction() throws IOException {
+  public RawTransaction createTransaction(int index) throws IOException {
     String txData =
-        token.transfer(recipients.next(), valueOf(config.getAmount())).encodeFunctionCall();
+        tokenArray
+            .get(index)
+            .transfer(recipients.next(), valueOf(config.getAmount()))
+            .encodeFunctionCall();
     log.debug("txData - {}", txData);
     return batchTransactionManager.sendTransactionRequest(
         gasPrice, gasEstimate, contractAddress, txData, BigInteger.ZERO);
@@ -127,12 +140,13 @@ public class SecureTokenApi {
 
   /** Adds transaction request to the batch. */
   @SneakyThrows(IOException.class)
-  public void addBatchRequests(BatchRequest batchRequest, ArrayList<String> signedBatchRequest) {
-    RawTransaction rawTransaction = createTransaction();
+  public void addBatchRequests(
+      BatchRequest batchRequest, ArrayList<String> signedBatchRequest, int index) {
+    RawTransaction rawTransaction = createTransaction(index);
     String signedTransaction = batchTransactionManager.signTransactionRequest(rawTransaction);
     signedBatchRequest.add(Hash.sha3(signedTransaction));
     batchRequest.add(
-        batchTransactionManager.sendSignedTransactionRequest(signedTransaction, web3j));
+        batchTransactionManager.sendSignedTransactionRequest(signedTransaction, web3j.get(index)));
     log.debug("batched-requests {}", batchRequest.getRequests());
   }
 
@@ -144,7 +158,7 @@ public class SecureTokenApi {
 
   public String getNetVersion() {
     try {
-      return web3j.netVersion().send().getNetVersion();
+      return web3j.get(0).netVersion().send().getNetVersion();
     } catch (Exception e) {
       log.warn("{}", e.getMessage());
       return "Unknown";
@@ -153,7 +167,7 @@ public class SecureTokenApi {
 
   public String getClientVersion() {
     try {
-      return web3j.web3ClientVersion().send().getWeb3ClientVersion();
+      return web3j.get(0).web3ClientVersion().send().getWeb3ClientVersion();
     } catch (Exception e) {
       log.warn("{}", e.getMessage());
       return "Unknown";
@@ -163,7 +177,7 @@ public class SecureTokenApi {
   /** Get current block number. */
   public long getBlockNumber() {
     try {
-      return web3j.ethBlockNumber().send().getBlockNumber().longValue();
+      return web3j.get(0).ethBlockNumber().send().getBlockNumber().longValue();
     } catch (Exception e) {
       log.warn("{}", e.getMessage());
       return 0;
