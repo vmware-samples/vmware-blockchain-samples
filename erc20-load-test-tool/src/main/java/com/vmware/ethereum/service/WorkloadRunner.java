@@ -167,10 +167,7 @@ public class WorkloadRunner {
     for (int i = 0; i < senderAddressArray.size(); i++) {
       log.info("Sender {} has {} tokens", i + 1, senderArrayBalnces.get(i));
     }
-    long[] recipientBalances = api.getRecipientBalance();
-    for (int i = 0; i < tokenConfig.getRecipients().length; i++) {
-      log.info("Recipient {} has {} tokens", i + 1, recipientBalances[i]);
-    }
+    log.info("Recipient {} has {} tokens", tokenConfig.getRecipient(), api.getRecipientBalance());
   }
 
   /** Print report */
@@ -201,6 +198,7 @@ public class WorkloadRunner {
       log.info("Concurrency: {}", workloadConfig.getLoadFactor());
     }
 
+    log.info("Batch Size: {}", workloadConfig.getBatchSize());
     log.info("Avg write throughput: {}/sec", metrics.getAverageThroughput());
     log.info("Avg write latency:  {} ms", metrics.getAverageLatency());
     log.info("Avg read throughput {}", metrics.getReadAverageThroughput());

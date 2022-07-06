@@ -2,7 +2,7 @@ workload:
   model: CLOSED  # either OPEN or CLOSED workload model
   batch-size: 10 # Request size of batched transactions
   transactions: 1_000 # total transactions to be done
-  load-factor: 5 # arrival rate for OPEN model & concurrency for CLOSED model
+  load-factor: 5 # No. of sender accounts, also concurrency for CLOSED model
   progress-interval: 5s # interval for updating progress in web UI
 
 web3j:
@@ -29,9 +29,7 @@ token:
   initial-supply: 2 # total tokens minted (value is internally multiplied by 10^18)
   contract-address: # specify address (without 0x) to use an already deployed token
   private-key: c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3 # private key of the sender account
-  recipients: # list of recipient accounts
-    - 45412868cB693e231DfD4ABCCA29D9001801d062
-    - 1Ff482D42D8727258A1680192Fa4ba925C46Bc43
+  recipient: 45412868cB693e231DfD4ABCCA29D9001801d062 # recipient account
   amount: 5 # amount of tokens transferred in one transaction
 
 permissioning:

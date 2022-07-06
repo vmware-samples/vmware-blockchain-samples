@@ -51,7 +51,7 @@ public class TokenConfig {
 
   @NotNull private String contractAddress;
   @NotBlank private String privateKey;
-  @NotEmpty private String[] recipients;
+  @NotEmpty private String recipient;
 
   @Positive private long amount;
 }

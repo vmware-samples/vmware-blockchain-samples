@@ -26,7 +26,6 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static com.google.common.collect.Iterators.cycle;
 import static java.math.BigInteger.valueOf;
 import static java.util.Objects.requireNonNull;
 import static org.springframework.util.ReflectionUtils.findField;
@@ -38,8 +37,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -75,7 +72,6 @@ public class SecureTokenApi {
   private final Credentials credentials;
   private final ArrayList<Credentials> credentialsArray;
   private SecurityToken token;
-  private Iterator<String> recipients;
   private BigInteger gasEstimate;
   private BigInteger gasPrice;
   private String contractAddress;
@@ -87,7 +83,6 @@ public class SecureTokenApi {
     log.info("Client version: {}", getClientVersion());
     log.info("Net version: {}", getNetVersion());
     log.info("Sender address: {}", senderAddress);
-    recipients = cycle(config.getRecipients());
 
     setGas();
     log.info("Gas Estimate {}", gasEstimate);
@@ -137,7 +132,7 @@ public class SecureTokenApi {
     String txData =
         tokenArray
             .get(index)
-            .transfer(config.getRecipients()[0], valueOf(config.getAmount()))
+            .transfer(config.getRecipient(), valueOf(config.getAmount()))
             .encodeFunctionCall();
     log.debug("txData - {}", txData);
     return batchTransactionManager
@@ -210,8 +205,8 @@ public class SecureTokenApi {
   }
 
   /** Get token balance of the recipients. */
-  public long[] getRecipientBalance() {
-    return Arrays.stream(config.getRecipients()).mapToLong(this::getBalance).toArray();
+  public long getRecipientBalance() {
+    return getBalance(config.getRecipient());
   }
 
   /** Get token balance of the given address. */
