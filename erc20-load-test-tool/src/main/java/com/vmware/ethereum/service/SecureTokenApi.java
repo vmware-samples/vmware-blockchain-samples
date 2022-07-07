@@ -69,7 +69,6 @@ public class SecureTokenApi {
   private final SecureTokenFactory tokenFactory;
   private final String senderAddress;
   private final ArrayList<String> senderAddressArray;
-  private final Credentials credentials;
   private final ArrayList<Credentials> credentialsArray;
   private SecurityToken token;
   private BigInteger gasEstimate;
@@ -89,12 +88,7 @@ public class SecureTokenApi {
     log.info("Gas Price {}", gasPrice);
 
     token = tokenFactory.getSecureToken(gasEstimate, gasPrice);
-    token
-        .getTransactionReceipt()
-        .ifPresent(
-            receipt -> {
-              log.info("Receipt: {}", receipt);
-            });
+    token.getTransactionReceipt().ifPresent(receipt -> log.info("Receipt: {}", receipt));
     contractAddress = token.getContractAddress();
     for (int i = 0; i < workloadConfig.getLoadFactor(); i++) {
       try {
@@ -196,7 +190,7 @@ public class SecureTokenApi {
 
   /** Get token balance of the sender. */
   public ArrayList<Long> getSenderArrayBalance(ArrayList<String> senderArray) {
-    ArrayList<Long> senderArrayBalance = new ArrayList<Long>();
+    ArrayList<Long> senderArrayBalance = new ArrayList<>();
     for (String sender : senderArray) {
       senderArrayBalance.add(getBalance(sender));
     }

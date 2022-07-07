@@ -1,7 +1,7 @@
 workload:
   model: CLOSED  # either OPEN or CLOSED workload model
   batch-size: 10 # Request size of batched transactions
-  transactions: 1_000 # total transactions to be done
+  transactions: 1_000 # total transactions per sender
   load-factor: 5 # No. of sender accounts, also concurrency for CLOSED model
   progress-interval: 5s # interval for updating progress in web UI
 
@@ -34,7 +34,7 @@ token:
 
 permissioning:
     enable: false # give read-write permission to sender
-    contract-address: # permissioning contract address (without 0x in starting)
+    contract-address:  # permissioning contract address (without 0x in starting)
     super-admins:
       - 5094f257d3462083bcbc02c61d98c038cfa71cdd497834c5f38cd75010ddb7a5
       - 78785c4ab4ba44b83509296af86af56ff00db79ba26a292d0556a4b4e8cea87c

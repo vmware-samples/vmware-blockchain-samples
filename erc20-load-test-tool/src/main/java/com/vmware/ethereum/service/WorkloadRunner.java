@@ -66,7 +66,8 @@ public class WorkloadRunner {
   private final WorkloadCommand command;
   private final SecureTokenApi api;
   private final PermissioningApi permissioningApi;
-  private final Credentials credentials;
+  private final ArrayList<Credentials> credentials;
+  private final Credentials deployerCredentials;
 
   private final CountDownLatch countDownLatch;
   private final MetricsService metrics;
@@ -85,7 +86,10 @@ public class WorkloadRunner {
 
     if (permissioningConfig.isEnable()) {
       try {
-        if (!checkPermissions()) permissioningSetup();
+        for (Credentials creds : credentials) {
+          permissioningSetup(creds);
+        }
+        if (!checkPermissions(deployerCredentials)) permissioningSetup(deployerCredentials);
       } catch (Exception e) {
         log.error("permissioning Setup error = {}", e.toString());
       }
@@ -96,31 +100,29 @@ public class WorkloadRunner {
     stop(workload);
   }
 
-  private void permissioningSetup() throws Exception {
+  private void permissioningSetup(Credentials credentials) throws Exception {
     String address = credentials.getAddress();
     TransactionReceipt permTxReceipt =
         permissioningApi.getReadWritePermission(
             address, Credentials.create(permissioningConfig.getSuperAdmins()[0]));
-    log.info("getReadWrite permission tx receipt - {}", permTxReceipt);
+    log.debug("getReadWrite permission tx receipt - {}", permTxReceipt);
 
-    TransactionReceipt approveTxReceipt = null;
+    TransactionReceipt approveTxReceipt;
     for (int i = 1; i < permissioningConfig.getSuperAdmins().length - 1; i++) {
       approveTxReceipt =
           permissioningApi.approvePermission(
               address, Credentials.create(permissioningConfig.getSuperAdmins()[i]));
       log.debug("approve perm tx receipt - {}", approveTxReceipt);
     }
-    checkPermissions();
+    checkPermissions(credentials);
   }
 
-  private Boolean checkPermissions() throws Exception {
+  private Boolean checkPermissions(Credentials credentials) throws Exception {
     Boolean checkWrite = permissioningApi.checkWritePermission(credentials);
     log.info("write permission granted: {}", checkWrite);
     Boolean checkRead = permissioningApi.checkReadPermission(credentials);
     log.info("read permission granted: {}", checkRead);
-    if (checkWrite && checkRead) return true;
-
-    return false;
+    return checkWrite && checkRead;
   }
 
   /** Start the workload. */
