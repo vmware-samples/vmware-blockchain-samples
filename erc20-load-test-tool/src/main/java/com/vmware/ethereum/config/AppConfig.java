@@ -116,8 +116,8 @@ public class AppConfig {
   }
 
   @Bean
-  public Credentials credentials(TokenConfig config) {
-    String privateKey = config.getPrivateKey();
+  public Credentials deployerCredentials(TokenConfig config) {
+    String privateKey = config.getDeployerPrivateKey();
     return Credentials.create(privateKey);
   }
 

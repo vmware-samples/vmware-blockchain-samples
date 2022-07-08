@@ -38,7 +38,6 @@ public class ClosedWorkload implements WorkloadService {
 
   private final WorkloadCommand command;
   private final long transactions;
-  private final int concurrency;
   private final SecureTokenApi api;
   private final ArrayList<Web3j> web3j;
   private final WorkloadConfig workloadConfig;
@@ -47,10 +46,7 @@ public class ClosedWorkload implements WorkloadService {
   public void start() {
     Thread[] t = new Thread[workloadConfig.getLoadFactor()];
     for (int i = 0; i < workloadConfig.getLoadFactor(); i++) {
-      t[i] =
-          new Thread(
-              new WorkloadThread(
-                  command, transactions, concurrency, api, web3j, workloadConfig, i));
+      t[i] = new Thread(new WorkloadThread(command, transactions, api, web3j, workloadConfig, i));
       t[i].start();
     }
     for (int i = 0; i < workloadConfig.getLoadFactor(); i++) {

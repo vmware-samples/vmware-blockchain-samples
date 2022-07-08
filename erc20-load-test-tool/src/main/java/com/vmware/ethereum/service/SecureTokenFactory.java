@@ -53,7 +53,7 @@ public class SecureTokenFactory {
   private final TokenConfig tokenConfig;
   private final DatabaseConfig dbConfig;
   private final ArrayList<Web3j> web3j;
-  private final Credentials credentials;
+  private final Credentials deployerCredentials;
 
   /** Get SecureToken contract either by loading or deploying. */
   @SneakyThrows(Exception.class)
@@ -71,14 +71,14 @@ public class SecureTokenFactory {
 
     if (!contractAddress.isBlank()) {
       log.info("Loading token from address {} ..", contractAddress);
-      return SecurityToken.load(contractAddress, web3j.get(0), credentials, gasProvider);
+      return SecurityToken.load(contractAddress, web3j.get(0), deployerCredentials, gasProvider);
     }
 
     log.info("Deploying token {} ..", tokenConfig.getSymbol());
 
     return SecurityToken.deploy(
             web3j.get(0),
-            credentials,
+            deployerCredentials,
             gasProvider,
             tokenConfig.getName(),
             tokenConfig.getSymbol(),

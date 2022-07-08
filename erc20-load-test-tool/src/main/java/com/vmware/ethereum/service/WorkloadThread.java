@@ -40,7 +40,6 @@ public class WorkloadThread implements Runnable {
 
   private final WorkloadCommand command;
   private final long transactions;
-  private final int concurrency;
   private final SecureTokenApi api;
   private final ArrayList<Web3j> web3j;
   private final WorkloadConfig workloadConfig;

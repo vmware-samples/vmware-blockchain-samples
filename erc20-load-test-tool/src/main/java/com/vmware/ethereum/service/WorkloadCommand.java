@@ -66,21 +66,10 @@ public class WorkloadCommand implements Runnable {
   private final SecureTokenApi api;
   private final CountDownLatch countDownLatch;
   private final Web3jConfig web3jConfig;
-  //  private BatchRequest batchRequest = null;
-  //  private ArrayList<String> signedBatchRequest = new ArrayList<>();
 
   @Override
   public void run() {
-    //    if (batchRequest == null) {
-    //      batchRequest = web3j.newBatch();
-    //    }
-    //    api.addBatchRequests(batchRequest, signedBatchRequest);
-    //    if (batchRequest.getRequests().size() == workloadConfig.getBatchSize()
-    //        || countDownLatch.getCount() == 1) {
-    //      transferBatchAsync(batchRequest, signedBatchRequest);
-    //      batchRequest = web3j.newBatch();
-    //      signedBatchRequest = new ArrayList<>();
-    //    }
+    // OPEN model not supported
   }
 
   /** Transfer batched Transactions asynchronously. */

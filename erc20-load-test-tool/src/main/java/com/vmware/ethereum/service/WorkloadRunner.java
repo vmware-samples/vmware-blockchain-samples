@@ -153,12 +153,7 @@ public class WorkloadRunner {
           command, workloadConfig.getTransactions(), workloadConfig.getLoadFactor());
     }
     return new ClosedWorkload(
-        command,
-        workloadConfig.getTransactions(),
-        workloadConfig.getLoadFactor(),
-        api,
-        web3j,
-        workloadConfig);
+        command, workloadConfig.getTransactions(), api, web3j, workloadConfig);
   }
 
   /** Print token balance of the sender and the receiver. */
