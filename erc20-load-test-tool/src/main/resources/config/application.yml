@@ -1,8 +1,8 @@
 workload:
   model: CLOSED  # either OPEN or CLOSED workload model
   batch-size: 10 # Request size of batched transactions
-  transactions: 1_000 # total transactions to be done
-  load-factor: 1 # arrival rate for OPEN model & concurrency for CLOSED model
+  transactions: 1_000 # total transactions per sender
+  load-factor: 5 # No. of sender accounts, also concurrency for CLOSED model
   progress-interval: 5s # interval for updating progress in web UI
 
 web3j:
@@ -13,7 +13,7 @@ web3j:
     port: 8545 # port number (50505 - gRPC, 8545 - ethRPC)
     chain-id: 5000 # To enable EIP-155, use the chain id of the network that your Ethereum client is connected.
   receipt:
-    attempts: 1 # maximum number of polling attempts to get receipt
+    attempts: 0 # maximum number of polling attempts to get receipt
     interval: 1000 # sleep interval (ms) between polling attempts
     defer: false # set true for queued polling of transaction receipt
     check-write-tx-failed: true # check for transaction receipt only during write transaction failure
@@ -28,15 +28,13 @@ token:
   symbol: STK
   initial-supply: 2 # total tokens minted (value is internally multiplied by 10^18)
   contract-address: # specify address (without 0x) to use an already deployed token
-  private-key: c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3 # private key of the sender account
-  recipients: # list of recipient accounts
-    - 45412868cB693e231DfD4ABCCA29D9001801d062
-    - 1Ff482D42D8727258A1680192Fa4ba925C46Bc43
+  deployer-private-key: c87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3 # private key of the deployer account
+  recipient: 45412868cB693e231DfD4ABCCA29D9001801d062 # recipient account
   amount: 5 # amount of tokens transferred in one transaction
 
 permissioning:
     enable: false # give read-write permission to sender
-    contract-address: # permissioning contract address (without 0x in starting)
+    contract-address:  # permissioning contract address (without 0x in starting)
     super-admins:
       - 5094f257d3462083bcbc02c61d98c038cfa71cdd497834c5f38cd75010ddb7a5
       - 78785c4ab4ba44b83509296af86af56ff00db79ba26a292d0556a4b4e8cea87c

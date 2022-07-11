@@ -41,8 +41,10 @@ import io.micrometer.core.instrument.binder.okhttp3.OkHttpConnectionPoolMetrics;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -57,6 +59,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.ECKeyPair;
+import org.web3j.crypto.Keys;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.Web3jService;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
@@ -94,8 +98,26 @@ public class AppConfig {
   }
 
   @Bean
-  public Credentials credentials(TokenConfig config) {
-    String privateKey = config.getPrivateKey();
+  public ArrayList<Credentials> credentialsArray(WorkloadConfig config) {
+    ArrayList<Credentials> credentialsArray = new ArrayList<>();
+
+    for (int i = 0; i < config.getLoadFactor(); i++) {
+      try {
+        ECKeyPair ecKeyPair = Keys.createEcKeyPair();
+        BigInteger privateKeyInDec = ecKeyPair.getPrivateKey();
+
+        String sPrivatekeyInHex = privateKeyInDec.toString(16);
+        credentialsArray.add(Credentials.create(sPrivatekeyInHex));
+      } catch (Exception e) {
+        log.error(String.valueOf(e));
+      }
+    }
+    return credentialsArray;
+  }
+
+  @Bean
+  public Credentials deployerCredentials(TokenConfig config) {
+    String privateKey = config.getDeployerPrivateKey();
     return Credentials.create(privateKey);
   }
 
@@ -118,12 +140,12 @@ public class AppConfig {
 
   @Bean
   public TransactionReceiptProcessor transactionReceiptProcessor(
-      Web3j web3j, MetricsService metrics) {
+      ArrayList<Web3j> web3j, MetricsService metrics) {
     Receipt receipt = config.getReceipt();
 
     if (receipt.isDefer()) {
       return new QueuingTransactionReceiptProcessor(
-          web3j, receiptHandler(metrics), receipt.getAttempts(), receipt.getInterval()) {
+          web3j.get(0), receiptHandler(metrics), receipt.getAttempts(), receipt.getInterval()) {
 
         /* Workaround for web3j issue 1548 */
         @Override
@@ -136,12 +158,12 @@ public class AppConfig {
     }
 
     return new GenericTransactionReceiptProcessor(
-        web3j, receipt.getInterval(), receipt.getAttempts());
+        web3j.get(0), receipt.getInterval(), receipt.getAttempts());
   }
 
   @Bean
   public TransactionManager transactionManager(
-      Web3j web3j,
+      ArrayList<Web3j> web3j,
       Credentials credentials,
       TransactionReceiptProcessor transactionReceiptProcessor) {
 
@@ -149,21 +171,28 @@ public class AppConfig {
 
     if (config.isManageNonce()) {
       return new FastRawTransactionManager(
-          web3j, credentials, chainId, transactionReceiptProcessor);
+          web3j.get(0), credentials, chainId, transactionReceiptProcessor);
     }
 
-    return new RawTransactionManager(web3j, credentials, chainId, transactionReceiptProcessor);
+    return new RawTransactionManager(
+        web3j.get(0), credentials, chainId, transactionReceiptProcessor);
   }
 
   @Bean
-  public BatchTransactionManager batchTransactionManager(
-      Web3j web3j,
-      Credentials credentials,
-      TransactionReceiptProcessor transactionReceiptProcessor) {
+  public ArrayList<BatchTransactionManager> batchTransactionManager(
+      ArrayList<Web3j> web3j,
+      ArrayList<Credentials> credentials,
+      TransactionReceiptProcessor transactionReceiptProcessor,
+      WorkloadConfig workloadConfig) {
 
+    ArrayList<BatchTransactionManager> batchTransactionManagers = new ArrayList<>();
     int chainId = config.getEthClient().getChainId();
-
-    return new BatchTransactionManager(web3j, credentials, chainId, transactionReceiptProcessor);
+    for (int i = 0; i < workloadConfig.getLoadFactor(); i++) {
+      batchTransactionManagers.add(
+          new BatchTransactionManager(
+              web3j.get(i), credentials.get(i), chainId, transactionReceiptProcessor));
+    }
+    return batchTransactionManagers;
   }
 
   @Bean
@@ -185,8 +214,12 @@ public class AppConfig {
   }
 
   @Bean
-  public Web3j web3j(Web3jService web3jService) {
-    return Web3j.build(web3jService);
+  public ArrayList<Web3j> web3j(Web3jService web3jService, WorkloadConfig config) {
+    ArrayList<Web3j> web3jArray = new ArrayList<>();
+    for (int i = 0; i < config.getLoadFactor(); i++) {
+      web3jArray.add(Web3j.build(web3jService));
+    }
+    return web3jArray;
   }
 
   @Bean
@@ -197,6 +230,15 @@ public class AppConfig {
   @Bean
   public String senderAddress(Credentials credentials) {
     return credentials.getAddress();
+  }
+
+  @Bean
+  public ArrayList<String> senderAddressArray(ArrayList<Credentials> credentials) {
+    ArrayList<String> senderAddressArray = new ArrayList<>();
+    for (Credentials cred : credentials) {
+      senderAddressArray.add(cred.getAddress());
+    }
+    return senderAddressArray;
   }
 
   @Bean

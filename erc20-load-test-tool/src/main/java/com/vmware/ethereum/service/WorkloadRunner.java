@@ -43,6 +43,7 @@ import com.vmware.ethereum.model.ReceiptMode;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -65,14 +66,16 @@ public class WorkloadRunner {
   private final WorkloadCommand command;
   private final SecureTokenApi api;
   private final PermissioningApi permissioningApi;
-  private final Credentials credentials;
+  private final ArrayList<Credentials> credentials;
+  private final Credentials deployerCredentials;
 
   private final CountDownLatch countDownLatch;
   private final MetricsService metrics;
   private final ProgressService progress;
   private final ReceiptMode receiptMode;
 
-  private final Web3j web3j;
+  private final ArrayList<Web3j> web3j;
+  private final ArrayList<String> senderAddressArray;
 
   @Value("${server.port}")
   private int serverPort;
@@ -83,7 +86,10 @@ public class WorkloadRunner {
 
     if (permissioningConfig.isEnable()) {
       try {
-        if (!checkPermissions()) permissioningSetup();
+        for (Credentials creds : credentials) {
+          permissioningSetup(creds);
+        }
+        if (!checkPermissions(deployerCredentials)) permissioningSetup(deployerCredentials);
       } catch (Exception e) {
         log.error("permissioning Setup error = {}", e.toString());
       }
@@ -94,31 +100,29 @@ public class WorkloadRunner {
     stop(workload);
   }
 
-  private void permissioningSetup() throws Exception {
+  private void permissioningSetup(Credentials credentials) throws Exception {
     String address = credentials.getAddress();
     TransactionReceipt permTxReceipt =
         permissioningApi.getReadWritePermission(
             address, Credentials.create(permissioningConfig.getSuperAdmins()[0]));
-    log.info("getReadWrite permission tx receipt - {}", permTxReceipt);
+    log.debug("getReadWrite permission tx receipt - {}", permTxReceipt);
 
-    TransactionReceipt approveTxReceipt = null;
+    TransactionReceipt approveTxReceipt;
     for (int i = 1; i < permissioningConfig.getSuperAdmins().length - 1; i++) {
       approveTxReceipt =
           permissioningApi.approvePermission(
               address, Credentials.create(permissioningConfig.getSuperAdmins()[i]));
       log.debug("approve perm tx receipt - {}", approveTxReceipt);
     }
-    checkPermissions();
+    checkPermissions(credentials);
   }
 
-  private Boolean checkPermissions() throws Exception {
+  private Boolean checkPermissions(Credentials credentials) throws Exception {
     Boolean checkWrite = permissioningApi.checkWritePermission(credentials);
     log.info("write permission granted: {}", checkWrite);
     Boolean checkRead = permissioningApi.checkReadPermission(credentials);
     log.info("read permission granted: {}", checkRead);
-    if (checkWrite && checkRead) return true;
-
-    return false;
+    return checkWrite && checkRead;
   }
 
   /** Start the workload. */
@@ -149,22 +153,18 @@ public class WorkloadRunner {
           command, workloadConfig.getTransactions(), workloadConfig.getLoadFactor());
     }
     return new ClosedWorkload(
-        command,
-        workloadConfig.getTransactions(),
-        workloadConfig.getLoadFactor(),
-        api,
-        web3j,
-        workloadConfig);
+        command, workloadConfig.getTransactions(), api, web3j, workloadConfig);
   }
 
   /** Print token balance of the sender and the receiver. */
   private void printBalance() {
     log.info("Block number: {}", api.getBlockNumber());
-    log.info("Sender has {} tokens", api.getSenderBalance());
-    long[] recipientBalances = api.getRecipientBalance();
-    for (int i = 0; i < tokenConfig.getRecipients().length; i++) {
-      log.info("Recipient {} has {} tokens", i + 1, recipientBalances[i]);
+    log.info("Deployer has {} tokens", api.getSenderBalance());
+    ArrayList<Long> senderArrayBalnces = api.getSenderArrayBalance(senderAddressArray);
+    for (int i = 0; i < senderAddressArray.size(); i++) {
+      log.info("Sender {} has {} tokens", i + 1, senderArrayBalnces.get(i));
     }
+    log.info("Recipient {} has {} tokens", tokenConfig.getRecipient(), api.getRecipientBalance());
   }
 
   /** Print report */
@@ -195,6 +195,7 @@ public class WorkloadRunner {
       log.info("Concurrency: {}", workloadConfig.getLoadFactor());
     }
 
+    log.info("Batch Size: {}", workloadConfig.getBatchSize());
     log.info("Avg write throughput: {}/sec", metrics.getAverageThroughput());
     log.info("Avg write latency:  {} ms", metrics.getAverageLatency());
     log.info("Avg read throughput {}", metrics.getReadAverageThroughput());

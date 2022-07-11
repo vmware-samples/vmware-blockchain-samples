@@ -194,7 +194,7 @@ public class MetricsService {
 
   /** Get total pending transactions. */
   public long getPendingCount() {
-    return config.getTransactions() - getCompletionCount();
+    return ((long) config.getTransactions() * config.getLoadFactor()) - getCompletionCount();
   }
 
   /** Throughput for the write requests. */

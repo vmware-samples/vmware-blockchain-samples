@@ -28,40 +28,45 @@ package com.vmware.ethereum.service;
 
 import com.vmware.ethereum.config.WorkloadConfig;
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.web3j.protocol.Web3j;
+import org.web3j.protocol.core.BatchRequest;
 
 @Slf4j
 @RequiredArgsConstructor
-public class ClosedWorkload implements WorkloadService {
+public class WorkloadThread implements Runnable {
 
   private final WorkloadCommand command;
   private final long transactions;
   private final SecureTokenApi api;
   private final ArrayList<Web3j> web3j;
   private final WorkloadConfig workloadConfig;
+  private final int index;
+  private BatchRequest batchRequest = null;
+  private ArrayList<String> signedBatchRequest = new ArrayList<>();
 
-  @Override
-  public void start() {
-    Thread[] t = new Thread[workloadConfig.getLoadFactor()];
-    for (int i = 0; i < workloadConfig.getLoadFactor(); i++) {
-      t[i] = new Thread(new WorkloadThread(command, transactions, api, web3j, workloadConfig, i));
-      t[i].start();
-    }
-    for (int i = 0; i < workloadConfig.getLoadFactor(); i++) {
-      try {
-        t[i].join();
-      } catch (InterruptedException e) {
-        e.printStackTrace();
+  public void run() {
+    // Displaying the thread that is running
+    log.info("Running {} transactions in thread {} ..", transactions, index + 1);
+    Semaphore semaphore = new Semaphore(1);
+    for (int i = 0; i < transactions; i++) {
+      semaphore.acquireUninterruptibly();
+      if (batchRequest == null) {
+        batchRequest = web3j.get(index).newBatch();
+      }
+      api.addBatchRequests(batchRequest, signedBatchRequest, index);
+      if (batchRequest.getRequests().size() == workloadConfig.getBatchSize()
+          || i == transactions - 1) {
+        command
+            .transferBatchAsync(batchRequest, signedBatchRequest, index)
+            .whenComplete((response, throwable) -> semaphore.release());
+        batchRequest = web3j.get(index).newBatch();
+        signedBatchRequest = new ArrayList<>();
+      } else {
+        semaphore.release();
       }
     }
-
-    log.info("Transactions submitted");
-  }
-
-  @Override
-  public void stop() {
-    // Do nothing
   }
 }

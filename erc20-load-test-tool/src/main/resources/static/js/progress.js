@@ -71,8 +71,8 @@ function updateReport(progress) {
 
   // 0 - Workload Model
   // 1 - Load Factor
-  update("test", 2, progress.elapsedTime);
-  update("test", 3, progress.remainingTime);
+  update("test", 3, progress.elapsedTime);
+  update("test", 4, progress.remainingTime);
 
   // 0 - Total Transactions
   update("transactions", 1, progress.txStatus);

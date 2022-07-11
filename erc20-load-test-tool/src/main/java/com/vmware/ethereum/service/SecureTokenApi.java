@@ -26,20 +26,17 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static com.google.common.collect.Iterators.cycle;
 import static java.math.BigInteger.valueOf;
 import static java.util.Objects.requireNonNull;
 import static org.springframework.util.ReflectionUtils.findField;
 import static org.springframework.util.ReflectionUtils.setField;
 
 import com.vmware.ethereum.config.TokenConfig;
-import com.vmware.ethereum.config.Web3jConfig;
+import com.vmware.ethereum.config.WorkloadConfig;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +53,8 @@ import org.web3j.protocol.core.BatchResponse;
 import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.tx.BatchTransactionManager;
 import org.web3j.tx.TransactionManager;
+import org.web3j.tx.gas.ContractGasProvider;
+import org.web3j.tx.gas.StaticGasProvider;
 
 @Slf4j
 @Service
@@ -63,38 +62,43 @@ import org.web3j.tx.TransactionManager;
 public class SecureTokenApi {
 
   private final TokenConfig config;
-  private final Web3jConfig web3jConfig;
-  private final Web3j web3j;
+  private final WorkloadConfig workloadConfig;
+  private final ArrayList<Web3j> web3j;
   private final TransactionManager transactionManager;
-  private final BatchTransactionManager batchTransactionManager;
+  private final ArrayList<BatchTransactionManager> batchTransactionManager;
   private final SecureTokenFactory tokenFactory;
   private final String senderAddress;
-  private final Credentials credentials;
+  private final ArrayList<String> senderAddressArray;
+  private final ArrayList<Credentials> credentialsArray;
   private SecurityToken token;
-  private Iterator<String> recipients;
   private BigInteger gasEstimate;
   private BigInteger gasPrice;
   private String contractAddress;
+  private ContractGasProvider gasProvider;
+  private final ArrayList<SecurityToken> tokenArray = new ArrayList<>();
 
   @PostConstruct
   public void init() throws IOException {
     log.info("Client version: {}", getClientVersion());
     log.info("Net version: {}", getNetVersion());
     log.info("Sender address: {}", senderAddress);
-    recipients = cycle(config.getRecipients());
 
     setGas();
     log.info("Gas Estimate {}", gasEstimate);
     log.info("Gas Price {}", gasPrice);
 
     token = tokenFactory.getSecureToken(gasEstimate, gasPrice);
-    token
-        .getTransactionReceipt()
-        .ifPresent(
-            receipt -> {
-              log.info("Receipt: {}", receipt);
-            });
+    token.getTransactionReceipt().ifPresent(receipt -> log.info("Receipt: {}", receipt));
     contractAddress = token.getContractAddress();
+    for (int i = 0; i < workloadConfig.getLoadFactor(); i++) {
+      try {
+        token.transfer(senderAddressArray.get(i), BigInteger.valueOf(1000000000)).send();
+      } catch (Exception e) {
+        log.error("Error is transfer from deployer to sender - {}", e.getMessage());
+      }
+      tokenArray.add(
+          SecurityToken.load(contractAddress, web3j.get(i), credentialsArray.get(i), gasProvider));
+    }
     setTransactionManager();
   }
 
@@ -112,27 +116,36 @@ public class SecureTokenApi {
   /** Sets gasEstimate and gasPrice. */
   private void setGas() throws IOException {
     Transaction tx = Transaction.createEthCallTransaction(null, null, null);
-    gasEstimate = web3j.ethEstimateGas(tx).send().getAmountUsed();
-    gasPrice = web3j.ethGasPrice().send().getGasPrice();
+    gasEstimate = web3j.get(0).ethEstimateGas(tx).send().getAmountUsed();
+    gasPrice = web3j.get(0).ethGasPrice().send().getGasPrice();
+    gasProvider = new StaticGasProvider(gasPrice, gasEstimate);
   }
 
   /** Creates token transfer transaction request. */
-  public RawTransaction createTransaction() throws IOException {
+  public RawTransaction createTransaction(int index) throws IOException {
     String txData =
-        token.transfer(recipients.next(), valueOf(config.getAmount())).encodeFunctionCall();
+        tokenArray
+            .get(index)
+            .transfer(config.getRecipient(), valueOf(config.getAmount()))
+            .encodeFunctionCall();
     log.debug("txData - {}", txData);
-    return batchTransactionManager.sendTransactionRequest(
-        gasPrice, gasEstimate, contractAddress, txData, BigInteger.ZERO);
+    return batchTransactionManager
+        .get(index)
+        .sendTransactionRequest(gasPrice, gasEstimate, contractAddress, txData, BigInteger.ZERO);
   }
 
   /** Adds transaction request to the batch. */
   @SneakyThrows(IOException.class)
-  public void addBatchRequests(BatchRequest batchRequest, ArrayList<String> signedBatchRequest) {
-    RawTransaction rawTransaction = createTransaction();
-    String signedTransaction = batchTransactionManager.signTransactionRequest(rawTransaction);
+  public void addBatchRequests(
+      BatchRequest batchRequest, ArrayList<String> signedBatchRequest, int index) {
+    RawTransaction rawTransaction = createTransaction(index);
+    String signedTransaction =
+        batchTransactionManager.get(index).signTransactionRequest(rawTransaction);
     signedBatchRequest.add(Hash.sha3(signedTransaction));
     batchRequest.add(
-        batchTransactionManager.sendSignedTransactionRequest(signedTransaction, web3j));
+        batchTransactionManager
+            .get(index)
+            .sendSignedTransactionRequest(signedTransaction, web3j.get(index)));
     log.debug("batched-requests {}", batchRequest.getRequests());
   }
 
@@ -144,7 +157,7 @@ public class SecureTokenApi {
 
   public String getNetVersion() {
     try {
-      return web3j.netVersion().send().getNetVersion();
+      return web3j.get(0).netVersion().send().getNetVersion();
     } catch (Exception e) {
       log.warn("{}", e.getMessage());
       return "Unknown";
@@ -153,7 +166,7 @@ public class SecureTokenApi {
 
   public String getClientVersion() {
     try {
-      return web3j.web3ClientVersion().send().getWeb3ClientVersion();
+      return web3j.get(0).web3ClientVersion().send().getWeb3ClientVersion();
     } catch (Exception e) {
       log.warn("{}", e.getMessage());
       return "Unknown";
@@ -163,7 +176,7 @@ public class SecureTokenApi {
   /** Get current block number. */
   public long getBlockNumber() {
     try {
-      return web3j.ethBlockNumber().send().getBlockNumber().longValue();
+      return web3j.get(0).ethBlockNumber().send().getBlockNumber().longValue();
     } catch (Exception e) {
       log.warn("{}", e.getMessage());
       return 0;
@@ -175,9 +188,19 @@ public class SecureTokenApi {
     return getBalance(senderAddress);
   }
 
+  /** Get token balance of the sender. */
+  public ArrayList<Long> getSenderArrayBalance(ArrayList<String> senderArray) {
+    ArrayList<Long> senderArrayBalance = new ArrayList<>();
+    for (String sender : senderArray) {
+      senderArrayBalance.add(getBalance(sender));
+    }
+
+    return senderArrayBalance;
+  }
+
   /** Get token balance of the recipients. */
-  public long[] getRecipientBalance() {
-    return Arrays.stream(config.getRecipients()).mapToLong(this::getBalance).toArray();
+  public long getRecipientBalance() {
+    return getBalance(config.getRecipient());
   }
 
   /** Get token balance of the given address. */

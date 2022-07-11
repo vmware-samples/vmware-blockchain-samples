@@ -50,8 +50,8 @@ public class TokenConfig {
   @Positive private long initialSupply;
 
   @NotNull private String contractAddress;
-  @NotBlank private String privateKey;
-  @NotEmpty private String[] recipients;
+  @NotBlank private String deployerPrivateKey;
+  @NotEmpty private String recipient;
 
   @Positive private long amount;
 }

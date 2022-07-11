@@ -60,32 +60,21 @@ import org.web3j.tx.response.TransactionReceiptProcessor;
 public class WorkloadCommand implements Runnable {
 
   private final MetricsService metrics;
-  private final Web3j web3j;
+  private final ArrayList<Web3j> web3j;
   private final WorkloadConfig workloadConfig;
   private final TransactionReceiptProcessor transactionReceiptProcessor;
   private final SecureTokenApi api;
   private final CountDownLatch countDownLatch;
   private final Web3jConfig web3jConfig;
-  private BatchRequest batchRequest = null;
-  private ArrayList<String> signedBatchRequest = new ArrayList<>();
 
   @Override
   public void run() {
-    if (batchRequest == null) {
-      batchRequest = web3j.newBatch();
-    }
-    api.addBatchRequests(batchRequest, signedBatchRequest);
-    if (batchRequest.getRequests().size() == workloadConfig.getBatchSize()
-        || countDownLatch.getCount() == 1) {
-      transferBatchAsync(batchRequest, signedBatchRequest);
-      batchRequest = web3j.newBatch();
-      signedBatchRequest = new ArrayList<>();
-    }
+    // OPEN model not supported
   }
 
   /** Transfer batched Transactions asynchronously. */
   public CompletableFuture<BatchResponse> transferBatchAsync(
-      BatchRequest batchRequest, ArrayList<String> signedBatchRequest) {
+      BatchRequest batchRequest, ArrayList<String> signedBatchRequest, int index) {
 
     Instant startWriteTime = now();
     log.debug("batch requests added");
@@ -101,7 +90,7 @@ public class WorkloadCommand implements Runnable {
                 }
                 return;
               }
-              receiptProcessor(response, batchRequest, startWriteTime, signedBatchRequest);
+              receiptProcessor(response, batchRequest, startWriteTime, signedBatchRequest, index);
             });
   }
 
@@ -110,13 +99,14 @@ public class WorkloadCommand implements Runnable {
       BatchResponse response,
       BatchRequest writeRequest,
       Instant startWriteTime,
-      ArrayList<String> signedBatchRequest) {
+      ArrayList<String> signedBatchRequest,
+      int index) {
     Instant startTime = now();
     Duration duration;
     ArrayList<TransactionReceipt> receipt = new ArrayList<>();
     ArrayList<Throwable> errors = new ArrayList<>();
-    BatchRequest receiptBatchRequest = web3j.newBatch();
-    BatchRequest retryBatchRequest = web3j.newBatch();
+    BatchRequest receiptBatchRequest = web3j.get(index).newBatch();
+    BatchRequest retryBatchRequest = web3j.get(index).newBatch();
 
     // process writeBatchRequest response
     for (int i = 0; i < response.getResponses().size(); i++) {
@@ -138,7 +128,7 @@ public class WorkloadCommand implements Runnable {
 
         // if isCheckWritetxFailed is true, poll for the receipt
         if (web3jConfig.getReceipt().isCheckWriteTxFailed())
-          retryBatchRequest.add(web3j.ethGetTransactionReceipt(transactionHash));
+          retryBatchRequest.add(web3j.get(index).ethGetTransactionReceipt(transactionHash));
       } else {
         metrics.record(between(startWriteTime, now()), "0x1");
         transactionHash = String.valueOf(response.getResponses().get(i).getResult());
@@ -152,7 +142,7 @@ public class WorkloadCommand implements Runnable {
             errors.add(e);
           }
         } else {
-          receiptBatchRequest.add(web3j.ethGetTransactionReceipt(transactionHash));
+          receiptBatchRequest.add(web3j.get(index).ethGetTransactionReceipt(transactionHash));
         }
       }
     }
@@ -160,7 +150,7 @@ public class WorkloadCommand implements Runnable {
     // check if retryBatchReq is not zero
     // function for retry
     if (retryBatchRequest.getRequests().size() != 0) {
-      retryReadCheck(retryBatchRequest, startTime, writeRequest, signedBatchRequest);
+      retryReadCheck(retryBatchRequest, startTime, writeRequest, signedBatchRequest, index);
     }
 
     // send poll TxRecipt batch request
@@ -222,7 +212,8 @@ public class WorkloadCommand implements Runnable {
       BatchRequest retryBatchRequest,
       Instant startTime,
       BatchRequest writeRequest,
-      ArrayList<String> signedBatchRequest) {
+      ArrayList<String> signedBatchRequest,
+      int index) {
     BatchResponse receiptBatchResponse = null;
     int noOfRetries = web3jConfig.getReceipt().getNoWriteTxRetry();
     boolean success;
@@ -269,7 +260,7 @@ public class WorkloadCommand implements Runnable {
           if (lastErrorCode == (-32603)) {
             System.exit(-1);
           }
-          transferBatchAsync(writeRequest, signedBatchRequest);
+          transferBatchAsync(writeRequest, signedBatchRequest, index);
           return;
         }
         int sleepTime = (int) Math.pow(web3jConfig.getReceipt().getRetryWriteTxSleep(), retry);

@@ -46,7 +46,7 @@ import org.web3j.tx.gas.StaticGasProvider;
 @Service
 @RequiredArgsConstructor
 public class PermissioningApi {
-  private final Web3j web3j;
+  private final ArrayList<Web3j> web3j;
   private final PermissioningConfig config;
   private Permissioning contract;
   private String contractAddress;
@@ -57,15 +57,15 @@ public class PermissioningApi {
   public void init() throws Exception {
 
     Transaction tx = Transaction.createEthCallTransaction(null, null, null);
-    BigInteger gasEstimate = web3j.ethEstimateGas(tx).send().getAmountUsed();
-    BigInteger gasPrice = web3j.ethGasPrice().send().getGasPrice();
+    BigInteger gasEstimate = web3j.get(0).ethEstimateGas(tx).send().getAmountUsed();
+    BigInteger gasPrice = web3j.get(0).ethGasPrice().send().getGasPrice();
     gasProvider = new StaticGasProvider(gasPrice, gasEstimate);
 
     // Contract address from config
     if (!config.getContractAddress().isEmpty()) {
       contractAddress = config.getContractAddress();
       Credentials credentials = Credentials.create(config.getSuperAdmins()[0]);
-      contract = Permissioning.load(contractAddress, web3j, credentials, gasProvider);
+      contract = Permissioning.load(contractAddress, web3j.get(0), credentials, gasProvider);
       readWriteRoles.add(BigInteger.valueOf(2));
       readWriteRoles.add(BigInteger.valueOf(3));
     }
@@ -73,23 +73,23 @@ public class PermissioningApi {
 
   public TransactionReceipt getReadWritePermission(String newUser, Credentials credentials)
       throws Exception {
-    contract = Permissioning.load(contractAddress, web3j, credentials, gasProvider);
+    contract = Permissioning.load(contractAddress, web3j.get(0), credentials, gasProvider);
     return contract.addUser(newUser, readWriteRoles).send();
   }
 
   public TransactionReceipt approvePermission(String newUser, Credentials approverCreds)
       throws Exception {
-    contract = Permissioning.load(contractAddress, web3j, approverCreds, gasProvider);
+    contract = Permissioning.load(contractAddress, web3j.get(0), approverCreds, gasProvider);
     return contract.approveUserRequest(newUser, readWriteRoles).send();
   }
 
   public Boolean checkWritePermission(Credentials writerCreds) throws Exception {
-    contract = Permissioning.load(contractAddress, web3j, writerCreds, gasProvider);
+    contract = Permissioning.load(contractAddress, web3j.get(0), writerCreds, gasProvider);
     return contract.isWriter().send();
   }
 
   public Boolean checkReadPermission(Credentials readerCreds) throws Exception {
-    contract = Permissioning.load(contractAddress, web3j, readerCreds, gasProvider);
+    contract = Permissioning.load(contractAddress, web3j.get(0), readerCreds, gasProvider);
     return contract.isViewer().send();
   }
 }
