@@ -1,8 +1,7 @@
 workload:
-  model: CLOSED  # either OPEN or CLOSED workload model
   batch-size: 10 # Request size of batched transactions
   transactions: 1_000 # total transactions per sender
-  load-factor: 5 # No. of sender accounts, also concurrency for CLOSED model
+  concurrency: 5 # No. of sender accounts, also concurrency
   progress-interval: 5s # interval for updating progress in web UI
 
 web3j:

@@ -60,7 +60,6 @@ public class ProgressService {
         .txPending(metrics.getPendingCount())
         .elapsedTime(metrics.getElapsedTime())
         .remainingTime(metrics.getRemainingTime())
-        .workloadModel(config.getModel())
         .loadFactor(config.getLoadFactor())
         .batchSize(config.getBatchSize())
         .averageThroughput(metrics.getAverageThroughput())

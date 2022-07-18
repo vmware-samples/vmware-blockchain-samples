@@ -57,7 +57,7 @@ import org.web3j.tx.response.TransactionReceiptProcessor;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class WorkloadCommand implements Runnable {
+public class WorkloadCommand {
 
   private final MetricsService metrics;
   private final ArrayList<Web3j> web3j;
@@ -66,11 +66,6 @@ public class WorkloadCommand implements Runnable {
   private final SecureTokenApi api;
   private final CountDownLatch countDownLatch;
   private final Web3jConfig web3jConfig;
-
-  @Override
-  public void run() {
-    // OPEN model not supported
-  }
 
   /** Transfer batched Transactions asynchronously. */
   public CompletableFuture<BatchResponse> transferBatchAsync(

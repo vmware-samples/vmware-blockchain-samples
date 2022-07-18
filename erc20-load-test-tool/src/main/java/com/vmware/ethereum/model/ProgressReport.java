@@ -28,7 +28,6 @@ package com.vmware.ethereum.model;
 
 import static org.apache.commons.lang3.time.DurationFormatUtils.formatDurationWords;
 
-import com.vmware.ethereum.config.WorkloadModel;
 import java.time.Duration;
 import lombok.Builder;
 import lombok.Getter;
@@ -56,7 +55,6 @@ public class ProgressReport {
   private final Duration elapsedTime;
   private final Duration remainingTime;
 
-  private final WorkloadModel workloadModel;
   private final int loadFactor;
   private final int batchSize;
 
