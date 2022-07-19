@@ -55,7 +55,7 @@ public class ProgressReport {
   private final Duration elapsedTime;
   private final Duration remainingTime;
 
-  private final int loadFactor;
+  private final int concurrency;
   private final int batchSize;
 
   private final long averageThroughput;

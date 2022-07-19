@@ -43,12 +43,12 @@ public class WorkloadService {
   private final WorkloadConfig workloadConfig;
 
   public void start() {
-    Thread[] t = new Thread[workloadConfig.getLoadFactor()];
-    for (int i = 0; i < workloadConfig.getLoadFactor(); i++) {
+    Thread[] t = new Thread[workloadConfig.getConcurrency()];
+    for (int i = 0; i < workloadConfig.getConcurrency(); i++) {
       t[i] = new Thread(new WorkloadThread(command, transactions, api, web3j, workloadConfig, i));
       t[i].start();
     }
-    for (int i = 0; i < workloadConfig.getLoadFactor(); i++) {
+    for (int i = 0; i < workloadConfig.getConcurrency(); i++) {
       try {
         t[i].join();
       } catch (InterruptedException e) {

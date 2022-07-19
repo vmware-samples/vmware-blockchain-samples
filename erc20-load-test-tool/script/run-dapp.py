@@ -237,7 +237,7 @@ def aggregate_report(instance):
     aggregate_write_latency = 0
     aggregate_read_latency = 0
     aggregate_tx = 0
-    aggregate_loadfactor = 0
+    aggregate_concurrency = 0
     aggregate_write_req_status = {}
     aggregate_read_req_status = {}
     aggregate_write_req_errors = {}
@@ -253,7 +253,7 @@ def aggregate_report(instance):
                 aggregate_read_throughput += data['averageReadThroughput']
                 aggregate_write_latency += data['averageLatency']
                 aggregate_read_latency += data['averageReadLatency']
-                aggregate_loadfactor += data['loadFactor']
+                aggregate_concurrency += data['concurrency']
 
                 if data["txStatus"]:
                     tx_status_list = data["txStatus"].split(",")
@@ -285,7 +285,7 @@ def aggregate_report(instance):
                 'aggregate_read_throughput': aggregate_read_throughput,
                 'aggregate_write_latency': int(aggregate_write_latency / instance),
                 'aggregate_read_latency': int(aggregate_read_latency / instance),
-                'aggregate_loadfactor': aggregate_loadfactor,
+                'aggregate_concurrency': aggregate_concurrency,
                 'aggregate_write_req_status': aggregate_write_req_status,
                 'aggregate_read_req_status': aggregate_read_req_status,
                 'aggregate_write_req_errors': aggregate_write_req_errors,

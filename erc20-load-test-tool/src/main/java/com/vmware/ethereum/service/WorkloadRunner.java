@@ -183,7 +183,7 @@ public class WorkloadRunner {
     }
 
     log.info("Test duration: {}", metrics.getElapsedTime());
-    log.info("Concurrency: {}", workloadConfig.getLoadFactor());
+    log.info("Concurrency: {}", workloadConfig.getConcurrency());
 
     log.info("Batch Size: {}", workloadConfig.getBatchSize());
     log.info("Avg write throughput: {}/sec", metrics.getAverageThroughput());

@@ -47,15 +47,8 @@
     <h4>Test</h4>
     <table class="table table-dark" id="test">
       <tr>
-        <th>Workload Model</th>
-        <td th:text="${progress.workloadModel}"></td>
-      </tr>
-      <tr>
-        <th>
-          <span th:if="${progress.workloadModel.name() == 'OPEN'}">Arrival Rate (/s)</span>
-          <span th:if="${progress.workloadModel.name() == 'CLOSED'}">Concurrency</span>
-        </th>
-        <td th:text="${progress.loadFactor}"></td>
+        <th>Concurrency</th>
+        <td th:text="${progress.concurrency}"></td>
       </tr>
       <tr>
         <th>Batch Size</th>

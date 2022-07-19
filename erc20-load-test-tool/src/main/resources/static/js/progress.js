@@ -69,10 +69,10 @@ function updateReport(progress) {
       id).rows[rowIndex].cells[1].innerHTML = value;
   };
 
-  // 0 - Workload Model
-  // 1 - Load Factor
-  update("test", 3, progress.elapsedTime);
-  update("test", 4, progress.remainingTime);
+  // 0 - Load Factor
+  // 1 - Batch Size
+  update("test", 2, progress.elapsedTime);
+  update("test", 3, progress.remainingTime);
 
   // 0 - Total Transactions
   update("transactions", 1, progress.txStatus);
@@ -101,8 +101,7 @@ progress = new LoadProgress();
  */
 window.onload = function () {
   progress.start();
-  console.log("Progress started ggs")
-  console.log("avg write throughput added")
+  console.log("Progress started")
 }
 
 window.onbeforeunload = function () {
