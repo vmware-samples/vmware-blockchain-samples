@@ -50,7 +50,7 @@ public class ProgressService {
   public ProgressReport getProgress() {
     return ProgressReport.builder()
         .receiptMode(receiptMode)
-        .txTotal((long) config.getTransactions() * config.getLoadFactor())
+        .txTotal((long) config.getTransactions() * config.getConcurrency())
         .txStatus(toString(metrics.getTimerStatusToCount()))
         .readStatus(toString(metrics.getReadTimerStatusToCount()))
         .txErrors(toString(metrics.getTimerErrorToCount()))
@@ -60,8 +60,7 @@ public class ProgressService {
         .txPending(metrics.getPendingCount())
         .elapsedTime(metrics.getElapsedTime())
         .remainingTime(metrics.getRemainingTime())
-        .workloadModel(config.getModel())
-        .loadFactor(config.getLoadFactor())
+        .concurrency(config.getConcurrency())
         .batchSize(config.getBatchSize())
         .averageThroughput(metrics.getAverageThroughput())
         .averageLatency(metrics.getAverageLatency())

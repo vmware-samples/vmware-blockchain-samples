@@ -101,7 +101,7 @@ public class AppConfig {
   public ArrayList<Credentials> credentialsArray(WorkloadConfig config) {
     ArrayList<Credentials> credentialsArray = new ArrayList<>();
 
-    for (int i = 0; i < config.getLoadFactor(); i++) {
+    for (int i = 0; i < config.getConcurrency(); i++) {
       try {
         ECKeyPair ecKeyPair = Keys.createEcKeyPair();
         BigInteger privateKeyInDec = ecKeyPair.getPrivateKey();
@@ -187,7 +187,7 @@ public class AppConfig {
 
     ArrayList<BatchTransactionManager> batchTransactionManagers = new ArrayList<>();
     int chainId = config.getEthClient().getChainId();
-    for (int i = 0; i < workloadConfig.getLoadFactor(); i++) {
+    for (int i = 0; i < workloadConfig.getConcurrency(); i++) {
       batchTransactionManagers.add(
           new BatchTransactionManager(
               web3j.get(i), credentials.get(i), chainId, transactionReceiptProcessor));
@@ -216,7 +216,7 @@ public class AppConfig {
   @Bean
   public ArrayList<Web3j> web3j(Web3jService web3jService, WorkloadConfig config) {
     ArrayList<Web3j> web3jArray = new ArrayList<>();
-    for (int i = 0; i < config.getLoadFactor(); i++) {
+    for (int i = 0; i < config.getConcurrency(); i++) {
       web3jArray.add(Web3j.build(web3jService));
     }
     return web3jArray;

@@ -44,8 +44,7 @@ import org.springframework.validation.annotation.Validated;
 public class WorkloadConfig {
 
   @Positive private int transactions;
-  @NotNull private WorkloadModel model;
-  @PositiveOrZero private int loadFactor;
+  @PositiveOrZero private int concurrency;
   @NotNull private Duration progressInterval;
   @Positive @NotNull private int batchSize;
 }

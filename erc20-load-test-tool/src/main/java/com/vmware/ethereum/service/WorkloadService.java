@@ -26,9 +26,40 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-public interface WorkloadService {
+import com.vmware.ethereum.config.WorkloadConfig;
+import java.util.ArrayList;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.web3j.protocol.Web3j;
 
-  void start();
+@Slf4j
+@RequiredArgsConstructor
+public class WorkloadService {
 
-  void stop();
+  private final WorkloadCommand command;
+  private final long transactions;
+  private final SecureTokenApi api;
+  private final ArrayList<Web3j> web3j;
+  private final WorkloadConfig workloadConfig;
+
+  public void start() {
+    Thread[] t = new Thread[workloadConfig.getConcurrency()];
+    for (int i = 0; i < workloadConfig.getConcurrency(); i++) {
+      t[i] = new Thread(new WorkloadThread(command, transactions, api, web3j, workloadConfig, i));
+      t[i].start();
+    }
+    for (int i = 0; i < workloadConfig.getConcurrency(); i++) {
+      try {
+        t[i].join();
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+
+    log.info("Transactions submitted");
+  }
+
+  public void stop() {
+    // Do nothing
+  }
 }

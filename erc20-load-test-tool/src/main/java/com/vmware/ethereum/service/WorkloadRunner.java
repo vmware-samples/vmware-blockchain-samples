@@ -26,7 +26,6 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static com.vmware.ethereum.config.WorkloadModel.OPEN;
 import static com.vmware.ethereum.model.ReceiptMode.DEFERRED;
 import static com.vmware.ethereum.model.ReceiptMode.IMMEDIATE;
 import static java.time.Instant.now;
@@ -148,11 +147,7 @@ public class WorkloadRunner {
 
   /** Create workload to run. */
   private WorkloadService createWorkload() {
-    if (workloadConfig.getModel() == OPEN) {
-      return new OpenWorkload(
-          command, workloadConfig.getTransactions(), workloadConfig.getLoadFactor());
-    }
-    return new ClosedWorkload(
+    return new WorkloadService(
         command, workloadConfig.getTransactions(), api, web3j, workloadConfig);
   }
 
@@ -188,12 +183,7 @@ public class WorkloadRunner {
     }
 
     log.info("Test duration: {}", metrics.getElapsedTime());
-
-    if (workloadConfig.getModel() == OPEN) {
-      log.info("Arrival rate: {}/sec", workloadConfig.getLoadFactor());
-    } else {
-      log.info("Concurrency: {}", workloadConfig.getLoadFactor());
-    }
+    log.info("Concurrency: {}", workloadConfig.getConcurrency());
 
     log.info("Batch Size: {}", workloadConfig.getBatchSize());
     log.info("Avg write throughput: {}/sec", metrics.getAverageThroughput());
