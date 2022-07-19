@@ -40,9 +40,9 @@ Make sure your kube config is pointed to minikube (eg: use `kubectx` to verify).
 
 This will end with something like
 ```
-MINIKUBE_IP=192.168.1.2
+MINIKUBE_IP=`minikube ip`(example Minikube IP 192.168.1.2)
 MINIKUBE_PORT=30545
-VMBC_URL=http://192.168.1.2:30545
+VMBC_URL=http://`minikube ip`:30545
 ```
 
 You can use Lens or `watch -n0.1 kubectl get pods --all-namespaces -o wide` to see progress as containers come up. Four namespaces are created, each with 1 pod of the concord replica network. Additionally one namespace is created for the client.
@@ -51,7 +51,7 @@ You can use Lens or `watch -n0.1 kubectl get pods --all-namespaces -o wide` to s
 
 Run a simple command like this to get a respone:
 ```
-% curl -X POST --data '{"jsonrpc":"2.0","method":"eth_gasPrice","id":1}' --header "Content-Type: application/json" http://192.168.1.2:30545
+% curl -X POST --data '{"jsonrpc":"2.0","method":"eth_gasPrice","id":1}' --header "Content-Type: application/json" http://`minikube ip`:30545
 ```
 Expected Output:
 ```
