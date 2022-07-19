@@ -19,12 +19,6 @@ Infrastrcuture needed for minikube based blockchain deployment: vCPUs - 4; Memor
 
 > **Note**: minikube creates a VM using a selected driver and depends on what you have installed. It could be docker, vmware etc. Please [see this list](https://minikube.sigs.k8s.io/docs/drivers/) and you may need to provide this underlying dependency with additional resources if necessary.
 
-See scripts under`minikube` folder that provide convinience scripts to start and delete minikube.
-
-```
-cd minikube 
-./minikube-start.sh
-```
 
 Install [`kubectl`](https://kubernetes.io/docs/tasks/tools/) to interact and you can also use a tool like [Lens](https://k8slens.dev/) or once minikube is started run `minikube dashboard` to see your cluster view in a browser.
 
@@ -35,6 +29,23 @@ Set the environment variable:
 ```
 export JFROG_PASSWORD=<secret>
 ```
+See scripts under`minikube` folder that provide convinience scripts to start and delete minikube. Make sure 'minikube status' has the expected output described below before proceeding further.
+
+```
+cd minikube 
+./minikube-start.sh
+
+minikube status 
+ 
+minikube
+type: Control Plane
+host: Running
+kubelet: Running
+apiserver: Running
+kubeconfig: Configured
+
+```
+
 
 # VMBC Deployment
 
