@@ -211,7 +211,7 @@ def run_dapp(priv_key, contract_address, port):
         os.environ["TOKEN_CONTRACT_ADDRESS"] = contract_address
 
     jar = "target/erc20-benchmark-1.0-SNAPSHOT.jar"
-    cmd = "cd ..; java -jar -Dserver.port=" + str(port) + " -Dtoken.private-key=" + priv_key + " " + jar
+    cmd = "cd ..; java -jar -Dserver.port=" + str(port) + " -Dtoken.deployer-private-key=" + priv_key + " " + jar
 
     p = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
     if not p.returncode:
@@ -356,8 +356,7 @@ def main():
     check_write_read_access(perm_dapp_contract, accts)
 
     contract_address = None
-    if share_contract:
-        assert dapp_count > 1, "At least 2 instances should run to share contract."
+    if share_contract and dapp_count>1:
         contract_address = deploy_contract(accts[0], priv_keys[0])
         print("Contract Address -", contract_address)
         distribute_tokens(accts, priv_keys, contract_address)

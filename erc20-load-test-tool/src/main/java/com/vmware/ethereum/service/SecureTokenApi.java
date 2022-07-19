@@ -92,7 +92,7 @@ public class SecureTokenApi {
     contractAddress = token.getContractAddress();
     for (int i = 0; i < workloadConfig.getLoadFactor(); i++) {
       try {
-        token.transfer(senderAddressArray.get(i), BigInteger.valueOf(1000000000)).send();
+        token.transfer(senderAddressArray.get(i), new BigInteger("1000000000000000")).send();
       } catch (Exception e) {
         log.error("Error is transfer from deployer to sender - {}", e.getMessage());
       }
