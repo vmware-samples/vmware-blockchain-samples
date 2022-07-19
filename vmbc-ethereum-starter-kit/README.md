@@ -13,7 +13,6 @@ minikube v1.24.0 or more (Install using https://minikube.sigs.k8s.io/docs/start/
 
 VirtualBox 5.2 or later ( only for macOS )
 
-Python3 or more
 
 Infrastrcuture needed for minikube based blockchain deployment: vCPUs - 4; Memory - 12GB;  Disk - 50g
 
