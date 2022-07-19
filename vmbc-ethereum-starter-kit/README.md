@@ -4,13 +4,17 @@ We need a Kubernetes environment to deploy. You could use a remote cluster or lo
 Before you start, please send an email to ask_VMware_blockchain@VMware.com to get JFROG_PASSWORD. This will be required in the next steps.
 
 # Important Note
-This is still under development
+This is still under development and only Linux OS and macOS have been tested
 
-# Prerequisites ( Only Linux and MAC are currently tested )
+# Prerequisites
 Docker version 18.06.1-ce, build e68fc7a or above
+
 minikube v1.24.0 or more (Install using https://minikube.sigs.k8s.io/docs/start/). 
+
 VirtualBox 5.2 or later ( only for macOS )
+
 Python3 or more
+
 Infrastrcuture needed for minikube based blockchain deployment: vCPUs - 4; Memory - 12GB;  Disk - 50g
 
 > **Note**: minikube creates a VM using a selected driver and depends on what you have installed. It could be docker, vmware etc. Please [see this list](https://minikube.sigs.k8s.io/docs/drivers/) and you may need to provide this underlying dependency with additional resources if necessary.
