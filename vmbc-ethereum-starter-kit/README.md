@@ -6,10 +6,12 @@ Before you start, please send an email to ask_VMware_blockchain@VMware.com to ge
 # Important Note
 This is still under development
 
-# k8s environment
-Install minikube (https://minikube.sigs.k8s.io/docs/start/). 
-
-Make sure to provide additional resources.
+# Prerequisites ( Only Linux and MAC are currently tested )
+Docker version 18.06.1-ce, build e68fc7a or above
+minikube v1.24.0 or more (Install using https://minikube.sigs.k8s.io/docs/start/). 
+VirtualBox 5.2 or later ( only for macOS )
+Python3 or more
+Infrastrcuture needed for minikube based blockchain deployment: vCPUs - 4; Memory - 12GB;  Disk - 50g
 
 > **Note**: minikube creates a VM using a selected driver and depends on what you have installed. It could be docker, vmware etc. Please [see this list](https://minikube.sigs.k8s.io/docs/drivers/) and you may need to provide this underlying dependency with additional resources if necessary.
 
@@ -22,7 +24,6 @@ cd minikube
 
 Install [`kubectl`](https://kubernetes.io/docs/tasks/tools/) to interact and you can also use a tool like [Lens](https://k8slens.dev/) or once minikube is started run `minikube dashboard` to see your cluster view in a browser.
 
-Infrastrcuture needed for minikube based blockchain deployment: vCPUs - 4; Memory - 12GB;  Disk - 50g
 
 Some additional useful utilities to have are `watch` and `kubectx`
 
@@ -47,7 +48,7 @@ MINIKUBE_PORT=30545
 VMBC_URL=http://`minikube ip`:30545
 ```
 
-You can use Lens or `watch -n0.1 kubectl get pods --all-namespaces -o wide` to see progress as containers come up. Four namespaces are created, each with 1 pod of the concord replica network. Additionally one namespace is created for the client.
+You can use Lens or `watch -n0.1 kubectl get pods --all-namespaces -o wide` to see progress as containers come up and are in 'Running' state. Four namespaces are created, each with 1 pod of the concord replica network. Additionally one namespace is created for the client.
 
 > **Note:** In case you see the ethrpc service LoadBalancer as "pending" then you need to run `minikube tunnel` in a separate terminal window. [See minikube doc](https://minikube.sigs.k8s.io/docs/handbook/accessing/#using-minikube-tunnel). After this the can connect to the client.
 
