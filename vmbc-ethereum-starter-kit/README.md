@@ -22,7 +22,7 @@ cd minikube
 
 Install [`kubectl`](https://kubernetes.io/docs/tasks/tools/) to interact and you can also use a tool like [Lens](https://k8slens.dev/) or once minikube is started run `minikube dashboard` to see your cluster view in a browser.
 
-Infrastrcuture needed for minikube based blockchain deployment: vCPUs - 4; Memory 12GB;  Disk 50g
+Infrastrcuture needed for minikube based blockchain deployment: vCPUs - 4; Memory - 12GB;  Disk - 50g
 
 Some additional useful utilities to have are `watch` and `kubectx`
 
