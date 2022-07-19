@@ -22,6 +22,8 @@ cd minikube
 
 Install [`kubectl`](https://kubernetes.io/docs/tasks/tools/) to interact and you can also use a tool like [Lens](https://k8slens.dev/) or once minikube is started run `minikube dashboard` to see your cluster view in a browser.
 
+Infrastrcuture needed for minikube based blockchain deployment: vCPUs - 4; Memory 12GB;  Disk 50g
+
 Some additional useful utilities to have are `watch` and `kubectx`
 
 Set the environment variable:
@@ -33,14 +35,14 @@ export JFROG_PASSWORD=<secret>
 
 Clone this repo and `cd vmbc/script`. All subsequent commands are at this location.
 
-Make sure your kube config is pointed to minikube (eg: use `kubectx` to verify). Deploy VMBC with:
+Make sure your kube config is pointed to minikube (for example, use `kubectx` to verify). Deploy VMBC with:
 ```
 ./k8s-launch.sh
 ```
 
 This will end with something like
 ```
-MINIKUBE_IP=`minikube ip`(example Minikube IP 192.168.1.2)
+MINIKUBE_IP=`minikube ip`(for example, Minikube IP could be 192.168.1.2)
 MINIKUBE_PORT=30545
 VMBC_URL=http://`minikube ip`:30545
 ```
