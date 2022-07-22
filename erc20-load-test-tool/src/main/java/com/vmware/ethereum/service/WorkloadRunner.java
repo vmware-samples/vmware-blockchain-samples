@@ -41,6 +41,7 @@ import com.vmware.ethereum.model.ProgressReport;
 import com.vmware.ethereum.model.ReceiptMode;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
@@ -66,7 +67,6 @@ public class WorkloadRunner {
   private final SecureTokenApi api;
   private final PermissioningApi permissioningApi;
   private final ArrayList<Credentials> credentials;
-  private final Credentials deployerCredentials;
 
   private final CountDownLatch countDownLatch;
   private final MetricsService metrics;
@@ -83,12 +83,11 @@ public class WorkloadRunner {
   @SneakyThrows(InterruptedException.class)
   public void run() {
 
-    if (permissioningConfig.isEnable()) {
+    if (!permissioningConfig.getContractAddress().isEmpty()) {
       try {
         for (Credentials creds : credentials) {
           permissioningSetup(creds);
         }
-        if (!checkPermissions(deployerCredentials)) permissioningSetup(deployerCredentials);
       } catch (Exception e) {
         log.error("permissioning Setup error = {}", e.toString());
       }
@@ -101,26 +100,51 @@ public class WorkloadRunner {
 
   private void permissioningSetup(Credentials credentials) throws Exception {
     String address = credentials.getAddress();
-    TransactionReceipt permTxReceipt =
-        permissioningApi.getReadWritePermission(
-            address, Credentials.create(permissioningConfig.getSuperAdmins()[0]));
-    log.debug("getReadWrite permission tx receipt - {}", permTxReceipt);
+    TransactionReceipt permReadTxReceipt =
+        permissioningApi.getPermission(
+            address,
+            api.getContractAddress(),
+            BigInteger.ONE,
+            Credentials.create(permissioningConfig.getSuperAdmins()[0]));
+    TransactionReceipt permWriteTxReceipt =
+        permissioningApi.getPermission(
+            address,
+            api.getContractAddress(),
+            BigInteger.TWO,
+            Credentials.create(permissioningConfig.getSuperAdmins()[0]));
+    log.debug("getRead permission tx receipt - {}", permReadTxReceipt);
+    log.debug("getWrite permission tx receipt - {}", permWriteTxReceipt);
 
     TransactionReceipt approveTxReceipt;
-    for (int i = 1; i < permissioningConfig.getSuperAdmins().length - 1; i++) {
+    for (int i = 0; i < permissioningConfig.getSuperAdmins().length - 1; i++) {
       approveTxReceipt =
           permissioningApi.approvePermission(
-              address, Credentials.create(permissioningConfig.getSuperAdmins()[i]));
-      log.debug("approve perm tx receipt - {}", approveTxReceipt);
+              address,
+              api.getContractAddress(),
+              BigInteger.ONE,
+              Credentials.create(permissioningConfig.getSuperAdmins()[i]));
+      log.debug("approve read perm tx receipt - {}", approveTxReceipt);
+      approveTxReceipt =
+          permissioningApi.approvePermission(
+              address,
+              api.getContractAddress(),
+              BigInteger.TWO,
+              Credentials.create(permissioningConfig.getSuperAdmins()[i]));
+      log.debug("approve write perm tx receipt - {}", approveTxReceipt);
     }
     checkPermissions(credentials);
   }
 
   private Boolean checkPermissions(Credentials credentials) throws Exception {
-    Boolean checkWrite = permissioningApi.checkWritePermission(credentials);
-    log.info("write permission granted: {}", checkWrite);
-    Boolean checkRead = permissioningApi.checkReadPermission(credentials);
-    log.info("read permission granted: {}", checkRead);
+    String address = credentials.getAddress();
+    Boolean checkRead =
+        permissioningApi.checkPermission(
+            address, api.getContractAddress(), BigInteger.ONE, credentials);
+    log.info("read permission granted for {} : {}", address, checkRead);
+    Boolean checkWrite =
+        permissioningApi.checkPermission(
+            address, api.getContractAddress(), BigInteger.TWO, credentials);
+    log.info("write permission granted for {} : {}", address, checkWrite);
     return checkWrite && checkRead;
   }
 

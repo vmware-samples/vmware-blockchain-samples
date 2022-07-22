@@ -31,6 +31,7 @@ import static java.util.Objects.requireNonNull;
 import static org.springframework.util.ReflectionUtils.findField;
 import static org.springframework.util.ReflectionUtils.setField;
 
+import com.vmware.ethereum.config.PermissioningConfig;
 import com.vmware.ethereum.config.TokenConfig;
 import com.vmware.ethereum.config.WorkloadConfig;
 import java.io.IOException;
@@ -51,6 +52,7 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.BatchRequest;
 import org.web3j.protocol.core.BatchResponse;
 import org.web3j.protocol.core.methods.request.Transaction;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.BatchTransactionManager;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
@@ -63,11 +65,14 @@ public class SecureTokenApi {
 
   private final TokenConfig config;
   private final WorkloadConfig workloadConfig;
+  private final PermissioningConfig permissioningConfig;
   private final ArrayList<Web3j> web3j;
   private final TransactionManager transactionManager;
   private final ArrayList<BatchTransactionManager> batchTransactionManager;
   private final SecureTokenFactory tokenFactory;
-  private final String senderAddress;
+  private final PermissioningApi permissioningApi;
+  private final String deployerAddress;
+  private final Credentials deployerCredentials;
   private final ArrayList<String> senderAddressArray;
   private final ArrayList<Credentials> credentialsArray;
   private SecurityToken token;
@@ -81,12 +86,45 @@ public class SecureTokenApi {
   public void init() throws IOException {
     log.info("Client version: {}", getClientVersion());
     log.info("Net version: {}", getNetVersion());
-    log.info("Sender address: {}", senderAddress);
+    log.info("Deployer address: {}", deployerAddress);
 
     setGas();
     log.info("Gas Estimate {}", gasEstimate);
     log.info("Gas Price {}", gasPrice);
+    try {
+      if (!permissioningConfig.getContractAddress().isEmpty()
+          && !permissioningApi.checkPermission(
+              deployerAddress,
+              permissioningConfig.getContractAddress(),
+              BigInteger.valueOf(3),
+              deployerCredentials)) {
 
+        permissioningApi.getPermission(
+            deployerAddress,
+            permissioningConfig.getContractAddress(),
+            BigInteger.valueOf(3),
+            Credentials.create(permissioningConfig.getSuperAdmins()[0]));
+        TransactionReceipt approveTxReceipt;
+        for (int i = 0; i < permissioningConfig.getSuperAdmins().length - 1; i++) {
+          approveTxReceipt =
+              permissioningApi.approvePermission(
+                  deployerAddress,
+                  permissioningConfig.getContractAddress(),
+                  BigInteger.valueOf(3),
+                  Credentials.create(permissioningConfig.getSuperAdmins()[i]));
+          log.debug("approve deploy perm tx receipt - {}", approveTxReceipt);
+        }
+        Boolean checkDeployer =
+            permissioningApi.checkPermission(
+                deployerAddress,
+                permissioningConfig.getContractAddress(),
+                BigInteger.valueOf(3),
+                deployerCredentials);
+        log.info("deployer permission given to {} : {}", deployerAddress, checkDeployer);
+      }
+    } catch (Exception e) {
+      log.error("permissioning for deployer error = {}", e.toString());
+    }
     token = tokenFactory.getSecureToken(gasEstimate, gasPrice);
     token.getTransactionReceipt().ifPresent(receipt -> log.info("Receipt: {}", receipt));
     contractAddress = token.getContractAddress();
@@ -155,6 +193,10 @@ public class SecureTokenApi {
     return batchRequest.sendAsync();
   }
 
+  public String getContractAddress() {
+    return contractAddress;
+  }
+
   public String getNetVersion() {
     try {
       return web3j.get(0).netVersion().send().getNetVersion();
@@ -185,7 +227,7 @@ public class SecureTokenApi {
 
   /** Get token balance of the sender. */
   public long getSenderBalance() {
-    return getBalance(senderAddress);
+    return getBalance(deployerAddress);
   }
 
   /** Get token balance of the sender. */

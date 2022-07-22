@@ -228,8 +228,8 @@ public class AppConfig {
   }
 
   @Bean
-  public String senderAddress(Credentials credentials) {
-    return credentials.getAddress();
+  public String deployerAddress(Credentials deployerCredentials) {
+    return deployerCredentials.getAddress();
   }
 
   @Bean
