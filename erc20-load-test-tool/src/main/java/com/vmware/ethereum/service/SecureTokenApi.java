@@ -98,29 +98,7 @@ public class SecureTokenApi {
               permissioningConfig.getContractAddress(),
               BigInteger.valueOf(3),
               deployerCredentials)) {
-
-        permissioningApi.getPermission(
-            deployerAddress,
-            permissioningConfig.getContractAddress(),
-            BigInteger.valueOf(3),
-            Credentials.create(permissioningConfig.getSuperAdmins()[0]));
-        TransactionReceipt approveTxReceipt;
-        for (int i = 0; i < permissioningConfig.getSuperAdmins().length - 1; i++) {
-          approveTxReceipt =
-              permissioningApi.approvePermission(
-                  deployerAddress,
-                  permissioningConfig.getContractAddress(),
-                  BigInteger.valueOf(3),
-                  Credentials.create(permissioningConfig.getSuperAdmins()[i]));
-          log.debug("approve deploy perm tx receipt - {}", approveTxReceipt);
-        }
-        Boolean checkDeployer =
-            permissioningApi.checkPermission(
-                deployerAddress,
-                permissioningConfig.getContractAddress(),
-                BigInteger.valueOf(3),
-                deployerCredentials);
-        log.info("deployer permission given to {} : {}", deployerAddress, checkDeployer);
+        deployerPermission();
       }
     } catch (Exception e) {
       log.error("permissioning for deployer error = {}", e.toString());
@@ -157,6 +135,32 @@ public class SecureTokenApi {
     gasEstimate = web3j.get(0).ethEstimateGas(tx).send().getAmountUsed();
     gasPrice = web3j.get(0).ethGasPrice().send().getGasPrice();
     gasProvider = new StaticGasProvider(gasPrice, gasEstimate);
+  }
+
+  /** Function to give deployer Permission */
+  private void deployerPermission() throws Exception {
+    permissioningApi.getPermission(
+        deployerAddress,
+        permissioningConfig.getContractAddress(),
+        BigInteger.valueOf(3),
+        Credentials.create(permissioningConfig.getSuperAdmins()[0]));
+    TransactionReceipt approveTxReceipt;
+    for (int i = 0; i < permissioningConfig.getSuperAdmins().length - 1; i++) {
+      approveTxReceipt =
+          permissioningApi.approvePermission(
+              deployerAddress,
+              permissioningConfig.getContractAddress(),
+              BigInteger.valueOf(3),
+              Credentials.create(permissioningConfig.getSuperAdmins()[i]));
+      log.debug("approve deploy perm tx receipt - {}", approveTxReceipt);
+    }
+    Boolean checkDeployer =
+        permissioningApi.checkPermission(
+            deployerAddress,
+            permissioningConfig.getContractAddress(),
+            BigInteger.valueOf(3),
+            deployerCredentials);
+    log.info("deployer permission given to {} : {}", deployerAddress, checkDeployer);
   }
 
   /** Creates token transfer transaction request. */
