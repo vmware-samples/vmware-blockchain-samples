@@ -74,6 +74,7 @@ public class WorkloadRunner {
   private final ReceiptMode receiptMode;
 
   private final ArrayList<Web3j> web3j;
+  private final ArrayList<Credentials> credentialsArrayList;
   private final ArrayList<String> senderAddressArray;
 
   @Value("${server.port}")
@@ -171,8 +172,7 @@ public class WorkloadRunner {
 
   /** Create workload to run. */
   private WorkloadService createWorkload() {
-    return new WorkloadService(
-        command, workloadConfig.getTransactions(), api, web3j, workloadConfig);
+    return new WorkloadService(command, api, web3j, credentialsArrayList, workloadConfig);
   }
 
   /** Print token balance of the sender and the receiver. */

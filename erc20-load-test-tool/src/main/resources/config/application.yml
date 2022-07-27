@@ -8,7 +8,7 @@ web3j:
   ethClient:
     correlate: true # sets correlation id
     protocol: http # supports grpc, http, https
-    host: localhost # IP of the ethereum client Node
+    host: 10.221.21.28 # IP of the ethereum client Node
     port: 8545 # port number (50505 - gRPC, 8545 - ethRPC)
     chain-id: 5000 # To enable EIP-155, use the chain id of the network that your Ethereum client is connected.
   receipt:
