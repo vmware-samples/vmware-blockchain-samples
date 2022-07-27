@@ -29,12 +29,12 @@ bytecode = None
 abi_permissioning = None
 bytecode_permissioning = None
 
-super_admins = ["0x784e2c4D95c9Be66Cb0B9cda5b39d72e7630bCa8", "0xF4d5B303A15b04D7C6b7510b24c62D393805B8d7",
-                "0x67C94d4a4fab02697513e4611A4742a98879aD56", "0x90Dc522189C4a368471C5AB3592f4789C21c560a"]
-super_admins_key = ["5094f257d3462083bcbc02c61d98c038cfa71cdd497834c5f38cd75010ddb7a5",
-                    "78785c4ab4ba44b83509296af86af56ff00db79ba26a292d0556a4b4e8cea87c",
-                    "417fbb670417375f2916a4b0110dc7d68d81ea15aad3e6eb69f166b5bed6503f",
-                    "9112ecbfc0a7c1fd7fdad5679dccec3b85b4ab32fe4268fe11f38cf8e5f44c39"]
+approvers = ["0x784e2c4D95c9Be66Cb0B9cda5b39d72e7630bCa8", "0xF4d5B303A15b04D7C6b7510b24c62D393805B8d7",
+              "0x67C94d4a4fab02697513e4611A4742a98879aD56", "0x90Dc522189C4a368471C5AB3592f4789C21c560a"]
+approvers_key = ["5094f257d3462083bcbc02c61d98c038cfa71cdd497834c5f38cd75010ddb7a5",
+                  "78785c4ab4ba44b83509296af86af56ff00db79ba26a292d0556a4b4e8cea87c",
+                  "417fbb670417375f2916a4b0110dc7d68d81ea15aad3e6eb69f166b5bed6503f",
+                  "9112ecbfc0a7c1fd7fdad5679dccec3b85b4ab32fe4268fe11f38cf8e5f44c39"]
 
 
 # setup w3 http provider
@@ -53,7 +53,6 @@ def compile_account_permissioning():
     global abi_permissioning, bytecode_permissioning
     compiled_sol = compile_files(
         ["contracts/Permissioning.sol"], solc_version='0.7.6', optimize=True)
-    print("compiled permissioning sources ")
     bytecode_permissioning = compiled_sol['contracts/Permissioning.sol:Permissioning']['bin']
     abi_permissioning = compiled_sol['contracts/Permissioning.sol:Permissioning']['abi']
 
@@ -64,7 +63,6 @@ def compile_security_token():
     global abi, bytecode
     compiled_sol = compile_files(
         ["../../hardhat/contracts/SecurityToken.sol"], solc_version='0.6.0', optimize=True)
-    print("compiled sources ")
     bytecode = compiled_sol['../../hardhat/contracts/SecurityToken.sol:SecurityToken']['bin']
     abi = compiled_sol['../../hardhat/contracts/SecurityToken.sol:SecurityToken']['abi']
 
@@ -85,7 +83,7 @@ def deploy_contract(contract_deploy_account, contract_deploy_account_key):
         }
     )
     tx_receipt = tx_receipt_poll(construct_txn, contract_deploy_account_key)
-    print("Security token smart contract deploy success, contract address: '{}'".format(
+    print("\nSecurity token smart contract deploy success, contract address: '{}'".format(
       tx_receipt.contractAddress))
 
     contract_address = tx_receipt.contractAddress
@@ -104,17 +102,17 @@ def deploy_contract_permissioning():
     permissioning_contract = w3.eth.contract(abi=abi_permissioning, bytecode=bytecode_permissioning)
 
     # deploying perm contract
-    construct_perm_txn = permissioning_contract.constructor(super_admins).buildTransaction(
+    construct_perm_txn = permissioning_contract.constructor(approvers).buildTransaction(
       {
-        "from": super_admins[0],
+        "from": approvers[0],
         "gas": 2000000,
         "gasPrice": 0,
-        "nonce": w3.eth.get_transaction_count(super_admins[0]),
+        "nonce": w3.eth.get_transaction_count(approvers[0]),
         "chainId": 5000,
       }
     )
 
-    tx_receipt_perm = tx_receipt_poll(construct_perm_txn, super_admins_key[0])
+    tx_receipt_perm = tx_receipt_poll(construct_perm_txn, approvers_key[0])
     print("\nAccount Permissioning smart contract deploy success, contract address: '{}'".format(
       tx_receipt_perm.contractAddress))
 
@@ -124,44 +122,42 @@ def deploy_contract_permissioning():
     return perm_contract_address, permissioning_dapp
 
 
-# send tx to raise write read access from super_admin[0] account
-def write_read_access(permissioning_dapp, accts):
-    for acct in accts:
-        print("\ngiving write and read access to", acct)
-        construct_txn = permissioning_dapp.functions.addUser(acct, [2, 3]).buildTransaction(
+# send tx to raise write read access from approvers[0] account
+def request_access(permissioning_dapp, acct, to, role):
+
+    print("\ngiving", role, "access to", acct)
+    construct_txn = permissioning_dapp.functions.addUserRequest(acct, to, role).buildTransaction(
             {
-                'from': super_admins[0],
+                'from': approvers[0],
                 'gas': 2000000,
                 'gasPrice': 0,
-                'nonce': w3.eth.get_transaction_count(super_admins[0]),
+                'nonce': w3.eth.get_transaction_count(approvers[0]),
                 'chainId': 5000
             })
-        tx_receipt_poll(construct_txn, super_admins_key[0])
+    tx_receipt_poll(construct_txn, approvers_key[0])
 
-        for i in range(1, len(super_admins)-1):
-            approve_access(permissioning_dapp, acct, super_admins[i], super_admins_key[i])
+    for i in range(0, len(approvers)-1):
+        approve_access(permissioning_dapp, acct, to, role, approvers[i], approvers_key[i])
 
 
-# approve read write access by 2 other super admins
-def approve_access(perm_dapp_contract, acct, super_admin_addr, super_admin_key):
-    print("\napproving access for", acct, "by", super_admin_addr)
-    construct_txn = perm_dapp_contract.functions.approveUserRequest(acct, [2, 3]).buildTransaction(
+# approve read write access by all the approvers
+def approve_access(perm_dapp_contract, acct, to, role, approver, approver_key):
+    print("approving access for", acct, "by", approver)
+    construct_txn = perm_dapp_contract.functions.approveUserRequest(acct, to, role).buildTransaction(
         {
-            'from': super_admin_addr,
+            'from': approver,
             'gas': 2000000,
             'gasPrice': 0,
-            'nonce': w3.eth.get_transaction_count(super_admin_addr),
+            'nonce': w3.eth.get_transaction_count(approver),
             'chainId': 5000
         })
-    tx_receipt_poll(construct_txn, super_admin_key)
+    tx_receipt_poll(construct_txn, approver_key)
 
 
 # checks if the account has read write access
-def check_write_read_access(perm_dapp_contract, accts):
-    for acct in accts:
-        is_writer = perm_dapp_contract.caller({'from': acct}).isWriter()
-        is_reader = perm_dapp_contract.caller({'from': acct}).isViewer()
-        print("\nAccount {} is_writer = {} and is_reader = {}".format(acct, is_writer, is_reader))
+def check_access(perm_dapp_contract, acct, to, role):
+    access_granted = perm_dapp_contract.caller({'from': acct}).checkUserAction(acct, to, role)
+    print("Account {} got {} access = {}".format(acct, role, access_granted))
 
 
 # distributing token to senders
@@ -191,7 +187,6 @@ def tx_receipt_poll(construct_txn, acc_priv_key):
     assert tx_hash_send == tx_hash, "tx hash mismatch"
 
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-    print("\nTransaction receipt: '{}'".format(tx_receipt))
     assert tx_receipt.status == 1, "transaction failed"
     return tx_receipt
 
@@ -349,16 +344,22 @@ def main():
     # deploy permissioning contract
     perm_contract_addr, perm_dapp_contract = deploy_contract_permissioning()
 
-    # give writer acccess to all the generated sender accts
-    write_read_access(perm_dapp_contract, accts)
-
-    # check if all sender has the writer access
-    check_write_read_access(perm_dapp_contract, accts)
-
     contract_address = None
     if share_contract and dapp_count>1:
+        # give deploy access to the deployer account
+        request_access(perm_dapp_contract, accts[0], perm_contract_addr, 3)
         contract_address = deploy_contract(accts[0], priv_keys[0])
-        print("Contract Address -", contract_address)
+        print("Contract Address - ", contract_address)
+
+        # give read write access to all the generated sender accts
+        for acct in accts:
+            request_access(perm_dapp_contract, acct, contract_address, 1)
+            request_access(perm_dapp_contract, acct, contract_address, 2)
+
+            # check if all sender has the access
+            check_access(perm_dapp_contract, acct, contract_address, 1)
+            check_access(perm_dapp_contract, acct, contract_address, 2)
+
         distribute_tokens(accts, priv_keys, contract_address)
         print("tokens distributed among senders")
 
