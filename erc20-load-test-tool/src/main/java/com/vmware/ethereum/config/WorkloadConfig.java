@@ -47,4 +47,5 @@ public class WorkloadConfig {
   @PositiveOrZero private int concurrency;
   @NotNull private Duration progressInterval;
   @Positive @NotNull private int batchSize;
+  @Positive @NotNull private int senders;
 }

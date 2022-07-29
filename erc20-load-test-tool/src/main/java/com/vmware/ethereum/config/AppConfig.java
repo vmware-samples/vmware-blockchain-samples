@@ -101,7 +101,7 @@ public class AppConfig {
   public ArrayList<Credentials> credentialsArray(WorkloadConfig config) {
     ArrayList<Credentials> credentialsArray = new ArrayList<>();
 
-    for (int i = 0; i < config.getConcurrency(); i++) {
+    for (int i = 0; i < config.getSenders(); i++) {
       try {
         ECKeyPair ecKeyPair = Keys.createEcKeyPair();
         BigInteger privateKeyInDec = ecKeyPair.getPrivateKey();

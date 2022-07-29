@@ -50,7 +50,7 @@ public class ProgressService {
   public ProgressReport getProgress() {
     return ProgressReport.builder()
         .receiptMode(receiptMode)
-        .txTotal((long) config.getTransactions() * config.getConcurrency())
+        .txTotal(config.getTransactions())
         .txStatus(toString(metrics.getTimerStatusToCount()))
         .readStatus(toString(metrics.getReadTimerStatusToCount()))
         .txErrors(toString(metrics.getTimerErrorToCount()))

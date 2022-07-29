@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadPoolExecutor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.web3j.crypto.Credentials;
@@ -71,7 +71,8 @@ public class WorkloadService {
     Iterator<Web3j> web3jIterator = cycle(web3j);
     Iterator<Credentials> credentialsIterator = cycle(credentialsArrayList);
     ExecutorService pool = Executors.newFixedThreadPool(workloadConfig.getConcurrency());
-    Semaphore semaphore = new Semaphore(workloadConfig.getConcurrency());
+    ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) pool;
+    //    Semaphore semaphore = new Semaphore(workloadConfig.getConcurrency());
     Web3j web3jCurrent = web3jIterator.next();
     Credentials credentialsCurrent = credentialsIterator.next();
     SecurityToken token;
@@ -88,6 +89,7 @@ public class WorkloadService {
       if (batchRequest.getRequests().size() == workloadConfig.getBatchSize()
           || i == workloadConfig.getTransactions() - 1) {
         pool.execute(new WorkloadThread(command, web3jCurrent, batchRequest, signedBatchRequest));
+        log.info(String.valueOf(threadPoolExecutor.getActiveCount()));
         //        command
         //            .transferBatchAsync(batchRequest, signedBatchRequest, web3jCurrent)
         //            .whenComplete((response, throwable) -> semaphore.release());

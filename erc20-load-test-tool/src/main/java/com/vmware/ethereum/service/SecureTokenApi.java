@@ -109,14 +109,14 @@ public class SecureTokenApi {
     token = tokenFactory.getSecureToken(gasEstimate, gasPrice);
     token.getTransactionReceipt().ifPresent(receipt -> log.info("Receipt: {}", receipt));
     contractAddress = token.getContractAddress();
-    for (int i = 0; i < workloadConfig.getConcurrency(); i++) {
+    for (int i = 0; i < workloadConfig.getSenders(); i++) {
       try {
-        token.transfer(senderAddressArray.get(i), new BigInteger("1000000000000000")).send();
+        token.transfer(senderAddressArray.get(i), new BigInteger("100000000000000")).send();
       } catch (Exception e) {
         log.error("Error is transfer from deployer to sender - {}", e.getMessage());
       }
       tokenArray.add(
-          SecurityToken.load(contractAddress, web3j.get(i), credentialsArray.get(i), gasProvider));
+          SecurityToken.load(contractAddress, web3j.get(0), credentialsArray.get(i), gasProvider));
     }
     setTransactionManager();
   }
