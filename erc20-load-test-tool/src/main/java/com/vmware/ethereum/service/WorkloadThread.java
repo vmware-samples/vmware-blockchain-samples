@@ -27,6 +27,7 @@ package com.vmware.ethereum.service;
  */
 
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.web3j.protocol.Web3j;
@@ -78,6 +79,11 @@ public class WorkloadThread implements Runnable {
     //        semaphore.release();
     //      }
     //    }
-    command.transferBatchAsync(batchRequest, signedBatchRequest, web3jCurrent);
+    Semaphore semaphore = new Semaphore(1);
+    semaphore.acquireUninterruptibly();
+
+    command
+        .transferBatchAsync(batchRequest, signedBatchRequest, web3jCurrent)
+        .whenComplete((response, throwable) -> semaphore.release());
   }
 }

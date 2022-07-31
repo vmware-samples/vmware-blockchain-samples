@@ -72,15 +72,14 @@ public class WorkloadService {
     Iterator<Credentials> credentialsIterator = cycle(credentialsArrayList);
     ExecutorService pool = Executors.newFixedThreadPool(workloadConfig.getConcurrency());
     ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) pool;
-    //    Semaphore semaphore = new Semaphore(workloadConfig.getConcurrency());
     Web3j web3jCurrent = web3jIterator.next();
     Credentials credentialsCurrent = credentialsIterator.next();
     SecurityToken token;
+
+    if (batchRequest == null) {
+      batchRequest = web3jCurrent.newBatch();
+    }
     for (int i = 0; i < workloadConfig.getTransactions(); i++) {
-      //      semaphore.acquireUninterruptibly();
-      if (batchRequest == null) {
-        batchRequest = web3jCurrent.newBatch();
-      }
       token =
           SecurityToken.load(
               api.getContractAddress(), web3jCurrent, credentialsCurrent, api.getGasProvider());
@@ -88,18 +87,13 @@ public class WorkloadService {
           batchRequest, signedBatchRequest, token, web3jCurrent, credentialsCurrent);
       if (batchRequest.getRequests().size() == workloadConfig.getBatchSize()
           || i == workloadConfig.getTransactions() - 1) {
+        // log.info("{}",i);
         pool.execute(new WorkloadThread(command, web3jCurrent, batchRequest, signedBatchRequest));
         log.info(String.valueOf(threadPoolExecutor.getActiveCount()));
-        //        command
-        //            .transferBatchAsync(batchRequest, signedBatchRequest, web3jCurrent)
-        //            .whenComplete((response, throwable) -> semaphore.release());
         web3jCurrent = web3jIterator.next();
         batchRequest = web3jCurrent.newBatch();
         signedBatchRequest = new ArrayList<>();
       }
-      //      else {
-      ////        semaphore.release();
-      //      }
       credentialsCurrent = credentialsIterator.next();
     }
     log.info("Transactions submitted");
