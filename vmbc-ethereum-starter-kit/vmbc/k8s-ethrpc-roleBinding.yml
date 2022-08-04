@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: ethrpc1
+subjects:
+- kind: ServiceAccount
+  name: ethrpc1
+  apiGroup: ""
+roleRef:
+  kind: ClusterRole
+  name: ethrpc1
+  apiGroup: ""

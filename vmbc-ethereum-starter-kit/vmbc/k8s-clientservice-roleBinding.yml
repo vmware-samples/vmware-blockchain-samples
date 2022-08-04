@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: clientservice1
+subjects:
+- kind: ServiceAccount
+  name: clientservice1
+  apiGroup: ""
+roleRef:
+  kind: ClusterRole
+  name: clientservice1
+  apiGroup: ""

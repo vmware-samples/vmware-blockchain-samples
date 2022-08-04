@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: ethrpc1
+  name: ethrpc1
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: "preserve_client_ip.enabled=false" 
+spec:
+  type: LoadBalancer
+  ports:
+    - name: "8545"
+      port: 8545
+      targetPort: 8545
+      nodePort: 30545
+  selector:
+    service: ethrpc1
+status:
+  loadBalancer: {}

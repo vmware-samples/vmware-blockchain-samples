@@ -16,6 +16,9 @@ chainid = 5000
 ethrpcApiUrl =  'http://ethrpc1.vmbc-client1.svc.cluster.local:8545'
 w3 = Web3(Web3.HTTPProvider(ethrpcApiUrl, request_kwargs={"verify": False}))
 
+#ethrpcApiUrl =  'https://ethrpc1.vmbc-client1.svc.cluster.local:8545'
+#w3 = Web3(Web3.HTTPProvider(ethrpcApiUrl, request_kwargs={"verify": "ethrpc.cert"}))
+
 # Test isConnected ?
 def test_isConnected():
     conn = w3.isConnected()

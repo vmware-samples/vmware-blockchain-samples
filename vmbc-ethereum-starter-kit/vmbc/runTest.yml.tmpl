@@ -1,34 +1,10 @@
 apiVersion: v1
 items:
-  - apiVersion: v1
-    kind: Service
+  - apiVersion: batch/v1
+    kind: Job
     metadata:
-      labels:
-        service: erc20test
       name: erc20test
     spec:
-      type: ClusterIP
-      ports:
-        - name: "6545"
-          port: 6545
-          targetPort: 6545
-      selector:
-        service: erc20test
-    status:
-      loadBalancer: {}
-  - apiVersion: apps/v1
-    kind: Deployment
-    metadata:
-      labels:
-        service: erc20test
-      name: erc20test
-    spec:
-      replicas: 1
-      selector:
-        matchLabels:
-          service: erc20test
-      strategy:
-        type: Recreate
       template:
         metadata:
           labels:
@@ -37,7 +13,7 @@ items:
           containers:
             - name: erc20test
               image: python:3
-              command: [ "/bin/sh", "-c", "while true; do bash ; pip3 install urllib3 web3 pytest ; cd /tests ; python3 -m pytest --log-cli-level=DEBUG eth_erc20.py ; sleep 1 ; done " ]
+              command: [ "/bin/sh", "-c", "bash ; pip3 install urllib3 web3 pytest ; cd /tests ; python3 -m pytest --log-cli-level=DEBUG eth_erc20.py ; " ]
               volumeMounts:
               - name: test-cm
                 mountPath: /tests
@@ -54,6 +30,8 @@ items:
                     path: SecurityToken.bin
                   - key: testerc20.sh
                     path: testerc20.sh
-          restartPolicy: Always
+                  - key: ethrpc.cert
+                    path: ethrpc.cert
+          restartPolicy: OnFailure
 kind: List
 metadata: {}

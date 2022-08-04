@@ -38,7 +38,7 @@ items:
                       name: explorer-configmap
                       key: VMBC_URL
               image: explorer_repo:explorer_tag
-              imagePullPolicy: Always
+              imagePullPolicy: IfNotPresent
               ports:
                 - containerPort: 80
           restartPolicy: Always
