@@ -10,7 +10,6 @@
 |  Disk Space       | 50 GB of free disk space or more |
 
 # Pre-requisites - System Software for Linux
-Software	Software Version	Comments
 | Software | Versions |
 |-----------|-------------|
 | minikube	|1.25.1 or more	https://minikube.sigs.k8s.io/docs/start/|
@@ -19,7 +18,6 @@ Software	Software Version	Comments
 | docker	  | 18.06.1-ce, build e68fc7a or above	https://docs.docker.com/engine/install/ubuntu/ |
 
 # Pre-requisites - System Software for macOS
-Software	Software Version	Comments
 | Software | Versions |
 |-----------|-------------|
 | minikube	| 1.25.1 or more	https://minikube.sigs.k8s.io/docs/start/|
