@@ -1,4 +1,4 @@
-VMBC Ethereum Customer Starter Kit V1
+# VMBC Ethereum Customer Starter Kit V1
 
 # System Requirements 
 Operating System	Apple® macOS® 12.x
@@ -16,7 +16,6 @@ Server Version: v1.23.1 or more	https://kubernetes.io/docs/tasks/tools/
 
 docker	18.06.1-ce, build e68fc7a or above	https://docs.docker.com/engine/install/ubuntu/ 
 
-
 # System Software Pre-requisites for macOS
 Software	Software Version	Comments
 minikube	1.25.1 or more	https://minikube.sigs.k8s.io/docs/start/
@@ -25,8 +24,6 @@ Kubectl	Client Version: v1.23.4 or more
 Server Version: v1.23.1 or more	https://kubernetes.io/docs/tasks/tools/ 
 
 VirutalBox	6.x	https://www.virtualbox.org/wiki/Downloads 
-
-
 
 # Install Python modules
 ```
@@ -53,14 +50,15 @@ apiserver: Running
 kubeconfig: Configured
 ```
 
-# Change directory
+# Change directory to VMBC
 ```
 cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/vmbc/script
 ```
 
-# Set the username and password
+# VMBC set the username and password
 ```
-./vmbc-cli --set-username-password --username 'username' --password 'password'
+./vmbc-cli --set-username-password --username username --password password
+```
 
 # VMBC Deployment
 ```
@@ -86,13 +84,13 @@ cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/explorer
 # Deploy ELK stack (Optional)
 ```
 cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/elk
+
 ./elk-elastic-launch.sh ; ( make sure that elasticsearch is working before moving further )
 
 ./elk-kibana-launch.sh ; ( make sure that kibana is working before moving further )
 
 ./elk-fluentd-lanch.sh
 ```
-
 
 # VMBC Deployment Cleanup
 ```
@@ -105,7 +103,6 @@ cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/vmbc/script
 cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/minikube 
 ./minikube-delete.sh
 ```
-
 
 # Issues
 1.	Invalid Credentials. If you get the following issue it means your credentials are wrong. Use ./vmbc-cli --set-username-password --username 'username' --password 'password'
