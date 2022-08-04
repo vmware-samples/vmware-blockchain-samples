@@ -20,12 +20,12 @@ Software	Software Version	Comments
 
 # Pre-requisites - System Software for macOS
 Software	Software Version	Comments
-minikube	1.25.1 or more	https://minikube.sigs.k8s.io/docs/start/
-
-Kubectl	Client Version: v1.23.4 or more
-Server Version: v1.23.1 or more	https://kubernetes.io/docs/tasks/tools/ 
-
-VirutalBox	6.x	https://www.virtualbox.org/wiki/Downloads 
+| Software | Versions |
+|-----------|-------------|
+| minikube	| 1.25.1 or more	https://minikube.sigs.k8s.io/docs/start/|
+| Kubectl	  | Client Version: v1.23.4 or more |
+|           | Server Version: v1.23.1 or more	https://kubernetes.io/docs/tasks/tools/ |
+| VirutalBox |	6.x	https://www.virtualbox.org/wiki/Downloads |
 
 # Pre-requisites - Install Python modules
 ```
