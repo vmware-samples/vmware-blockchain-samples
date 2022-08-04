@@ -11,9 +11,7 @@ RAM	12 GB of RAM or more
 
 Disk Space	50 GB of free disk space or more
 
-
-
-# System Software Pre-requisites for Linux
+# Pre-requisites - System Software for Linux
 Software	Software Version	Comments
 minikube	1.25.1 or more	https://minikube.sigs.k8s.io/docs/start/
 
@@ -22,7 +20,7 @@ Server Version: v1.23.1 or more	https://kubernetes.io/docs/tasks/tools/
 
 docker	18.06.1-ce, build e68fc7a or above	https://docs.docker.com/engine/install/ubuntu/ 
 
-# System Software Pre-requisites for macOS
+# Pre-requisites - System Software for macOS
 Software	Software Version	Comments
 minikube	1.25.1 or more	https://minikube.sigs.k8s.io/docs/start/
 
@@ -31,20 +29,20 @@ Server Version: v1.23.1 or more	https://kubernetes.io/docs/tasks/tools/
 
 VirutalBox	6.x	https://www.virtualbox.org/wiki/Downloads 
 
-# Install Python modules
+# Pre-requisites - Install Python modules
 ```
 cd vmware-blockchain-samples/vmbc-ethereum-starter-kit
 pip3 install -r vmbc/config/requirements.txt
 ```
 
-# Starting Minikube
+# Pre-requisites - Starting Minikube
 See scripts under`minikube` folder that provides convenience scripts to start and delete minikube. 
 ```
 cd minikube 
 ./minikube-start.sh
 ```
 
-# Make sure 'minikube status' has the expected output described below before proceeding further.
+## Make sure 'minikube status' has the expected output described below before proceeding further.
 ```
 minikube status 
  
