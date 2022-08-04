@@ -38,11 +38,11 @@ pip3 install -r vmbc/config/requirements.txt
 # Pre-requisites - Starting Minikube
 See scripts under`minikube` folder that provides convenience scripts to start and delete minikube. 
 ```
-cd minikube 
+cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/minikube 
 ./minikube-start.sh
 ```
 
-## Make sure 'minikube status' has the expected output described below before proceeding further.
+## Make sure 'minikube status' has the expected output described below.
 ```
 minikube status 
  
@@ -54,12 +54,12 @@ apiserver: Running
 kubeconfig: Configured
 ```
 
-# Change directory to VMBC
+# VMBC Change directory
 ```
 cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/vmbc/script
 ```
 
-# VMBC set the username and password
+# VMBC Set the username and password
 ```
 ./vmbc-cli --set-username-password --username username --password password
 ```
@@ -68,7 +68,7 @@ cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/vmbc/script
 ```
 ./vmbc-cli --deployment-type PROVISION 
 ```
-# Healthcheck
+# VMBC Healthcheck
 ``` 
 ./vmbc-cli --healthcheck 
 ```
@@ -108,14 +108,3 @@ cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/minikube
 ./minikube-delete.sh
 ```
 
-# Issues
-1.	Invalid Credentials. If you get the following issue it means your credentials are wrong. Use ./vmbc-cli --set-username-password --username 'username' --password 'password'
-
-./vmbc-cli --deployment-type PROVISION
-
----------------- Registry Login ----------------
-WARNING! Using --password via the CLI is insecure. Use --password-stdin.
-Error response from daemon: Get "https://vmwaresaas.jfrog.io/v2/": unknown: Bad credentials
-ssh: Process exited with status 1
-Invalid Credentials. Exiting..
-2.	
