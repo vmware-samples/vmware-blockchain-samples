@@ -27,21 +27,22 @@ Server Version: v1.23.1 or more	https://kubernetes.io/docs/tasks/tools/
 VirutalBox	6.x	https://www.virtualbox.org/wiki/Downloads 
 
 
-# Clone the repo
-git clone git@github.com:vmware-samples/vmware-blockchain-samples.git
-# Set the username and password (use single quote)
-cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/vmbc/script
-
-./vmbc-cli --set-username-password --username 'username' --password 'password'
 
 # Install Python modules
+```
 cd vmware-blockchain-samples/vmbc-ethereum-starter-kit
 pip3 install -r vmbc/config/requirements.txt
+```
+
 # Starting Minikube
 See scripts under`minikube` folder that provides convenience scripts to start and delete minikube. 
+```
 cd minikube 
 ./minikube-start.sh
+```
+
 # Make sure 'minikube status' has the expected output described below before proceeding further.
+```
 minikube status 
  
 minikube
@@ -50,45 +51,60 @@ host: Running
 kubelet: Running
 apiserver: Running
 kubeconfig: Configured
+```
+
+# Change directory
+```
+cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/vmbc/script
+```
+
+# Set the username and password
+```
+./vmbc-cli --set-username-password --username 'username' --password 'password'
 
 # VMBC Deployment
-cd vmbc/script 
+```
 ./vmbc-cli --deployment-type PROVISION 
-
+```
 # Healthcheck
-cd vmbc/script 
+``` 
 ./vmbc-cli --healthcheck 
+```
+
 # Deploy sample dapp (Optional)
-cd dapp 
+```
+cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/dapp 
 ./k8s-dapp-launch.sh
+```
 
 # Deploy Explorer (Optional)
-cd explorer 
+```
+cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/explorer 
 ./k8s-explorer-launch.sh
+```
 
 # Deploy ELK stack (Optional)
-cd elk
+```
+cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/elk
 ./elk-elastic-launch.sh ; ( make sure that elasticsearch is working before moving further )
 
-cd elk
 ./elk-kibana-launch.sh ; ( make sure that kibana is working before moving further )
 
-cd elk
 ./elk-fluentd-lanch.sh
-Once all 3 PoDs are up and if you can launch Kibana successfully then you can add 'index' so that you can view all the logs which are matching with your 'index' pattern.
+```
 
 
 # VMBC Deployment Cleanup
-cd vmbc/script 
-./vmbc-cli --deployment-type DEPROVISION 
+```
+cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/vmbc/script
+./vmbc-cli --deployment-type DEPROVISION
+```
 
 # Minikube Cleanup
-cd minikube 
+```
+cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/minikube 
 ./minikube-delete.sh
-
-
-
-
+```
 
 
 # Issues
