@@ -2,10 +2,16 @@
 
 # System Requirements 
 Operating System	Apple® macOS® 12.x
+
 Linux Ubuntu® 16.x, 20.x
+
 vCPU	4 vCPU or more
+
 RAM	12 GB of RAM or more
+
 Disk Space	50 GB of free disk space or more
+
+
 
 # System Software Pre-requisites for Linux
 Software	Software Version	Comments
