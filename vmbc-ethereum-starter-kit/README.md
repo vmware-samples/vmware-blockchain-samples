@@ -1,6 +1,6 @@
-# VMBC Ethereum Starter Kit V1
+# VMBC Ethereum Starter Kit
 
-*** Please note that the starter kit is under tech preview and functionality is subject to change ***
+**Please note that the starter kit is under tech preview and functionality is subject to change**
 
 # System Requirements 
 | Components | Description |
