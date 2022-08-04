@@ -1,7 +1,7 @@
 # VMBC Ethereum Customer Starter Kit V1
 
 # System Requirements 
-
+| Components | Description |
 |-----------|-------------|
 |  Operating System | Apple® macOS® 12.x|
 |                   | Linux Ubuntu® 16.x, 20.x|
