@@ -2,6 +2,9 @@
 
 *** **Please note that the developer kit is under tech preview and functionality is subject to change** ***
 
+# Target Persona and Deployment Model
+Using the developer kit, Ethereum developer(s) can start developing or porting their existing decentralized applications (dApps) to a single host VMware Blockchain deployment on their local desktop/laptop or Cloud VM. 
+
 # System Requirements 
 | Components | Description |
 |-----------|-------------|
@@ -52,21 +55,21 @@ apiserver: Running
 kubeconfig: Configured
 ```
 
-# VMBC Change directory
+# VMware Blockchain Change directory
 ```
 cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/vmbc/script
 ```
 
-# VMBC Set the username and password
+# VMware Blockchain Set the username and password
 ```
 ./vmbc-cli --set-username-password --username username --password password
 ```
 
-# VMBC Deployment
+# VMware Blockchain Deployment
 ```
 ./vmbc-cli --deployment-type PROVISION 
 ```
-# VMBC Healthcheck
+# VMware Blockchain Healthcheck
 ``` 
 ./vmbc-cli --healthcheck 
 ```
@@ -94,7 +97,7 @@ cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/elk
 ./elk-fluentd-lanch.sh
 ```
 
-# VMBC Deployment Cleanup
+# VMware Blockchain Deployment Cleanup
 ```
 cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/vmbc/script
 ./vmbc-cli --deployment-type DEPROVISION
