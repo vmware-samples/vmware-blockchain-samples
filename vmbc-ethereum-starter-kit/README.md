@@ -4,7 +4,7 @@
 | Components | Description |
 |-----------|-------------|
 |  Operating System | Apple® macOS® 12.x|
-|                   | Linux Ubuntu® 16.x, 20.x|
+|                     Linux Ubuntu® 16.x, 20.x|
 |  vCPU             | 4 vCPU or more |
 |  RAM              | 12 GB of RAM or more |
 |  Disk Space       | 50 GB of free disk space or more |
@@ -14,7 +14,7 @@
 |-----------|-------------|
 | minikube	|1.25.1 or more	https://minikube.sigs.k8s.io/docs/start/|
 | Kubectl	  |Client Version: v1.23.4 or more
-|           |Server Version: v1.23.1 or more	https://kubernetes.io/docs/tasks/tools/ |
+|            Server Version: v1.23.1 or more	https://kubernetes.io/docs/tasks/tools/ |
 | docker	  | 18.06.1-ce, build e68fc7a or above	https://docs.docker.com/engine/install/ubuntu/ |
 
 # Pre-requisites - System Software for macOS
@@ -22,7 +22,7 @@
 |-----------|-------------|
 | minikube	| 1.25.1 or more	https://minikube.sigs.k8s.io/docs/start/|
 | Kubectl	  | Client Version: v1.23.4 or more |
-|           | Server Version: v1.23.1 or more	https://kubernetes.io/docs/tasks/tools/ |
+|             Server Version: v1.23.1 or more	https://kubernetes.io/docs/tasks/tools/ |
 | VirutalBox |	6.x	https://www.virtualbox.org/wiki/Downloads |
 
 # Pre-requisites - Install Python modules
