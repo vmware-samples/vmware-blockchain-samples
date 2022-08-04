@@ -1,5 +1,7 @@
 # VMBC Ethereum Customer Starter Kit V1
 
+*** Please note that is tech preview and functionality is subject to change ***
+
 # System Requirements 
 | Components | Description |
 |-----------|-------------|
