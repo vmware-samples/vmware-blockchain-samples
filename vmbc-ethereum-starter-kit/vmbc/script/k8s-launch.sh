@@ -1,11 +1,10 @@
 #!/bin/bash
 set -e
+. ./utils.sh
 
 REPLICA_COUNT=4
 CLIENT_NODE_COUNT=1
 BFT_CLIENT_COUNT=50
-
-#Make sure you have set your env variable JFROG_PASSWORD
 
 ARCH=$(uname -s)
 if [ "$ARCH" == "Darwin" ]; then
@@ -21,159 +20,183 @@ if [[ $# -lt 1 ]] ; then
 else
   MODE=$1
 fi
-
+if [ "$MODE" == "internal" ]; then
+  . ../config/.env
+else
+  . ../.env.release
+fi
 #
-# Pull all VMBC docker images ethrpc, clientservice and concord
+# Create TLS certs
+#
+createTLScerts() {
+  rep_count="$1"
+  cli_count="$2"
+  location="$3"
+  infoln ''
+  infoln '---------------- Creating new tls_certs ----------------'
+  for ((r = 1 ; r <= ${rep_count} ; r++)); do
+    ../config/create_tls_certs.sh ${cli_count} ../config/${location}${r}/tls_certs
+  done
+}
+
 # 
-pullVmbcImages() {
-  echo ''
-  echo "---------------- Pulling image ${concord_repo}:${concord_tag} ----------------"
-  docker pull ${concord_repo}:${concord_tag}
-  echo ''
-  echo "---------------- Pulling image ${ethrpc_repo}:${ethrpc_tag} ----------------"
-  docker pull ${ethrpc_repo}:${ethrpc_tag}
-  echo ''
-  echo "---------------- Pulling image ${clientservice_repo}:${clientservice_tag} ----------------"
-  docker pull ${clientservice_repo}:${clientservice_tag}
+# Wait for the PoD to be in the 'Running' state ( timeout after 30 mins )
+#
+waitForPoD() {
+  pod="configgen"
+  namespace="$1"
+  count=0
+  while [[ $(kubectl get pods ${pod} -n ${namespace} -o 'jsonpath={..status.conditions[?(@.type=="Ready")].status}') != "True" ]]; do 
+    warnln "PoD ${pod} is not in Running state, retrying in 10 secs......"
+    sleep 10
+    let "count=count+1"
+    # Wait for max 30 mins
+    if [ $count -ge 180 ]; then
+      echo "Unable pull the image for PoD ${pod} for namespace ${namespace}..." >/dev/stderr
+      reason=`kubectl describe pod ${pod} -n ${namespace} | tail -4`
+      echo $reason >/dev/stderr
+      exit 1
+    fi
+  done
+  
 }
 
 #
-# Perhaps there could be a new VMBC images, so we have to generate new .env 
-# and pull new version of docker iamges from vmwathena and generate TLS certs.
-# At last, copy all generated config files to vmbc/config dir
+# Generate new config files from conc_genconfig tool
+# distribute all generated config files to vmbc/config dir
 #
 generateConfigFiles() {
   if [ "$MODE" == "internal" ]; then
-    echo ''
-    echo '---------------- Generate new config files ----------------'
-    cd ../../../../../docker
-    ./make-prebuilt-env.sh > new.env && mv new.env .env; 
-
-    . .env
-    
-    export DOCKER_RUN_NOTTY=true
-    pullVmbcImages
-    
-    rm -rf devdata; 
-    ./gen-docker-concord-config.sh config-public/dockerConfigurationInput-eth.yaml
-    ./gen-docker-client-config.sh config-public/dockerClientConfigInput-eth.yaml
-
-    cd -
-
-    echo ''
-    echo '---------------- Creating new tls_certs ----------------'
-    ../../../../../concord/submodules/concord-bft/scripts/linux/create_tls_certs.sh ${BFT_CLIENT_COUNT} ../config/tls_certs
-
-    echo ''
-    echo '---------------- Copying config files ----------------'
+    infoln ''
+    infoln '---------------- Generate new config files ----------------'
     cd ../config
-    ./copyFiles.sh
+
+    namespace=vmbc-configgen
+    kubectl create namespace ${namespace}
+    
+    kubectl create cm configgen-deployment-config --from-file=../config/configgen/deployment.config --namespace=${namespace}
+    kubectl create cm configgen-application-config --from-file=../config/configgen/application.config --namespace=${namespace}
+    kubectl create secret generic configgen-secrets-config --from-file=../config/configgen/secrets.config --namespace=${namespace}
+
+    kubectl create cm configgen-concord-configuration --from-file=../config/configgen/dockerConfigurationInput-eth.yaml --namespace=${namespace}
+    kubectl create cm configgen-concord-client-configuration --from-file=../config/configgen/dockerClientConfigInput-eth.yaml --namespace=${namespace}
+
+    infoln ''
+    infoln '---------------- Generating concord config files ----------------'
+    kubectl apply -f ../config/concord-config-gen.yml --namespace=${namespace}
+    waitForPoD ${namespace}
+
+    kubectl exec -it configgen --namespace=${namespace} -- /concord/conc_genconfig --configuration-input /tmp/dockerConfigurationInput-eth.yaml \
+                          --configuration-type application \
+                          --output-name /tmp/application &>/dev/null
+
+    kubectl exec -it configgen --namespace=${namespace} -- /concord/conc_genconfig --configuration-input /tmp/dockerConfigurationInput-eth.yaml \
+                          --configuration-type deployment \
+                          --output-name /tmp/deployment &>/dev/null
+
+    kubectl exec -it configgen --namespace=${namespace} -- /concord/conc_genconfig --configuration-input /tmp/dockerConfigurationInput-eth.yaml \
+                          --configuration-type secrets \
+                          --output-name /tmp/secrets &>/dev/null
+
+    kubectl exec -it configgen --namespace=${namespace} -- /concord/conc_genconfig --configuration-input /tmp/dockerClientConfigInput-eth.yaml \
+                          --output-name /tmp/participant --client-conf true &>/dev/null
+    
+    infoln ''
+    infoln '---------------- Copy all the config files to config-public dir ----------------'
+    for ((i = 1 ; i <= ((REPLICA_COUNT)) ; i++)); do
+      kubectl cp configgen:/tmp/application${i}.config -n ${namespace} ../config/config-public/application${i}.config
+      kubectl cp configgen:/tmp/deployment${i}.config -n ${namespace} ../config/config-public/deployment${i}.config
+      kubectl cp configgen:/tmp/secrets${i}.config -n ${namespace} ../config/config-public/secrets${i}.config
+    done
+    
+    for ((i = 0 ; i <= 1 ; i++)); do
+      kubectl cp configgen:/tmp/participant${i}.config -n ${namespace} ../config/config-public/participant${i}.config
+    done
+
+    infoln ''
+    infoln '---------------- Distribute client config files ----------------'
+    ./distribute-client-configuration-files.sh
+
+    infoln ''
+    infoln '---------------- Generating operator config files ----------------'
+    #./gen-docker-operator-config.sh config-public/dockerClientConfigInput-eth.yaml 
+    # TODO: This should be generated by gen-docker-operator-config.sh
+    cp ../config/config-operator/operator.config.tmpl ../config/config-operator/operator.config
+
+    infoln ''
+    infoln '---------------- Distribute concord config files ----------------'
+    ./distribute-configuration-files.sh
+
+    # if all config files are generated and distributed then delete the PoD and tmp yml file   
+    kubectl delete ns ${namespace}
+    rm ../config/concord-config-gen.yml
+
     cd -
+
+    createTLScerts ${REPLICA_COUNT} ${BFT_CLIENT_COUNT} "replica"
+    createTLScerts ${CLIENT_NODE_COUNT} ${CLIENT_NODE_COUNT} "client"
+
+    infoln ''  
   fi
 }
-
-#
-# Copy yml from template files so that we will not loose the template for next version of docker images
-#
-copyYmlFromTmplate() 
-{
-  echo ''
-  echo '---------------- Replace new image and tag ----------------'
-  cp ../k8s-clientservice.yml.tmpl ../k8s-clientservice.yml
-  cp ../k8s-ethrpc.yml.tmpl ../k8s-ethrpc.yml
-  cp ../k8s-replica-node1.yml.tmpl ../k8s-replica-node1.yml
-  cp ../k8s-replica-node2.yml.tmpl ../k8s-replica-node2.yml
-  cp ../k8s-replica-node3.yml.tmpl ../k8s-replica-node3.yml
-  cp ../k8s-replica-node4.yml.tmpl ../k8s-replica-node4.yml
-}
-
-#
-# The env file path is different for internal and release mode
-# 
-sourceEnvFile() 
-{
-  if [ "$MODE" == "internal" ]; then
-    echo ''
-    echo "---------------- Internal MODE... ----------------"
-    envFile=../../../../../docker/.env
-    . ${envFile}
-  elif [ "$MODE" == "release" ]; then
-    echo ''
-    echo "---------------- Release MODE... ----------------"
-    envFile=../.env.release
-    . ${envFile}
-  else 
-    echo ''
-    echo "---------------- Invalid MODE, MODE should be \'internal/release\' ----------------"
-    exit 0
-  fi
-}
-
-#
-# Replace template docker image text with actual docker image path
-#
-replaceTemplWithImage()
-{
-  sed $OPTS "s!concord_repo!${concord_repo}!ig
-                s!concord_tag!${concord_tag}!ig"  ../k8s-replica-node1.yml;
-  sed $OPTS "s!concord_repo!${concord_repo}!ig
-            s!concord_tag!${concord_tag}!ig"  ../k8s-replica-node2.yml;
-  sed $OPTS "s!concord_repo!${concord_repo}!ig
-            s!concord_tag!${concord_tag}!ig"  ../k8s-replica-node3.yml;
-  sed $OPTS "s!concord_repo!${concord_repo}!ig
-            s!concord_tag!${concord_tag}!ig"  ../k8s-replica-node4.yml;
-
-  sed $OPTS "s!ethrpc_repo!${ethrpc_repo}!ig
-            s!ethrpc_tag!${ethrpc_tag}!ig"  ../k8s-ethrpc.yml;
-  sed $OPTS "s!clientservice_repo!${clientservice_repo}!ig
-            s!clientservice_tag!${clientservice_tag}!ig"  ../k8s-clientservice.yml;
-}
-
 
 #
 # Create configmaps, create Persistent Volume Claims and create PoD for concord
 #
-createConcordConfigmaps()
+createConcordConfigmap()
 {
   concord="$1"
   namespace=vmbc-"$2"
-  echo ''
-  echo "---------------- Creating concord${concord} Configmaps ----------------"
+  
+  cp ../config/config-participant0/participant.config ../config/config-public
+  
+  infoln ''
+  infoln "---------------- Creating concord${concord} Configmaps ----------------"
   kubectl create cm concord${concord}-deployment-config --from-file=../config/config-concord${concord}/deployment.config --namespace=${namespace}
   kubectl create cm concord${concord}-application-config --from-file=../config/config-concord${concord}/application.config --namespace=${namespace}
-  kubectl create cm concord${concord}-secrets-config --from-file=../config/config-concord${concord}/secrets.config --namespace=${namespace}
+  kubectl create secret generic concord${concord}-secrets-config --from-file=../config/config-concord${concord}/secrets.config --namespace=${namespace}
   kubectl create cm concord${concord}-configmap --from-file=../config/clientservice/tr_certs/concord${concord} --namespace=${namespace}
-  kubectl create cm ethrpc-configmap --from-file=../config/config-public --namespace=${namespace}
-  kubectl create cm concord-signing-configmap --from-file=../config/transaction_signing_keys --namespace=${namespace}
-  kubectl create cm concord-signing-configmap-1 --from-file=../config/transaction_signing_keys/1 --namespace=${namespace}
-  kubectl create cm concord-signing-configmap-2 --from-file=../config/transaction_signing_keys/2 --namespace=${namespace}
+  kubectl create cm concord${concord}-public-configmap --from-file=../config/config-public --namespace=${namespace}
+  
   kubectl create cm concord-signing-operator --from-file=../config/operator_signing_keys --namespace=${namespace}
-  kubectl create secret docker-registry regcred-concord${concord} --docker-server=vmwaresaas.jfrog.io --docker-username=vmbc-ro-token --docker-password=${JFROG_PASSWORD} --docker-email=ask_VMware_blockchain@VMware.com --namespace=${namespace}
-  createTLSConfigmaps $2
-  echo ''
-  echo '---------------- Creating Persistent Volume Claims ----------------'
+  if [ "$MODE" == "release" ]; then
+    kubectl create secret docker-registry regcred-concord${concord} --docker-server=vmwaresaas.jfrog.io --docker-username='${benzeneu}' --docker-password='${benzene}' --docker-email=ask_VMware_blockchain@VMware.com --namespace=${namespace}
+  fi
+  createTLSConfigmaps $2 $1
+
+  infoln ''
+  infoln '---------------- Creating Persistent Volume and Persistent Volume Claims ----------------'
+  minikube ssh "sudo mkdir -p /mnt/vmware-blockchain-concord${concord}"
+  minikube ssh "sudo chmod 777 /mnt/vmware-blockchain-concord${concord}"
   kubectl apply -f ../config/k8s-replica-node${concord}-pvc.yml --namespace=${namespace}
-  echo ''
-  echo '---------------- Creating Replica Node PoDs ----------------'
-  kubectl apply -f ../k8s-replica-node${concord}.yml --namespace=${namespace}
+  infoln ''
+  infoln '---------------- Creating Replica Node PoDs ----------------'
+  kubectl apply -f ./k8s-replica-node${concord}-serviceAccount.yml --namespace=${namespace}
+  kubectl apply -f ./k8s-replica-node${concord}-clusterRole.yml --namespace=${namespace}
+  kubectl apply -f ./k8s-replica-node${concord}-roleBinding.yml --namespace=${namespace}
+  kubectl apply -f ./k8s-replica-node${concord}-service.yml --namespace=${namespace}
+  
 }
 
 #
 # Create TLS configmaps ( make sure TLS certs already generated )
-#
+# TODO: Distribute public_key to other replicas
 createTLSConfigmaps()
 {
   namespace=vmbc-"$1"
+  r="$2"
+ 
 
-  echo ''
-  echo "---------------- Creating ${namespace} TLS certs Configmaps ----------------"
-
-  for ((i = 0 ; i <= ((BFT_CLIENT_COUNT-1)) ; i++)); do
-    kubectl create secret generic concord-tls-${i}-client-pk --from-file=../config/tls_certs/${i}/client/pk.pem --namespace=${namespace}
-    kubectl create cm concord-tls-${i}-client-cert --from-file=../config/tls_certs/${i}/client/client.cert --namespace=${namespace}
-    kubectl create secret generic concord-tls-${i}-server-pk --from-file=../config/tls_certs/${i}/server/pk.pem --namespace=${namespace}
-    kubectl create cm concord-tls-${i}-server-cert --from-file=../config/tls_certs/${i}/server/server.cert --namespace=${namespace}
-  done
+  infoln ''
+  infoln "---------------- Creating ${namespace} TLS certs Configmaps ----------------"
+  #for ((r = 1 ; r <= ((REPLICA_COUNT)) ; r++)); do
+    for ((i = 0 ; i <= ((BFT_CLIENT_COUNT-1)) ; i++)); do
+      kubectl create secret generic concord${r}-tls-${i}-client-pk --from-file=../config/replica1/tls_certs/${i}/client/pk.pem --namespace=${namespace}
+      kubectl create cm concord${r}-tls-${i}-client-cert --from-file=../config/replica1/tls_certs/${i}/client/client.cert --namespace=${namespace}
+      kubectl create secret generic concord${r}-tls-${i}-server-pk --from-file=../config/replica1/tls_certs/${i}/server/pk.pem --namespace=${namespace}
+      kubectl create cm concord${r}-tls-${i}-server-cert --from-file=../config/replica1/tls_certs/${i}/server/server.cert --namespace=${namespace}
+    done
+  #done 
 }
 
 #
@@ -181,45 +204,63 @@ createTLSConfigmaps()
 # 
 createNamespaces() 
 {
-  echo ''
-  echo '---------------- Creating Namespaces ----------------'
-  kubectl create namespace vmbc-client1
-  for ((i = 1 ; i <= ${REPLICA_COUNT} ; i++)); do
-    kubectl create namespace vmbc-replica${i}
+  infoln ''
+  infoln '---------------- Creating Namespaces ----------------'
+  for ((i = 1 ; i <= ${CLIENT_NODE_COUNT} ; i++)); do
+    kubectl create namespace vmbc-client${i}
+  done
+  
+  for ((j = 1 ; j <= ${REPLICA_COUNT} ; j++)); do
+    kubectl create namespace vmbc-replica${j}
   done
 }
 
 #
 # Create secret for ethrpc
 # 
-createEthrpcSecret() {
-  echo ''
-  echo ''
-  echo '---------------- Creating ethrpc Secret ----------------'
-  kubectl create secret generic ethrpc-secret --from-file=../config/config-ethrpc1/keystore.p12 --namespace=vmbc-client1
-  kubectl create secret docker-registry regcred-ethrpc1 --docker-server=vmwaresaas.jfrog.io --docker-username=vmbc-ro-token --docker-password=${JFROG_PASSWORD} --docker-email=ask_VMware_blockchain@VMware.com --namespace=vmbc-client1 
+createEthrpcConfig() {
+  
+  for ((j = 1 ; j <= ${CLIENT_NODE_COUNT}; j++)); do
+    if [ "$MODE" == "release" ]; then
+      kubectl create secret docker-registry regcred-ethrpc${j} --docker-server=vmwaresaas.jfrog.io --docker-username='${benzeneu}' --docker-password='${benzene}' --docker-email=ask_VMware_blockchain@VMware.com --namespace=vmbc-client${j}
+      kubectl create secret docker-registry regcred-operator${j} --docker-server=vmwaresaas.jfrog.io --docker-username='${benzeneu}' --docker-password='${benzene}' --docker-email=ask_VMware_blockchain@VMware.com --namespace=vmbc-client${j}
+      kubectl create secret docker-registry regcred-cre${j} --docker-server=vmwaresaas.jfrog.io --docker-username='${benzeneu}' --docker-password='${benzene}' --docker-email=ask_VMware_blockchain@VMware.com --namespace=vmbc-client${j}
+    fi
+     
+    kubectl create secret generic ethrpc-secret --from-file=../ethrpc.p12 --namespace=vmbc-client${j}
+    kubectl create cm ethrpc-config-$((j-1))-cert --from-file=../config/client${j}/tls_certs/$((j-1))/client/client.cert --namespace=vmbc-client${j}
+    kubectl create secret generic ethrpc-config-$((j-1))-cert-pk --from-file=../config/client${j}/tls_certs/$((j-1))/client/pk.pem --namespace=vmbc-client${j}
+  done
 }
 
 #
 # Create clientservice configmaps
 #
-createClientServiceConfigMap() {
-  echo ''
-  echo '---------------- Creating clientservice Configmaps ----------------'
-  kubectl create cm ethrpc-configmap --from-file=../config/config-public --namespace=vmbc-client1
-  kubectl create cm ethrpc-participant --from-file=../config/config-participant0 --namespace=vmbc-client1
-  kubectl create cm ethrpc-configmap-trcerts --from-file=../config/clientservice/tr_certs/clientservice1 --namespace=vmbc-client1
-  kubectl create cm concord-signing-configmap-1 --from-file=../config/transaction_signing_keys/1 --namespace=vmbc-client1
-  kubectl create secret docker-registry regcred-clientservice1 --docker-server=vmwaresaas.jfrog.io --docker-username=vmbc-ro-token --docker-password=${JFROG_PASSWORD} --docker-email=ask_VMware_blockchain@VMware.com --namespace=vmbc-client1 
-  createTLSConfigmaps "client1"
+createClientServiceConfig() {
+  infoln ''
+  infoln '---------------- Creating clientservice Configmaps ----------------'
+  if [ "$MODE" == "internal" ]; then
+    mkdir -p ../config/clientservice/tr_certs
+    # To create 7 TRS and 4 TRC
+    ../config/create_tr_certs.sh 7 4 ../config/clientservice/tr_certs
+  fi
+  for ((j = 1 ; j <= ${CLIENT_NODE_COUNT}; j++)); do
+    kubectl create cm ethrpc-participant --from-file=../config/config-participant$((j-1)) --namespace=vmbc-client${j}
+    kubectl create cm ethrpc-configmap-trcerts --from-file=../config/clientservice/tr_certs/clientservice${j} --namespace=vmbc-client${j}
+    if [ "$MODE" == "release" ]; then
+      kubectl create secret docker-registry regcred-clientservice${j} --docker-server=vmwaresaas.jfrog.io --docker-username='${benzeneu}' --docker-password='${benzene}' --docker-email=ask_VMware_blockchain@VMware.com --namespace=vmbc-client${j}
+    fi
+  done  
+  
+  createTLSConfigmaps "client1" 1
 }
 
 #
 # Create concord configmaps
 #
-createConcordConfigMapsPoD() {
+createConcordConfigMaps() {
   for ((j = 1 ; j <= ${REPLICA_COUNT}; j++)); do
-    createConcordConfigmaps ${j} replica${j}
+    createConcordConfigmap ${j} replica${j}
   done
 }
 
@@ -227,31 +268,85 @@ createConcordConfigMapsPoD() {
 # Create clientservice PoD
 #
 createClientservicePod() {
-  echo ''
-  echo '---------------- Creating Clientservice PoD ----------------'
-  kubectl apply -f ../k8s-clientservice.yml --namespace=vmbc-client1
+  infoln ''
+  infoln '---------------- Creating Clientservice PoD ----------------'
+  kubectl apply -f ./k8s-clientservice-serviceAccount.yml --namespace=vmbc-client1
+  kubectl apply -f ./k8s-clientservice-clusterRole.yml --namespace=vmbc-client1
+  kubectl apply -f ./k8s-clientservice-roleBinding.yml --namespace=vmbc-client1
+  kubectl apply -f ./k8s-clientservice-service.yml --namespace=vmbc-client1
+  kubectl apply -f ./k8s-clientservice-deployment.yml --namespace=vmbc-client1
 }
 
 #
 # Create ethrpc PoD
 #
 createEthrpcPod() {
-  kubectl apply -f ../k8s-ethrpc.yml --namespace=vmbc-client1
+  infoln ''
+  infoln '---------------- Creating Ethrpc PoD ----------------'
+  kubectl apply -f ./k8s-ethrpc-serviceAccount.yml --namespace=vmbc-client1
+  kubectl apply -f ./k8s-ethrpc-clusterRole.yml --namespace=vmbc-client1
+  kubectl apply -f ./k8s-ethrpc-roleBinding.yml --namespace=vmbc-client1
+  kubectl apply -f ./k8s-ethrpc-service.yml --namespace=vmbc-client1
+  kubectl apply -f ./k8s-ethrpc-deployment.yml --namespace=vmbc-client1
 }
 
+#
+# Create Operator PoD
+#
+createOperatorPod() {
+  infoln ''
+  infoln '---------------- Creating Operator PoD ----------------'
+  cp ../config/operator_signing_keys/* ../config/config-operator
+  
+  kubectl create cm operator-signing-client --from-file=../config/config-operator --namespace=vmbc-client1
+  kubectl apply -f ./k8s-operator-serviceAccount.yml --namespace=vmbc-client1
+  kubectl apply -f ./k8s-operator-clusterRole.yml --namespace=vmbc-client1
+  kubectl apply -f ./k8s-operator-roleBinding.yml --namespace=vmbc-client1
+  kubectl apply -f ./k8s-operator-service.yml --namespace=vmbc-client1
+  kubectl apply -f ./k8s-operator-deployment.yml --namespace=vmbc-client1
+}
+
+#
+# Create ClientReconfigurationEngine PoD
+#
+createCrePod() {
+  infoln ''
+  infoln '---------------- Creating CRE PoD ----------------'
+  kubectl create cm cre-signing-client --from-file=../config/operator_signing_keys/transaction_signing_priv.pem --namespace=vmbc-client1
+  kubectl create cm bft-config-participant-config --from-file=../config/config-participant0/participant.config --namespace=vmbc-client1
+  kubectl apply -f ./k8s-cre-serviceAccount.yml --namespace=vmbc-client1
+  kubectl apply -f ./k8s-cre-clusterRole.yml --namespace=vmbc-client1
+  kubectl apply -f ./k8s-cre-roleBinding.yml --namespace=vmbc-client1
+  kubectl apply -f ./k8s-cre-service.yml --namespace=vmbc-client1
+  kubectl apply -f ./k8s-cre-deployment.yml --namespace=vmbc-client1
+}
+
+# 
+# Create Replica PoDs
+# 
+createReplicaPoDs() {
+  for ((j = 1 ; j <= ${REPLICA_COUNT}; j++)); do
+  infoln ''
+  infoln "---------------- Creating Replica${j} PoD ----------------"
+    kubectl apply -f ./k8s-replica-node${j}-deployment.yml --namespace=vmbc-replica${j}
+  done
+  
+}
 #
 # Display the env config file ( which can be used to interact with VMBC components)
 #
 displayConfigFile() {
-  echo ''
-  CONFIG_FILE=../.env.config
-  echo "---------------- Creating ${CONFIG_FILE} ----------------"
-  MINIP=`minikube ip`
-  MINPORT=30545
-  echo "MINIKUBE_IP=${MINIP}" > ${CONFIG_FILE}
-  echo "MINIKUBE_PORT=${MINPORT}" >> ${CONFIG_FILE}
-  echo "VMBC_URL=http://${MINIP}:${MINPORT}" >> ${CONFIG_FILE}
-  cat ${CONFIG_FILE}
+  if $ENABLE_MINIKUBE; then
+    infoln ''
+    CONFIG_FILE=../.env.config
+    infoln "---------------- Creating ${CONFIG_FILE} ----------------"
+    MINIP=`minikube ip`
+    MINPORT=30545
+    println "MINIKUBE_IP=${MINIP}" > ${CONFIG_FILE}
+    println "MINIKUBE_PORT=${MINPORT}" >> ${CONFIG_FILE}
+    println "VMBC_URL=http://${MINIP}:${MINPORT}" >> ${CONFIG_FILE}
+    cat ${CONFIG_FILE}
+  fi
 }
 
 #
@@ -260,19 +355,23 @@ displayConfigFile() {
 replaceConcordWithNamespace() 
 {
   ARCH=$(uname -s)
-  
+
   for ((i = 1 ; i <= ${REPLICA_COUNT} ; i++)); do
     orgString=concord${i}
     repString=concord${i}\\.vmbc-replica${i}\\.svc\\.cluster\\.local
     if [ "$ARCH" == "Darwin" ]; then
       sed -i ''  "s/${orgString}$/${repString}/g" ../config/config-participant0/participant.config
+      sed -i ''  "s/${orgString}$/${repString}/g" ../config/config-operator/operator.config
+      sed -i ''  "s/${orgString}$/${repString}/g" ../config/config-operator/mappings.json
       for ((j = 1 ; j <= ${REPLICA_COUNT} ; j++)); do
         orgString=concord${j}
         repString=concord${j}\\.vmbc-replica${j}\\.svc\\.cluster\\.local
         sed -i ''  "s/${orgString}$/${repString}/g" ../config/config-concord${i}/deployment.config
       done
     else
-      sed -i  "s/${orgString}$/${repString}/g" ../config/config-participant0/participant.config
+      sed -i "s/${orgString}$/${repString}/g" ../config/config-participant0/participant.config
+      sed -i "s/${orgString}$/${repString}/g" ../config/config-operator/operator.config
+      sed -i "s/${orgString}$/${repString}/g" ../config/config-operator/mappings.json
       for ((k = 1 ; k <= ${REPLICA_COUNT} ; k++)); do
         orgString=concord${k}
         repString=concord${k}\\.vmbc-replica${k}\\.svc\\.cluster\\.local
@@ -280,36 +379,39 @@ replaceConcordWithNamespace()
       done
     fi
   done
-  
+  # clientservice has to be replaced, so that It will be used by CRE
+  orgString1=clientservice2
+  repString1=clientservice1\\.vmbc-client1\\.svc\\.cluster\\.local
+  orgString2=resources\\/signing_keys
+  repString2=\\/cre\\/config-local
+  if [ "$ARCH" == "Darwin" ]; then
+    sed -i ''  "s/${orgString1}$/${repString1}/g" ../config/config-participant0/participant.config
+    sed -i ''  "s/${orgString2}$/${repString2}/g" ../config/config-participant0/participant.config
+  else
+    sed -i  "s/${orgString1}$/${repString1}/g" ../config/config-participant0/participant.config
+    sed -i  "s/${orgString2}$/${repString2}/g" ../config/config-participant0/participant.config
+  fi  
 }
 
 ########################### M A I N ############################
+
 # Generate config files if it is internal mode
 generateConfigFiles
 
 # deployment.config should have service.namespace for concord images
 replaceConcordWithNamespace
 
-# Source the env file internal/release mode
-sourceEnvFile
-
-# Copy yml files from template files
-copyYmlFromTmplate
-
-# Replace docker image template text with actual docker image
-replaceTemplWithImage
-
 # Create k8s namespaces
 createNamespaces
 
 # Create ethrpc secret
-createEthrpcSecret
+createEthrpcConfig
 
 # Create clientservice configmap
-createClientServiceConfigMap
+createClientServiceConfig
 
 # Create concord configmap, TLS certs and create PoD
-createConcordConfigMapsPoD
+createConcordConfigMaps
 
 # Create clientservice PoD
 createClientservicePod
@@ -317,8 +419,17 @@ createClientservicePod
 # Create ethrpc PoD
 createEthrpcPod
 
+# Create replicaPoDs
+createReplicaPoDs
+
+# Create operator PoD
+#createOperatorPod
+
+# Create ClientReconfigurationEngine(CRE) PoD
+#createCrePod
+
 # Display Config file for reference only for minikube
 displayConfigFile
 
-echo ''
-echo '========================== DONE ==========================='
+infoln ''
+successln '========================== DONE ==========================='

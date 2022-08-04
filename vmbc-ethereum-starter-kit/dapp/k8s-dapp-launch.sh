@@ -1,7 +1,20 @@
 #!/bin/bash
 set -e
+. ../vmbc/script/utils.sh
 
-#Make sure you have set your env variable JFROG_PASSWORD
+MODE='release'
+if [ "$MODE" == "release" ]; then
+  . ../vmbc/.env.release
+else
+  . ../vmbc/config/.env
+fi
+
+NAMESPACE="vmbc-dapp"
+
+if [ ! -f ../vmbc/.env.config ]; then
+   infoln ''
+   fatalln '---------------- file ../vmbc/.env.config does not exist. ----------------'
+fi
 
 ARCH=$(uname -s)
 if [ "$ARCH" == "Darwin" ]; then
@@ -12,25 +25,41 @@ fi
 
 cp erc20-swap-dapp.yml.tmpl erc20-swap-dapp.yml
 
-# For erc20-swap always pull images from JFrog
-. ../vmbc/.env.release
-
 sed $OPTS "s!erc20swap_repo!${erc20swap_repo}!ig
         s!erc20swap_tag!${erc20swap_tag}!ig"  erc20-swap-dapp.yml;
 
-echo ''
-echo '---------------- Creating DAPP Configmaps ----------------'
-kubectl create namespace vmbc-dapp
-kubectl create cm dapp-configmap --from-env-file=../vmbc/.env.config --namespace vmbc-dapp
-kubectl create secret docker-registry regcred-dapp --docker-server=vmwaresaas.jfrog.io --docker-username=vmbc-ro-token --docker-password=${JFROG_PASSWORD} --docker-email=ask_VMware_blockchain@VMware.com --namespace=vmbc-dapp
+if [ "$MODE" == "release" ]; then
+    infoln ''
+    infoln "---------------- Registry Login ----------------"
+    minikube ssh "docker login vmwaresaas.jfrog.io --username '${benzeneu}' --password '${benzene}'"
+    if [ "$?" -ne "0" ]; then
+        fatalln "Invalid Credentials. Exiting.."
+        exit 1
+    fi
+else
+    if [ -z ${ARTIFACTORY_KEY} ]; then
+        echo "ARTIFACTORY_KEY is unset. Please set the ARTIFACTORY_KEY for the docker registry"
+        exit 1
+    fi
+fi
+
+infoln ''
+infoln "---------------- Pulling image  ${erc20swap_repo}:${erc20swap_tag}, this may take several minutes... ----------------"
+minikube ssh "docker pull ${erc20swap_repo}:${erc20swap_tag}"
+
+infoln ''
+infoln '---------------- Creating DAPP Configmaps ----------------'
+kubectl create namespace ${NAMESPACE}
+kubectl create cm dapp-configmap --from-env-file=../vmbc/.env.config --namespace ${NAMESPACE}
+kubectl create secret docker-registry regcred-dapp --docker-server=vmwaresaas.jfrog.io --docker-username='${benzeneu}' --docker-password='${benzene}' --docker-email=ask_VMware_blockchain@VMware.com --namespace=${NAMESPACE}
 sleep 5 
 
-echo ''
-echo '---------------- Creating DAPP PoD ----------------'
-kubectl apply -f erc20-swap-dapp.yml --namespace vmbc-dapp
+infoln ''
+infoln '---------------- Creating DAPP PoD ----------------'
+kubectl apply -f erc20-swap-dapp.yml --namespace ${NAMESPACE}
 sleep 10
-echo ''
-echo '---------------- Get the URL   ----------------'
-minikube service erc20-swap --url --namespace vmbc-dapp
-echo '========================== DONE ==========================='
-echo ''
+infoln ''
+infoln '---------------- Get the URL   ----------------'
+minikube service erc20-swap --url --namespace ${NAMESPACE}
+successln '========================== DONE ==========================='
+infoln ''

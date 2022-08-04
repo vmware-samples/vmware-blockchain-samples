@@ -1,16 +1,18 @@
 #!/bin/bash
 
-echo ''
-echo '---------------- Starting minikube cluster ----------------'
+. ../vmbc/script/utils.sh
+
+println ''
+infoln '---------------- Starting minikube cluster ----------------'
 
 case "$OSTYPE" in
   darwin*)  driver="virtualbox" ;;
   linux*)   driver="docker" ;;
-  *)        echo "NOT Supported : $OSTYPE" ;;
+  *)        fatalln "NOT Supported : $OSTYPE" ;;
 esac
 
-echo "Using driver $driver..."
-minikube start --vm-driver=$driver --cpus 4 --memory 12288 --disk-size 50g
+infoln "Using driver $driver..."
+minikube start --force --vm-driver=$driver
 
-echo '========================== DONE ==========================='
-echo ''
+successln '========================== DONE ==========================='
+infoln ''

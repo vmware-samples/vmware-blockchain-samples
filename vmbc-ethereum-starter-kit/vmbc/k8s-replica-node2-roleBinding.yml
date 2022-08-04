@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: concord2
+subjects:
+- kind: ServiceAccount
+  name: concord2
+  apiGroup: ""
+roleRef:
+  kind: ClusterRole
+  name: concord2
+  apiGroup: ""

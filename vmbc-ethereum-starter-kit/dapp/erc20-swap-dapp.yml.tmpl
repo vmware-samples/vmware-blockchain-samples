@@ -40,7 +40,7 @@ items:
                       name: dapp-configmap
                       key: VMBC_URL
               image: erc20swap_repo:erc20swap_tag
-              imagePullPolicy: Always
+              imagePullPolicy: IfNotPresent
               ports:
                 - containerPort: 3000
           restartPolicy: Always
