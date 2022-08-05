@@ -32,14 +32,14 @@ Using the developer kit, Ethereum developer(s) can start developing or porting t
 
 # Pre-requisites - Install Python modules
 ```
-cd vmware-blockchain-samples/vmbc-ethereum-starter-kit
+cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit
 pip3 install -r vmbc/config/requirements.txt
 ```
 
 # Pre-requisites - Starting Minikube
 See scripts under`minikube` folder that provides convenience scripts to start and delete minikube. 
 ```
-cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/minikube 
+cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/minikube 
 ./minikube-start.sh
 ```
 
@@ -57,7 +57,7 @@ kubeconfig: Configured
 
 # VMware Blockchain Change directory
 ```
-cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/vmbc/script
+cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/vmbc/script
 ```
 
 # VMware Blockchain Set the username and password
@@ -76,19 +76,19 @@ cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/vmbc/script
 
 # Deploy sample dapp (Optional)
 ```
-cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/dapp 
+cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/dapp 
 ./k8s-dapp-launch.sh
 ```
 
 # Deploy Explorer (Optional)
 ```
-cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/explorer 
+cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/explorer 
 ./k8s-explorer-launch.sh
 ```
 
 # Deploy ELK stack (Optional)
 ```
-cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/elk
+cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/elk
 
 ./elk-elastic-launch.sh ; ( make sure that elasticsearch is working before moving further )
 
@@ -99,13 +99,13 @@ cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/elk
 
 # VMware Blockchain Deployment Cleanup
 ```
-cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/vmbc/script
+cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/vmbc/script
 ./vmbc-cli --deployment-type DEPROVISION
 ```
 
 # Minikube Cleanup
 ```
-cd vmware-blockchain-samples/vmbc-ethereum-starter-kit/minikube 
+cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/minikube 
 ./minikube-delete.sh
 ```
 
