@@ -1,6 +1,6 @@
-# VMBC Ethereum Developer Kit
+# VMware Blockchain Ethereum Developer Kit
 
-*** **Please note that the developer kit is under tech preview and functionality is subject to change** ***
+*** **Please note that the VMware Blockchain Ethereum Developer Kit is under tech preview and functionality is subject to change** ***
 
 # Target Persona and Deployment Model
 Using the developer kit, Ethereum developer(s) can start developing or porting their existing decentralized applications (dApps) to a single host VMware Blockchain deployment on their local desktop/laptop or Cloud VM. 
