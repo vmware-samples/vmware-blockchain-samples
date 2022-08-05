@@ -108,4 +108,9 @@ cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/vmbc/scrip
 cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/minikube 
 ./minikube-delete.sh
 ```
-
+# Popular tools to use with VMware Blockchain Ethereum Developer Kit
+Hardhat
+Truffle
+Remix
+Metamask
+Mythril
