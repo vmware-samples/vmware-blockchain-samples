@@ -42,7 +42,7 @@ function checkPreReqs()
 {
     getOptions
     sourceEnv
-    if $ENABLE_MINIKUBE; then
+    if [ "$ENABLE_MINIKUBE" == "true" ] || [ "$ENABLE_MINIKUBE" == "True" ] || [ "$ENABLE_MINIKUBE" == "TRUE" ]; then
         if ! command minikube version --short >/dev/null 2>&1; then
             fatalln "minikube is NOT installed. Install minikube before proceeding further."
         fi
@@ -105,7 +105,7 @@ function sourceEnv()
 function registryLogin()
 {
   if [ "$MODE" == "release" ]; then
-    if $ENABLE_MINIKUBE; then
+    if [ "$ENABLE_MINIKUBE" == "true" ] || [ "$ENABLE_MINIKUBE" == "True" ] || [ "$ENABLE_MINIKUBE" == "TRUE" ]; then
       infoln ''
       infoln "---------------- Registry Login ----------------"
       minikube ssh "docker login vmwaresaas.jfrog.io --username '${benzeneu}' --password '${benzene}'"

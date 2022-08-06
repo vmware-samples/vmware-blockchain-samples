@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-eval $(minikube docker-env)
-
 echo ''
 echo '---------------- Deleting Elasticsearch statefulset ----------------'
 kubectl delete -f elasticsearch_statefulset.yml

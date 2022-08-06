@@ -10,43 +10,41 @@ sourceEnv
 
 function pullImages()
 {
-    if ! $ENABLE_MINIKUBE; then
-        return
-    fi
-    
-    isMinikubeRunning=`minikube status | grep -e 'apiserver: Running' -e 'kubelet: Running' -e 'host: Running' -c`
-    if [ ! -f /tmp/last-blkchn-id ] && [ $isMinikubeRunning -eq 3 ]; then
-        if [ "$MODE" == "release" ]; then
-            infoln ''
-            infoln "---------------- Registry Login ----------------"
-            minikube ssh "docker login vmwaresaas.jfrog.io --username '${benzeneu}' --password '${benzene}'"
-            if [ "$?" -ne "0" ]; then
-                fatalln "Invalid Credentials. Exiting.."
-                exit 1
+    if [ "$ENABLE_MINIKUBE" == "true" ] || [ "$ENABLE_MINIKUBE" == "True" ] || [ "$ENABLE_MINIKUBE" == "TRUE" ]; then
+        isMinikubeRunning=`minikube status | grep -e 'apiserver: Running' -e 'kubelet: Running' -e 'host: Running' -c`
+        if [ ! -f /tmp/last-blkchn-id ] && [ $isMinikubeRunning -eq 3 ]; then
+            if [ "$MODE" == "release" ]; then
+                infoln ''
+                infoln "---------------- Registry Login ----------------"
+                minikube ssh "docker login vmwaresaas.jfrog.io --username '${benzeneu}' --password '${benzene}'"
+                if [ "$?" -ne "0" ]; then
+                    fatalln "Invalid Credentials. Exiting.."
+                    exit 1
+                fi
+            else
+                if [ -z ${ARTIFACTORY_KEY} ]; then
+                    echo "ARTIFACTORY_KEY is unset. Please set the ARTIFACTORY_KEY for the docker registry"
+                    exit 1
+                fi
             fi
-        else
-            if [ -z ${ARTIFACTORY_KEY} ]; then
-                echo "ARTIFACTORY_KEY is unset. Please set the ARTIFACTORY_KEY for the docker registry"
-                exit 1
+
+            if ! minikube ssh docker image inspect ${concord_repo}:${concord_tag} >&/dev/null; then
+                infoln ''
+                infoln "---------------- Pulling image  ${concord_repo}:${concord_tag}, this may take several minutes... ----------------"
+                minikube ssh "docker pull ${concord_repo}:${concord_tag}"
             fi
-        fi
 
-        if ! minikube ssh docker image inspect ${concord_repo}:${concord_tag} >&/dev/null; then
-            infoln ''
-            infoln "---------------- Pulling image  ${concord_repo}:${concord_tag}, this may take several minutes... ----------------"
-            minikube ssh "docker pull ${concord_repo}:${concord_tag}"
-        fi
+            if ! minikube ssh docker image inspect ${clientservice_repo}:${clientservice_tag} >&/dev/null; then
+                infoln ''
+                infoln "---------------- Pulling image  ${clientservice_repo}:${clientservice_tag}, this may take several minutes... ----------------"
+                minikube ssh "docker pull ${clientservice_repo}:${clientservice_tag}"
+            fi
 
-        if ! minikube ssh docker image inspect ${clientservice_repo}:${clientservice_tag} >&/dev/null; then
-            infoln ''
-            infoln "---------------- Pulling image  ${clientservice_repo}:${clientservice_tag}, this may take several minutes... ----------------"
-            minikube ssh "docker pull ${clientservice_repo}:${clientservice_tag}"
-        fi
-
-        if ! minikube ssh docker image inspect ${ethrpc_repo}:${ethrpc_tag} >&/dev/null; then
-            infoln ''
-            infoln "---------------- Pulling image  ${ethrpc_repo}:${ethrpc_tag}, this may take several minutes... ----------------"
-            minikube ssh "docker pull ${ethrpc_repo}:${ethrpc_tag}"
+            if ! minikube ssh docker image inspect ${ethrpc_repo}:${ethrpc_tag} >&/dev/null; then
+                infoln ''
+                infoln "---------------- Pulling image  ${ethrpc_repo}:${ethrpc_tag}, this may take several minutes... ----------------"
+                minikube ssh "docker pull ${ethrpc_repo}:${ethrpc_tag}"
+            fi
         fi
     fi
 }

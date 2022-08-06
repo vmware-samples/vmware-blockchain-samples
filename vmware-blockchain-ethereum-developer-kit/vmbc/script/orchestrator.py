@@ -180,7 +180,7 @@ def create_bc():
     # Check memory and CPU 
     checkMemAndCpu()
 
-    if ENABLE_MINIKUBE:
+    if ENABLE_MINIKUBE is True:
         # Check minikube status
         mkstatus = int(minikube_status())
         if mkstatus == 3:
@@ -393,7 +393,7 @@ def wait_for_pod_to_complete(namespace):
 
 
 def delete_bc(id=""):
-    if ENABLE_MINIKUBE:
+    if ENABLE_MINIKUBE is True:
         mkstatus = int(minikube_status())
         if mkstatus != 3:
             print("Minikube is NOT running. Can't DEPROVISION the VMBC Blockchain.")

@@ -166,8 +166,13 @@ createConcordConfigmap()
 
   infoln ''
   infoln '---------------- Creating Persistent Volume and Persistent Volume Claims ----------------'
-  minikube ssh "sudo mkdir -p /mnt/vmware-blockchain-concord${concord}"
-  minikube ssh "sudo chmod 777 /mnt/vmware-blockchain-concord${concord}"
+  if [ "$ENABLE_MINIKUBE" == "true" ] || [ "$ENABLE_MINIKUBE" == "True" ] || [ "$ENABLE_MINIKUBE" == "TRUE" ]; then
+    minikube ssh "sudo mkdir -p /tmp/hostpath_pv/vmware-blockchain-concord${concord}"
+    minikube ssh "sudo chmod 777 /tmp/hostpath_pv/vmware-blockchain-concord${concord}"
+  else
+    mkdir -p /tmp/hostpath_pv/vmware-blockchain-concord${concord}
+    chmod 777 /tmp/hostpath_pv/vmware-blockchain-concord${concord}
+  fi
   kubectl apply -f ../config/k8s-replica-node${concord}-pvc.yml --namespace=${namespace}
   infoln ''
   infoln '---------------- Creating Replica Node PoDs ----------------'
@@ -336,7 +341,7 @@ createReplicaPoDs() {
 # Display the env config file ( which can be used to interact with VMBC components)
 #
 displayConfigFile() {
-  if $ENABLE_MINIKUBE; then
+  if [ "$ENABLE_MINIKUBE" == "true" ] || [ "$ENABLE_MINIKUBE" == "True" ] || [ "$ENABLE_MINIKUBE" == "TRUE" ]; then
     infoln ''
     CONFIG_FILE=../.env.config
     infoln "---------------- Creating ${CONFIG_FILE} ----------------"

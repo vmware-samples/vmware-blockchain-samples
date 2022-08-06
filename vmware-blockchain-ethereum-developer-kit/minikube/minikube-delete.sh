@@ -11,7 +11,7 @@ fi
 
 infoln ''
 infoln  '---------------- Deleting minikube cluster ----------------'
-minikube delete --all=true &
+minikube delete --all=true --purge &
 PID=$!
 wait $PID 
 

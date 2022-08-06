@@ -1,7 +1,14 @@
 #!/bin/bash
 set -e
 
-eval $(minikube docker-env)
+cd ../vmbc/script
+
+. ./utils.sh
+
+# Souce proper env
+sourceEnv
+
+cd -
 
 echo ''
 echo '---------------- Creating Elasticsearch statefulset ----------------'
@@ -11,10 +18,10 @@ echo ''
 echo '---------------- Get Elasticsearch statefulset status ----------------'
 kubectl rollout status sts/elasticsearch
 
-echo ''
-#echo '---------------- Test Elasticsearch statefulset ----------------'
-#sleep 20
-IP=`minikube ip`
-TEST="curl http://$IP:30920/_cluster/state\?pretty"
-echo $TEST
+# Check minikube 
+if [ "$ENABLE_MINIKUBE" == "true" ] || [ "$ENABLE_MINIKUBE" == "True" ] || [ "$ENABLE_MINIKUBE" == "TRUE" ]; then
+    IP=`minikube ip`
+    TEST="curl http://$IP:30920/_cluster/state\?pretty"
+    echo $TEST
+fi
 

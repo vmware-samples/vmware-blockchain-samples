@@ -17,7 +17,7 @@ getOptions
 cd -
 
 # Check minikube status
-if $ENABLE_MINIKUBE; then
+if [ "$ENABLE_MINIKUBE" == "true" ] || [ "$ENABLE_MINIKUBE" == "True" ] || [ "$ENABLE_MINIKUBE" == "TRUE" ]; then
   isMinikubeRunning
 fi
 
@@ -35,7 +35,7 @@ sed $OPTS "s!erc20swap_repo!${erc20swap_repo}!ig
 
 # registry login
 registryLogin
-if $ENABLE_MINIKUBE; then
+if [ "$ENABLE_MINIKUBE" == "true" ] || [ "$ENABLE_MINIKUBE" == "True" ] || [ "$ENABLE_MINIKUBE" == "TRUE" ]; then
   infoln ''
   infoln "---------------- Pulling image  ${erc20swap_repo}:${erc20swap_tag}, this may take several minutes... ----------------"
   minikube ssh "docker pull ${erc20swap_repo}:${erc20swap_tag}"
