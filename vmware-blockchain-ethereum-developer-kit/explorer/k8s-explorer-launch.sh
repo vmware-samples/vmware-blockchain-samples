@@ -16,7 +16,7 @@ getOptions
 cd -
 
 # Check minikube status
-if $ENABLE_MINIKUBE; then
+if [ "$ENABLE_MINIKUBE" == "true" ] || [ "$ENABLE_MINIKUBE" == "True" ] || [ "$ENABLE_MINIKUBE" == "TRUE" ]; then
   isMinikubeRunning
 fi
 
@@ -36,7 +36,7 @@ sed $OPTS "s!explorer_repo!${explorer_repo}!ig
 # registry login
 registryLogin
 
-if $ENABLE_MINIKUBE; then
+if [ "$ENABLE_MINIKUBE" == "true" ] || [ "$ENABLE_MINIKUBE" == "True" ] || [ "$ENABLE_MINIKUBE" == "TRUE" ]; then
   infoln ''
   infoln "---------------- Pulling image  ${explorer_repo}:${explorer_tag}, this may take several minutes... ----------------"
   minikube ssh "docker pull ${explorer_repo}:${explorer_tag}"

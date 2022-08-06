@@ -18,7 +18,7 @@ spec:
   persistentVolumeReclaimPolicy: Delete
   storageClassName: standard
   hostPath:
-    path: "/mnt/vmware-blockchain-concord2"
+    path: "/tmp/hostpath_pv/vmware-blockchain-concord2"
     type: DirectoryOrCreate
 
 ---

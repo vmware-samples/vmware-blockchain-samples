@@ -1,7 +1,14 @@
 #!/bin/bash
 set -e
 
-eval $(minikube docker-env)
+cd ../vmbc/script
+
+. ./utils.sh
+
+# Souce proper env
+sourceEnv
+
+cd -
 
 echo ''
 echo '---------------- Creating Kibana service ----------------'
@@ -11,7 +18,10 @@ echo ''
 echo '---------------- Get Kibana status ----------------'
 kubectl rollout status deployment/kibana
 
-echo ''
-echo '---------------- Get Kibana URL ----------------'
-KIBANA_URL=http://`minikube ip`:30561
-echo $KIBANA_URL
+# Check minikube 
+if [ "$ENABLE_MINIKUBE" == "true" ] || [ "$ENABLE_MINIKUBE" == "True" ] || [ "$ENABLE_MINIKUBE" == "TRUE" ]; then
+    echo ''
+    echo '---------------- Get Kibana URL ----------------'
+    KIBANA_URL=http://`minikube ip`:30561
+    echo $KIBANA_URL
+fi

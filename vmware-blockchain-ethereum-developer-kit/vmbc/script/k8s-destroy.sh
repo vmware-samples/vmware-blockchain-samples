@@ -11,6 +11,11 @@ if [[ $# -lt 1 ]] ; then
 else
   MODE=$1
 fi
+if [ "$MODE" == "internal" ]; then
+  . ../config/.env
+else
+  . ../.env.release
+fi
 
 infoln ''
 infoln '---------------- Deleting Namespace, PV, PVC ----------------'
@@ -19,7 +24,11 @@ for ((i = 1 ; i <= ${REPLICA_COUNT} ; i++)); do
   kubectl delete -f k8s-replica-node${i}-deployment.yml --namespace=vmbc-replica${i}
   kubectl delete -f ../config/k8s-replica-node${i}-pvc.yml --namespace=vmbc-replica${i}
   kubectl delete namespace vmbc-replica${i} 
-  minikube ssh "sudo rm -rf /mnt/vmware-blockchain-concord${i}"
+  if [ "$ENABLE_MINIKUBE" == "true" ] || [ "$ENABLE_MINIKUBE" == "True" ] || [ "$ENABLE_MINIKUBE" == "TRUE" ]; then
+    minikube ssh "sudo rm -rf /tmp/hostpath_pv/vmware-blockchain-concord${i}"
+  else
+    sudo rm -rf /tmp/hostpath_pv/vmware-blockchain-concord${i}
+  fi
 done
 
 if [ "$MODE" == "internal" ]; then

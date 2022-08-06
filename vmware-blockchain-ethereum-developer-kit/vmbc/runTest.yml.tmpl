@@ -13,7 +13,7 @@ items:
           containers:
             - name: erc20test
               image: python:3
-              command: [ "/bin/sh", "-c", "bash ; pip3 install urllib3 web3 pytest ; cd /tests ; python3 -m pytest --log-cli-level=DEBUG eth_erc20.py ; " ]
+              command: [ "/bin/sh", "-c", "bash ; pip3 install urllib3 web3 pytest pysha3 ; cd /tests ; python3 -m pytest --log-cli-level=DEBUG eth_erc20.py ; " ]
               volumeMounts:
               - name: test-cm
                 mountPath: /tests
