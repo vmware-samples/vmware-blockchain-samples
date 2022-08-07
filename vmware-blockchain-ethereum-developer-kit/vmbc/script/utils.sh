@@ -106,18 +106,32 @@ function registryLogin()
 {
   if [ "$MODE" == "release" ]; then
     if [ "$ENABLE_MINIKUBE" == "true" ] || [ "$ENABLE_MINIKUBE" == "True" ] || [ "$ENABLE_MINIKUBE" == "TRUE" ]; then
+      isMinikubeRunning=`minikube status | grep -e 'apiserver: Running' -e 'kubelet: Running' -e 'host: Running' -c`
+      if [ $isMinikubeRunning -ne 3 ]; then
+        fatalln "Minikube MODE is ON. But minikube is not running..."
+      fi
       infoln ''
       infoln "---------------- Registry Login ----------------"
       minikube ssh "docker login vmwaresaas.jfrog.io --username '${benzeneu}' --password '${benzene}'"
       if [ "$?" -ne "0" ]; then
         fatalln "Invalid Credentials. Exiting.."
-        exit 1
+      fi
+    else
+      # Release mode, but non-minikube ( uses docker)
+      if docker info > /dev/null 2>&1; then
+        infoln ''
+        infoln "---------------- Registry Login ----------------"
+        docker login vmwaresaas.jfrog.io --username "${benzeneu}" --password "${benzene}"
+        if [ "$?" -ne "0" ]; then
+          fatalln "Invalid Credentials. Exiting.."
+        fi
+      else
+        fatalln "This script uses docker, and it isn't running - please start docker and try again!"
       fi
     fi
   else
     if [ -z ${ARTIFACTORY_KEY} ]; then
-        echo "ARTIFACTORY_KEY is unset. Please set the ARTIFACTORY_KEY for the docker registry"
-        exit 1
+        fatalln "ARTIFACTORY_KEY is unset. Please set the ARTIFACTORY_KEY for the docker registry"
     fi
 fi
 }

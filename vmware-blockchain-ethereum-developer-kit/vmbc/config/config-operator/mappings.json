@@ -1,9 +1,9 @@
 {
   "replicasUuidToPrincipalId": {
-    "concord1.vmbc-1f6b271e-ebb1-483e-9bef-3c252d704b0b-replica4.svc.cluster.local": 0,
-    "concord2.vmbc-1f6b271e-ebb1-483e-9bef-3c252d704b0b-replica4.svc.cluster.local": 1,
-    "concord3.vmbc-1f6b271e-ebb1-483e-9bef-3c252d704b0b-replica4.svc.cluster.local": 2,
-    "concord4.vmbc-1f6b271e-ebb1-483e-9bef-3c252d704b0b-replica4.svc.cluster.local": 3
+    "concord1.vmbc-8da54072-12e8-4ae0-9bfc-ccf3c5e8b8f5-replica1.svc.cluster.local
+    "concord2.vmbc-8da54072-12e8-4ae0-9bfc-ccf3c5e8b8f5-replica2.svc.cluster.local
+    "concord3.vmbc-8da54072-12e8-4ae0-9bfc-ccf3c5e8b8f5-replica3.svc.cluster.local
+    "concord4.vmbc-8da54072-12e8-4ae0-9bfc-ccf3c5e8b8f5-replica4.svc.cluster.local
   },
   "clientsUuidToPrincipalIds": {
     "clientservice1.vmbc-1f6b271e-ebb1-483e-9bef-3c252d704b0b-client1.svc.cluster.local": [
