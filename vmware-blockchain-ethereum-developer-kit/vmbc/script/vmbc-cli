@@ -100,7 +100,7 @@ if [ "$dtype" != "" ]; then
 fi
 
 if [ "$setusrpass" == 1 ] && [ ! -z "$username" ] && [ ! -z "$password" ]; then
-    infoln "=========== Setting sername and password ================="
+    infoln "=========== Setting username and password ================="
     orgString="benzene=.*"
     repString="benzene='${password}'"
     if [ "$ARCH" == "Darwin" ]; then
