@@ -10,41 +10,43 @@ sourceEnv
 
 function pullImages()
 {
+    registryLogin
     if [ "$ENABLE_MINIKUBE" == "true" ] || [ "$ENABLE_MINIKUBE" == "True" ] || [ "$ENABLE_MINIKUBE" == "TRUE" ]; then
-        isMinikubeRunning=`minikube status | grep -e 'apiserver: Running' -e 'kubelet: Running' -e 'host: Running' -c`
-        if [ ! -f /tmp/last-blkchn-id ] && [ $isMinikubeRunning -eq 3 ]; then
-            if [ "$MODE" == "release" ]; then
-                infoln ''
-                infoln "---------------- Registry Login ----------------"
-                minikube ssh "docker login vmwaresaas.jfrog.io --username '${benzeneu}' --password '${benzene}'"
-                if [ "$?" -ne "0" ]; then
-                    fatalln "Invalid Credentials. Exiting.."
-                    exit 1
-                fi
-            else
-                if [ -z ${ARTIFACTORY_KEY} ]; then
-                    echo "ARTIFACTORY_KEY is unset. Please set the ARTIFACTORY_KEY for the docker registry"
-                    exit 1
-                fi
-            fi
+        isMinikubeRunning
+        if ! minikube ssh docker image inspect ${concord_repo}:${concord_tag} >&/dev/null; then
+            infoln ''
+            infoln "---------------- Pulling image  ${concord_repo}:${concord_tag}, this may take several minutes... ----------------"
+            minikube ssh "docker pull ${concord_repo}:${concord_tag}"
+        fi
 
-            if ! minikube ssh docker image inspect ${concord_repo}:${concord_tag} >&/dev/null; then
-                infoln ''
-                infoln "---------------- Pulling image  ${concord_repo}:${concord_tag}, this may take several minutes... ----------------"
-                minikube ssh "docker pull ${concord_repo}:${concord_tag}"
-            fi
+        if ! minikube ssh docker image inspect ${clientservice_repo}:${clientservice_tag} >&/dev/null; then
+            infoln ''
+            infoln "---------------- Pulling image  ${clientservice_repo}:${clientservice_tag}, this may take several minutes... ----------------"
+            minikube ssh "docker pull ${clientservice_repo}:${clientservice_tag}"
+        fi
 
-            if ! minikube ssh docker image inspect ${clientservice_repo}:${clientservice_tag} >&/dev/null; then
-                infoln ''
-                infoln "---------------- Pulling image  ${clientservice_repo}:${clientservice_tag}, this may take several minutes... ----------------"
-                minikube ssh "docker pull ${clientservice_repo}:${clientservice_tag}"
-            fi
+        if ! minikube ssh docker image inspect ${ethrpc_repo}:${ethrpc_tag} >&/dev/null; then
+            infoln ''
+            infoln "---------------- Pulling image  ${ethrpc_repo}:${ethrpc_tag}, this may take several minutes... ----------------"
+            minikube ssh "docker pull ${ethrpc_repo}:${ethrpc_tag}"
+        fi
+    else
+        if ! docker image inspect ${concord_repo}:${concord_tag} >&/dev/null; then
+            infoln ''
+            infoln "---------------- Pulling image  ${concord_repo}:${concord_tag}, this may take several minutes... ----------------"
+            docker pull ${concord_repo}:${concord_tag}
+        fi
 
-            if ! minikube ssh docker image inspect ${ethrpc_repo}:${ethrpc_tag} >&/dev/null; then
-                infoln ''
-                infoln "---------------- Pulling image  ${ethrpc_repo}:${ethrpc_tag}, this may take several minutes... ----------------"
-                minikube ssh "docker pull ${ethrpc_repo}:${ethrpc_tag}"
-            fi
+        if ! docker image inspect ${clientservice_repo}:${clientservice_tag} >&/dev/null; then
+            infoln ''
+            infoln "---------------- Pulling image  ${clientservice_repo}:${clientservice_tag}, this may take several minutes... ----------------"
+            docker pull ${clientservice_repo}:${clientservice_tag}
+        fi
+
+        if ! docker image inspect ${ethrpc_repo}:${ethrpc_tag} >&/dev/null; then
+            infoln ''
+            infoln "---------------- Pulling image  ${ethrpc_repo}:${ethrpc_tag}, this may take several minutes... ----------------"
+            docker pull ${ethrpc_repo}:${ethrpc_tag}
         fi
     fi
 }
@@ -98,20 +100,22 @@ if [ "$dtype" != "" ]; then
 fi
 
 if [ "$setusrpass" == 1 ] && [ ! -z "$username" ] && [ ! -z "$password" ]; then
+    infoln "=========== Setting sername and password ================="
     orgString="benzene=.*"
     repString="benzene='${password}'"
     if [ "$ARCH" == "Darwin" ]; then
-        sed -i '' "s/${orgString}$/${repString}/g" ../.env.release
+        sed -i '' "s/${orgString}.*$/${repString}/g" ../.env.release
     else
-        sed -i "s/${orgString}$/${repString}/g" ../.env.release
+        sed -i "s/${orgString}.*$/${repString}/g" ../.env.release
     fi
     orgString="benzeneu=.*"
     repString="benzeneu='${username}'"
     if [ "$ARCH" == "Darwin" ]; then
-        sed -i '' "s/${orgString}$/${repString}/g" ../.env.release
+        sed -i '' "s/${orgString}.*$/${repString}/g" ../.env.release
     else
-        sed -i "s/${orgString}$/${repString}/g" ../.env.release
+        sed -i "s/${orgString}.*$/${repString}/g" ../.env.release
     fi
+    successln "=========== DONE ================="
 fi
 
 if [ "$test" == 1 ]; then

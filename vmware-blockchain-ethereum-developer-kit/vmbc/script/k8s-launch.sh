@@ -342,16 +342,17 @@ createReplicaPoDs() {
 #
 displayConfigFile() {
   if [ "$ENABLE_MINIKUBE" == "true" ] || [ "$ENABLE_MINIKUBE" == "True" ] || [ "$ENABLE_MINIKUBE" == "TRUE" ]; then
-    infoln ''
-    CONFIG_FILE=../.env.config
-    infoln "---------------- Creating ${CONFIG_FILE} ----------------"
     MINIP=`minikube ip`
-    MINPORT=30545
-    println "MINIKUBE_IP=${MINIP}" > ${CONFIG_FILE}
-    println "MINIKUBE_PORT=${MINPORT}" >> ${CONFIG_FILE}
-    println "VMBC_URL=http://${MINIP}:${MINPORT}" >> ${CONFIG_FILE}
-    cat ${CONFIG_FILE}
+  else
+    MINIP=localhost
   fi
+  infoln ''
+  CONFIG_FILE=../.env.config
+  infoln "---------------- Creating ${CONFIG_FILE} ----------------"
+  
+  MINPORT=30545
+  println "VMBC_URL=http://${MINIP}:${MINPORT}" >> ${CONFIG_FILE}
+  cat ${CONFIG_FILE}
 }
 
 #
@@ -365,22 +366,22 @@ replaceConcordWithNamespace()
     orgString=concord${i}
     repString=concord${i}\\.vmbc-replica${i}\\.svc\\.cluster\\.local
     if [ "$ARCH" == "Darwin" ]; then
-      sed -i ''  "s/${orgString}$/${repString}/g" ../config/config-participant0/participant.config
-      sed -i ''  "s/${orgString}$/${repString}/g" ../config/config-operator/operator.config
-      sed -i ''  "s/${orgString}$/${repString}/g" ../config/config-operator/mappings.json
+      sed -i ''  "s/${orgString}.*$/${repString}/g" ../config/config-participant0/participant.config
+      sed -i ''  "s/${orgString}.*$/${repString}/g" ../config/config-operator/operator.config
+      sed -i ''  "s/${orgString}.*$/${repString}/g" ../config/config-operator/mappings.json
       for ((j = 1 ; j <= ${REPLICA_COUNT} ; j++)); do
         orgString=concord${j}
         repString=concord${j}\\.vmbc-replica${j}\\.svc\\.cluster\\.local
-        sed -i ''  "s/${orgString}$/${repString}/g" ../config/config-concord${i}/deployment.config
+        sed -i ''  "s/${orgString}.*$/${repString}/g" ../config/config-concord${i}/deployment.config
       done
     else
-      sed -i "s/${orgString}$/${repString}/g" ../config/config-participant0/participant.config
-      sed -i "s/${orgString}$/${repString}/g" ../config/config-operator/operator.config
-      sed -i "s/${orgString}$/${repString}/g" ../config/config-operator/mappings.json
+      sed -i "s/${orgString}.*$/${repString}/g" ../config/config-participant0/participant.config
+      sed -i "s/${orgString}.*$/${repString}/g" ../config/config-operator/operator.config
+      sed -i "s/${orgString}.*$/${repString}/g" ../config/config-operator/mappings.json
       for ((k = 1 ; k <= ${REPLICA_COUNT} ; k++)); do
         orgString=concord${k}
         repString=concord${k}\\.vmbc-replica${k}\\.svc\\.cluster\\.local
-        sed -i "s/${orgString}$/${repString}/g" ../config/config-concord${i}/deployment.config
+        sed -i "s/${orgString}.*$/${repString}/g" ../config/config-concord${i}/deployment.config
       done
     fi
   done
@@ -390,11 +391,11 @@ replaceConcordWithNamespace()
   orgString2=resources\\/signing_keys
   repString2=\\/cre\\/config-local
   if [ "$ARCH" == "Darwin" ]; then
-    sed -i ''  "s/${orgString1}$/${repString1}/g" ../config/config-participant0/participant.config
-    sed -i ''  "s/${orgString2}$/${repString2}/g" ../config/config-participant0/participant.config
+    sed -i ''  "s/${orgString1}.*$/${repString1}/g" ../config/config-participant0/participant.config
+    sed -i ''  "s/${orgString2}.*$/${repString2}/g" ../config/config-participant0/participant.config
   else
-    sed -i  "s/${orgString1}$/${repString1}/g" ../config/config-participant0/participant.config
-    sed -i  "s/${orgString2}$/${repString2}/g" ../config/config-participant0/participant.config
+    sed -i  "s/${orgString1}.*$/${repString1}/g" ../config/config-participant0/participant.config
+    sed -i  "s/${orgString2}.*$/${repString2}/g" ../config/config-participant0/participant.config
   fi  
 }
 

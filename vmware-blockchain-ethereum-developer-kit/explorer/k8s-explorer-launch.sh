@@ -36,10 +36,12 @@ sed $OPTS "s!explorer_repo!${explorer_repo}!ig
 # registry login
 registryLogin
 
+infoln ''
+infoln "---------------- Pulling image  ${explorer_repo}:${explorer_tag}, this may take several minutes... ----------------"
 if [ "$ENABLE_MINIKUBE" == "true" ] || [ "$ENABLE_MINIKUBE" == "True" ] || [ "$ENABLE_MINIKUBE" == "TRUE" ]; then
-  infoln ''
-  infoln "---------------- Pulling image  ${explorer_repo}:${explorer_tag}, this may take several minutes... ----------------"
   minikube ssh "docker pull ${explorer_repo}:${explorer_tag}"
+else
+  docker pull ${explorer_repo}:${explorer_tag}
 fi
 
 infoln ''
@@ -55,6 +57,10 @@ kubectl apply -f k8s-explorer.yml --namespace ${NAMESPACE}
 sleep 10
 infoln ''
 infoln '---------------- Get the URL   ----------------'
-minikube service vmbc-explorer --url --namespace ${NAMESPACE}
+if [ "$ENABLE_MINIKUBE" == "true" ] || [ "$ENABLE_MINIKUBE" == "True" ] || [ "$ENABLE_MINIKUBE" == "TRUE" ]; then
+  minikube service vmbc-explorer --url --namespace ${NAMESPACE}
+else
+   kubectl get service vmbc-explorer  --namespace ${NAMESPACE}
+fi
 successln '========================== DONE ==========================='
 infoln ''

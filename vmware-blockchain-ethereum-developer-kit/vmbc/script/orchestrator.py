@@ -97,6 +97,7 @@ def isBlockchainExists():
             with open("/tmp/last-blkchn-id", "r") as f3:
                 blkidf = f3.readlines()
                 blockchainId  = blkidf[0]
+                blockchainId = os.path.basename(os.path.normpath(blockchainId))
                 all_pods_running = checkAllPodsRunning(blockchainId)            
             if all_pods_running:
                 print("Blockchain is already up and running !")
@@ -175,8 +176,6 @@ def create_bc():
 
     print(f"######################### {BLUE}VMBC Blockchain Deployment {ENDC}###################")
 
-
-
     # Check memory and CPU 
     checkMemAndCpu()
 
@@ -236,6 +235,7 @@ def create_bc():
 
     os.chdir(dep1)
     print(f"New blockchain id directory: {GREEN} {os.getcwd()} {ENDC}")
+    blockchainDir = os.getcwd()
 
     string_replacement_file("./k8s-launch.sh", "vmbc", dep1)
     string_replacement_file("./k8s-launch.sh", dep1 + "-ro-token", "vmbc-ro-token")
@@ -293,7 +293,7 @@ def create_bc():
 
     os.chdir("../")
     with open("/tmp/last-blkchn-id", "w+") as f2:
-        f2.write(dep1)
+        f2.write(blockchainDir)
 
 def test_bc(id=""):
     blkid = ""
@@ -311,7 +311,8 @@ def test_bc(id=""):
         else:
             print("Blockchain doens't exist.")
             return
-    
+
+    blkid = os.path.basename(os.path.normpath(blkid))
     os.chdir(blkid)
     print("Testing VMBC blockchain id:", blkid)
     
@@ -417,6 +418,7 @@ def delete_bc(id=""):
          sys.exit()
 
     os.chdir(blkid)
+    blkid = os.path.basename(os.path.normpath(blkid))
     print(f"Deleting blockchain id: {RED}{blkid}{ENDC}")
     
     cmd = f"./k8s-destroy.sh release"
