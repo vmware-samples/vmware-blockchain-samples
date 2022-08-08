@@ -26,20 +26,14 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static com.google.common.collect.Iterators.cycle;
-
 import com.vmware.ethereum.config.WorkloadConfig;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.web3j.crypto.Credentials;
-import org.web3j.model.SecurityToken;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.BatchRequest;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -50,51 +44,32 @@ public class WorkloadService {
   private final ArrayList<Web3j> web3j;
   private final ArrayList<Credentials> credentialsArrayList;
   private final WorkloadConfig workloadConfig;
-  private BatchRequest batchRequest = null;
-  private ArrayList<String> signedBatchRequest = new ArrayList<>();
 
   public void start() {
-    //    Thread[] t = new Thread[workloadConfig.getConcurrency()];
-    //    for (int i = 0; i < workloadConfig.getConcurrency(); i++) {
-    //      t[i] = new Thread(new WorkloadThread(command, transactions, api, web3j, workloadConfig,
-    // i));
-    //      t[i].start();
-    //    }
-    //    for (int i = 0; i < workloadConfig.getConcurrency(); i++) {
-    //      try {
-    //        t[i].join();
-    //      } catch (InterruptedException e) {
-    //        e.printStackTrace();
-    //      }
-    //    }
-
-    Iterator<Web3j> web3jIterator = cycle(web3j);
-    Iterator<Credentials> credentialsIterator = cycle(credentialsArrayList);
-    ExecutorService pool = Executors.newFixedThreadPool(workloadConfig.getConcurrency());
-    ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) pool;
-    Web3j web3jCurrent = web3jIterator.next();
-    Credentials credentialsCurrent = credentialsIterator.next();
-    SecurityToken token;
-
-    if (batchRequest == null) {
-      batchRequest = web3jCurrent.newBatch();
+    Map<Integer, ArrayList<Credentials>> threadedCredentials = new HashMap<>();
+    int credIndex = 0;
+    for (Credentials cred : credentialsArrayList) {
+      if (credIndex == workloadConfig.getConcurrency()) credIndex = 0;
+      if (!threadedCredentials.containsKey(credIndex))
+        threadedCredentials.put(credIndex, new ArrayList<>());
+      threadedCredentials.get(credIndex).add(cred);
+      credIndex++;
     }
-    for (int i = 0; i < workloadConfig.getTransactions(); i++) {
-      token =
-          SecurityToken.load(
-              api.getContractAddress(), web3jCurrent, credentialsCurrent, api.getGasProvider());
-      api.addBatchRequests(
-          batchRequest, signedBatchRequest, token, web3jCurrent, credentialsCurrent);
-      if (batchRequest.getRequests().size() == workloadConfig.getBatchSize()
-          || i == workloadConfig.getTransactions() - 1) {
-        // log.info("{}",i);
-        pool.execute(new WorkloadThread(command, web3jCurrent, batchRequest, signedBatchRequest));
-        log.info(String.valueOf(threadPoolExecutor.getActiveCount()));
-        web3jCurrent = web3jIterator.next();
-        batchRequest = web3jCurrent.newBatch();
-        signedBatchRequest = new ArrayList<>();
+    log.info("map threaded creds = {} ", threadedCredentials);
+    Thread[] t = new Thread[workloadConfig.getConcurrency()];
+    for (int i = 0; i < workloadConfig.getConcurrency(); i++) {
+      t[i] =
+          new Thread(
+              new WorkloadThread(
+                  command, web3j.get(i), api, workloadConfig, threadedCredentials.get(i)));
+      t[i].start();
+    }
+    for (int i = 0; i < workloadConfig.getConcurrency(); i++) {
+      try {
+        t[i].join();
+      } catch (InterruptedException e) {
+        e.printStackTrace();
       }
-      credentialsCurrent = credentialsIterator.next();
     }
     log.info("Transactions submitted");
   }
