@@ -22,15 +22,8 @@ Refer to `README.md` inside sample directory for detailed description.
 | Directory | Description |
 |-----------|-------------|
 | [Artemis](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/artemis)  | Sample NFT Platform with ERC 721 Standards|
-| [Asset Transfer](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/asset-transfer) | DApp with asset transfer sample|
 | [Token Swap](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/erc20-swap) | ERC-20 Token Creation and Swap with React Sample |
-| [Token Deploy](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/hardhat) | Deploying ERC 20 Token using Hardhat |
-| [Ocen Bound Plastics](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/obp) | Supply Chain Sample Smart Contract with Solidity and Truffle|
-| [On-Chain Privacy](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/on-chain-privacy) | Supply Chain example with On-Chain Privacy |
-| [Web3 Python](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/simple-examples)| Sample App on Python using Web3 |
-| [Supply Chain DApp](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/supply-chain)| Extensive Supply Chain DApp Sample |
-| [Truffle Sample](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/truffle) | Basic Truffle Contract Migration Sample |
-| [Load Testing](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/erc20-load-test-tool) | A Sample Load Testing Tool with ERC 20 Token and Web3js|
+| [Load Testing](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/erc20-load-test-tool) | A Sample Load Testing Tool with ERC 20 Token and Web3j|
 
 #### Util
 [Util Scripts](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/tools)  Scripts to aid in development
