@@ -1,4 +1,4 @@
-# Introducing VMware Blockchain Ethereum Beta Developer Kit
+# Introducing VMware Blockchain Ethereum Early Beta Developer Kit
 
 We are so glad that you have found this repository!
 
