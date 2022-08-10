@@ -1,6 +1,13 @@
-# VMware Blockchain Ethereum Developer Kit
+# Introducing VMware Blockchain Ethereum Beta Developer Kit
 
-*** **Please note that the VMware Blockchain Ethereum Developer Kit is under tech preview and functionality is subject to change** ***
+We are so glad that you have found this repository!
+
+The VMware Blockchain team has architected an extensible blockchain platform that is capable of supporting multiple smart contract lanauges, where each language runs on its own unique execution engine. Back in 2019, VMware Blockchain started first with the Daml smart contract language, highly ideal for mission critical capital market applications. Since then, we have received strong interest to support the Solidity smart contract language, tareted at a broad set of usecaes that can benefit from the power of blockchain. To support that, VMware Blockchain team integrated the EVMOne Ethereum virutal machine, and voila - you can now run Solidty on VMware Blockchain!
+
+
+
+*** **Please note that the VMware Blockchain Ethereum Developer Kit is under early beta and functionality is subject to change** ***
+
 
 # Target Persona and Deployment Model
 Using the developer kit, Ethereum developer(s) can start developing or porting their existing decentralized applications (dApps) to a single host VMware Blockchain deployment on their local desktop/laptop or Cloud VM. 
