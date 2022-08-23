@@ -26,18 +26,19 @@ package com.vmware.ethereum.service;
  * #L%
  */
 
-import static com.google.common.collect.Iterators.cycle;
-
 import com.vmware.ethereum.config.WorkloadConfig;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.concurrent.Semaphore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.web3j.crypto.Credentials;
 import org.web3j.model.SecurityToken;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.BatchRequest;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.concurrent.Semaphore;
+
+import static com.google.common.collect.Iterators.cycle;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -72,6 +73,11 @@ public class WorkloadThread implements Runnable {
       }
       api.addBatchRequests(batchRequest, signedBatchRequest, token, web3j, credentialsCurrent);
       if (batchRequest.getRequests().size() == workloadConfig.getBatchSize() || transactions == 0) {
+        log.info(
+            "Batch Number(tx left) - {} size - {} data - {}",
+            transactions,
+            batchRequest.getRequests().size(),
+            batchRequest.getRequests());
         command
             .transferBatchAsync(batchRequest, signedBatchRequest, web3j)
             .whenComplete((response, throwable) -> semaphore.release());
