@@ -75,14 +75,12 @@ cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/vmbc/scrip
 ./vmbc-cli --healthcheck 
 ```
 # VMware Blockchain Gas Free Mode for Ethereum
-```
 In the public Ethereum network, gas refers to the cost necessary to perform a transaction on the network. Miners set the price of gas based on supply and demand for the computational power of the network needed to process smart contracts and other transactions. Requiring a fee for every transaction executed on the network provides a layer of security to the Ethereum network by making it too expensive for malicious users to spam the network. VMware Blockchain is a private, permissioned, and managed network, therefore it is not necessary to charge for computation power. In addition, the SBFT protocol it uses protects it from byzantine attacks. Since gas fees are not needed, VMBC supports a gas-free mode which simplifies Dapp deployment. 
-```
+
 
 # Deploy Block Explorer (Optional)
-```
 Block Explorer can be used to view transactions and blocks in the VMware Blockchain for Ethereum
-
+```
 cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/explorer 
 ./k8s-explorer-launch.sh
 ```
@@ -123,7 +121,7 @@ Metamask
 Mythril
 
 # Supported JSON-RPC API endpoints
-API reference: https://ethereum.org/en/developers/docs/apis/json-rpc/
+**API reference**: https://ethereum.org/en/developers/docs/apis/json-rpc/
 
 eth_accounts
 
