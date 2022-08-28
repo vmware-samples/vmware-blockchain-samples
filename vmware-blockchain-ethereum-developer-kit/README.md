@@ -95,19 +95,16 @@ cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/elk
 
 ./elk-fluentd-lanch.sh
 ```
-
 # Deploy sample dapp (Optional)
 ```
 cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/dapp 
 ./k8s-dapp-launch.sh
 ```
-
 # VMware Blockchain Deployment Cleanup
 ```
 cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/vmbc/script
 ./vmbc-cli --deployment-type DEPROVISION
 ```
-
 # Minikube Cleanup
 ```
 cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/minikube 
