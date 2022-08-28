@@ -79,7 +79,7 @@ In the public Ethereum network, gas refers to the cost necessary to perform a tr
 
 
 # Deploy Block Explorer (Optional)
-Block Explorer can be used to view transactions and blocks in the VMware Blockchain for Ethereum
+Block Explorer can be used to view transactions and blocks in the VMware Blockchain
 ```
 cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/explorer 
 ./k8s-explorer-launch.sh
