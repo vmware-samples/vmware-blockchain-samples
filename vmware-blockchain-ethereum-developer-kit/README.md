@@ -41,14 +41,12 @@ Using the developer kit, Ethereum developer(s) can start developing or porting t
 cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit
 pip3 install -r vmbc/config/requirements.txt
 ```
-
 # Pre-requisites - Starting Minikube
 See scripts under`minikube` folder that provides convenience scripts to start and delete minikube. 
 ```
 cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/minikube 
 ./minikube-start.sh
 ```
-
 ## Make sure 'minikube status' has the expected output described below.
 ```
 minikube status 
@@ -60,17 +58,14 @@ kubelet: Running
 apiserver: Running
 kubeconfig: Configured
 ```
-
 # VMware Blockchain Change directory
 ```
 cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/vmbc/script
 ```
-
 # VMware Blockchain Set the username and password
 ```
 ./vmbc-cli --set-username-password --username username --password password
 ```
-
 # VMware Blockchain Deployment
 ```
 ./vmbc-cli --deployment-type PROVISION 
@@ -79,7 +74,6 @@ cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/vmbc/scrip
 ``` 
 ./vmbc-cli --healthcheck 
 ```
-
 # VMware Blockchain Gas Free Mode for Ethereum
 ...
 In the public Ethereum network, gas refers to the cost necessary to perform a transaction on the network. Miners set the price of gas based on supply and demand for the computational power of the network needed to process smart contracts and other transactions. Requiring a fee for every transaction executed on the network provides a layer of security to the Ethereum network by making it too expensive for malicious users to spam the network. VMware Blockchain is a private, permissioned, and managed network, therefore it is not necessary to charge for computation power. In addition, the SBFT protocol it uses protects it from byzantine attacks. Since gas fees are not needed, VMBC supports a gas-free mode which simplifies Dapp deployment. 
@@ -90,9 +84,8 @@ Block Explorer can be used to view transactions and blocks in the VMware Blockch
 ```
 cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/explorer 
 ./k8s-explorer-launch.sh
-```
 
-# Deploy ELK stack (Optional)
+# **Deploy ELK stack (Optional)**
 ```
 cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/elk
 
