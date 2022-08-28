@@ -129,3 +129,28 @@ Remix
 Metamask
 
 Mythril
+
+# Supported JSON-RPC API endpoints 
+eth_accounts
+eth_blockNumber
+eth_call
+eth_chainId (Reference is EIP-695)
+eth_estimateGas
+eth_gasPrice
+eth_getBalance
+eth_getBlockByHash
+eth_getBlockByNumber
+eth_getBlockTransactionCountByHash
+eth_getBlockTransactionCountByNumber
+eth_getCode
+eth_getLogs
+eth_getStorageAt
+eth_getTransactionByBlockHashAndIndex
+eth_getTransactionByBlockNumberAndIndex
+eth_getTransactionByHash
+eth_getTransactionCount
+eth_getTransactionReceipt
+eth_sendRawTransaction
+eth_sendTransaction
+net_listening
+net_version
