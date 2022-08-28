@@ -122,7 +122,9 @@ Metamask
 
 Mythril
 
-# Supported JSON-RPC API endpoints - reference https://ethereum.org/en/developers/docs/apis/json-rpc/ APIs
+# Supported JSON-RPC API endpoints
+API nce: https://ethereum.org/en/developers/docs/apis/json-rpc/ APIs
+
 eth_accounts
 
 eth_blockNumber
