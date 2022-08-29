@@ -79,12 +79,13 @@ In the public Ethereum network, gas refers to the cost necessary to perform a tr
 
 
 # Deploy Block Explorer (Optional)
-Block Explorer can be used to view transactions and blocks in the VMware Blockchain
+Block Explorer can be used to view and search ethereum transactions and blocks in the VMware Blockchain deployment
 ```
 cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/explorer 
 ./k8s-explorer-launch.sh
 ```
 # Deploy ELK stack (Optional)
+Elasticsearch can be used to search and view system logs in the VMware Blockchain deployment
 ```
 cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/elk
 
@@ -95,6 +96,7 @@ cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/elk
 ./elk-fluentd-lanch.sh
 ```
 # Deploy sample dapp (Optional)
+This Dapp demonstrates swapping of ERC-20 tokens across different ethereum accounts
 ```
 cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/dapp 
 ./k8s-dapp-launch.sh
