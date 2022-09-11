@@ -69,6 +69,9 @@ cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/vmbc/scrip
 # VMware Blockchain Deployment
 ```
 ./vmbc-cli --deployment-type PROVISION 
+
+After successful completion of the above provision command, VMBC_URL (VMware Blockchain Deployment URL) will be printed on the console. An example would be VMBC_URL=http://192.168.49.2:30545. Note that the IP address could be different in your minkikube setup.
+For VMware Blockchain Deployment, the chainid is 5000.
 ```
 # VMware Blockchain Healthcheck
 ``` 
