@@ -1,0 +1,6 @@
+/*!
+ * console v0.7.1 - https://github.com/matthewhudson/console
+ * MIT Licensed
+ */
+!function(e,o){"object"==typeof exports&&"object"==typeof module?module.exports=o():"function"==typeof define&&define.amd?define([],o):"object"==typeof exports?exports.console=o():e.console=o()}("undefined"!=typeof self?self:this,function(){return function(e){var o={};function t(n){if(o[n])return o[n].exports;var r=o[n]={i:n,l:!1,exports:{}};return e[n].call(r.exports,r,r.exports,t),r.l=!0,r.exports}return t.m=e,t.c=o,t.d=function(e,o,n){t.o(e,o)||Object.defineProperty(e,o,{configurable:!1,enumerable:!0,get:n})},t.n=function(e){var o=e&&e.__esModule?function(){return e.default}:function(){return e};return t.d(o,"a",o),o},t.o=function(e,o){return Object.prototype.hasOwnProperty.call(e,o)},t.p="",t(t.s=0)}([function(e,o,t){e.exports=t(1)},function(e,o,t){"use strict";Object.defineProperty(o,"__esModule",{value:!0});for(var n=void 0,r=function(){},u=["assert","clear","count","debug","dir","dirxml","error","exception","group","groupCollapsed","groupEnd","info","log","markTimeline","profile","profileEnd","table","time","timeEnd","timeStamp","trace","warn"],i=u.length;i--;)n=u[i],console[n]||(console[n]=r);o.default=console}]).default});
+//# sourceMappingURL=console.min.js.map

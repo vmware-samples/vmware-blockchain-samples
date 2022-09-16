@@ -1,0 +1,27 @@
+{
+  "name": "console",
+  "version": "0.7.2",
+  "homepage": "https://github.com/matthewhudson/console",
+  "description": "Returns `console` if present, otherwise returns a `noop`.",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "files": [
+    "es",
+    "lib",
+    "umd"
+  ],
+  "keywords": [
+    "console"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/matthewhudson/console.git"
+  },
+  "bugs": {
+    "url": "https://github.com/matthewhudson/console/issues"
+  },
+  "devDependencies": {
+    "nwb": "0.21.5"
+  }
+}
