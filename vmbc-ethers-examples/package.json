@@ -9,6 +9,6 @@
     "@nomiclabs/hardhat-waffle": "^2.0.3",
     "chai": "^4.3.6",
     "ethereum-waffle": "^3.4.4",
-    "ethers": "^5.7.1"
+    "vmware-blockchain/ethers": "0.0.2"
   }
 }
