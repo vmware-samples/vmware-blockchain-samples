@@ -6,7 +6,7 @@ const CONTRACT_ABI = [
 ];
 
 // On VMBC
-const CONTRACT_ADDRESS_VMBC = '0xD5367D96975a98bb84fEacfC1a601c928A28A252';
+const CONTRACT_ADDRESS_VMBC = '0xded0b894c78A54BE375Fe1515dc2a6c97684b058';
 
 // Accounts VMBC
 const account1_vmbc = "0x784e2c4D95c9Be66Cb0B9cda5b39d72e7630bCa8";
@@ -42,9 +42,9 @@ const main = async () => {
       console.log(err);
     }
 
-    rc = await tx.wait();
+    //rc = await tx.wait();
 
-    console.log(tx);
+    //console.log(tx);
 
     var greetingAfter = await contract.getGreeting();
     console.log("Greeting After: ", greetingAfter);

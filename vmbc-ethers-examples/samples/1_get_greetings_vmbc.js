@@ -5,7 +5,7 @@ const CONTRACT_ABI = [
 ];
 
 // On VMBC
-const CONTRACT_ADDRESS_VMBC = '0xD5367D96975a98bb84fEacfC1a601c928A28A252';
+const CONTRACT_ADDRESS_VMBC = '0xded0b894c78A54BE375Fe1515dc2a6c97684b058';
 
 // VMBC Provider
 var provider_vmbc;
