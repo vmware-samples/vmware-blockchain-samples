@@ -5,10 +5,8 @@ contract DataCopy{
     bytes public memoryStored;
 
     function callDatacopy(bytes memory data) public returns (bytes memory) {
-
-    memoryStored = data;
-
-    return memoryStored;
+        memoryStored = data;
+        return memoryStored;
     }
 
     function getMemoryStored() public view returns (bytes memory) {
