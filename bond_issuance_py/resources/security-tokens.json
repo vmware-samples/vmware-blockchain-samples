@@ -1,0 +1,18 @@
+{
+  "tokens": [
+    {
+      "isin": "ABCD0001",
+      "interest_rate": 15,
+      "cost_in_pt": 10,
+      "maturity_date": 12345678,
+      "bond_amount": 20
+    },
+    {
+      "isin": "ABCD0002",
+      "interest_rate": 13,
+      "cost_in_pt": 20,
+      "maturity_date": 12345678,
+      "bond_amount": 40
+    }
+  ]
+}
