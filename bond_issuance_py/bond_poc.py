@@ -128,7 +128,6 @@ def mint_pt(mm_num, pt_val):
     with open('./resources/contracts.json','r') as file_read:
         data = json.load(file_read)
         exchange_contract_address = data["exchange_contract_address"]
-    print("set pt :{}".format(exchange_contract_address))
     exchange_bytecode, exchange_abi = compile_exchange()
     exchange_contract = w3.eth.contract(address=exchange_contract_address, abi=exchange_abi)
     construct_txn = exchange_contract.functions.mintAndTransferPT(pt_val, mm_addr[mm_num]).buildTransaction({
