@@ -1,0 +1,16 @@
+{
+  "exchange": "exchange-address",
+  "exchange_key": "exchange-key",
+  "treasury": "treasury-address",
+  "treasury_key": "treasury-key",
+  "mm": [
+    "mm-address-0",
+    "mm-address-1",
+    "mm-address-2"
+  ],
+  "mm_keys": [
+    "mm-key-0",
+    "mm-key-1",
+    "mm-key-2"
+  ]
+}
