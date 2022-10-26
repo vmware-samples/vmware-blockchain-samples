@@ -1,1 +1,60 @@
-<div>{{ art?.title }}</div>
+<div style="padding-left: 1rem;">
+    <p>NFT Selected: <b>"{{ art?.title }}"</b> by <b>{{ art?.artistName }}</b>, currently owned by account with address <b id="owner">{{ art?.ownerHistory[art?.ownerHistory.length - 1] }}</b></p>
+    <p>This NFT was minted by account with address <b>{{ art?.ownerHistory[0] }}</b> and has been transferred <b>{{ art?.ownerHistory.length - 1}} time(s)</b> before.</p>
+  </div>
+  
+  <div class="transfer-button-cont">
+      <button id="transfer-button" class="btn btn-success transfer-button" (click)="transferFormReset(); transferModalShown=true" *ngIf="this.art?.ownerHistory[this.art?.ownerHistory.length - 1] === this.digitalArtsService.ethService.currentAccount">Transfer NFT</button>
+  </div>
+  
+  <clr-modal [(clrModalOpen)]="transferModalShown" [clrModalSize]="'sm'" #transferModal>
+      <h3 class="modal-title">Transfer NFT</h3>
+      <div class="modal-body">
+        <form [formGroup]="transferForm">
+          <clr-input-container style="margin-top: 0.2rem;">
+            <label>To account address:</label>
+            <input placeholder="Address of new owner" clrInput formControlName="address" id="address" class="transfer-input" (keyup)="transferDelayedValidation($event, 'address')"/>
+            <clr-control-error>Enter valid account address</clr-control-error>
+          </clr-input-container>
+          <div style="height:1rem;"></div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="transferModalShown=false">Cancel</button>
+        <button type="button"
+          [ngClass]="{'btn': true, 'btn-success': true, 'gray-transfer': !transferFormValidity}"
+          (click)="transferHandle()">Transfer</button>
+      </div>
+    </clr-modal>
+    
+    <clr-modal [(clrModalOpen)]="transferResultModalShown" [clrModalSize]="'lg'">
+      <h3 class="modal-title">Transfer Outcome</h3>
+      <div class="modal-body" style="max-height:500px; overflow-y: scroll;">
+        <div *ngIf="transferResultHasError" class="alert alert-danger">
+          <div class="alert-items">
+            <div class="alert-item static" role="alert">
+              <div class="alert-icon-wrapper"><cds-icon class="alert-icon" shape="exclamation-circle"></cds-icon></div>
+              <span class="alert-text">{{ transferResultModalMessage }}</span>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="!transferResultHasError" class="alert alert-success">
+          <div class="alert-items">
+            <div class="alert-item static" role="alert">
+              <div class="alert-icon-wrapper"><cds-icon class="alert-icon" shape="check-circle"></cds-icon></div>
+              <span class="alert-text">{{ transferResultModalMessage }}</span>
+            </div>
+          </div>
+        </div>
+        <pre style="padding-right: 0.5rem; overflow: scroll;">{{ transferResultModalData }}</pre>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="transferResultModalShown=false">OK</button>
+      </div>
+    </clr-modal>
+  
+  <img
+    [src]="art.effectiveImageUrl"
+    onerror="if (this.src != 'assets/img/img_not_found.png') { this.src = 'assets/img/img_not_found.png'; }" 
+    style="padding-top: 1rem; padding-left: 1rem;"
+  />

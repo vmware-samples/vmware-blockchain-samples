@@ -13,10 +13,9 @@ export class AccountGenComponent implements OnInit {
 
   constructor(
     private ethService: EthereumService,
-  ) { }
+  ) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   async generateNewAccount() {
     const acc = this.ethService.createAccount();

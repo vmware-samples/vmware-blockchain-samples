@@ -3,7 +3,6 @@
 </div>
 <div style="height: 0.55rem;"></div>
 
-
 <clr-modal [(clrModalOpen)]="mintingModalShown" [clrModalSize]="'sm'" #mintingModal>
   <h3 class="modal-title">Mint a New Art NFT</h3>
   <div class="modal-body">
@@ -21,7 +20,7 @@
       <clr-input-container>
         <label>Image URL</label>
         <input placeholder="URL of target image" clrInput formControlName="imageUrl" id="imageUrl" class="minting-input" (keyup)="mintingDelayedValidation($event, 'imageUrl')"/>
-        <clr-control-error>Valid image url is required</clr-control-error>
+        <clr-control-error>Valid image URL is required</clr-control-error>
       </clr-input-container>
       <div style="height:1rem;"></div>
     </form>
@@ -33,7 +32,6 @@
       (click)="mintingHandle()">Mint</button>
   </div>
 </clr-modal>
-
 
 <clr-modal [(clrModalOpen)]="mintingResultModalShown" [clrModalSize]="'lg'">
   <h3 class="modal-title">Minting Outcome</h3>
@@ -60,7 +58,6 @@
     <button type="button" class="btn btn-primary" (click)="mintingResultModalShown=false">OK</button>
   </div>
 </clr-modal>
-
 
 <clr-tabs>
   <clr-tab>

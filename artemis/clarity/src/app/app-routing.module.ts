@@ -9,4 +9,4 @@ import { ResourceGuard } from './ganymede/components/services/resource-guard';
   exports: [RouterModule],
   providers: [ResourceGuard]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

@@ -18,7 +18,7 @@ export const mockDigitalArts = [
   },
   {
     title: 'Starry Night Animated',
-    artist: '(Vicent van Gogh) Unknown',
+    artist: '(Vincent van Gogh) Unknown',
     imageUrl: 'http://localhost.com/assets/img/nft-samples/nft-img-sample2.gif',
   },
   {
