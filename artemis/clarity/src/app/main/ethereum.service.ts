@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import Web3 from 'web3';
 import { AppService } from '../ganymede/components/services/app.service';
 import { rx } from '../ganymede/components/util/common/ngrx.stores';
+import { ethers } from '@vmware-blockchain/ethers';
 
 declare var window: any;
-let web3: any;
+let web3Provider: any;
 const gas = 999999999;
 
 export class EthDataCollection {
@@ -18,16 +18,19 @@ export class EthDataCollection {
       FETCH: new rx.Action<string>({}, async (e: rx.ActionArgs<string>) => {
         const data = e.data;
         const key = e.params.key;
-        let newBalance = await web3.eth.getBalance(key);
-        if (newBalance) { newBalance = e.params.ethServiceGetter().parseBalance(newBalance); }
+        let newBalance = await web3Provider.getBalance(key);
+        if (newBalance) {
+          newBalance = e.params.ethServiceGetter().parseBalance(newBalance);
+        }
         const newVal = rx.setkv(data.v, e.params.key, newBalance);
         data.setValue(newVal);
-        if (e.params.ondata) { e.params.ondata(newVal[key], e); }
+        if (e.params.ondata) {
+          e.params.ondata(newVal[key], e);
+        }
         return newVal;
       })
     }})
   };
-
 }
 
 @Injectable({
@@ -35,26 +38,36 @@ export class EthDataCollection {
 })
 export class EthereumService {
 
-  web3: any;
+  web3Provider: any;
   initPromise: Promise<any> = null;
   currentAccount: string = null;
   currentAccountBalance = '-';
+  currentSigner: any;
   accounts: string[] = [];
   testAccount;
 
   constructor(public app: AppService) {
     this.initialize();
+
+    //subscribes to rx store changes
     this.app.store.eth.account.balance.data$.subscribe(balances => {
-      if (balances[this.currentAccount]) { this.currentAccountBalance = balances[this.currentAccount]; }
+      if (balances[this.currentAccount]) {
+        this.currentAccountBalance = balances[this.currentAccount];
+      }
     });
   }
 
-  setWeb3(w3) { this.web3 = web3 = w3; }
+  //sets web3P to web3Provider
+  setWeb3Provider(w3P) {
+    this.web3Provider = web3Provider = w3P;
+  }
 
+  //init()
   async initialize() {
+    //metamask handling
     if (window.ethereum) {
-      this.setWeb3(new Web3(window.ethereum));
-      await this.waitForProvider();
+      this.setWeb3Provider(new ethers.providers.Web3Provider(window.ethereum));
+      await this.waitForEthWindow();
       window.ethereum.on('accountsChanged', _ => {
         console.log('Metamask Account Changed');
         window.location.reload();
@@ -62,33 +75,34 @@ export class EthereumService {
       window.ethereum.on('chainChanged', _ => {
         console.log(_);
       });
-
-    } else if (window.web3) {
-      this.setWeb3(new Web3(web3.currentProvider));
+    } else if(window.web3) { //if deprecated window.web3 provided instead
+      this.setWeb3Provider(new ethers.providers.Web3Provider(window.web3));
     } else {
-      throw new Error('Non-Ethereum browser detected. Use MetaMask!');
+      throw new Error('Non-valid/Ethereum browser extension detected. Use MetaMask!');
     }
+
+    //account handling
     await window.ethereum.request({ method: 'eth_requestAccounts' });
     await this.getAccounts();
   }
 
-  async waitForProvider() {
+  //enables window.ethereum
+  async waitForEthWindow() {
     if (this.initPromise === null) { return; }
     this.initPromise = window.ethereum.enable();
     await this.initPromise;
     this.initPromise = null;
   }
 
+  //getting current account
   async getAccounts() {
-    this.accounts = await web3.eth.getAccounts();
+    this.accounts = await web3Provider.listAccounts();
     this.currentAccount = this.accounts[0];
     await this.getAccountBalance(this.currentAccount);
+    this.currentSigner = await this.web3Provider.getSigner(this.currentAccount);
   }
 
-  createAccount() {
-    return web3.eth.accounts.create();
-  }
-
+  //account balance
   async getAccountBalance(address: string) {
     return new Promise<string>(resolve => {
       rx.invoke(this.app.store.eth.account.balance.actions.FETCH, {
@@ -99,56 +113,63 @@ export class EthereumService {
     });
   }
 
+  //creates random test account and connects account with web3Provider
+  createAccount() {
+    return ethers.Wallet.createRandom().connect(this.web3Provider);
+  }
+
+  //TODO: sending ethers doesn't seem to work currently
   sendEth(account, to: string, amount: string) {
     return new Promise<any>(async resolve => {
-      const tx = {from: account.address, to, gas, value: web3.utils.toWei(amount, 'ether') };
+      const tx = { from: account.address, to, gas, value: ethers.utils.parseUnits(amount, 'wei') };
       account.signTransaction(tx, (e, signedTx) => {
         if (e) { return resolve({ status: 'error', error: e }); }
-        web3.eth
-          .sendSignedTransaction(signedTx.raw || signedTx.rawTransaction)
+        web3Provider
+          .sendTransaction(signedTx.raw || signedTx.rawTransaction)
           .on('receipt', receipt => { resolve({ status: 'ok', receipt }); })
           .on('error', error => { resolve({ status: 'error', error }); });
       }).catch(error => { resolve({ status: 'error', error }); });
     });
   }
 
+  //TODO: fix for testing purposes
   submit(account, to: string, data: string) {
     return new Promise<any>(async resolve => {
       const tx = { from: account.address, to, gas, data };
       account.signTransaction(tx, (e, signedTx) => {
         if (e) { return resolve({ status: 'error', error: e }); }
-        web3.eth
-          .sendSignedTransaction(signedTx.raw || signedTx.rawTransaction)
+        web3Provider
+          .sendTransaction(signedTx.raw || signedTx.rawTransaction)
           .on('receipt', receipt => { resolve({ status: 'ok', receipt }); })
           .on('error', error => { resolve({ status: 'error', error }); });
       }).catch(error => { resolve({ status: 'error', error }); });
     });
   }
 
+  //TODO: see TODO for submit function
   testerSubmit(to: string, data: string) {
     return this.submit(this.testAccount, to, data);
   }
 
-  testerLoadAccount(address?: string, privateKey?: string) {
-    this.testAccount = web3.eth.accounts.create();
-    if (address && privateKey) {
-      this.testAccount.address = address;
-      this.testAccount.privateKey = privateKey;
-    }
+  //creates random test account
+  testerLoadAccount() {
+    this.testAccount = this.createAccount();
   }
 
+  //parses balance for UI
   parseBalance(strBalance: string) {
+    let bal = strBalance.toString();
     let nat = '0';
     let dec = '0';
-    if (strBalance.length > 18) {
-      nat = strBalance.slice(0, strBalance.length - 18);
-      dec = strBalance.slice(strBalance.length - 18).substr(0, 4);
+    if (bal.length > 18) {
+      nat = bal.slice(0, bal.length - 18);
+      dec = bal.slice(bal.length - 18).substring(0, 4);
     } else {
       nat = '0';
-      dec = strBalance.slice(0, 4);
+      dec = bal.slice(0, 4);
     }
     while (dec.endsWith('0') || dec.endsWith('.')) {
-      dec = dec.substr(0, dec.length - 1);
+      dec = dec.substring(0, dec.length - 1);
     }
     return `${nat}.${dec}`;
   }

@@ -11,11 +11,10 @@ export const ganymedeAppData = new GanymedeAppData({
     header: {
       nav: [
         // { path: 'dashboard', name: 'Dashboard' },
-        { path: 'explorer', name: 'Network Explorer' },
         { path: 'digital-arts', name: 'Digital Arts' },
         { path: 'mockups', name: 'Tests & Mockups' },
-        { path: 'utils', name: 'Utils' },
-        { path: 'docs', name: 'Documentation' },
+        // { path: 'utils', name: 'Utils' },
+        // { path: 'docs', name: 'Documentation' },
       ],
       alwaysOn: false,
     }

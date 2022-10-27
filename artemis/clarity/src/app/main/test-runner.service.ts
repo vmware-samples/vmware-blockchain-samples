@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DigitalArtsService } from './digital-arts.service';
 import { EthereumService } from './ethereum.service';
-import { mockAccounts, mockDigitalArts } from './test-mock.data';
+import { mockDigitalArts } from './test-mock.data';
 
 @Injectable({
   providedIn: 'root'
@@ -16,21 +16,27 @@ export class TestRunnerService {
     private digitalArtsService: DigitalArtsService,
   ) {}
 
+  //mints all artwork in ./test-mock.data.ts with mock test account
   async mockDigitalArts(cb?: (art, result) => void) {
-    await this.mockAccounts();
+    await this.mockAccount();
     await this.digitalArtsService.waitForIt();
     for (const art of mockDigitalArts) {
-      const abi = this.digitalArtsService.mintAbi(art.title, art.artist, art.imageUrl);
-      const result = await this.ethService.testerSubmit(this.digitalArtsService.contractAddress, abi);
-      if (cb) { cb(art, result); }
+      let result;
+      try{
+        result = await this.digitalArtsService.testMint(art.title, art.artist, art.imageUrl);
+        if (cb) { cb(art, result); }
+      } catch (err) {
+        console.log(err);
+      }
     }
     await this.digitalArtsService.refreshInventory();
   }
 
-  async mockAccounts() {
+  //used to use the mainTester account in ./test-mock.data.ts but mocks randomly made test account
+  async mockAccount() {
     if (this.accountMocked) { return; }
     this.accountMocked = true;
-    this.ethService.testerLoadAccount(mockAccounts.mainTester.address, mockAccounts.mainTester.privateKey);
+    this.ethService.testerLoadAccount();
   }
 
   async runAllTests() {

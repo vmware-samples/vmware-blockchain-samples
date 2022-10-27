@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AppService } from 'src/app/ganymede/components/services/app.service';
+import { ThemeSelectorComponent } from 'src/app/ganymede/components/settings/theme-selector/theme-selector.component';
 import { EthereumService } from 'src/app/main/ethereum.service';
 import { mockAccounts } from 'src/app/main/test-mock.data';
 
@@ -11,9 +12,12 @@ import { mockAccounts } from 'src/app/main/test-mock.data';
 })
 export class GodAccountComponent implements OnInit {
 
+  //TODO: make god account relevant again
   account;
-  godAddress: string = mockAccounts.godAccount.address;
-  godPrivateKey: string = mockAccounts.godAccount.privateKey;
+  // godAddress: string = mockAccounts.godAccount.address;
+  godAddress: string = null;
+  // godPrivateKey: string = mockAccounts.godAccount.privateKey;
+  godPrivateKey: string = null;
   godBalance = null;
 
   currentAccountBalance = '-';
@@ -32,8 +36,10 @@ export class GodAccountComponent implements OnInit {
     private ethService: EthereumService,
   ) {
     this.account = this.ethService.createAccount();
-    this.account.address = mockAccounts.godAccount.address;
-    this.account.privateKey = mockAccounts.godAccount.privateKey;
+    this.godAddress = this.account.address;
+    this.godPrivateKey = this.account.privateKey;
+    // this.account.address = mockAccounts.godAccount.address;
+    // this.account.privateKey = mockAccounts.godAccount.privateKey;
     this.app.store.eth.account.balance.data$.subscribe(balances => {
       if (balances[this.ethService.currentAccount]) { this.currentAccountBalance = balances[this.ethService.currentAccount]; }
       if (balances[this.godAddress]) { this.godBalance = balances[this.godAddress]; }

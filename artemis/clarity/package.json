@@ -74,6 +74,7 @@
     "node-html-parser": "^5.3.3",
     "protractor": "~7.0.0",
     "ts-node": "~10.7.0",
-    "tslint": "~5.20.1"
+    "tslint": "~5.20.1",
+    "@vmware-blockchain/ethers": "0.0.2"
   }
 }

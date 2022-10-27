@@ -1,0 +1,44 @@
+.card-max-width {
+    max-width: 600px;
+  }
+  
+:host {
+    padding: 0.3rem 0.5rem;
+    display: block;
+}
+
+:host ::ng-deep clr-input-container {
+    label {
+        white-space: nowrap;
+    }
+}
+
+.transfer-input {
+    width: 240px;
+}
+
+.gray-transfer {
+    filter: grayscale(80%);
+}
+
+.transfer-button-cont {
+    display: block;
+    float: right;
+    height: 0;
+    margin-top: -0.2rem;
+}
+
+.transfer-button {
+    offset: default;
+}
+
+@media screen and (max-width: 768px) {
+    .transfer-button-cont {
+        float: left;
+        height: 2.5rem;
+    }
+    .transfer-button {
+        min-width: 50vw;
+        width: 100%;
+    }
+}

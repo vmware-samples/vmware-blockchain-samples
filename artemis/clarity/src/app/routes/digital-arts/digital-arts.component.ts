@@ -1,14 +1,10 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-// import { v4 as uuidv4 } from 'uuid';
-
 import { DigitalArt } from '../../main/models/digital-art.model';
-
 import { DigitalArtsService } from 'src/app/main/digital-arts.service';
 import { EthereumService } from 'src/app/main/ethereum.service';
 import { AppService } from 'src/app/ganymede/components/services/app.service';
 import { Subscription } from 'rxjs';
-import { TestRunnerService } from 'src/app/main/test-runner.service';
 
 const urlRegEx = /^(https?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(\:\d+)?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/i;
 
@@ -19,6 +15,7 @@ const urlRegEx = /^(https?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.)+[a-z]{2,}|((\
 })
 export class DigitalArtsComponent implements OnInit, OnDestroy {
 
+  //for minting function and UI
   @ViewChild('mintingModal') mintingModal;
   mintingForm = new FormGroup({
     title: new FormControl('', { validators: [Validators.required], updateOn: 'blur' }),
@@ -36,6 +33,14 @@ export class DigitalArtsComponent implements OnInit, OnDestroy {
   mintingResultModalData = '';
   mintingResultHasError = false;
 
+  //magic numbers
+  mintingTimeDelay = 333;
+  mintingMessageJsonIndentSpaces = 4;
+
+  cardCheckLimit = 7000;
+  cardCheckInterval = 250;
+
+  //art arrays
   digitalArts = DigitalArtsService.skel?.ds?.digitalArts;
   arts: DigitalArt[] = [];
   artsMintedByMe: DigitalArt[] = [];
@@ -47,10 +52,13 @@ export class DigitalArtsComponent implements OnInit, OnDestroy {
     private ethService: EthereumService,
     private digitalArtsService: DigitalArtsService,
   ) {
+    //subscribes to minting form UI
     this.mintingFormSub = this.mintingForm.statusChanges.subscribe(status => {
       this.mintingFormStatus = status;
       this.mintingFormCheck();
     });
+
+    //subscribes to tabs and maps art according to each category
     this.app.store.digitalArtsData.digitalArts.data$.subscribe(artsMap => {
       this.arts = this.digitalArtsService.flattenArtsMap(artsMap);
       this.artsMintedByMe = this.arts.filter(a => {
@@ -72,15 +80,23 @@ export class DigitalArtsComponent implements OnInit, OnDestroy {
   mintingFormCheck() {
     const ctrls = this.mintingForm.controls;
     let valid = true;
+    /*
+      List of errors caught:
+        invalid (not empty) title, artistName, imageUrl (caught by .required Validator)
+        imageUrl is a URL following urlRegEx (caught by .pattern Validator)
+    */
     if (ctrls.title.invalid || ctrls.artistName.invalid || ctrls.imageUrl.invalid) {
       valid = false;
     } else if (status) {
-      if (status === 'INVALID') { valid = false; }
+      if (status === 'INVALID') {
+        valid = false;
+      }
     }
     this.mintingFormValidity = valid;
     return valid;
   }
 
+  //constantly checks validity of entered fields
   mintingDelayedValidation(event, fieldName: string) {
     const el = event.target;
     const locker = this.mintingDelayedChecker = {};
@@ -94,49 +110,79 @@ export class DigitalArtsComponent implements OnInit, OnDestroy {
         }
         this.mintingFormCheck();
       }
-    }, 333);
+    }, this.mintingTimeDelay);
   }
 
+  //handles minting for UI
   async mintingHandle() {
     if (this.mintingInProgress) { return; }
     this.mintingForm.updateValueAndValidity();
     if (this.mintingFormValidity) {
+      //UI setup
       const modalRef = this.mintingModal.focusTrap.parentElement;
       const modalContentRef = modalRef.getElementsByClassName('modal-dialog')[0];
       modalContentRef.classList.add('modal-noninteractable');
       this.mintingInProgress = true;
+
+      //minting parameters
       const title = this.mintingForm.controls.title.value;
       const artistName = this.mintingForm.controls.artistName.value;
       const imageUrl = this.mintingForm.controls.imageUrl.value;
-      const result = await this.digitalArtsService.mint(title, artistName, imageUrl);
-      this.mintingInProgress = false;
-      modalContentRef.classList.remove('modal-noninteractable');
-      this.mintingModalShown = false;
-      const resultJson = result.receipt ? result.receipt : result.error;
-      this.mintingResultHasError = result.receipt ? false : true;
-      if (!this.mintingResultHasError) {
-        this.mintingResultModalMessage = 'Transaction successfully processed.';
-      } else {
-        switch (resultJson.code) {
-          case 4001:
-            this.mintingResultModalMessage = 'User canceled transaction signing.'; break;
-          default:
-            this.mintingResultModalMessage = 'Transaction failed to be processed.'; break;
-        }
-      }
-      this.mintingResultModalShown = true;
-      this.mintingResultModalData = JSON.stringify(resultJson, null, 4);
-      if (result.receipt) {
-        const tokId = result.receipt.events.Transfer.returnValues.tokenId;
+
+      let result;
+      try {
+        result = await this.digitalArtsService.mint(title, artistName, imageUrl);
+
+        //UI cleanup
+        this.mintingInProgress = false;
+        modalContentRef.classList.remove('modal-noninteractable');
+        this.mintingModalShown = false;
+
+        //success message
+        this.mintingResultModalMessage = 'Transaction successfully processed';
+        this.mintingResultModalData = JSON.stringify(result, null, this.mintingMessageJsonIndentSpaces);
+        this.mintingResultModalShown = true;
+
+        this.digitalArtsService.refreshInventory();
+
+        /*
+          Scrolls UI to newly inserted element
+
+          TODO: fix this
+        */
         const checkerStart = Date.now();
         const cardChecker = setInterval(() => {
-          const el = document.getElementById(`digital-art-grid-token-${tokId}`);
+          const el = document.getElementById(`digital-art-grid-token-${this.digitalArtsService.totalArtsSupply.toNumber() - 1}`);
           if (el) {
             el.scrollIntoView({ block: 'center', behavior: 'smooth' });
             clearInterval(cardChecker);
           }
-          if (Date.now() - checkerStart > 7000) { clearInterval(cardChecker); }
-        }, 250);
+          if (Date.now() - checkerStart > this.cardCheckLimit) { clearInterval(cardChecker); }
+        }, this.cardCheckInterval);
+
+      } catch (err) {
+        //UI cleanup
+        this.mintingInProgress = false;
+        modalContentRef.classList.remove('modal-noninteractable');
+        this.mintingModalShown = false;
+
+        //error handling: ideally should test later on for all possible cases of failure
+        switch(this.digitalArtsService.error.code){
+          case "ACTION_REJECTED":
+            this.mintingResultModalMessage = "User cancelled transaction before signing";
+            break;
+          case -32603:
+            this.mintingResultModalMessage = 'Minting failed due to non-uniqueness of NFT';
+            break;
+          default:
+            this.mintingResultModalMessage = 'Transaction failed';
+            break;
+        }
+
+        //failure message
+        this.mintingResultHasError = true;
+        this.mintingResultModalData = JSON.stringify(this.digitalArtsService.error, null, this.mintingMessageJsonIndentSpaces);
+        this.mintingResultModalShown = true;
       }
     }
   }
@@ -148,7 +194,9 @@ export class DigitalArtsComponent implements OnInit, OnDestroy {
   ngOnInit() {}
 
   ngOnDestroy() {
-    if (this.mintingFormSub) { this.mintingFormSub.unsubscribe(); }
+    if(this.mintingFormSub) {
+      this.mintingFormSub.unsubscribe();
+    }
   }
 
 }
