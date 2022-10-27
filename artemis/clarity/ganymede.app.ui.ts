@@ -1,6 +1,6 @@
 import { ganymedeAppData } from './ganymede.app';
-import { HttpWrap } from './src/app/ganymede/components/util/http.wrapper';
-import { rx } from './src/app/ganymede/components/util/ngrx.stores';
+import { HttpWrap } from './src/app/ganymede/components/util/common/http.wrapper';
+import { rx } from './src/app/ganymede/components/util/common/ngrx.stores';
 import { BasicContentsComponent } from './src/app/ganymede/components/pages/basic-contents/basic-contents.component';
 import { DigitalArtsComponent } from 'src/app/routes/digital-arts/digital-arts.component';
 import { LandingComponent } from 'src/app/routes/landing/landing.component';
@@ -35,6 +35,7 @@ ganymedeAppData.routes = [
   { path: '**', component: BasicContentsComponent, data: { templateData: { layout: 'full' } }, }
 ];
 
+
 export const appRoutes = ganymedeAppData.routes;
 
 export const ngrxStores = rx.NgrxStoreRoot.getStores({
@@ -54,6 +55,10 @@ export const otherDeclarations = [
 ];
 
 export const otherProviders = [
+
+];
+
+export const otherClarityIcons = [
 
 ];
 

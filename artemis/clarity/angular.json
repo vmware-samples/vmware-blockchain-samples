@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "clarity": {
+    "artemis": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,12 +17,15 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/clarity",
+            "outputPath": "dist/artemis",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": false,
+            "optimization": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
             "assets": [
               "src/assets",
               "src/favicon.ico",
@@ -33,17 +36,11 @@
               }
             ],
             "styles": [
-              "node_modules/@clr/icons/clr-icons.min.css",
-              "node_modules/@clr/ui/clr-ui.min.css",
               "src/styles.scss"
             ],
-            "scripts": [
-              "node_modules/@webcomponents/custom-elements/custom-elements.min.js",
-              "node_modules/@clr/icons/clr-icons.min.js"
-            ],
+            "scripts": [],
             "allowedCommonJsDependencies": [
-              "web3",
-              "@ethersproject/signing-key"
+              
             ]
           },
           "configurations": {
@@ -54,7 +51,11 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "optimization": true,
+              "optimization": {
+                "scripts": true,
+                "fonts": { "inline": true },
+                "styles": false
+              },
               "outputHashing": "all",
               "sourceMap": false,
               "namedChunks": false,
@@ -80,18 +81,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "clarity:build"
+            "browserTarget": "artemis:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "clarity:build:production"
+              "browserTarget": "artemis:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "clarity:build"
+            "browserTarget": "artemis:build"
           }
         },
         "test": {
@@ -133,18 +134,18 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "clarity:serve"
+            "devServerTarget": "artemis:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "clarity:serve:production"
+              "devServerTarget": "artemis:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "clarity",
+  "defaultProject": "artemis",
   "cli": {
     "analytics": "<ANGULAR_APP_CLI_ANALYTICS_TOKEN>"
   }

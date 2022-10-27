@@ -1,0 +1,3 @@
+[submodule "artemis/clarity/src/app/ganymede"]
+	path = artemis/clarity/src/app/ganymede
+	url = https://github.com/jovians/ganymede.git

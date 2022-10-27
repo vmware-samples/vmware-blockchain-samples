@@ -41,7 +41,7 @@ class App extends Component {
   transfer=(to)=>{
     const currOwner=this.state.account
     const tokenId=this.state.currentToken
-    this.state.contract.methods.approveTransfer(currOwner,to,tokenId).send({from: this.state.account}).once('receipt',(receipt)=>{
+    this.state.contract.methods.approveTransfer(to,tokenId).send({from: this.state.account}).once('receipt',(receipt)=>{
       this.setState({clickPop:false})
       window.location.reload();
 

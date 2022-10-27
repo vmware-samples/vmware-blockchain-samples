@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
-import { CommonModule, LOCATION_INITIALIZED } from '@angular/common';
+import { CommonModule, LOCATION_INITIALIZED, APP_BASE_HREF } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule, Injector, APP_INITIALIZER } from '@angular/core';
+import { NgModule, Injector, CUSTOM_ELEMENTS_SCHEMA, APP_INITIALIZER } from '@angular/core';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { RouteReuseStrategy } from '@angular/router';
 
@@ -13,6 +13,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { RequestInterceptor } from './http.wrapper';
 
 import { ClarityModule } from '@clr/angular';
+import { cdsIconImportInfo } from './ganymede/components/cds-icon.register';
 
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -23,7 +24,7 @@ import { miscWarningsSuppression } from './ganymede/misc/warning.suppress';
 import { GanymedeCoreModule } from './ganymede/components/ganymede.core.module';
 
 import { ganymedeLicenseCallbacks } from './ganymede/ganymede.license';
-import { PreInitUtils } from './ganymede/components/util/preinit.util';
+import { PreInitUtils } from './ganymede/components/util/common/preinit.util';
 import { RouteReuser } from './ganymede/components/services/route-reuser';
 import { ganymedeAppData } from '../../ganymede.app';
 import { ngrxStores, ngrxEffectClasses, otherModules, otherDeclarations, otherProviders } from '../../ganymede.app.ui';
@@ -32,13 +33,16 @@ import { UserRoutesModule } from './routes/routes.module';
 import { UserCustomAppModule } from './main/main.module';
 
 import { AppComponent } from './ganymede/components/templates/default/template.module';
-import { MessageCenter } from './ganymede/components/util/message.center';
+import { MessageCenter } from './ganymede/components/util/common/message.center';
+import { Theme } from './ganymede/components/util/common/theme.controller';
 
 const notFoundValue = Promise.resolve();
 const translateBasePath = 'assets/i18n/';
 
 export function preInitFactory() {
   return () => new Promise<any>(async resolve => {
+    cdsIconImportInfo.added = true;
+    Theme.handleEntrypoint();
     if (ganymedeAppData.features.preinit) {
       await PreInitUtils.entrypoint();
     }
@@ -66,8 +70,8 @@ export function langInitFactory(translate: TranslateService, injector: Injector)
     HttpClientModule,
     BrowserModule,
     AppRoutingModule,
-    ClarityModule,
     BrowserAnimationsModule,
+    ClarityModule,
     StoreModule.forRoot(ngrxStores),
     EffectsModule.forRoot(ngrxEffectClasses),
     TranslateModule.forRoot({
@@ -80,18 +84,10 @@ export function langInitFactory(translate: TranslateService, injector: Injector)
     MarkdownModule.forRoot({
       loader: HttpClient,
       markedOptions: {
-          provide: MarkedOptions,
-          useValue: {
-                  gfm: true,
-                  tables: true,
-                  breaks: false,
-                  pedantic: false,
-                  sanitize: false,
-                  smartLists: true,
-                  smartypants: false,
-                  highlight: true
-              },
-          },
+        provide: MarkedOptions,
+        useValue: { gfm: true, tables: true, breaks: false, pedantic: false,
+                    sanitize: false, smartLists: true, smartypants: false, highlight: true },
+      },
     }),
     GanymedeCoreModule,
 
@@ -103,6 +99,10 @@ export function langInitFactory(translate: TranslateService, injector: Injector)
 
   ].concat(otherDeclarations),
   providers: [
+    {
+      provide: APP_BASE_HREF,
+      useValue: (window as any).baseHref ? (window as any).baseHref : '/'
+    },
     {
       provide: APP_INITIALIZER,
       useFactory: preInitFactory,
@@ -124,7 +124,8 @@ export function langInitFactory(translate: TranslateService, injector: Injector)
     TranslateService,
     MarkedOptions,
   ].concat(otherProviders),
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule { }
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
 import { AppService } from '../ganymede/components/services/app.service';
-import { rx } from '../ganymede/components/util/ngrx.stores';
+import { rx } from '../ganymede/components/util/common/ngrx.stores';
 
 declare var window: any;
 let web3: any;
@@ -49,9 +49,7 @@ export class EthereumService {
     });
   }
 
-  setWeb3(w3) {
-    this.web3 = web3 = w3;
-  }
+  setWeb3(w3) { this.web3 = web3 = w3; }
 
   async initialize() {
     if (window.ethereum) {
@@ -70,6 +68,7 @@ export class EthereumService {
     } else {
       throw new Error('Non-Ethereum browser detected. Use MetaMask!');
     }
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
     await this.getAccounts();
   }
 

@@ -8,8 +8,8 @@ const DigitalArtAbi = require('../../../../src/abis/DigitalArt.json');
 declare var window: any;
 const storeEnabled = true;
 const contractAddrs = [
-  '0x7373de9d9da5185316a8D493C0B04923326754b2',
-  '0x332e82368Be5c75B1dBb4c8ce1aaF5F0f27477DD'
+  '0x8780125d9a74963492B3e12C9F6C3F7F8a00E9E8',
+  '0x8780125d9a74963492B3e12C9F6C3F7F8a00E9E8'
 ];
 const baseData = {
   contract: null,
