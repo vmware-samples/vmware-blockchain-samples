@@ -38,3 +38,29 @@
 <div style="height: 0.5rem;"></div>
 <button class="btn btn-primary" (click)="sendBalance()">Send ETH</button>
 <div style="height: 2rem;"></div>
+
+<clr-modal [(clrModalOpen)]="sendingResultModalShown" [clrModalSize]="'lg'">
+  <h3 class="modal-title">Sending ETH Outcome</h3>
+  <div class="modal-body" style="max-height:500px; overflow-y: scroll;">
+    <div *ngIf="sendingResultHasError" class="alert alert-danger">
+      <div class="alert-items">
+        <div class="alert-item static" role="alert">
+          <div class="alert-icon-wrapper"><cds-icon class="alert-icon" shape="exclamation-circle"></cds-icon></div>
+          <span class="alert-text">{{ sendingResultModalMessage }}</span>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="!sendingResultHasError" class="alert alert-success">
+      <div class="alert-items">
+        <div class="alert-item static" role="alert">
+          <div class="alert-icon-wrapper"><cds-icon class="alert-icon" shape="check-circle"></cds-icon></div>
+          <span class="alert-text">{{ sendingResultModalMessage }}</span>
+        </div>
+      </div>
+    </div>
+    <pre style="padding-right: 0.5rem; overflow: scroll;">{{ sendingResultModalData }}</pre>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="sendingResultModalShown=false">OK</button>
+  </div>
+</clr-modal>

@@ -18,14 +18,28 @@ Follow the below link to get VMware Blockchain running on your local computer.
 
 ## Setup
 
-Install application dependencies
+Install application dependencies (node v14 preferred)
 
 ```bash
-npm i -g @jovian/ganymede-clr
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 ```
+
+Close the session and reopen and `nvm` command will be available to your system.
+
 ```bash
-npm install
+nvm install 14  # installs node v14
+nvm alias default 14 # sets default system node version to 14
 ```
+
+Install depedencies for contracts and UI:
+
+```bash
+npm i  # in project root
+
+cd clarity; # in clarity folder (main UI)
+npm i
+```
+
 Deploy contracts on Concord or any network by specifying network instead of development can use Ganaches or any other network.
 ```bash
 truffle migrate --reset --network=development
@@ -33,18 +47,11 @@ truffle migrate --reset --network=development
 
 Deploy contracts on VMware Blockchain
 ```bash
-truffle migrate --reset //Since default network is Concord
+truffle migrate --reset  # Since default network is Concord
 ```
 Run NFT Platform on clarity directory
-```bash
-gany set
-```
-```bash
-npm install
-```
 ```bash
 npm run start
 ```
 
 Finally go to http://localhost:4200 to interact with the platform. 
-

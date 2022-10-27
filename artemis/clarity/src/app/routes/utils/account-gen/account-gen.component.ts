@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { sleepms } from '@jovian/type-tools/common/ix.timer';
 import { EthereumService } from 'src/app/main/ethereum.service';
 
 @Component({

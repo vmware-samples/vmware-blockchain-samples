@@ -22,6 +22,10 @@ export class GodAccountComponent implements OnInit {
     address: new FormControl('', { validators: [Validators.required], updateOn: 'blur' }),
     amount: new FormControl('', { validators: [Validators.required], updateOn: 'blur' }),
   });
+  sendingResultModalShown = false;
+  sendingResultModalMessage = '';
+  sendingResultModalData = '';
+  sendingResultHasError = false;
 
   constructor(
     public app: AppService,
@@ -43,11 +47,25 @@ export class GodAccountComponent implements OnInit {
   async sendBalance() {
     const address = this.sendForm.controls.address.value;
     const amount = this.sendForm.controls.amount.value;
-    const res = await this.ethService.sendEth(this.account, address, amount);
-    if (res && res.status === 'ok') {
+    const result = await this.ethService.sendEth(this.account, address, amount);
+    if (result && result.status === 'ok') {
       this.ethService.getAccountBalance(this.account.address);
       this.ethService.getAccountBalance(address);
     }
+    const resultJson = result.receipt ? result.receipt : result.error;
+    this.sendingResultHasError = result.receipt ? false : true;
+    if (!this.sendingResultHasError) {
+      this.sendingResultModalMessage = 'Transaction successfully processed.';
+    } else {
+      switch (resultJson.code) {
+        case 4001:
+          this.sendingResultModalMessage = 'User canceled transaction signing.'; break;
+        default:
+          this.sendingResultModalMessage = 'Failed during transaction processing.'; break;
+      }
+    }
+    this.sendingResultModalShown = true;
+    this.sendingResultModalData = JSON.stringify(resultJson, null, 4);
   }
 
 }

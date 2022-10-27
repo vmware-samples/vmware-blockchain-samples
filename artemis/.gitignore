@@ -1,0 +1,4 @@
+# Generated contract ABIs need not be committed
+src/abis/**/*
+/src/abis/**/*
+node_modules

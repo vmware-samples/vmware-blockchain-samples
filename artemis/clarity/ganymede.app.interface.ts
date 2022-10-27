@@ -7,11 +7,10 @@ const baseVidPath = '/assets/vid';
 
 const self = new Function('return this')();
 const isNodeJs = self.btoa === undefined;
-
+const useDestor = true;
 export interface GanymedeSecretsResolver {
-  type: 'local-json-file' | 'server';
+  type: 'local-json-file' | 'source-from-destor';
   jsonFile?: string;
-  serverUrl?: string;
 }
 
 export class GanymedeAppData {
@@ -48,9 +47,10 @@ export class GanymedeAppData {
 
   extensions: GanymedeAppExtensions = {};
 
-  secretsResolution: GanymedeSecretsResolver = {
-    type: 'local-json-file',
-    jsonFile: 'ganymede.secrets.json'
+  secretsResolution: GanymedeSecretsResolver = useDestor ? {
+    type: 'source-from-destor',
+  } : {
+    type: 'local-json-file', jsonFile: 'ganymede.secrets.json'
   };
 
   logger: any = null;
@@ -71,6 +71,8 @@ export class GanymedeAppData {
   } = { type: 'simple' };
 
   conf: any; // ganymede.conf.json content
+
+  theme = { base: 'CLARITY', type: 'LIGHT' };
 
   constructor(initializer?: Partial<GanymedeAppData>) {
     if (initializer) {
@@ -107,8 +109,8 @@ export interface GanymedeAppBase {
   modules?: {
     auth?: {
       type: string;
-      host: string;
-      port: number;
+      host?: string;
+      port?: number;
     },
     mailer?: {
       type: string;
@@ -127,8 +129,7 @@ export interface GanymedeAppExtensions {
         gcp?: { type?: string; list: any[]; };
         azure?: { type?: string; list: any[]; };
         vcenter?: { type?: string; list: any[]; };
-        otherVms?: { type?: string; list: any[]; };
-      };
+      }
     }
   };
   external?: {
