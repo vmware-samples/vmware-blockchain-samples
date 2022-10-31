@@ -13,8 +13,8 @@ const contractAddrs = [
     insert the address of deployed DigitalArts contract on chain here and ensure the other addresses are deleted
     in order for Artemis/NFT demo dapp to operate properly
   */
-  '0x8780125d9a74963492B3e12C9F6C3F7F8a00E9E8',
-  '0x8780125d9a74963492B3e12C9F6C3F7F8a00E9E8'
+  '0x7c93b0DbFCe7298f441876bf9C8F31D313623cA9',
+  '0x7c93b0DbFCe7298f441876bf9C8F31D313623cA9'
 ];
 const baseData = {
   contract: null,
@@ -191,12 +191,12 @@ export class DigitalArtsService {
     const newContract = await this.contract.connect(signer);
     let transaction;
     try{ 
-      transaction = newContract.approveTransfer(to, tokenId);
+      transaction = await newContract.approveTransfer(to, tokenId);
     } catch (err) {
       console.log(err);
       this.error = err;
     }
-    return transaction;
+    return transaction.wait();
   }
 
   //for art grid UI
