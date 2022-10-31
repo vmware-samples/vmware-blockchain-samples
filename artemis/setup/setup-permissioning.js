@@ -1,6 +1,6 @@
-const ethers = require("@vmware-blockchain/ethers");
+const ethers = require("ethers");
 
-var setupConfig = require('./config.json');
+var setupConfig = require('./permissioning-config.json');
 
 var permissionTypes = {
     "READ": 1,
