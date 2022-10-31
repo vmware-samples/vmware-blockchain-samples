@@ -2,11 +2,9 @@
 
 We are so glad that you have found this repository!
 
-The VMware Blockchain team has architected an extensible blockchain platform that is capable of supporting multiple smart contract languages, where each language runs on its own unique execution engine. Back in 2019, VMware Blockchain started first with the Daml smart contract language, highly ideal for mission critical capital market applications. Since then, we have received strong interest to support the Solidity smart contract language, which is targeted at a broad set of use cases that can benefit from the power of blockchain. To support that, VMware Blockchain team integrated the EVMOne Ethereum virtual machine, and voila - you can now run Solidity on VMware Blockchain! 
+The VMware Blockchain team has architected an extensible blockchain platform that is capable of supporting multiple smart contract languages, where each language runs on its own unique execution engine. Back in 2019, VMware Blockchain started first with the Daml smart contract language, highly ideal for mission critical capital market applications. Since then, we have received strong interest to support the Solidity smart contract language, which is targeted at a broad set of use cases that can benefit from the power of blockchain. To support that, VMware Blockchain team integrated the EVMOne Ethereum virtual machine, and voila - you can now run Solidity on VMware Blockchain!
 
-
-*** **Please note that the VMware Blockchain Ethereum Developer Kit is under early beta and functionality is subject to change** ***
-
+*** Please note that the VMware Blockchain Ethereum Developer Kit is under early beta and functionality is subject to change ***
 
 # Target Persona and Deployment Model
 Using the developer kit, Ethereum developer(s) can start developing or porting their existing decentralized applications (dApps) to a single host VMware Blockchain deployment on their local desktop/laptop or Cloud VM. 
@@ -20,107 +18,25 @@ Using the developer kit, Ethereum developer(s) can start developing or porting t
 |  RAM              | 12 GB of RAM or more |
 |  Disk Space       | 50 GB of free disk space or more |
 
-# Pre-requisites - System Software for Linux
-| Software | Versions |
-|-----------|-------------|
-| minikube	|1.25.1 or more	https://minikube.sigs.k8s.io/docs/start/ |
-| Kubectl	  |Client Version: v1.23.4 or more
-|           |Server Version: v1.23.1 or more	https://kubernetes.io/docs/tasks/tools/ |
-| docker	  | 18.06.1-ce, build e68fc7a or above	https://docs.docker.com/engine/install/ubuntu/ |
+# Usage
+** Step 1 : Deploy sample blockchain **
+   
+Navigate to $PWD/vmbc-four-node-one-client-deployment and follow steps from README to deploy sample four node one client blockchain on choice of your host.
+Optional: You can also deploy a blockchain with logging enabled.
+          Navigate to $PWD/vmbc-four-node-one-client-deployment-with-logging and follow steps from README.
 
-# Pre-requisites - System Software for macOS
-| Software | Versions |
-|-----------|-------------|
-| minikube	| 1.25.1 or more	https://minikube.sigs.k8s.io/docs/start/ |
-| Kubectl	  | Client Version: v1.23.4 or more |
-|           | Server Version: v1.23.1 or more	https://kubernetes.io/docs/tasks/tools/ |
-| VirutalBox |	6.x	https://www.virtualbox.org/wiki/Downloads |
+** Step 2 : Visualize your blockchain activities **
+   
+Navigate to $PWD/vmbc-explorer and follow steps from README to deploy vmbc-explorer against your deployed blockchain to view transaction progress.
 
-# Pre-requisites - Install Python modules
-```
-cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit
-pip3 install -r vmbc/config/requirements.txt
-```
-# Pre-requisites - Starting Minikube
-See scripts under`minikube` folder that provides convenience scripts to start and delete minikube. 
-```
-cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/minikube 
-./minikube-start.sh
-```
-## Make sure 'minikube status' has the expected output described below.
-```
-minikube status 
- 
-minikube
-type: Control Plane
-host: Running
-kubelet: Running
-apiserver: Running
-kubeconfig: Configured
-```
-# VMware Blockchain Change directory
-```
-cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/vmbc/script
-```
-# VMware Blockchain Set the username and password
-```
-./vmbc-cli --set-username-password --username username --password password
-```
-# VMware Blockchain Deployment
-```
-./vmbc-cli --deployment-type PROVISION 
-```
-After successful completion of the above provision command, VMBC_URL (VMware Blockchain Deployment URL) will be printed on the console. An example would be VMBC_URL=http://192.168.49.2:30545. Note that the IP address could be different in your minkikube setup.
+** Step 3 : (optional) Run sample dapp - erc20-swap
+   
+Navigate to $PWD/dapps/erc20-swap and follow steps from README to deploy erc20-swap dapp on to your deployed blockchain. You can view progress in vmbc-explorer deployed above.
 
-In case you have already provisioned VMBC, VMBC_URL is available in ./vmbc/.env.config.
+** Step 4 : (optional) Run sample test - erc20 test
+   
+Navigate to $PWD/dapsp/erc20-test-tool and follow steps from README to deploy erc20 test toolon to your deployed blockchain.
 
-For VMware Blockchain Deployment, the chainid is 5000.
-
-If you are using Metamask, in the add network section, please make sure to use the above VMBC_URL and chainid 5000.
-
-If you are using Hardhat, replace the url with the above VMBC_URL and chainid with 5000 in hardhat.config.ts. An example would be in the "networks" section, "concord" endpoint in https://github.com/vmware-samples/vmware-blockchain-samples/blob/master/hardhat/hardhat.config.ts.
-
-# VMware Blockchain Healthcheck
-``` 
-./vmbc-cli --healthcheck 
-```
-# VMware Blockchain Gas Free Mode for Ethereum
-In the public Ethereum network, gas refers to the cost necessary to perform a transaction on the network. Miners set the price of gas based on supply and demand for the computational power of the network needed to process smart contracts and other transactions. Requiring a fee for every transaction executed on the network provides a layer of security to the Ethereum network by making it too expensive for malicious users to spam the network. VMware Blockchain is a private, permissioned, and managed network, therefore it is not necessary to charge for computation power. In addition, the SBFT protocol it uses protects it from byzantine attacks. Since gas fees are not needed, VMBC supports a gas-free mode which simplifies Dapp deployment. 
-
-
-# Deploy Block Explorer (Optional)
-Block Explorer can be used to view and search ethereum transactions and blocks in the VMware Blockchain deployment
-```
-cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/explorer 
-./k8s-explorer-launch.sh
-```
-# Deploy ELK stack (Optional)
-Elasticsearch can be used to search and view system logs in the VMware Blockchain deployment
-```
-cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/elk
-
-./elk-elastic-launch.sh ; ( make sure that elasticsearch is working before moving further )
-
-./elk-kibana-launch.sh ; ( make sure that kibana is working before moving further )
-
-./elk-fluentd-lanch.sh
-```
-# Deploy sample dapp (Optional)
-This Dapp demonstrates swapping of ERC-20 tokens across different ethereum accounts
-```
-cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/dapp 
-./k8s-dapp-launch.sh
-```
-# VMware Blockchain Deployment Cleanup
-```
-cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/vmbc/script
-./vmbc-cli --deployment-type DEPROVISION
-```
-# Minikube Cleanup
-```
-cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/minikube 
-./minikube-delete.sh
-```
 # Popular tools to use with VMware Blockchain Ethereum Developer Kit
 Hardhat
 

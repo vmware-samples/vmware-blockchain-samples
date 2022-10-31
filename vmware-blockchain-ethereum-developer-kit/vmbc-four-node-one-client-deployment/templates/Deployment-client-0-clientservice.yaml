@@ -1,0 +1,122 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vmbc-deployment-client-0-clientservice
+  labels:
+    app: client-0-clientservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client-0-clientservice
+  template:
+    metadata:
+      labels:
+        app: client-0-clientservice
+    spec:
+      imagePullSecrets:
+        - name: vmwathena-regcred
+      volumes:
+        {{- $fluent := $.Files.Get "fluentd/config/fluent.conf" }}
+        {{ if $fluent }}
+        - name: vmbc-docker-log
+          hostPath:
+            path: /var/log/pods
+        - name: vmbc-docker-lib
+          hostPath:
+            path: /var/lib/docker/containers
+        - name: vmbc-configmap-fluentd
+          configMap:
+            name: vmbc-configmap-fluentd
+        {{ end }}
+        - name: config-common-volume
+          configMap:
+            name: vmbc-configmap-common
+        - name: config-clientservice-volume
+          configMap:
+            name: vmbc-configmap-client-0-clientservice
+        - name: secret-volume
+          secret:
+            secretName: vmbc-secret-client-0-clientservice
+      containers:
+        - name: client-0-clientservice
+          image: {{ include "clientservice.image" . }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 50505
+              protocol: TCP
+          resources:
+            limits:
+              cpu: "{{ .Values.resources.client.cpuLimit | default .Values.resources.client.defaultCpuLimit }}"
+              memory: "{{ .Values.resources.client.memoryLimit | default .Values.resources.client.defaultMemoryLimit }}"
+            requests:
+              cpu: "{{ .Values.resources.client.cpuRequest | default .Values.resources.client.defaultCpuRequest }}"
+              memory: "{{ .Values.resources.client.memoryRequest | default .Values.resources.client.defaultMemoryRequest }}"
+          volumeMounts:
+            ##########################################
+            #           config file volumes          #
+            ##########################################
+            ### Common files
+            # cert files
+            {{- range $path, $_ := .Files.Glob "client-0/config/clientservice/tls_certs/*/*.cert" }}
+            {{- $prefixRemoved := $path | replace "client-0" "" }}
+            {{- $key := $path | replace "client-0/config/clientservice" "common" | replace "/" "-" }}
+            - name: config-common-volume
+              mountPath: {{ $prefixRemoved }}
+              subPath: {{ $key }}
+            {{- end }}
+            ### component-specific files
+            # client service config file
+            {{- $clientserviceconfigfile := "client-0/config/clientservice/clientservice.config" }}
+            {{- $clientserviceconfigfilePrefixRemoved := $clientserviceconfigfile | replace "client-0" "" }}
+            - name: config-clientservice-volume
+              mountPath: {{ $clientserviceconfigfilePrefixRemoved }}
+              subPath: clientservice-config-file
+            # environment vars file
+            {{- $environmentvarsfile := "client-0/config/clientservice/environment-vars" }}
+            {{- $environmentvarsfilePrefixRemoved := $environmentvarsfile | replace "client-0" "" }}
+            - name: config-clientservice-volume
+              mountPath: {{ $environmentvarsfilePrefixRemoved }}
+              subPath: environment-vars-file
+            ##########################################
+            #           Secrets volumes              #
+            ##########################################
+            # cert private keys
+            {{- range $path, $_ := .Files.Glob "client-0/config/clientservice/tls_certs/*/*.pem" }}
+            {{- $prefixRemoved := $path | replace "client-0" "" }}
+            - name: secret-volume
+              mountPath: {{ $prefixRemoved }}
+              subPath: {{ $path | replace "/" "-" }}
+            {{- end }}
+            # transaction signing private key
+            {{- $transactionsigningkeyfile := "client-0/config/clientservice/signing_keys/transaction_signing_priv.pem" }}
+            {{- $transactionsigningkeyfilePrefixRemoved := $transactionsigningkeyfile | replace "client-0" "" }}
+            - name: secret-volume
+              mountPath: {{ $transactionsigningkeyfilePrefixRemoved }}
+              subPath:   clientservice-transaction-signing-key-file
+        {{- $fluent := $.Files.Get "fluentd/config/fluent.conf" }}
+        {{ if $fluent }}
+        - name: fluentd
+          image: {{ include "fluentd.image" . }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MULTI_LOGGING_ENABLED
+              value: "true"
+            - name: SERVICE_NODE_NAME
+              value: client-0
+            - name: SERVICE_KIND_NAME
+              value: "clientservice"
+            - name: LOGGING_URL
+              value: {{ .Values.logManagement.endpoint_1.url }}
+          volumeMounts:
+            - name: vmbc-docker-log
+              mountPath: /vmbc/logs/pods
+              readOnly: false
+            - name: vmbc-docker-lib
+              mountPath: /var/lib/docker/containers
+              readOnly: true
+            - name: vmbc-configmap-fluentd
+              mountPath: /fluentd/etc/fluent.conf
+              subPath: fluent.conf
+              readOnly: true
+        {{ end }}

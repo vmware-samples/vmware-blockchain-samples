@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: concord-pvc-{{ .Values.global.blockchainId }}-replica-1
+spec:
+  storageClassName: "{{ .Values.storageClassNames.replica.replica1 | default .Values.global.storageClassName}}"
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "{{ .Values.resources.replica.storageRequest | default .Values.resources.replica.defaultStorageRequest }}"

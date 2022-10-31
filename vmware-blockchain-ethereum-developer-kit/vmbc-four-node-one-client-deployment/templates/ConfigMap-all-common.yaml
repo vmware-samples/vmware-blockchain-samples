@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vmbc-configmap-common
+binaryData:
+  # cert files
+  {{ range $path, $_ := .Files.Glob "replica-0/config/concord/config-local/tls_certs/*/node.cert" }}
+  {{- $key := $path | replace "replica-0/config/concord/config-local" "common" | replace "/" "-" }}
+  {{- $key }}: {{ $.Files.Get $path | b64enc }}
+  {{ end -}}
+  # genesis file
+  # Parameterize genesis.json file from Values if needed:
+  # - convert json file to dict
+  # - replace values from Values
+  # - convert the dict back to string and write it out as binary data
+  {{- $genesisFile := "replica-0/config/concord/config-public/genesis.json" }}
+  {{- $genesisDict := $.Files.Get $genesisFile | fromJson }}
+  {{- $gasDict := dict "balance" "0x7fffffffffffffff" }}
+  {{- $allocDict := dict }}
+  {{- $sortedValuesAlloc := .Values.genesisBlock.alloc | sortAlpha }}
+  {{- range $sortedValuesAlloc }}
+    {{- $_ := set $allocDict . $gasDict }}
+  {{- end }}
+  {{- $_ := set $genesisDict "alloc" $allocDict }}
+  {{- $_ := set $genesisDict "permissioningContractAddress" .Values.genesisBlock.permissioningContractAddress }}
+  {{- $_ := set $genesisDict "permissioningContractBin" .Values.genesisBlock.permissioningContractBin }}
+  genesis-file: {{ $genesisDict | toJson | b64enc }}
+  # end genesis file processing
+  # principals locations
+  {{- $principalslocationsfile := "replica-0/config/concord/config-public/transaction_signing_keys/principals.locations.json" }}
+  principals-locations-file: {{ $.Files.Get $principalslocationsfile | b64enc }}
+
