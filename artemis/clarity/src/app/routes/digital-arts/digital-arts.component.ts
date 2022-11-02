@@ -140,7 +140,7 @@ export class DigitalArtsComponent implements OnInit, OnDestroy {
 
         //success message
         this.mintingResultModalMessage = 'Transaction successfully processed';
-        //this.mintingResultHasError = false;
+        this.mintingResultHasError = false;
         this.mintingResultModalData = JSON.stringify(result, null, this.mintingMessageJsonIndentSpaces);
         this.mintingResultModalShown = true;
 
