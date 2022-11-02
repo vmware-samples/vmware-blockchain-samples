@@ -4,7 +4,16 @@ import { DigitalArt } from './models/digital-art.model';
 import { EthereumService } from './ethereum.service';
 import { ethers } from '@vmware-blockchain/ethers';
 
-const DigitalArtAbi = require('../../../../src/abis/DigitalArt.json');
+//const DigitalArtAbi = require('../../../../src/abis/DigitalArt.json');
+
+// Human Readable ABI
+const DigitalArtAbi = [
+  "function totalSupply() view returns (uint256)",
+  "function mint(string title, string image, string artistName)",
+  "function approveTransfer(address to, uint256 tokenId)",
+  "function getOwnerToken(uint256 tokenId) view returns (address[])",
+  "function DigitalArtArr(uint256) view returns (string title, string image, string artistName, uint256 tokId)"
+];
 
 declare var window: any;
 const storeEnabled = true;
@@ -93,9 +102,9 @@ export class DigitalArtsService {
   //init()
   async initializeDigitalArtsContract() {
     if (baseData.contract) { return baseData.contract; }
-    const abi = DigitalArtAbi.abi;
+    //const abi = DigitalArtAbi.abi;
     const address = baseData.contractAddressOverride;
-    baseData.contract = new ethers.Contract(address, abi, this.ethService.web3Provider);
+    baseData.contract = new ethers.Contract(address, DigitalArtAbi, this.ethService.web3Provider);
     baseData.totalArtsSupply = await baseData.contract.totalSupply();
     return baseData.contract;
   }
