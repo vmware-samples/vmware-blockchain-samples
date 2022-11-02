@@ -113,9 +113,9 @@ export class EthereumService {
     });
   }
 
-  //creates random test account and connects account with web3Provider
+  //uses account of user
   createAccount() {
-    return ethers.Wallet.createRandom().connect(this.web3Provider);
+    return this.web3Provider.getSigner(this.currentAccount);
   }
 
   //TODO: sending ethers doesn't seem to work currently

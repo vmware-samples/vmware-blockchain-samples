@@ -20,7 +20,9 @@ export class TestRunnerService {
   async mockDigitalArts(cb?: (art, result) => void) {
     await this.mockAccount();
     await this.digitalArtsService.waitForIt();
+    let i = 0;
     for (const art of mockDigitalArts) {
+      if(i > 2) break;
       let result;
       try{
         result = await this.digitalArtsService.testMint(art.title, art.artist, art.imageUrl);
@@ -28,6 +30,7 @@ export class TestRunnerService {
       } catch (err) {
         console.log(err);
       }
+      i++;
     }
     await this.digitalArtsService.refreshInventory();
   }
