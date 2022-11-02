@@ -147,6 +147,7 @@ export class DigitalArtsDetailsComponent implements OnInit, OnDestroy {
         //success message
         this.transferResultModalMessage = 'Transfer successful';
         this.transferResultModalShown = true;
+        this.transferResultHasError = false;
         this.transferResultModalData = JSON.stringify(result, null, this.transferMessageJsonIndentSpaces);
         this.transferResultModalShown = true;
 
@@ -189,6 +190,7 @@ export class DigitalArtsDetailsComponent implements OnInit, OnDestroy {
         
         //failure message
         this.transferResultHasError = true;
+        delete this.digitalArtsService.error.stack;
         this.transferResultModalData = JSON.stringify(this.digitalArtsService.error, null, this.transferMessageJsonIndentSpaces);
         this.transferResultModalShown = true;
       }
