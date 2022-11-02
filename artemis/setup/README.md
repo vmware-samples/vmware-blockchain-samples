@@ -15,10 +15,8 @@
 
 * `accounts`: Accounts which need any permissioning handling/setup. This takes an array of accounts with permission details
     * `address`: Address of the account
-    * `privateKey`: Private key of the account
     * `permissions` : Permission details
-        * `addPermissions`: Permissions needed to be added. Takes "READ", "WRITE" and "DEPLOY" as parameters
-        * `removePermissions`: Permissions needed to be removed. Takes "READ", "WRITE" and "DEPLOY" as parameters
+        * `requiredPermissions`: Permissions required for this account. Takes "READ", "WRITE" and "DEPLOY" as parameters
 
 
 ## Quick Steps
