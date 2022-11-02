@@ -167,7 +167,7 @@ export class DigitalArtsDetailsComponent implements OnInit, OnDestroy {
         this.transferModalShown = false;
 
         //ideally should test later on for all possible cases of failure
-        switch(this.digitalArtsService.error.code){
+        switch(this.digitalArtsService.error.code) {
           case "INVALID_ARGUMENT":
             //Happens because account cannot be found
             this.transferResultModalMessage = "Account not on local blockchain";
