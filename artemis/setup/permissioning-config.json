@@ -3,27 +3,27 @@
         "url": "http://127.0.0.1:8545"
     },
     "permissioning": {
-        "contractAddress": "0x57a268e7694371880a2c5881bd240db812bbfbf0",
+        "contractAddress": "",
         "adminAccount": {
-            "address": "0xfb389874fb4e03182a7358275eaf78008775c7ed",
-            "privateKey": "5bedcdfdfe7e3d9444b3494eaee4bb9339be4745d7a4f79cd4bde59d3e9e9dcc"
+            "address": "",
+            "privateKey": ""
         }
     },
     "accounts": [
         {
-            "address": "0xc01149FBD9DD632D33BBd10352E9c0b752b68466",
+            "address": "",
             "permissions": {
                 "requiredPermissions": ["DEPLOY"]
             }
         },
         {
-            "address": "0x967234F5288aB5Cb6cb3a89CbC321Ed00C4Db881",
+            "address": "",
             "permissions": {
                 "requiredPermissions": ["WRITE"]
             }
         },
         {
-            "address": "0x44DfF3F7Afb4Db7fea41267024466fCea391D53F",
+            "address": "",
             "permissions": {
                 "requiredPermissions": ["WRITE"]
             }

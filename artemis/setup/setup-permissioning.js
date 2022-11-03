@@ -48,10 +48,13 @@ function processPermissions(permArr) {
 }
 
 const checkAndUpdatePermissions = async (account, allPermissions) => {
-    var hasRequiredPermissions = await checkPermissions(account, allPermissions)
+    // Todo: Handle checkPermissions later (possible bug related to checkUserAction method of Permissioning smart contract)
+    /*var hasRequiredPermissions = await checkPermissions(account, allPermissions)
     if (!hasRequiredPermissions) {
         return updatePermissions(account.address, allPermissions, 0);
-    }
+    }*/
+    // Updating permissions to the required Permissions
+    return updatePermissions(account.address, allPermissions, 0);
 }
 
 const checkPermissions = async (account, allPermissions) => {
@@ -79,7 +82,6 @@ const checkPermissions = async (account, allPermissions) => {
 }
 
 const updatePermissions = async (accAddr, allPermissions, addOrRemove) => {
-    console.log("Updating permissions for " + accAddr + " with permissions " + allPermissions);
     let fromAddress = accAddr;
     let toAddress = "0x0000000000000000000000000000000000000000";
 
@@ -114,7 +116,7 @@ const main = async () => {
 
     // Update to required permissions
     for (var account of setupConfig.accounts) {
-        console.log("Processing update permissions for account " + account.address);
+        console.log("Processing update permissions for account " + account.address + " with required permissions as " + account.permissions.requiredPermissions);
         await checkAndUpdatePermissions(account, processPermissions(account.permissions.requiredPermissions));
     }
 }
