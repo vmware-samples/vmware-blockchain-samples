@@ -10,13 +10,17 @@ Download metamask on google chrome and create a wallet.
 
 Once NFT plaform is up and running make sure to check connection of the account user. If metamask isn't automatically conncected manually connect it to your account. 
 
-## Concord
+## VMware Blockchain
 
-Follow the below link to get VMware Blockchain running on your local computer.
-
-[Concord setup link](https://confluence.eng.vmware.com/pages/viewpage.action?spaceKey=BLOC&title=Eth+Onboarding)
+Setup VMware Blockchain as a pre-setup.
 
 ## Setup
+
+This UI-app uses Clarity bootstrapping called Ganymede, which had been linked as a submodule, thus submodule update is needed:
+
+```bash
+git submodule update --init --recursive
+```
 
 Install application dependencies (node v14 preferred)
 
@@ -40,18 +44,18 @@ cd clarity; # in clarity folder (main UI)
 npm i
 ```
 
-Deploy contracts on Concord or any network by specifying network instead of development can use Ganaches or any other network.
+Deploy contracts on VMware Blockchain or any network by configuring and specifying the network.
 ```bash
-truffle migrate --reset --network=development
+npm install hardhat @nomiclabs/hardhat-waffle
+# Keep a note of the output of following command which is the contract address
+npx hardhat run --network vmbc_local scripts/deploy.js
 ```
 
-Deploy contracts on VMware Blockchain
-```bash
-truffle migrate --reset  # Since default network is Concord
-```
+Update the above generated contract address in `./clarity/src/app/main/digital-arts.service.ts` in both the entries of `contractAddrs`
+
 Run NFT Platform on clarity directory
 ```bash
 npm run start
 ```
 
-Finally go to http://localhost:4200 to interact with the platform. 
+Finally go to http://localhost:4200 to interact with the platform.
