@@ -140,6 +140,7 @@ export class DigitalArtsComponent implements OnInit, OnDestroy {
 
         //success message
         this.mintingResultModalMessage = 'Transaction successfully processed';
+        this.mintingResultHasError = false;
         this.mintingResultModalData = JSON.stringify(result, null, this.mintingMessageJsonIndentSpaces);
         this.mintingResultModalShown = true;
 
@@ -167,18 +168,30 @@ export class DigitalArtsComponent implements OnInit, OnDestroy {
         this.mintingModalShown = false;
 
         //error handling: ideally should test later on for all possible cases of failure
-        switch(this.digitalArtsService.error.code){
-          case "ACTION_REJECTED":
-            this.mintingResultModalMessage = "User cancelled transaction before signing";
-            break;
-          case -32603:
-            this.mintingResultModalMessage = 'Minting failed due to non-uniqueness of NFT';
-            break;
-          default:
-            this.mintingResultModalMessage = 'Transaction failed';
-            break;
+        if (this.digitalArtsService.error.hasOwnProperty('code')) {
+          switch(this.digitalArtsService.error.code) {
+            case "ACTION_REJECTED":
+              this.mintingResultModalMessage = "User cancelled transaction before signing";
+              break;
+            case -32603:
+              // Todo: Extract the message from a json inside this.digitalArtsService.error.message
+              if ((this.digitalArtsService.error.message).includes("Permission denied")) {
+                this.mintingResultModalMessage = 'Minting failed due to lack of permissions';
+              } else {
+                this.mintingResultModalMessage = 'Minting failed due to non-uniqueness of NFT';
+              }
+              break;
+            default:
+              this.mintingResultModalMessage = 'Transaction failed';
+              break;
+          }
+        } else {
+          this.mintingResultModalMessage = 'Transaction failed because of following error';
         }
 
+        console.log("this.digitalArtsService.error is: " + JSON.stringify(this.digitalArtsService.error));
+        delete this.digitalArtsService.error.stack;
+        console.log("this.digitalArtsService.error is: " + JSON.stringify(this.digitalArtsService.error));
         //failure message
         this.mintingResultHasError = true;
         this.mintingResultModalData = JSON.stringify(this.digitalArtsService.error, null, this.mintingMessageJsonIndentSpaces);

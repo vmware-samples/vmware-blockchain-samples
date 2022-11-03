@@ -1,6 +1,6 @@
-const ethers = require("@vmware-blockchain/ethers");
+const ethers = require("ethers");
 
-var setupConfig = require('./config.json');
+var setupConfig = require('./permissioning-config.json');
 
 var permissionTypes = {
     "READ": 1,
@@ -47,51 +47,27 @@ function processPermissions(permArr) {
     return perm;
 }
 
-const checkHasRequiredPermissions = async (account, allPermissions) => {
-    if (account.privateKey === "") {
-        console.log("Private key is not provided for " + account.address);
-        console.log("Skipping checking existing permissions");
-        return false;
-    } else {
-        return await checkPermissions(account, allPermissions)
-    }
-}
-
-const addPermissions = async (account, allPermissions) => {
-    if (allPermissions > 0) {
-        // Check for existing permissions
-        var hasRequiredPermissions = await checkHasRequiredPermissions(account, allPermissions);
-        if (!hasRequiredPermissions) {
-            return updatePermissions(account.address, allPermissions, 0);
-        }
-    } else if (allPermissions === 0) {
-        console.log("No permissions to add");
-    }
-}
-
-// Todo: needPermissionUpdate can be implemented and utilized for removePermissions as well
-const removePermissions = async (account, allPermissions) => {
-    if (allPermissions > 0) {
-        return updatePermissions(account.address, allPermissions, 1);
-    } else if (allPermissions === 0) {
-        console.log("No permissions to remove");
-    }
+const checkAndUpdatePermissions = async (account, allPermissions) => {
+    // Todo: Handle checkPermissions later (possible bug related to checkUserAction method of Permissioning smart contract)
+    /*var hasRequiredPermissions = await checkPermissions(account, allPermissions)
+    if (!hasRequiredPermissions) {
+        return updatePermissions(account.address, allPermissions, 0);
+    }*/
+    // Updating permissions to the required Permissions
+    return updatePermissions(account.address, allPermissions, 0);
 }
 
 const checkPermissions = async (account, allPermissions) => {
     console.log("Checking permissions for " + account.address);
-    let privateKey = String(account.privateKey);
     let fromAddress = account.address;
     
     let toAddress = "0x0000000000000000000000000000000000000000";
-    let ACCOUNT_WALLET = new ethers.Wallet(privateKey, PROVIDER);
     const contract = new ethers.Contract(PERMISSIONING_CONTRACT_ADDRESS, PERMISSIONING_CONTRACT_ABI, PROVIDER);
-    const contractWithSigner = contract.connect(ACCOUNT_WALLET);
     var response = "";
     try {
-        response = await contractWithSigner.checkUserAction(fromAddress, toAddress, allPermissions);
+        response = await contract.checkUserAction(fromAddress, toAddress, allPermissions);
     } catch (error) {
-        console.log("Error while calling set()...");
+        console.log("Error while calling checkUserAction()...");
         console.log(error);
         process.exit(1);
     }
@@ -106,7 +82,6 @@ const checkPermissions = async (account, allPermissions) => {
 }
 
 const updatePermissions = async (accAddr, allPermissions, addOrRemove) => {
-    console.log("Updating permissions for " + accAddr);
     let fromAddress = accAddr;
     let toAddress = "0x0000000000000000000000000000000000000000";
 
@@ -137,15 +112,12 @@ const main = async () => {
         process.exit(1);
     }
 
-    console.log("setupConfig is " + JSON.stringify(setupConfig));
-
     setupAdminProviderAndWallet()
 
-    // Add or Remove required permissions
+    // Update to required permissions
     for (var account of setupConfig.accounts) {
-        console.log("account is " + JSON.stringify(account))
-        await addPermissions(account, processPermissions(account.permissions.addPermissions));
-        await removePermissions(account, processPermissions(account.permissions.removePermissions));
+        console.log("Processing update permissions for account " + account.address + " with required permissions as " + account.permissions.requiredPermissions);
+        await checkAndUpdatePermissions(account, processPermissions(account.permissions.requiredPermissions));
     }
 }
 

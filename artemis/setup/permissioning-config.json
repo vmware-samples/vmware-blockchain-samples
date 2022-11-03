@@ -1,6 +1,6 @@
 {
     "blockchain": {
-        "url": "http://localhost:8545"
+        "url": "http://127.0.0.1:8545"
     },
     "permissioning": {
         "contractAddress": "",
@@ -12,18 +12,20 @@
     "accounts": [
         {
             "address": "",
-            "privateKey": "",
             "permissions": {
-                "addPermissions": ["DEPLOY"],
-                "removePermissions": []
+                "requiredPermissions": ["DEPLOY"]
             }
         },
         {
             "address": "",
-            "privateKey": "",
             "permissions": {
-                "addPermissions": ["WRITE", "DEPLOY"],
-                "removePermissions": []
+                "requiredPermissions": ["WRITE"]
+            }
+        },
+        {
+            "address": "",
+            "permissions": {
+                "requiredPermissions": ["WRITE"]
             }
         }
     ]

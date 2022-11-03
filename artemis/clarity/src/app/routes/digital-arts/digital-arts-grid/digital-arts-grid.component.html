@@ -5,7 +5,8 @@
       <div class="card-img" style="min-height: 50px; max-height:500px; min-width: 50px; max-width: 500px; overflow-y:hidden; cursor: pointer;">
         <img
           [src]="art.effectiveImageUrl"
-          onerror="if (this.src != 'assets/img/img_not_found.png') { this.src = 'assets/img/img_not_found.png'; }" 
+          onerror="if (this.src != 'assets/img/img_not_found.png') { this.src = 'assets/img/img_not_found.png'; }"
+          style="width:500px; height:auto;"
         />
       </div>
       <div class="card-block">

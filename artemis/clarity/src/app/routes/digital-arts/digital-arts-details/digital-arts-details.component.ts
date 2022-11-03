@@ -147,6 +147,7 @@ export class DigitalArtsDetailsComponent implements OnInit, OnDestroy {
         //success message
         this.transferResultModalMessage = 'Transfer successful';
         this.transferResultModalShown = true;
+        this.transferResultHasError = false;
         this.transferResultModalData = JSON.stringify(result, null, this.transferMessageJsonIndentSpaces);
         this.transferResultModalShown = true;
 
@@ -166,7 +167,7 @@ export class DigitalArtsDetailsComponent implements OnInit, OnDestroy {
         this.transferModalShown = false;
 
         //ideally should test later on for all possible cases of failure
-        switch(err.code){
+        switch(this.digitalArtsService.error.code) {
           case "INVALID_ARGUMENT":
             //Happens because account cannot be found
             this.transferResultModalMessage = "Account not on local blockchain";
@@ -174,13 +175,22 @@ export class DigitalArtsDetailsComponent implements OnInit, OnDestroy {
           case "ACTION_REJECTED":
             this.transferResultModalMessage = "User cancelled transaction before signing";
             break;
+          case -32603:
+            // Todo: Extract the message from a json inside this.digitalArtsService.error.message
+            if ((this.digitalArtsService.error.message).includes("Permission denied")) {
+              this.transferResultModalMessage = 'Transfer failed due to lack of permissions';
+            } else {
+              this.transferResultModalMessage = 'Transfer failed because of following error';
+            }
+            break;
           default:
-            this.transferResultModalMessage = 'Transfer failed';
+            this.transferResultModalMessage = 'Transfer failed because of following error';
             break;
         }
         
         //failure message
         this.transferResultHasError = true;
+        delete this.digitalArtsService.error.stack;
         this.transferResultModalData = JSON.stringify(this.digitalArtsService.error, null, this.transferMessageJsonIndentSpaces);
         this.transferResultModalShown = true;
       }
