@@ -51,6 +51,7 @@ Please adhere to this project's `code of conduct`.
 - [@sedhuait](https://github.com/sedhuait)
 - [@NickSneo](https://github.com/NickSneo)
 - [@saanvijay](https://github.com/saanvijay)
+- [@saiakhil2012](https://github.com/saiakhil2012)
 
 ## License
 
