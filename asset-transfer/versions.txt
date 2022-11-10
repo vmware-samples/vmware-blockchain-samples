@@ -1,3 +1,0 @@
-ASSET_TRANSFER-VERSION			FEATURE
-1.0.4					Ignoring invalid SSL certificate through NODE_TLS_REJECT_UNAUTHORIZED flag
-1.0.5					Refactored "beerwars to Asset Transfer"
