@@ -21,24 +21,7 @@ Refer to `README.md` inside sample directory for detailed description.
 
 | Directory | Description |
 |-----------|-------------|
-| [Artemis](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/artemis)  | Sample NFT Platform with ERC 721 Standards|
-| [Token Swap](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/erc20-swap) | ERC-20 Token Creation and Swap with React Sample |
-| [Load Testing](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/erc20-load-test-tool) | A Sample Load Testing Tool with ERC 20 Token and Web3j|
-
-#### Util
-[Util Scripts](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/tools)  Scripts to aid in development
-
-
-
-## Tech Stack
-
-**Client:** React, etherjs, web3js
-
-**Server:** Node, NPM, Java, Maven, Spring,
-
-**Blockchain:** Solidity, Hardhat, Truffle
-
-**Infra:** Docker
+| [Developer Kit](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/vmware-blockchain-ethereum-developer-kit) | VMware Blockchain Ethereum Developer Kit|
 
   
 ## Contributing
@@ -67,6 +50,8 @@ Please adhere to this project's `code of conduct`.
 - [@tompscanlan](https://github.com/tompscanlan)
 - [@sedhuait](https://github.com/sedhuait)
 - [@NickSneo](https://github.com/NickSneo)
+- [@saanvijay](https://github.com/saanvijay)
+- [@saiakhil2012](https://github.com/saiakhil2012)
 
 ## License
 
