@@ -1,0 +1,16 @@
+{
+  "name": "vmware-blockchain-samples",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/vmware-samples/vmware-blockchain-samples.git",
+  "author": "Bala Siva Sai Akhil Malepati <saiakhil2012@yahoo.com>",
+  "license": "MIT",
+  "scripts": {
+    "docs:dev": "vuepress dev docs --config docs/.vuepress/config.ts",
+    "docs:build": "vuepress build docs --config docs/.vuepress/config.ts",
+    "docs:copy": "cp -r vmware-blockchain-ethereum-developer-kit/* docs/"
+  },
+  "devDependencies": {
+    "vuepress": "^2.0.0-beta.53"
+  }
+}
