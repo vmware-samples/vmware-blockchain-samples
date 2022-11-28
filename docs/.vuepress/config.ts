@@ -14,39 +14,39 @@ export default {
       // Quick Start Guide
       {
         text: 'Quick Start Guide',
-        link: '/quick-start-guide',
+        link: '/other-docs/quick-start-guide',
       },
-      // Accountable Privacy
+      // Privacy
       {
         text: 'Privacy',
-        link: '/privacy/privacy',
+        link: '/privacy/',
       },
       // Deployment
       {
         text: 'Deployment',
-        link: '/deployment/deployment',
+        link: '/deployment/',
       },
       // Permissioning
       {
         text: 'Permissioning',
-        link: '/permissioning/permissioning',
+        link: '/permissioning/',
       },
       // Block Explorer
       {
         text: 'Block Explorer',
-        link: '/block-explorer/block',
+        link: '/explorer/',
       },
       // Sample DApps
       {
         text: 'Sample DApps',
-        link: '/sample-dapps',
+        link: '/README',
         children: [{
           text: "Artemis",
-          link: '/sample-dapps/artemis'
+          link: '/sample-dapps/artemis/'
         },
         {
           text: 'ERC20 Swap',
-          link: '/sample-dapps/erc20-swap'
+          link: '/sample-dapps/erc20-swap/'
         }]
       }
     ],
