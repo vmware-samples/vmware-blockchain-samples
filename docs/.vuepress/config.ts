@@ -14,12 +14,12 @@ export default {
       // Quick Start Guide
       {
         text: 'Quick Start Guide',
-        link: '/quick-start-guide',
+        link: '/other-docs/quick-start-guide',
       },
-      // Accountable Privacy
+      // Privacy
       {
         text: 'Privacy',
-        link: '/privacy/privacy',
+        link: '/privacy/',
       },
       // Deployment
       {
@@ -29,24 +29,24 @@ export default {
       // Permissioning
       {
         text: 'Permissioning',
-        link: '/permissioning/permissioning',
+        link: '/permissioning/permisisoning',
       },
       // Block Explorer
       {
         text: 'Block Explorer',
-        link: '/block-explorer/block',
+        link: '/block-explorer/explorer',
       },
       // Sample DApps
       {
         text: 'Sample DApps',
-        link: '/sample-dapps',
+        link: '/README',
         children: [{
           text: "Artemis",
-          link: '/sample-dapps/artemis'
+          link: '/sample-dapps/artemis/artemis'
         },
         {
           text: 'ERC20 Swap',
-          link: '/sample-dapps/erc20-swap'
+          link: '/sample-dapps/erc20-swap/erc20-swap'
         }]
       }
     ],
