@@ -81,60 +81,60 @@ Client here refers to clients to the blockchain network running ethrpc.
            cat <<KIBANA | helm install kibana elastic/kibana --version 7.17.3 -f -
            KIBANA
 
-   2. Install logstash
-      cat <<LOGSTASH | helm install logstash elastic/logstash --version 7.17.3 -f -
-      persistence:
-        enabled: true
-      logstashConfig:
-        logstash.yml: |
-          http.host: 0.0.0.0
-          xpack.monitoring.enabled: false
-      logstashPipeline:
-        vmbc.conf: |
-          input {
-            http {
-              id => "vmbc-logs"
-            }
-          }
-          filter {
-            split {
-            }
-            json {
-              source => "message"
-            }
-            date {
-              match => [ "logtime", "yyyy-MM-dd'T'HH:mm:ss','SSS','Z", "yyyy-MM-dd HH:mm:ss','SSS" ]
-            }
-            mutate {
-              remove_field => [ "host", "headers", "logtime" ]
-            }
-          }
-          output {
-            elasticsearch {
-              hosts => [ "elasticsearch-master.default.svc.cluster.local:9200" ]
-              data_stream => "true"
-            }
-          }
-      service:
-        type: ClusterIP
-        ports:
-          - name: http
-            port: 8080
-            protocol: TCP
-            targetPort: 8080
-      LOGSTASH
+    2. Install logstash
+       cat <<LOGSTASH | helm install logstash elastic/logstash --version 7.17.3 -f -
+       persistence:
+         enabled: true
+       logstashConfig:
+         logstash.yml: |
+           http.host: 0.0.0.0
+           xpack.monitoring.enabled: false
+       logstashPipeline:
+         vmbc.conf: |
+           input {
+             http {
+               id => "vmbc-logs"
+             }
+           }
+           filter {
+             split {
+             }
+             json {
+               source => "message"
+             }
+             date {
+               match => [ "logtime", "yyyy-MM-dd'T'HH:mm:ss','SSS','Z", "yyyy-MM-dd HH:mm:ss','SSS" ]
+             }
+             mutate {
+               remove_field => [ "host", "headers", "logtime" ]
+             }
+           }
+           output {
+             elasticsearch {
+               hosts => [ "elasticsearch-master.default.svc.cluster.local:9200" ]
+               data_stream => "true"
+             }
+           }
+       service:
+         type: ClusterIP
+         ports:
+           - name: http
+             port: 8080
+             protocol: TCP
+             targetPort: 8080
+       LOGSTASH
 
-  3. View logs in Kibana
-      i) Open a port-forward to Kibana
-         kubectl port-forward svc/kibana-kibana 5601:5601
-     ii) Open the following page to see logs
-         http://localhost:5601/app/discover#
-    iii) On first open, it will ask to create an index.
-         a) Click on "Create index pattern"
-         b) Type logs-generic-default* in the Name field and select the @timestamp field from the Timestamp field drop down.
-            If you don't see logs-generic-default, wait a few minutes for the index to be created after a blockchain has been deployed.
-            If you haven't deployed a blockchain yet, then you will have to return to this page after the blockchain is deployed.
-            The index is automatically created when the first blockchain is deployed.
-         c) After you click Create index pattern on the page above, you should see a page to customize the index fields.
-            You can leave this page as is as the defaults are fine.
-         d) Now you can search and view logs on this page: http://localhost:5601/app/discover#. You can filter logs based on blockhain ID, service name etc.
+    3. View logs in Kibana
+        i) Open a port-forward to Kibana
+           kubectl port-forward svc/kibana-kibana 5601:5601
+       ii) Open the following page to see logs
+           http://localhost:5601/app/discover#
+      iii) On first open, it will ask to create an index.
+           a) Click on "Create index pattern"
+           b) Type logs-generic-default* in the Name field and select the @timestamp field from the Timestamp field drop down.
+              If you don't see logs-generic-default, wait a few minutes for the index to be created after a blockchain has been deployed.
+              If you haven't deployed a blockchain yet, then you will have to return to this page after the blockchain is deployed.
+              The index is automatically created when the first blockchain is deployed.
+           c) After you click Create index pattern on the page above, you should see a page to customize the index fields.
+              You can leave this page as is as the defaults are fine.
+           d) Now you can search and view logs on this page: http://localhost:5601/app/discover#. You can filter logs based on blockhain ID, service name etc.
