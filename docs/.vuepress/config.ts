@@ -21,10 +21,23 @@ export default {
         text: 'Privacy',
         link: '/privacy/',
       },
-      // Deployment
+      // K8-Provisioning
       {
-        text: 'Deployment',
-        link: '/deployment/',
+        text: 'Provisioning',
+        children: [
+          {
+            text: "VMBC Ethereum Provisioning",
+            link: '/k8-provisioning/'
+          },
+          {
+            text: 'VMBC Ethereum Provisioning without Logging',
+            link: '/k8-provisioning/vmbc-four-node-one-client-deployment'
+          },
+          {
+            text: 'VMBC Ethereum Provisioning with Logging',
+            link: '/k8-provisioning/vmbc-four-node-one-client-deployment-with-logging'
+          }
+        ]
       },
       // Permissioning
       {
