@@ -25,11 +25,12 @@ A web application has been designed and implemented with universal search, block
 | global.imageCredentials.password | Password to access/download vmbc explorer        | ""                          | Mandatory |
 | global.imageCredentials.email    | Email to access/download vmbc explorer           | ""                          | Optional  |
 | global.image.repository          | Image name to download for vmbc explorer         | vmwblockchain/eth-ui-explorer | Optional |
+| global.image.tag                 | Tag version to download vmbc explorer            | 0.0.0.0.7820                | Optional  |
 | blockchainUrl                    | Url to link blockchain with vmbc explorer webpage | ""                         | Mandatory |
 | resources.explorer.cpuLimit      | CPU limit                                        | 10m                         | Optional  |
-| resources.explorer.cpuRequest             | CPU request                             | 10m                         | Optional  |
-| resources.explorer.memoryLimit            | Memory limit                            | 100Mi                       | Optional  |
-| resources.explorer.memoryRequest          | Memory request                          | 100Mi                       | Optional  |
+| resources.explorer.cpuRequest             | CPU request                             | 100m                         | Optional  |
+| resources.explorer.memoryLimit            | Memory limit                            | 1Gi                       | Optional  |
+| resources.explorer.memoryRequest          | Memory request                          | 1Gi                       | Optional  |
 
 ### Deploy vmbc explorer
 - Minikube
