@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-deployment
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}
+          image: {{ include "common.image" . }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: {{ include "common.serviceDeploymentPort" . }}
+          env:
+            - name: VMBC_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-configmap
+                  key: VMBC_URL
+          resources:
+            limits:
+              cpu: "{{ .Values.resources.explorer.cpuLimit }}"
+              memory: "{{ .Values.resources.explorer.memoryLimit }}"
+            requests:
+              cpu: "{{ .Values.resources.explorer.cpuRequest }}"
+              memory: "{{ .Values.resources.explorer.memoryRequest }}"
+      imagePullSecrets:
+        - name: {{ .Release.Name }}-regcred
+      restartPolicy: Always

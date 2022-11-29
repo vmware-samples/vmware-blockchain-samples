@@ -1,0 +1,35 @@
+## @section Global parameters
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageCredentials, image
+##
+
+## @param global.imageCredentials Global Docker image registry
+##
+global:
+  # The credentials for the docker registry. If username/password/email are specified, a corresponding Secret is created.
+  imageCredentials:
+    registry: ""
+    username: ""
+    password: ""
+    email: ""
+  # The global artifact tag
+  image:
+    repository: "vmwblockchain/vmbc-eth-explorer"
+    tag: "0.0.0.0.7820"
+
+## Configure the configmap parameters that allows you to link the vmbc explorer installation
+## @param blockchainUrl Url to link blockchain with vmbc explorer dashboard
+##
+blockchainUrl: ""
+
+## Configure the resources for vmbc dapp deployment
+## @param resources Resources for vmbc dapp deployment
+##
+resources:
+  # @param explorer VMBC explorer resources
+  explorer:
+    cpuLimit: 100m
+    cpuRequest: 100m
+    memoryLimit: 1Gi
+    memoryRequest: 1Gi

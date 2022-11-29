@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vmbc-configmap-fluentd
+data:
+  {{ (.Files.Glob "fluentd/config/fluent.conf").AsConfig | indent 4 }}

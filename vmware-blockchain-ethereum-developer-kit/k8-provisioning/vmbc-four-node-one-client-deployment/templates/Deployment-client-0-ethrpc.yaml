@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vmbc-deployment-client-0-ethrpc
+  labels:
+    app: client-0-ethrpc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client-0-ethrpc
+  template:
+    metadata:
+      labels:
+        app: client-0-ethrpc
+    spec:
+      imagePullSecrets:
+        - name: vmwathena-regcred
+      volumes:
+        {{- $fluent := $.Files.Get "fluentd/config/fluent.conf" }}
+        {{ if $fluent }}
+        - name: vmbc-docker-log
+          hostPath:
+            path: /var/log/pods
+        - name: vmbc-docker-lib
+          hostPath:
+            path: /var/lib/docker/containers
+        - name: vmbc-configmap-fluentd
+          configMap:
+            name: vmbc-configmap-fluentd
+        {{ end }}
+        - name: config-volume
+          configMap:
+            name: vmbc-configmap-client-0-ethrpc
+        - name: secret-volume
+          secret:
+            secretName: vmbc-secret-client-0-ethrpc
+      containers:
+        - name: client-0-ethrpc
+          image: {{ include "ethrpc.image" . }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 50505
+              protocol: TCP
+          resources:
+            limits:
+              cpu: "{{ .Values.resources.client.cpuLimit | default .Values.resources.client.defaultCpuLimit }}"
+              memory: "{{ .Values.resources.client.memoryLimit | default .Values.resources.client.defaultMemoryLimit }}"
+            requests:
+              cpu: "{{ .Values.resources.client.cpuRequest | default .Values.resources.client.defaultCpuRequest }}"
+              memory: "{{ .Values.resources.client.memoryRequest | default .Values.resources.client.defaultMemoryRequest }}"
+          volumeMounts:
+          ##########################################
+          #           config file volumes          #
+          ##########################################
+          # environment vars file
+          {{- $environmentvarsfile := "client-0/config/ethrpc/environment-vars" }}
+          {{- $environmentvarsfilePrefixRemoved := $environmentvarsfile | replace "client-0" "" }}          
+          - name: config-volume
+            mountPath: {{ $environmentvarsfilePrefixRemoved }}
+            subPath: environment-vars-file
+          ##########################################
+          #           Secrets volumes              #
+          ##########################################
+          # cert private keys
+          {{ range $path, $_ := .Files.Glob "client-0/config/ethrpc/*/*.pem" }}
+          {{- $prefixRemoved := $path | replace "client-0" "" }}
+          - name: secret-volume
+            mountPath: {{ $prefixRemoved }}
+            subPath: {{ $path | replace "/" "-" }}
+          {{- end }}
+        {{- $fluent := $.Files.Get "fluentd/config/fluent.conf" }}
+        {{ if $fluent }}
+        - name: fluentd
+          image: {{ include "fluentd.image" . }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MULTI_LOGGING_ENABLED
+              value: "true"
+            - name: SERVICE_NODE_NAME
+              value: client-0
+            - name: SERVICE_KIND_NAME
+              value: "ethrpc"
+            - name: LOGGING_URL
+              value: {{ .Values.logManagement.endpoint_1.url }}
+          volumeMounts:
+            - name: vmbc-docker-log
+              mountPath: /vmbc/logs/pods
+              readOnly: false
+            - name: vmbc-docker-lib
+              mountPath: /var/lib/docker/containers
+              readOnly: true
+            - name: vmbc-configmap-fluentd
+              mountPath: /fluentd/etc/fluent.conf
+              subPath: fluent.conf
+              readOnly: true
+        {{ end }}
