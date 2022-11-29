@@ -24,20 +24,20 @@ A web application has been designed with token transfer functionality. The perfo
 | global.imageCredentials.password | Password to access/download vmbc dapp        | ""                           | Mandatory |
 | global.imageCredentials.email    | Email to access/download vmbc dapp           | ""                           | Optional  |
 | global.image.repository          | Image name to download for vmbc dapp         | vmwblockchain/vmbc-eth-erc20-swap | Optional |
-| global.image.tag                 | Tag version to download vmbc dapp            | 3.9.10                       | Optional  |
+| global.image.tag                 | Tag version to download vmbc dapp            | 0.0.0.0.7820                       | Optional  |
 | blockchainUrl                    | Url to link blockchain with vmbc dapp webpage | ""                           | Mandatory |
-| resources.dapp.cpuLimit          | CPU limit                                    | 10m                          |   Optional        |
-| resources.dapp.cpuRequest             | CPU request                                  | 10m                          |     Optional      |
-| resources.dapp.meomoryLimit           | Memory limit                                 | 100Mi                        |    Optional       |
-| resources.dapp.meomoryRequest         | Memory request                               | 100Mi                          |    Optional       |
+| resources.dapp.cpuLimit          | CPU limit                                    | 1000m                          |   Optional        |
+| resources.dapp.cpuRequest             | CPU request                                  | 100m                          |     Optional      |
+| resources.dapp.meomoryLimit           | Memory limit                                 | 2Gi                        |    Optional       |
+| resources.dapp.meomoryRequest         | Memory request                               | 1Gi                          |    Optional       |
 
 ### Deploy vmbc dapp
 - Minikube
   - Without namespace
     - Deployment with parameters
     ```sh
-      helm install --name-template {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set global.image.tag={tag} --set blockchainUrl={blockchainURL}
-      # Example: helm install --name-template vmbc-dapp . --set global.imageCredentials.registry=vmwaresaas.jfrog.io --set global.imageCredentials.username=testUsername --set global.imageCredentials.password=testPassword --set global.image.tag=0.1.0 --set blockchainUrl=http://127.0.0.1:30545
+      helm install --name-template {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set blockchainUrl={blockchainURL}
+      # Example: helm install --name-template vmbc-dapp . --set global.imageCredentials.registry=vmwaresaas.jfrog.io --set global.imageCredentials.username=testUsername --set global.imageCredentials.password=testPassword --set blockchainUrl=http://127.0.0.1:30545
     ```  
                     
     - Verify vmbc dapp is installed
@@ -61,8 +61,8 @@ A web application has been designed with token transfer functionality. The perfo
     Note: Make sure namespace exists or create new before deployment
     - Deployment with parameters
     ```sh
-      helm install --name-template {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set global.image.tag={tag} --set blockchainUrl={blockchainURL} -n {namespace-of-your-choice}
-      # Example: helm install --name-template vmbc-dapp . --set global.imageCredentials.registry=vmwaresaas.jfrog.io --set global.imageCredentials.username=testUsername --set global.imageCredentials.password=testPassword --set global.image.tag=0.1.0 --set blockchainUrl=http://127.0.0.1:30545 -n vmbc-namespace
+      helm install --name-template {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set blockchainUrl={blockchainURL} -n {namespace-of-your-choice}
+      # Example: helm install --name-template vmbc-dapp . --set global.imageCredentials.registry=vmwaresaas.jfrog.io --set global.imageCredentials.username=testUsername --set global.imageCredentials.password=testPassword --set blockchainUrl=http://127.0.0.1:30545 -n vmbc-namespace
     ```  
                     
     - Verify vmbc dapp is installed
