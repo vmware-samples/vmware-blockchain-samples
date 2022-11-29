@@ -1,4 +1,4 @@
-# VMware Blockchain Ethereum Ecosystem Overview
+# (WIP) VMware Blockchain Ethereum Ecosystem Overview
 VMware Blockchain technology provides enterprise-based companies with an innovative business transformation opportunity by allowing them to build or digitize existing business networks. The Ethereum technology stack, which contains smart contracts, developer tools, wallets, and an overall ecosystem, is a significant and mature stack to build or digitize existing blockchain networks. Several enterprise-critical gaps exist in public and permissioned Ethereum platforms despite Ethereum's significance and maturity. For example, limited throughput, lack of robust privacy capabilities without trade-off security, variable transaction costs and finality, and the lack of enterprise-grade services for mission-critical use cases.
 
 VMware Blockchain with the Ethereum ecosystem is built using open enterprise-centric architecture. The solution is an Ethereum Virtual Machine (EVM) compatible decentralized and permissioned infrastructure platform that provides trust, predictable costs, and instant transaction finality while being Byzantine Fault Tolerant.
