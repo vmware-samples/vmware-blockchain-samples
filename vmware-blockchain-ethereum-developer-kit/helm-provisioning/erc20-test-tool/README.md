@@ -46,15 +46,15 @@ its demanded.
   - Without namespace
     - Deployment with "blockchainUrl" only
     ```sh
-      helm install --name-template {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set global.image.tag={tag} --set blockchainUrl={blockchainURL}
-      Example: helm install --name-template vmbc-erc20test . --set global.imageCredentials.registry=vmwaresaas.jfrog.io --set global.imageCredentials.username=testUsername --set global.imageCredentials.password=testPassword --set global.image.tag=3.10 --set blockchainUrl=http://127.0.0.1:30545
+      helm install --name-template {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set blockchainUrl={blockchainURL}
+      Example: helm install --name-template vmbc-erc20test . --set global.imageCredentials.registry=vmwaresaas.jfrog.io --set global.imageCredentials.username=testUsername --set global.imageCredentials.password=testPassword --set blockchainUrl=http://127.0.0.1:30545
     ```
       Note: Above instruction uses default testCount value of 2. To override "testCount" during installtion look for option (B)
     
     - Deployment with "blockchainUrl" and "testCount"
     ```sh
-      helm install --name-template {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set global.image.tag={tag} --set blockchainUrl={blockchainURL} --set testCount={testCount}
-      Example: helm install --name-template vmbc-erc20test . --set global.imageCredentials.registry=vmwaresaas.jfrog.io --set global.imageCredentials.username=testUsername --set global.imageCredentials.password=testPassword --set global.image.tag=3.10 --set blockchainUrl=http://127.0.0.1:30545 --set testCount=5
+      helm install --name-template {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set blockchainUrl={blockchainURL} --set testCount={testCount}
+      Example: helm install --name-template vmbc-erc20test . --set global.imageCredentials.registry=vmwaresaas.jfrog.io --set global.imageCredentials.username=testUsername --set global.imageCredentials.password=testPassword --set blockchainUrl=http://127.0.0.1:30545 --set testCount=5
     ```
     
     -  Verify vmbc erc20 token transfer test is installed
@@ -73,15 +73,15 @@ its demanded.
   Note: Make sure namespace exists or create new before deployment
    - Deployment with namespace and "blockchainUrl" only
    ```sh
-     helm install --name-template {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set global.image.tag={tag} --set blockchainUrl={blockchainURL} -n {namespace-of-your-choice}
-     Example: helm install --name-template vmbc-erc20test . --set global.imageCredentials.registry=vmwaresaas.jfrog.io --set global.imageCredentials.username=testUsername --set global.imageCredentials.password=testPassword --set global.image.tag=3.10 --set blockchainUrl=http://127.0.0.1:30545 -n vmbc-namespace
+     helm install --name-template {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set blockchainUrl={blockchainURL} -n {namespace-of-your-choice}
+     Example: helm install --name-template vmbc-erc20test . --set global.imageCredentials.registry=vmwaresaas.jfrog.io --set global.imageCredentials.username=testUsername --set global.imageCredentials.password=testPassword --set blockchainUrl=http://127.0.0.1:30545 -n vmbc-namespace
    ```
      Note: Above instruction uses default testCount value of 2. To override "testCount" during installtion with namespace look for option (B)
     
    - Deployment with namepsace and "blockchainUrl" and "testCount"
    ```sh
-     helm install --name-template {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set global.image.tag={tag} --set blockchainUrl={blockchainURL} --set testCount={testCount} -n {namespace-of-your-choice}
-     Example: helm install --name-template vmbc-erc20test . --set global.imageCredentials.registry=vmwaresaas.jfrog.io --set global.imageCredentials.username=testUsername --set global.imageCredentials.password=testPassword --set global.image.tag=3.10 --set blockchainUrl=http://127.0.0.1:30545 --set testCount=5 -n vmbc-namespace
+     helm install --name-template {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set blockchainUrl={blockchainURL} --set testCount={testCount} -n {namespace-of-your-choice}
+     Example: helm install --name-template vmbc-erc20test . --set global.imageCredentials.registry=vmwaresaas.jfrog.io --set global.imageCredentials.username=testUsername --set global.imageCredentials.password=testPassword --set blockchainUrl=http://127.0.0.1:30545 --set testCount=5 -n vmbc-namespace
    ```
     
    - Verify vmbc erc20 token transfer test is installed
@@ -137,8 +137,8 @@ its demanded.
     
       - Run with updated testCount value
       ```sh
-        helm upgrade {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set global.image.tag={tag} --set blockchainUrl={blockchainURL} --set testCount={testCount}
-        Example: helm upgrade vmbc-erc20test . --set global.imageCredentials.registry=vmwaresaas.jfrog.io --set global.imageCredentials.username=testUsername --set global.imageCredentials.password=testPassword --set global.image.tag=3.10 --set blockchainUrl=http://127.0.0.1:30545 --set testCount=5
+        helm upgrade {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set blockchainUrl={blockchainURL} --set testCount={testCount}
+        Example: helm upgrade vmbc-erc20test . --set global.imageCredentials.registry=vmwaresaas.jfrog.io --set global.imageCredentials.username=testUsername --set global.imageCredentials.password=testPassword --set blockchainUrl=http://127.0.0.1:30545 --set testCount=5
       ```
         Proceed with above step (a) or (b) to run with the updated value
             
@@ -181,8 +181,8 @@ its demanded.
     
       - Run with updated testCount value
       ```sh
-        helm upgrade {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set global.image.tag={tag} --set blockchainUrl={blockchainURL} --set testCount={testCount} -n {namespace-of-your-choice}
-        Example: helm upgrade vmbc-erc20test . --set global.imageCredentials.registry=vmwaresaas.jfrog.io --set global.imageCredentials.username=testUsername --set global.imageCredentials.password=testPassword --set global.image.tag=3.10 --set blockchainUrl=http://127.0.0.1:30545 --set testCount=5 -n vmbc-namespace
+        helm upgrade {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set blockchainUrl={blockchainURL} --set testCount={testCount} -n {namespace-of-your-choice}
+        Example: helm upgrade vmbc-erc20test . --set global.imageCredentials.registry=vmwaresaas.jfrog.io --set global.imageCredentials.username=testUsername --set global.imageCredentials.password=testPassword --set blockchainUrl=http://127.0.0.1:30545 --set testCount=5 -n vmbc-namespace
       ```
         Proceed with above step (a) or (b) to run with the updated value
         
