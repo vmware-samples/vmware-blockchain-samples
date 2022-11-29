@@ -3,7 +3,7 @@ name: docs
 on:
   # trigger deployment on every push to main branch
   push:
-    branches: [docs-dev-kit]
+    branches: [stage-dev-kit]
   # trigger deployment manually
   workflow_dispatch:
 
