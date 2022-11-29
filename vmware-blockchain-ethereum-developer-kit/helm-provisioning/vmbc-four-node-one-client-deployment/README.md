@@ -12,9 +12,9 @@ Client here refers to clients to the blockchain network running ethrpc.
 
 ## Check pre-requisites commands before proceeding further
 
-```
-    kubectl version             -> Verify kubectl is installed
-    helm version                -> Verify helm is installed
+```sh
+    kubectl version             # Verify kubectl is installed
+    helm version                # Verify helm is installed
 ```
 
 ## VMBC four node one client deployment
@@ -57,7 +57,9 @@ Client here refers to clients to the blockchain network running ethrpc.
 			}'
          ```
 
-    - eks (assuming storage class used is the default - gp2)
+    - EKS (assuming storage class used is the default - gp2)
+    See documentation in https://aws.amazon.com/eks/ for details.
+    Note: Please deploy on EKS cluster with k8s version <=1.22 since gp2 is not compatible with k8s version 1.23+
        - Deploy
          ```sh
          helm install <name of blockchain> . --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password='<password>' --set global.storageClass=gp2
@@ -65,12 +67,12 @@ Client here refers to clients to the blockchain network running ethrpc.
        - Test
           - Get ethrpc endpoint
                  Run 
-                 ```sh
+                ```
                   kubectl get svc
-                 ```
+                ```
                  Fetch the ethrpc url displayed against the ethrpc service
           - Test ethrpc response
-            ```sh
+           ```sh
             curl -X POST '<ethrpc url from above>:8545' -H 'Content-Type: application/json' -H "Accept: application/json" -d '{
 			"id": 1,
 			"jsonrpc": "2.0",
@@ -80,7 +82,7 @@ Client here refers to clients to the blockchain network running ethrpc.
 			   true
 			    ]
 			}'
-            ```
+           ```
 ### Delete vmbc deployment
   ```sh
     helm uninstall <name of blockchain>
