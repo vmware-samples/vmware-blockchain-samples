@@ -9,8 +9,8 @@ A web application has been designed and implemented with universal search, block
 ## Check pre-requisites commands before proceeding further**
 
 ```sh
-    kubectl version             -> Verify kubectl is installed
-    helm version                -> Verify helm is installed
+    kubectl version             # Verify kubectl is installed
+    helm version                # Verify helm is installed
 ```
 
 ## VMBC explorer deployment**
@@ -37,26 +37,26 @@ A web application has been designed and implemented with universal search, block
       - Deployment with parameters
       ```sh
         helm install --name-template {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set global.image.tag={tag} --set blockchainUrl={blockchainURL}
-        Example: helm install --name-template vmbc-explorer . --set global.imageCredentials.registry=vmwaresaas.jfrog.io --set global.imageCredentials.username=testUsername --set global.imageCredentials.password=testPassword --set global.image.tag=0.0.1 --set blockchainUrl=http://127.0.0.1:30545
+        # Example: helm install --name-template vmbc-explorer . --set global.imageCredentials.registry=vmwaresaas.jfrog.io --set global.imageCredentials.username=testUsername --set global.imageCredentials.password=testPassword --set global.image.tag=0.0.1 --set blockchainUrl=http://127.0.0.1:30545
       ```
                     
       - Verify vmbc explorer is installed
       ```sh
-        helm list                                           -> Verify {name-of-your-choice} helm chart is available
-        Example: helm list                                  -> Check vmbc-explorer is available
+        helm list                                           # Verify {name-of-your-choice} helm chart is available
+        # Example: helm list                                # Check vmbc-explorer is available
       ```
     
       - Verify Deployments and Services are running
         Note: It may take some time to complete deployment and fully running the explorer.
       ```sh
-        kubectl get all                                     -> Verify {name-of-your-choice}-deployment and {name-of-your-choice}-service is available
-        Example: kubectl get all                            -> Verify vmbc-explorer-deployment and vmbc-explorer-service is available
+        kubectl get all                                     # Verify {name-of-your-choice}-deployment and {name-of-your-choice}-service is available
+        # Example: kubectl get all                          # Verify vmbc-explorer-deployment and vmbc-explorer-service is available
       ```
     
       - Access vmbc explorer webpage using service url
       ```sh
         minikube service {name-of-your-choice}-service
-        Example: minikube service vmbc-explorer-service
+        # Example: minikube service vmbc-explorer-service
       ```
             
     - With namespace
@@ -64,26 +64,26 @@ A web application has been designed and implemented with universal search, block
       - Deployment with parameters
         ```sh
         helm install --name-template {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set global.image.tag={tag} --set blockchainUrl={blockchainURL} -n {namespace-of-your-choice}
-        Example: helm install --name-template vmbc-explorer . --set global.imageCredentials.registry=vmwaresaas.jfrog.io --set global.imageCredentials.username=testUsername --set global.imageCredentials.password=testPassword --set global.image.tag=0.1.0 --set blockchainUrl=http://127.0.0.1:30545 -n vmbc-namespace
+        # Example: helm install --name-template vmbc-explorer . --set global.imageCredentials.registry=vmwaresaas.jfrog.io --set global.imageCredentials.username=testUsername --set global.imageCredentials.password=testPassword --set global.image.tag=0.1.0 --set blockchainUrl=http://127.0.0.1:30545 -n vmbc-namespace
         ```
        
       - Verify vmbc explorer is installed
         ```sh
-        helm list -n {namespace-of-your-choice}             -> Verify {name-of-your-choice} helm chart is available
-        Example: helm list -n vmbc-namespace                -> Check vmbc-explorer is available
+        helm list -n {namespace-of-your-choice}             # Verify {name-of-your-choice} helm chart is available
+        # Example: helm list -n vmbc-namespace              # Check vmbc-explorer is available
         ```
     
       - Verify Deployments and Services are running
         Note: It may take some time to complete deployment and fully running the explorer.
       ```sh
-        kubectl get all  -n {namespace-of-your-choice}      -> Verify {name-of-your-choice}-deployment and {name-of-your-choice}-service is available
-        Example: kubectl get all -n vmbc-namespace          -> Verify vmbc-explorer-deployment and vmbc-explorer-service is available
+        kubectl get all  -n {namespace-of-your-choice}      # Verify {name-of-your-choice}-deployment and {name-of-your-choice}-service is available
+        # Example: kubectl get all -n vmbc-namespace        # Verify vmbc-explorer-deployment and vmbc-explorer-service is available
       ```
     
       - Access vmbc explorer webpage using service url
       ```sh
         minikube service {name-of-your-choice}-service -n {namespace-of-your-choice}
-        Example: minikube service vmbc-explorer-service -n vmbc-namespace
+        # Example: minikube service vmbc-explorer-service -n vmbc-namespace
       ```
         
 ### Remove vmbc explorer ( optional )
@@ -92,24 +92,24 @@ A web application has been designed and implemented with universal search, block
       - Uninstall
       ```sh
         helm uninstall {name-of-your-choice}
-        Example: helm uninstall vmbc-explorer
+        # Example: helm uninstall vmbc-explorer
       ```
     
       - Verify vmbc explorer is removed
       ```sh
-        helm list                                           -> Verify {name-of-your-choice} helm chart is not available
-        Example: helm list                                  -> Check vmbc-explorer is not available
+        helm list                                           # Verify {name-of-your-choice} helm chart is not available
+        # Example: helm list                                # Check vmbc-explorer is not available
       ```
     
     - With namespace
       - Uninstall
       ```sh
         helm uninstall {name-of-your-choice} -n {your-namespace-name-here}
-        Example: helm uninstall vmbc-explorer -n vmbc-namespace
+        # Example: helm uninstall vmbc-explorer -n vmbc-namespace
       ```
     
       - Verify vmbc explorer is removed
       ```sh
-        helm list -n {your-namespace-name-here}             -> Verify {name-of-your-choice} helm chart is not available
-        Example: helm list -n vmbc-namespace                -> Check vmbc-explorer is not available
+        helm list -n {your-namespace-name-here}             # Verify {name-of-your-choice} helm chart is not available
+        # Example: helm list -n vmbc-namespace              # Check vmbc-explorer is not available
       ```
