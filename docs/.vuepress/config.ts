@@ -27,11 +27,11 @@ export default {
         children: [
           {
             text: 'VMBC Ethereum without Logging',
-            link: '/k8-provisioning/vmbc-four-node-one-client-deployment'
+            link: '/helm-provisioning/vmbc-four-node-one-client-deployment'
           },
           {
             text: 'VMBC Ethereum with Logging',
-            link: '/k8-provisioning/vmbc-four-node-one-client-deployment-with-logging'
+            link: '/helm-provisioning/vmbc-four-node-one-client-deployment-with-logging'
           }
         ]
       },
