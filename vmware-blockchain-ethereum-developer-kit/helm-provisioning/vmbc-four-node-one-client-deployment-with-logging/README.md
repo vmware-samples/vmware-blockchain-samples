@@ -11,7 +11,7 @@ Client here refers to clients to the blockchain network running ethrpc.
 
 ## Check pre-requisites commands before proceeding further
 
-```sh
+```
     kubectl version             -> Verify kubectl is installed
     helm version                -> Verify helm is installed
 ```
@@ -114,7 +114,9 @@ Client here refers to clients to the blockchain network running ethrpc.
 ### Deploy vmbc four node deployment
 - Minikube
    - Deploy
+   ```sh
      helm install <name of blockchain> . --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password='<password>'
+   ```
    - Test
       - Get ethrpc endpoint
         Run 
@@ -160,6 +162,6 @@ Client here refers to clients to the blockchain network running ethrpc.
   ```
 
 ### Delete vmbc deployment
-    ```sh
+ ```sh
     helm uninstall <name of blockchain>
-    ``` 
+ ``` 
