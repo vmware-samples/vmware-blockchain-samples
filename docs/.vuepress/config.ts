@@ -11,30 +11,26 @@ export default {
     contributors: false,
     editLink: false,
     navbar: [
-      // Quick Start Guide
+      // VMBC Ethereum Overview
       {
-        text: 'Quick Start Guide',
-        link: '/other-docs/quick-start-guide',
+        text: 'VMBC Ethereum Overview',
+        link: '/other-docs/vmbc-ethereum-overview',
       },
       // Privacy
       {
         text: 'Privacy',
         link: '/privacy/',
       },
-      // K8-Provisioning
+      // K8S-Provisioning
       {
         text: 'Provisioning',
         children: [
           {
-            text: "VMBC Ethereum Provisioning",
-            link: '/k8-provisioning/'
-          },
-          {
-            text: 'VMBC Ethereum Provisioning without Logging',
+            text: 'VMBC Ethereum without Logging',
             link: '/k8-provisioning/vmbc-four-node-one-client-deployment'
           },
           {
-            text: 'VMBC Ethereum Provisioning with Logging',
+            text: 'VMBC Ethereum with Logging',
             link: '/k8-provisioning/vmbc-four-node-one-client-deployment-with-logging'
           }
         ]
