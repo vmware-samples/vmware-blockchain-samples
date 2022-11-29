@@ -1,9 +1,12 @@
-# (WIP) Permissioning
+## (WIP) Ethereum Permissioning
+
+In the 1.8 release, VMware Blockchain for Ethereum will implement “account permissioning” as a tech preview feature in accordance with the Enterprise Ethereum Alliance (EEA) specifications to provide the necessary tools and granularity to govern actions permitted by accounts on the blockchain. Permissioning in the context of enterprise blockchains is a required feature for our customers as they seek ways to control access to deploy and execute smart contracts running on the blockchain. The account permissioning feature can be enabled during network creation by providing the necessary parameters in the deployment configurations file. The compiled permissioning smart contract and the account(s) that can grant permissions to other addresses should also be included in the genesis file. The “permission admin” user can use a dApp or the permissioning user interface to control which accounts are allowed to send transactions and specify the type of transactions permitted. Types of transaction can be READ, WRITE and DEPLOY permissions to other accounts. The dApp should be the preferred method to grant access to a large number of accounts.
 
 By default in VMBC the permissioning feature is disabled. It means anybody can read and write to blockchain.
 The Permissioning smart contract source code is in `vmbc-eth-sdk/contracts/permissioning/Permissioning.sol`.
  
-Permissioning fields in values.yaml:
+### Permissioning fields in values.yaml:
+
 Users can modify the default values in `values.yaml`. All the fields in `genesisBlock` section will be populated as `genesis.json` for vmbc blockchain.
  * **alloc**: List of admin accounts who can provide the permissions to other users. This field can be modified during blockchain deployment.
  * **permissioningContractAddress**: The permissioning smart contract is pre-deployed during system boot. Note that this field can't be changed.
