@@ -12,8 +12,8 @@ Client here refers to clients to the blockchain network running ethrpc.
 ## Check pre-requisites commands before proceeding further
 
 ```
-    kubectl version             -> Verify kubectl is installed
-    helm version                -> Verify helm is installed
+    kubectl version             # Verify kubectl is installed
+    helm version                # Verify helm is installed
 ```
 ### ELK Setup
 
