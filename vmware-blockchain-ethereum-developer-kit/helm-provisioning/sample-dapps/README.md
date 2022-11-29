@@ -23,7 +23,8 @@ A web application has been designed with token transfer functionality. The perfo
 | global.imageCredentials.username | Username to access/download vmbc dapp        | ""                           | Mandatory |
 | global.imageCredentials.password | Password to access/download vmbc dapp        | ""                           | Mandatory |
 | global.imageCredentials.email    | Email to access/download vmbc dapp           | ""                           | Optional  |
-| global.image.repository          | Image name to download for vmbc dapp         | vmwblockchain/eth-erc20-swap | Optional |
+| global.image.repository          | Image name to download for vmbc dapp         | vmwblockchain/vmbc-eth-erc20-swap | Optional |
+| global.image.tag                 | Tag version to download vmbc dapp            | 3.9.10                       | Optional  |
 | blockchainUrl                    | Url to link blockchain with vmbc dapp webpage | ""                           | Mandatory |
 | resources.dapp.cpuLimit          | CPU limit                                    | 10m                          |   Optional        |
 | resources.dapp.cpuRequest             | CPU request                                  | 10m                          |     Optional      |
