@@ -16,7 +16,7 @@ global:
   # The global artifact tag
   image:
     repository: "vmwblockchain/vmbc-eth-erc20-swap"
-    tag: "0.0.0.0.7820"
+    tag: "0.0.0.0.7849"
 
 ## Configure the configmap parameters that allows you to link the vmbc dapp installation
 ## @param blockchainUrl Url to link blockchain with vmbc dapp webpage
