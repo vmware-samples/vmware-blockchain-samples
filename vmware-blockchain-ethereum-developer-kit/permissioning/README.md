@@ -19,9 +19,19 @@ The write permissioning is applicable for both "Contract Deployment" and "Write 
 
 ### How to test write permissioning?
 
-1. In `write-permissioning-sample-dapp-cli`, make sure you have used right Blockchain URL in .env Eg: VMBC_URL="http://x.x.x.x:8545" 
-2. ```npm install```
-3. ```node testWrite.js```
+Follow the steps listed below,
+```sh
+# Change to write authorization dApp
+cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/permissioning/sample-dapps/write-authorization
+
+# Update the .env file with appropriate VMBC_URL Eg: VMBC_URL="http://x.x.x.x:8545" 
+
+# Install dependencies
+npm install
+
+# Run the dApp
+node testWrite.js
+```
 
 ### How to enable read permissioning?
 
