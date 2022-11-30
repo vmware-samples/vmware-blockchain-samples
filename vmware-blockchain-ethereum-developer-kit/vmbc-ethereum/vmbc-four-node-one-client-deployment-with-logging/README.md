@@ -3,28 +3,30 @@ This is a sample set of Helm charts for a four replica one client VMWare blockch
 Replica here refers to participants in consensus algorithm (concord-bft).
 Client here refers to clients to the blockchain network running ethrpc.
 
-## Host system pre-requisites
+## Prerequisites
+### Host system pre-requisites
 
-    kubectl ( https://kubernetes.io/docs/tasks/tools/ )
-    helm chart ( https://helm.sh/docs/intro/install/ )
-    (optional) Minikube
+kubectl ( https://kubernetes.io/docs/tasks/tools/ )
+helm chart ( https://helm.sh/docs/intro/install/ )
+Minikube (https://minikube.sigs.k8s.io/docs/start/)
 
-## Check pre-requisites commands before proceeding further
-
+Test for prerequisite installation
+```sh
+kubectl version             # Verify kubectl is installed
+helm version                # Verify helm is installed
+minikube status             # Verify minikube is stopped.
 ```
-    kubectl version             # Verify kubectl is installed
-    helm version                # Verify helm is installed
-```
+
 ### ELK Setup
 
-- Install Elasticsearch and Kibana
-   - Add helm repo if not already added
+#### Install Elasticsearch, Logstash and Kibana
+- Add helm repo if not already added
      ```sh
-       helm repo add elastic https://helm.elastic.co
-       helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-       helm repo update
+     helm repo add elastic https://helm.elastic.co
+     helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+     helm repo update
      ```
-   - Install Elasticsearch
+- Install Elasticsearch
      ```sh
      cat <<ELASTICSEARCH | helm install elasticsearch elastic/elasticsearch --version 7.17.3 -f -
      antiAffinity: "soft"
@@ -43,7 +45,7 @@ Client here refers to clients to the blockchain network running ethrpc.
           storage: "200M"
      ELASTICSEARCH
       ```
-    - Install Kibana
+- Install Kibana
       ```sh
       cat <<KIBANA | helm install kibana elastic/kibana --version 7.17.3 -f -
       KIBANA
@@ -96,6 +98,67 @@ Client here refers to clients to the blockchain network running ethrpc.
 
 ## VMBC four node one client deployment
 
+The below section explains how to install VMBC four node one client deployment on minikube.
+
+### Quick Start
+#### Deploy
+```sh
+helm install <name of blockchain> . --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password='<password>'
+```
+
+#### Test
+- Get ethrpc endpoint
+    ```sh
+    minikube service list
+    ```
+- Run ethrpc curl
+```sh
+curl -X POST '<ethrpc url from above>' -H 'Content-Type: application/json' -H "Accept: application/json" -d '{
+			"id": 1,
+			"jsonrpc": "2.0",
+			"method": "eth_getBlockByNumber",
+			"params": [
+			"0x00",
+			   true
+			    ]
+			}'
+```
+You should see a sample output similar to below
+```sh
+{"id":1,"jsonrpc":"2.0","method":"eth_getBlockByNumber","result":{"extraData":"0x","gasLimit":"0x7fffffffffffffff","gasUsed":"0x0","hash":"0x92e4414494ec1b4752faea0d80e79f618d447743f32eff4153c5e391be1d1a88","miner":"0x52a06a6cBEF9543244C530F52b602712FE5dfb74","nonce":"0x0000000000000000","number":"0x0","parentHash":"0x0000000000000000000000000000000000000000000000000000000000000000","size":1,"stateRoot":"0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470","timestamp":"0x1669680399","transactions":[{"blockHash":"0x92e4414494ec1b4752faea0d80e79f618d447743f32eff4153c5e391be1d1a88","blockNumber":"0x0","contractAddress":"0x","from":"0x0000000000000000000000000000000000000000","gas":"0x0","gasPrice":0,"hash":"0x77f5bd9e7dbe2c2772f58f53431dfdfa205991ec4ff0b2bc385adecefd8895be","input":"0x","logs":[],"nonce":"0x0","to":"0xfb389874fb4e03182a7358275eaf78008775c7ed","transactionIndex":"0x0","value":"0x0000000000000000000000000000000000000000000000007fffffffffffffff"}]}}
+```
+
+#### View logs in Kibana
+- Open a port-forward to Kibana
+```sh
+kubectl port-forward svc/kibana-kibana 5601:5601
+```
+- Open the following page to see logs
+http://localhost:5601/app/discover#
+- On first open, it will ask to create an index.
+ - Click on "Create index pattern"
+ - Type logs-generic-default* in the Name field and select the @timestamp field from the Timestamp field drop down.
+   If you don't see logs-generic-default, wait a few minutes for the index to be created after a blockchain has been deployed.
+   If you haven't deployed a blockchain yet, then you will have to return to this page after the blockchain is deployed.
+   The index is automatically created when the first blockchain is deployed.
+ - After you click Create index pattern on the page above, you should see a page to customize the index fields.
+   You can leave this page as is as the defaults are fine.
+ - Now you can search and view logs on this page: http://localhost:5601/app/discover#. You can filter logs based on blockhain ID, service name etc.
+
+#### Uninstall
+##### Uninstall Blockchain
+```sh
+helm uninstall <name of blockchain>
+```
+##### Uninstall ELK
+  ```sh
+  helm delete elasticsearch 
+  helm delete logstash
+  helm delete kibana
+  ```
+
+### Detailed configurations for customization
+
 - Configurations
   List of available configurations in values.yaml. Use "--set" param for setting up the params.
 
@@ -110,58 +173,3 @@ Client here refers to clients to the blockchain network running ethrpc.
 | logManagement.endpoint_1.url        | logstash endpoint url                         | http://logstash-logstash.default.svc.cluster.local | Optional |
 | logManagement.endpoint_1.username   | logstash setup username                       | ""                          | Optional  |
 | logManagement.endpoint_1.password   | logstash setup port                           | ""                          | Optional  |
-
-### Deploy vmbc four node deployment
-- Minikube
-   - Deploy
-   ```sh
-     helm install <name of blockchain> . --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password='<password>'
-   ```
-   - Test
-      - Get ethrpc endpoint
-        Run 
-        ```sh
-        minikube service list
-        ```
-        Fetch the ethrpc url displayed against the ethrpc service
-      - Test ethrpc response
-        ```sh
-        curl -X POST '<ethrpc url from above>' -H 'Content-Type: application/json' -H "Accept: application/json" -d '{
-			"id": 1,
-			"jsonrpc": "2.0",
-			"method": "eth_getBlockByNumber",
-			"params": [
-			"0x00",
-			   true
-			    ]
-			}'
-         ```
-
-### View logs in Kibana
-   - Open a port-forward to Kibana
-     ```sh
-         kubectl port-forward svc/kibana-kibana 5601:5601
-     ```
-   - Open the following page to see logs
-         http://localhost:5601/app/discover#
-   - On first open, it will ask to create an index.
-      - Click on "Create index pattern"
-      - Type logs-generic-default* in the Name field and select the @timestamp field from the Timestamp field drop down.
-        If you don't see logs-generic-default, wait a few minutes for the index to be created after a blockchain has been deployed.
-        If you haven't deployed a blockchain yet, then you will have to return to this page after the blockchain is deployed.
-        The index is automatically created when the first blockchain is deployed.
-      - After you click Create index pattern on the page above, you should see a page to customize the index fields.
-        You can leave this page as is as the defaults are fine.
-      - Now you can search and view logs on this page: http://localhost:5601/app/discover#. You can filter logs based on blockhain ID, service name etc.
-
-### Uninstall ELK (Optional)
-  ```sh
-     helm delete elasticsearch 
-     helm delete logstash
-     helm delete kibana
-  ```
-
-### Delete vmbc deployment
- ```sh
-    helm uninstall <name of blockchain>
- ``` 
