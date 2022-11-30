@@ -56,6 +56,10 @@ export default {
         {
           text: 'ERC20 Swap',
           link: '/vmbc-ethereum/sample-dapps/erc20-swap/'
+        },
+        {
+          text: 'ERC20 Test Tool',
+          link: '/vmbc-ethereum/sample-dapps/erc20-test-tool/'
         }]
       }
     ],
