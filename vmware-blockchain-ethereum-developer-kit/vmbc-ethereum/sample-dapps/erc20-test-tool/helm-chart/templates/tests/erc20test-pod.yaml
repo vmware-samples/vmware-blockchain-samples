@@ -16,11 +16,11 @@ spec:
           value: {{ .Values.testCount | quote }}
       resources:
         limits:
-          cpu: "{{ .Values.resources.test.cpuLimit }}"
-          memory: "{{ .Values.resources.test.memoryLimit }}"
+          cpu: "{{ .Values.resources.erc20test.cpuLimit }}"
+          memory: "{{ .Values.resources.erc20test.memoryLimit }}"
         requests:
-          cpu: "{{ .Values.resources.test.cpuRequest }}"
-          memory: "{{ .Values.resources.test.memoryRequest }}"
+          cpu: "{{ .Values.resources.erc20test.cpuRequest }}"
+          memory: "{{ .Values.resources.erc20test.memoryRequest }}"
       command: [ "/bin/sh", "-c", "bash ; pip3 install urllib3 web3 pytest pysha3 ; cd /tests ; python3 -m pytest --log-cli-level=DEBUG eth_erc20.py ; " ]
       volumeMounts:
         - name: erc20test-volume

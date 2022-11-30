@@ -18,13 +18,13 @@ global:
     repository: "vmwblockchain/vmbc-eth-artemis"
     tag: "0.0.0.0.7849"
 
-## Configure the configmap parameters that allows you to link the vmbc dapp installation
-## @param blockchainUrl Url to link blockchain with vmbc dapp webpage
+## Configure the configmap parameters that allows you to link the vmbc nft dapp installation
+## @param blockchainUrl Url to link blockchain with vmbc nft dapp webpage
 ##
 blockchainUrl: ""
 
-## Configure the resources for vmbc dapp deployment
-## @param resources Resources for vmbc dapp deployment
+## Configure the resources for vmbc nft dapp deployment
+## @param resources Resources for vmbc nft dapp deployment
 ##
 resources:
   # @param nft VMBC nft dapp resources

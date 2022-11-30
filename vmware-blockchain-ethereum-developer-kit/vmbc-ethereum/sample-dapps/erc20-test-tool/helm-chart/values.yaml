@@ -33,7 +33,7 @@ testCount: 2
 ##
 resources:
   # @param test VMBC erc20 token transfer test
-  test:
+  erc20test:
     cpuLimit: 100m
     cpuRequest: 100m
     memoryLimit: 1Gi
