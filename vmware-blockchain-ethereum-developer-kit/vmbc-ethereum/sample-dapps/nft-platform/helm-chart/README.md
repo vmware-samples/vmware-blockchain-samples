@@ -1,31 +1,33 @@
 ## Host system pre-requisites
   ```sh
-    kubectl ( https://kubernetes.io/docs/tasks/tools/ )
-    helm chart ( https://helm.sh/docs/intro/install/ )
+  kubectl ( https://kubernetes.io/docs/tasks/tools/ )
+  helm chart ( https://helm.sh/docs/intro/install/ )
+  (optional) minikube (https://minikube.sigs.k8s.io/docs/start/)
+  (optional) eksctl (https://eksctl.io/)
   ```
 
 ### Deploy vmbc nft dapp
   - Deployment with parameters
   ```sh
-    helm install --name-template {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set blockchainUrl={blockchainURL}
-    # Example: helm install --name-template vmbc-nft . --set global.imageCredentials.registry=vmwaresaas.jfrog.io --set global.imageCredentials.username=testUsername --set global.imageCredentials.password=testPassword --set blockchainUrl=http://127.0.0.1:30545
+  helm install --name-template {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set blockchainUrl={blockchainURL}
+  # Example: helm install --name-template vmbc-nft . --set global.imageCredentials.registry=vmwaresaas.jfrog.io --set global.imageCredentials.username=testUsername --set global.imageCredentials.password=testPassword --set blockchainUrl=http://127.0.0.1:30545
   ```
 
   - Access vmbc nft dapp webpage using service url
   ```sh
-    Minikube
-      minikube service {name-of-your-choice}-service
-      # Example: minikube service vmbc-nft-service
-    EKS
-      kubectl get service {name-of-your-choice}-service
-      # Example: kubectl get service vmbc-nft-service
+  Minikube
+    minikube service {name-of-your-choice}-service
+    # Example: minikube service vmbc-nft-service
+  EKS
+    kubectl get service {name-of-your-choice}-service
+    # Example: kubectl get service vmbc-nft-service
   ```
                 
 ### Remove vmbc nft dapp ( optional )
   - Uninstall
   ```sh
-    helm uninstall {name-of-your-choice}
-    # Example: helm uninstall vmbc-nft
+  helm uninstall {name-of-your-choice}
+  # Example: helm uninstall vmbc-nft
   ```
 
 ## VMBC nft dapp deployment configurations
