@@ -1,5 +1,5 @@
-# VMBC Four Node One Client Sample Deployment
-This is a sample set of Helm charts for a four replica one client VMWare blockchain deployment on Kubernetes on choice of host on a single cluster only. Current sample has been tested with minikube with virtualbox driver and AWS EKS as hosts.
+# VMBC Four Node One Client Sample Deployment With Logging
+This is a sample set of Helm charts for a four replica one client VMWare blockchain deployment on Kubernetes on choice of host on a single cluster only. Current sample has been tested with minikube with virtualbox driver as hosts.
 Replica here refers to participants in consensus algorithm (concord-bft).
 Client here refers to clients to the blockchain network running ethrpc.
 
@@ -26,46 +26,46 @@ Client here refers to clients to the blockchain network running ethrpc.
      ```
    - Install Elasticsearch
      ```sh
-           cat <<ELASTICSEARCH | helm install elasticsearch elastic/elasticsearch --version 7.17.3 -f -
-           antiAffinity: "soft"
-           esJavaOpts: "-Xmx256m -Xms256m"
-           resources:
-             requests:
-              cpu: "100m"
-              memory: "1024M"
-             limits:
-               cpu: "1000m"
-               memory: "1024M"
-           volumeClaimTemplate:
-             storageClassName: "standard"
-             resources:
-               requests:
-                 storage: "200M"
-           ELASTICSEARCH
+     cat <<ELASTICSEARCH | helm install elasticsearch elastic/elasticsearch --version 7.17.3 -f -
+     antiAffinity: "soft"
+     esJavaOpts: "-Xmx256m -Xms256m"
+     resources:
+       requests:
+        cpu: "100m"
+        memory: "1024M"
+       limits:
+        cpu: "1000m"
+        memory: "1024M"
+     volumeClaimTemplate:
+       storageClassName: "standard"
+       resources:
+         requests:
+          storage: "200M"
+     ELASTICSEARCH
       ```
     - Install Kibana
       ```sh
-           cat <<KIBANA | helm install kibana elastic/kibana --version 7.17.3 -f -
-           KIBANA
+      cat <<KIBANA | helm install kibana elastic/kibana --version 7.17.3 -f -
+      KIBANA
       ```
 
 - Install logstash
-  ```sh
-      cat <<LOGSTASH | helm install logstash elastic/logstash --version 7.17.3 -f -
-      persistence:
-        enabled: true
-      logstashConfig:
-        logstash.yml: |
-          http.host: 0.0.0.0
-          xpack.monitoring.enabled: false
-      logstashPipeline:
-        vmbc.conf: |
-          input {
+     ```sh
+     cat <<LOGSTASH | helm install logstash elastic/logstash --version 7.17.3 -f -
+     persistence:
+       enabled: true
+     logstashConfig:
+       logstash.yml: |
+         http.host: 0.0.0.0
+         xpack.monitoring.enabled: false
+     logstashPipeline:
+       vmbc.conf: | 
+         input {
             http {
               id => "vmbc-logs"
             }
-          }
-          filter {
+         }
+         filter {
             split {
             }
             json {
@@ -77,22 +77,22 @@ Client here refers to clients to the blockchain network running ethrpc.
             mutate {
               remove_field => [ "host", "headers", "logtime" ]
             }
-          }
-          output {
+         }
+         output {
             elasticsearch {
               hosts => [ "elasticsearch-master.default.svc.cluster.local:9200" ]
               data_stream => "true"
             }
-          }
-      service:
-        type: ClusterIP
-        ports:
+         }
+     service:
+       type: ClusterIP
+       ports:
           - name: http
             port: 8080
             protocol: TCP
             targetPort: 8080
-      LOGSTASH
-   ```
+     LOGSTASH
+     ```
 
 ## VMBC four node one client deployment
 
@@ -156,9 +156,9 @@ Client here refers to clients to the blockchain network running ethrpc.
 
 ### Uninstall ELK (Optional)
   ```sh
-     kubectl delete statefulset elasticsearch-master 
-     kubectl delete statefulset logstash-logstash
-     kubectl delete deployment kibana-kibana
+     helm delete elasticsearch 
+     helm delete statefulset logstash
+     helm delete kibana
   ```
 
 ### Delete vmbc deployment
