@@ -25,7 +25,7 @@ A web application has been designed and implemented with universal search, block
 | global.imageCredentials.password | Password to access/download vmbc explorer        | ""                          | Mandatory |
 | global.imageCredentials.email    | Email to access/download vmbc explorer           | ""                          | Optional  |
 | global.image.repository          | Image name to download for vmbc explorer         | vmwblockchain/vmbc-eth-explorer | Optional |
-| global.image.tag                 | Tag version to download vmbc explorer            | 0.0.0.0.7820                | Optional  |
+| global.image.tag                 | Tag version to download vmbc explorer            | 0.0.0.0.7849                | Optional  |
 | blockchainUrl                    | Url to link blockchain with vmbc explorer webpage | ""                         | Mandatory |
 | resources.explorer.cpuLimit      | CPU limit                                        | 100m                         | Optional  |
 | resources.explorer.cpuRequest             | CPU request                             | 100m                         | Optional  |
