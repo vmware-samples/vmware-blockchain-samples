@@ -25,7 +25,7 @@ global:
 
   # The global artifact tag
   image:
-    tag: "0.0.0.0.7820"
+    tag: "0.0.0.0.7849"
 
 ## @section replica-specific GLOBAL parameters (applies to all replicas)
 ##
