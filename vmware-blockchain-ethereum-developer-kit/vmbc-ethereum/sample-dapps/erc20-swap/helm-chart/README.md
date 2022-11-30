@@ -24,7 +24,7 @@ A web application has been designed with token transfer functionality. The perfo
 | global.imageCredentials.password | Password to access/download vmbc erc20 swap dapp        | ""                           | Mandatory |
 | global.imageCredentials.email    | Email to access/download vmbc erc20 swap dapp           | ""                           | Optional  |
 | global.image.repository          | Image name to download for vmbc erc20 swap dapp         | vmwblockchain/vmbc-eth-erc20-swap | Optional |
-| global.image.tag                 | Tag version to download vmbc erc20 swap dapp            | 0.0.0.0.7820                       | Optional  |
+| global.image.tag                 | Tag version to download vmbc erc20 swap dapp            | 0.0.0.0.7849                       | Optional  |
 | blockchainUrl                    | Url to link blockchain with vmbc erc20 swap dapp webpage | ""                           | Mandatory |
 | resources.erc20swap.cpuLimit     | CPU limit                                    | 1000m                          |   Optional        |
 | resources.erc20swap.cpuRequest        | CPU request                                  | 100m                          |     Optional      |
