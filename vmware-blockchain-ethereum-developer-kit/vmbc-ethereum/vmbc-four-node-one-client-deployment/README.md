@@ -13,7 +13,8 @@ helm chart ( https://helm.sh/docs/intro/install/ )
 
 For the purpose of this deployment, one may choose to deploy on minikube or eksctl.
 ```
-Note: Current default version of Kubernetes on eks is 1.24+. However, with storage class gp2, there are issues persisting (TODO: <PUT AWS DOC HERE>). Please deploy eks cluster with kubernetes version 1.22 for correct functionality with storage class gp2.
+Note: Current default version of Kubernetes on eks is 1.24+. However, with storage class gp2, please see https://docs.aws.amazon.com/eks/latest/userguide/storage-classes.html.
+Please deploy eks cluster with kubernetes version 1.22 for correct functionality with storage class gp2.
 ```
 
 Test for prerequisite installation
