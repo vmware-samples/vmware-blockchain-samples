@@ -157,7 +157,7 @@ Client here refers to clients to the blockchain network running ethrpc.
 ### Uninstall ELK (Optional)
   ```sh
      helm delete elasticsearch 
-     helm delete statefulset logstash
+     helm delete logstash
      helm delete kibana
   ```
 
