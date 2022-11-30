@@ -3,18 +3,24 @@ This is a sample set of Helm charts for a four replica one client VMWare blockch
 Replica here refers to participants in consensus algorithm (concord-bft).
 Client here refers to clients to the blockchain network running ethrpc.
 
-## Host system pre-requisites
+## Prerequisites
+### Host system pre-requisites
 
-    kubectl ( https://kubernetes.io/docs/tasks/tools/ )
-    helm chart ( https://helm.sh/docs/intro/install/ )
-    (optional) Minikube
-    (optional) eksctl
+kubectl ( https://kubernetes.io/docs/tasks/tools/ )
+helm chart ( https://helm.sh/docs/intro/install/ )
+(optional) Minikube (https://minikube.sigs.k8s.io/docs/start/)
+(optional) eksctl (https://eksctl.io/)
 
-## Check pre-requisites commands before proceeding further
+For the purpose of this deployment, one may choose to deploy on minikube or eksctl.
+```
+Note: Current default version of Kubernetes on eks is 1.24+. However, with storage class gp2, there are issues persisting (TODO: <PUT AWS DOC HERE>). Please deploy eks cluster with kubernetes version 1.22 for correct functionality with storage class gp2.
+```
 
+Test for prerequisite installation
 ```sh
 kubectl version             # Verify kubectl is installed
 helm version                # Verify helm is installed
+minikube status             # Verify minikube is stopped.
 ```
 
 ## VMBC four node one client deployment
