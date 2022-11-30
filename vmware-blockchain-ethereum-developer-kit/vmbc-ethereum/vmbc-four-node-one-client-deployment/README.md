@@ -62,7 +62,7 @@ Client here refers to clients to the blockchain network running ethrpc.
     Note: Please deploy on EKS cluster with k8s version <=1.22 since gp2 is not compatible with k8s version 1.23+
        - Deploy
          ```sh
-         helm install <name of blockchain> . --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password='<password>' --set global.storageClass=gp2
+         helm install <name of blockchain> . --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password='<password>' --set global.storageClassName=gp2
          ```
        - Test
           - Get ethrpc endpoint

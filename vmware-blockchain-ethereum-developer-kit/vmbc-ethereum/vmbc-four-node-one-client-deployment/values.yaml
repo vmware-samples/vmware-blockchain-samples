@@ -91,10 +91,10 @@ resources:
 ## Storage class Names
 storageClassNames:
   replica:
-    replica1: standard
-    replica0: standard
-    replica3: standard
-    replica2: standard
+    replica1: ""
+    replica0: ""
+    replica3: ""
+    replica2: ""
 
 
 serviceAccount:
