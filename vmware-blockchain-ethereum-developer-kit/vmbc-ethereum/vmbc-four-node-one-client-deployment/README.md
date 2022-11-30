@@ -5,11 +5,12 @@ Client here refers to clients to the blockchain network running ethrpc.
 
 ## Prerequisites
 ### Host system pre-requisites
-
+```
 kubectl ( https://kubernetes.io/docs/tasks/tools/ )
 helm chart ( https://helm.sh/docs/intro/install/ )
 (optional) Minikube (https://minikube.sigs.k8s.io/docs/start/)
 (optional) eksctl (https://eksctl.io/)
+```
 
 For the purpose of this deployment, one may choose to deploy on minikube or eksctl.
 ```
