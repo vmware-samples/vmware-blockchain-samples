@@ -6,6 +6,7 @@ metadata:
     app: {{ .Release.Name }}
 spec:
   replicas: 3
+  serviceName: privacy-app
   selector:
     matchLabels:
       app: {{ .Release.Name }}
