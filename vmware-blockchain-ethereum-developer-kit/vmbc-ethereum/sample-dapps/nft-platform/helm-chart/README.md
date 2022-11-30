@@ -24,7 +24,7 @@ A web application has been designed with nft transfer functionality. The perform
 | global.imageCredentials.password | Password to access/download vmbc nft dapp         | ""                           | Mandatory |
 | global.imageCredentials.email    | Email to access/download vmbc nft dapp            | ""                           | Optional  |
 | global.image.repository          | Image name to download for vmbc nft dapp          | vmwblockchain/vmbc-eth-artemis | Optional |
-| global.image.tag                 | Tag version to download vmbc nft dapp             | 0.0.0.0.7820                       | Optional  |
+| global.image.tag                 | Tag version to download vmbc nft dapp             | 0.0.0.0.7849                       | Optional  |
 | blockchainUrl                    | Url to link blockchain with vmbc nft dapp webpage | ""                           | Mandatory |
 | resources.nft.cpuLimit           | CPU limit                                         | 1000m                          |   Optional        |
 | resources.nft.cpuRequest         | CPU request                                       | 100m                          |     Optional      |
