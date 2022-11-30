@@ -14,24 +14,24 @@ export default {
       // VMBC Ethereum Overview
       {
         text: 'VMBC Ethereum Overview',
-        link: '/other-docs/vmbc-ethereum-overview',
+        link: '/vmbc-ethereum-overview',
       },
       // Privacy
       {
         text: 'Privacy',
         link: '/privacy/',
       },
-      // K8S-Provisioning
+      // VMBC Provisioning
       {
         text: 'Provisioning',
         children: [
           {
             text: 'VMBC Ethereum without Logging',
-            link: '/helm-provisioning/vmbc-four-node-one-client-deployment'
+            link: '/vmbc-ethereum/vmbc-four-node-one-client-deployment'
           },
           {
             text: 'VMBC Ethereum with Logging',
-            link: '/helm-provisioning/vmbc-four-node-one-client-deployment-with-logging'
+            link: '/vmbc-ethereum/vmbc-four-node-one-client-deployment-with-logging'
           }
         ]
       },
@@ -43,19 +43,19 @@ export default {
       // Block Explorer
       {
         text: 'Block Explorer',
-        link: '/explorer/',
+        link: '/block-explorers/vmbc-explorer/',
       },
       // Sample DApps
       {
         text: 'Sample DApps',
         link: '/README',
         children: [{
-          text: "Artemis",
-          link: '/sample-dapps/artemis/'
+          text: "NFT Platform",
+          link: '/vmbc-ethereum/sample-dapps/nft-platform/'
         },
         {
           text: 'ERC20 Swap',
-          link: '/sample-dapps/erc20-swap/'
+          link: '/vmbc-ethereum/sample-dapps/erc20-swap/'
         }]
       }
     ],
