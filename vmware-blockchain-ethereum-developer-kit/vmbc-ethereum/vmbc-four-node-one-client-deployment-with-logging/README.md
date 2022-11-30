@@ -3,7 +3,7 @@ This is a sample set of Helm charts for a four replica one client VMWare blockch
 Replica here refers to participants in consensus algorithm (concord-bft).
 Client here refers to clients to the blockchain network running ethrpc.
 
-## Host system pre-requisites
+# Host system pre-requisites
 
     kubectl ( https://kubernetes.io/docs/tasks/tools/ )
     helm chart ( https://helm.sh/docs/intro/install/ )
