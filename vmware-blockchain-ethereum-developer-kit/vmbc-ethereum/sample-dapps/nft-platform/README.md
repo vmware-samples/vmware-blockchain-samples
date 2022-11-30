@@ -1,4 +1,4 @@
-# (WIP) Artemis
+# (WIP) NFT Platform
 
 ## NFT platform on VMware Blockchain
 
