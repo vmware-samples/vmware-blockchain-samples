@@ -1,0 +1,19 @@
+{
+  "name": "vmbc-ethers-read-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node testRead.js"
+  },
+  "author": "Vijaya Prakash Masilamani",
+  "license": "ISC",
+  "dependencies": {
+    "@vmware-blockchain/ethers-extension": "file:../integration-library/vmbc-ethers-extension",
+    "console": "0.7.2",
+    "dotenv": "16.0.1",
+    "ethers": "^5.7.1",
+    "fs": "0.0.1-security",
+    "solc": "^0.8.15"
+  }
+}
