@@ -10,7 +10,7 @@ The following sections brief on the deployment process and associated workflow t
 - [ ] Fix release verion
 
 # Kubernetes deployment overview
-![Privacy application kubernetes deployment](assets/images/PrivacyAppK8s.svg)
+TODO - Fixme insert SVG
 
 ## Prerequisite
 The privacy app requires write and read permissioning features to get disabled!
