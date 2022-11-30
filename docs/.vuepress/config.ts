@@ -16,14 +16,9 @@ export default {
         text: 'VMBC Ethereum Overview',
         link: '/vmbc-ethereum-overview',
       },
-      // Privacy
+      // VMBC Ethereum
       {
-        text: 'Privacy',
-        link: '/privacy/',
-      },
-      // VMBC Provisioning
-      {
-        text: 'Provisioning',
+        text: 'VMBC Ethereum',
         children: [
           {
             text: 'VMBC Ethereum without Logging',
@@ -34,6 +29,11 @@ export default {
             link: '/vmbc-ethereum/vmbc-four-node-one-client-deployment-with-logging'
           }
         ]
+      },
+      // Privacy
+      {
+        text: 'Privacy',
+        link: '/privacy/',
       },
       // Permissioning
       {
