@@ -27,8 +27,8 @@ blockchainUrl: ""
 ## @param resources Resources for vmbc dapp deployment
 ##
 resources:
-  # @param dapp VMBC dapp resources
-  dapp:
+  # @param nft VMBC nft dapp resources
+  nft:
     cpuLimit: 1000m
     cpuRequest: 100m
     memoryLimit: 2Gi

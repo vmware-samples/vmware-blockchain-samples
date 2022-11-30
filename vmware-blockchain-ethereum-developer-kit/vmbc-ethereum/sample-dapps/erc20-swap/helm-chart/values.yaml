@@ -27,8 +27,8 @@ blockchainUrl: ""
 ## @param resources Resources for vmbc dapp deployment
 ##
 resources:
-  # @param dapp VMBC dapp resources
-  dapp:
+  # @param erc20swap VMBC erc20 swap dapp resources
+  erc20swap:
     cpuLimit: 1000m
     cpuRequest: 100m
     memoryLimit: 2Gi
