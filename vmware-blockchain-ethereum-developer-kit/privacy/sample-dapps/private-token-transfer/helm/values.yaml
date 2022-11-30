@@ -1,0 +1,88 @@
+## @section Global parameters
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageCredentials
+##
+
+## @param global.imageCredentials Global Docker image registry
+##
+global:
+  # The credentials for the docker registry. If username/password/email are specified, a corresponding Secret is created.
+  imageCredentials:
+    registry: "blockchain-docker-internal.artifactory.eng.vmware.com"
+    username: |-
+      ""
+    password: |-
+      ""
+    email: ""
+  image:
+    tag: ""
+
+privacyWalletApp:
+  image:
+    repository: "vmwblockchain/privacy-wallet-app"
+    tag: ""
+
+privacyWalletCli:
+  image:
+    repository: "vmwblockchain/privacy-wallet-cli"
+    tag: ""
+
+privacyAdmin:
+  image:
+    repository: "vmwblockchain/privacy-admin-app"
+    tag: ""
+
+privacyAdminCli:
+  image:
+    repository: "vmwblockchain/privacy-admin-cli"
+    tag: ""
+
+## Specify an imagePullPolicy (Required)
+## It's recommended to change this to 'Always' if the image tag is ''
+## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
+##
+imagePullPolicy: IfNotPresent
+
+## Configure the configmap parameters that allows you to link the vmbc dapp installation
+## @param blockchainUrl Url to link blockchain with vmbc dapp webpage
+##
+blockchainUrl: ""
+
+## app config path
+privacyConfigPath: "/app/config"
+
+## default value for privacy admin service GRPC port
+privacyAdminGrpcPort: "49000"
+
+## default value for privacy wallet service GRPC port
+privacyWalletAppGrpcPort: "49001"
+
+privacyAppMetadataName: vmbc-privacy-wallet-service
+
+## Configure the resources for vmbc dapp deployment
+## @param resources Resources for vmbc dapp deployment
+##
+resources:
+  # @param VMBC wallet app resources
+  walletapp:
+    cpuLimit: 800m
+    cpuRequest: 700m
+    memoryLimit: 500Mi
+    memoryRequest: 400Mi
+  # @param VMBC wallet cli resources
+  walletcli:
+    cpuLimit: 100m
+    cpuRequest: 20m
+    memoryLimit: 250Mi
+    memoryRequest: 125Mi
+  admin:
+    cpuLimit: 800m
+    cpuRequest: 700m
+    memoryLimit: 500Mi
+    memoryRequest: 400Mi    
+  admincli:
+    cpuLimit: 100m
+    cpuRequest: 20m
+    memoryLimit: 250Mi
+    memoryRequest: 125Mi

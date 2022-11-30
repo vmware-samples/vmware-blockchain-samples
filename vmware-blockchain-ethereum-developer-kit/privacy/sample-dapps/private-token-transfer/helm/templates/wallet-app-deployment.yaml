@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: vmbc-deployment-privacy-wallet
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      volumes:
+        - name: wallet-app-storage
+          persistentVolumeClaim:
+            claimName: privacy-wallet-app-pvc
+      containers:
+        - name: privacy-wallet-app
+          image: {{ include "privacywalletapp.image" . }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: VMBC_CHAIN_ID
+              value: "5000"
+            - name: VMBC_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-configmap
+                  key: VMBC_URL
+            - name: PRIVACY_CONFIG_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-configmap
+                  key: PRIVACY_CONFIG_PATH
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          resources:
+            limits:
+              cpu: "{{ .Values.resources.walletapp.cpuLimit }}"
+              memory: "{{ .Values.resources.walletapp.memoryLimit }}"
+            requests:
+              cpu: "{{ .Values.resources.walletapp.cpuRequest }}"
+              memory: "{{ .Values.resources.walletapp.memoryRequest }}"                   
+          volumeMounts:
+            - name: wallet-app-storage
+              mountPath: "/app/config"
+        - name: privacy-wallet-cli
+          image: {{ include "privacywalletcli.image" . }}
+          imagePullPolicy: IfNotPresent
+          stdin: true
+          tty: true
+          env:
+            - name: PRIVACY_WALLET_APP_GRPC_PORT
+              value: "49001"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          resources:
+            limits:
+              cpu: "{{ .Values.resources.walletcli.cpuLimit }}"
+              memory: "{{ .Values.resources.walletcli.memoryLimit }}"
+            requests:
+              cpu: "{{ .Values.resources.walletcli.cpuRequest }}"
+              memory: "{{ .Values.resources.walletcli.memoryRequest }}"     
+          volumeMounts:
+            - name: wallet-app-storage
+              mountPath: "{{ .Values.privacyConfigPath }}"
+      imagePullSecrets:
+        - name: {{ .Release.Name }}-regcred
+      restartPolicy: Always
