@@ -1,0 +1,34 @@
+.foo {
+    margin-left: 80px;
+}
+.failed{
+    background-color: red;
+    color: white;
+    text-align: center;
+    margin-bottom: 10px;
+}
+.success{
+    background-color: green;
+    color: white;
+    text-align: center;
+}
+.spanFrom{
+    font-weight: normal;
+    text-align: center;
+    padding-left: 45px;
+    text-decoration:underline;
+}
+.spanContract{
+    font-weight: normal;
+    text-align: start;
+    padding-left: 27px;
+    text-decoration:underline;
+}
+.failedWrap{
+    max-width: 600px;
+    white-space: break-spaces;
+    display: inline-block;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-all;
+}

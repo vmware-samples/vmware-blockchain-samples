@@ -1,0 +1,32 @@
+<clr-main-container #mainContainer>
+<header class="header-6">
+  <div class="branding">
+    <a href="javascript://" class="nav-link">
+      <cds-icon shape="vm"></cds-icon>
+      <span class="title">VMBC Ethereum Permissioning Toolkit</span>
+    </a>
+  </div>
+  <div class="header-actions">
+      <button class="btn btn-primary" (click)="connectMetamask($event)">Connect Metamask</button>
+  </div>
+</header>
+<div class="content-container">
+  <clr-vertical-nav>
+
+
+    <a clrVerticalNavLink routerLink="./configurations" routerLinkActive="active">
+      <cds-icon clrVerticalNavIcon shape="cog"></cds-icon>
+      Permissioning Config
+    </a>
+    <a clrVerticalNavLink routerLink="./dapp" routerLinkActive="active">
+      <cds-icon clrVerticalNavIcon shape="user" class="is-solid"></cds-icon>
+      ERC20 Test Dapp
+    </a>
+    <div class="nav-divider"></div>
+    <a clrVerticalNavLink routerLink="./help" routerLinkActive="active">Help</a>
+  </clr-vertical-nav>
+  <div class="content-area">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+</clr-main-container>

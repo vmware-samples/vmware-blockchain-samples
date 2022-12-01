@@ -75,14 +75,22 @@ node testReadWrite.js
 3. Json-rpc-provider is the one which we have tested for read permissioning.
 
 ## Troubleshooting Guide
-### 1. Request Not Signed Error
+### 1. Permission denied Error
+```sh
+  reason: 'processing response error',
+  code: 'SERVER_ERROR',
+  body: '{"error":{"code":-31998,"data":"evm error, status code: -2","message":"Permission denied"},"id":58,"jsonrpc":"2.0"}',
+```
+#### Solution
+You have enabled write permissioning. Make sure the ethereum account you are using to send transactions or deploy contract has the WRITE/DEPLOY permission. 
+### 2. Request Not Signed Error
 ```sh 
   reason: 'processing response error',
   code: 'SERVER_ERROR',
   body: '{"error":{"code":-32602,"message":"Request not signed"},"id":47,"jsonrpc":"2.0"}',
 ```
 #### Solution
-You have enabled read permissioning. Make sure you are using `vmbc-ethers.js` in `package.json` example `"@vmware-blockchain/ethers": "file:../../../integration-libraries/vmbc-ethers.js/packages/ethers"`. In addition to that check your DAPP, you should call the setSigningKey() API, example `PROVIDER.setSigningKey({readPermissioningKeyOrEnable: privateKey});` and your DAPP should use JSON RPC provider to interact with Blockchain.
+You have enabled read permissioning. Make sure you are using `vmbc-ethers-extension` in `package.json` example `"@vmware-blockchain/ethers-extension": "file:../integration-library/vmbc-ethers-extension"`. In addition to that check your DAPP, you should call the setSigningKey() API, example `PROVIDER.setSigningKey({readPermissioningKeyOrEnable: privateKey});` and your DAPP should use JSON RPC provider to interact with Blockchain.
 
 ## Reference:
 JSON RPC API - https://ethereum.org/en/developers/docs/apis/json-rpc/
