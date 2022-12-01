@@ -24,7 +24,7 @@ There are two ways to run this DApp
 cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/permissioning/sample-dapps/authorization-gui/source
 
 # Install the dependencies
-npm install
+npm install --legacy-peer-deps
 
 # Export the VMBC_URL to the URL of deployed instance of VMware Blockchain
 export VMBC_URL=http://127.0.0.1:8545
