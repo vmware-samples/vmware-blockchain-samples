@@ -1,12 +1,23 @@
 # Read/Write Permissioning Sample Dapp Ui
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.11.
+## Features
+Todo Vijay
 
-### Code scaffolding
+## Pre-requisites
+- VMBC Ethereum has been deployed
+- Suggested and Supported Stack
+    - MAC Operating System
+    - Google Chrome browser
+    - Metamask Wallet - [https://metamask.io/](https://metamask.io/)
+- Connecting Metamask to VMBC - [See Appendix](#connecting-metamask-to-vmbc)
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Running DApp
+There are two ways to run this DApp
 
-### Build and run
+### Command Line Based
+- This option is only supported for MAC Operating System
+- Execute following commands to run the DApp through command line
+- At command line, this app defaults to port `4200`
 
 ```sh
     npm install
