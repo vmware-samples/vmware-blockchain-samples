@@ -42,7 +42,7 @@ Prerequiste: Current metamask account needs to be the admin account.
 5. Click "CHECK PERMISSIONS" again to see if the address has the correct permissions.
 6. To remove a permission make sure the checkbox for the permission is unchecked then hit the "SET PERMISSIONS" button.
 
-### Troubleshoot
+### Troubleshooting
 
 Failed Transaction: If you get a failed transaction message, check the data.
 * If you see the error message "Not an Admin" make sure the metamask account that is currently being used is an admin account.
