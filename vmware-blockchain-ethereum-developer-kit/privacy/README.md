@@ -1,15 +1,10 @@
-# Introduction
-The base VMBC would be deployed on a kubernetes cluster leveraging helm charts.
-The privacy application will be deployed along side with the VMBC deployment leveraging the ETHRPC service provided. 
-
-The following sections brief on the deployment process and associated workflow to try out privacy capabilities. 
-
 # TODO List:
-- [ ] Fix links for reference VMBC Readme
-- [ ] Fix links for values.yaml based on final location
-- [ ] Fix release version
+- [ ] update introduction session using product management inputs
+# Introduction
+The base VMBC would be deployed on a kubernetes cluster leveraging [helm charts](../vmbc-ethereum/vmbc-four-node-one-client-deployment/README.md).
+The following sections brief on the deployment process and associated workflow to try out privacy capabilities. The privacy application would communicate with VMBC using Eth RPC service.
 
-# Kubernetes deployment overview
+## Kubernetes deployment overview
 ![Privacy Depiction](./assets/images/PrivacyAppK8s.svg)
 
 ## Prerequisite
@@ -20,11 +15,17 @@ Deployment leverages the helm charts provided with the development kit for priva
 
 ### Determine the required settings for helm chart installation
 
-The following settings are required for deployment. Refer to **"values.yaml"** (@TODO - add link) file under helm chart path. Several settings are assigned to predetermined default values and users would only require to set few mandatory settings.
+List of available configurations in [values.yaml](./sample-dapps/private-token-transfer/helm/values.yaml). Use "--set" param for setting up the params.
+Most settings are assigned to predetermined default values and users would only require to set few mandatory settings.
 
-| Mandatory Settings      | Remarks       |  Sample  |
-| ------------- | ------------- | ------------- |
-| blockchainUrl | URL for ETH-RPC service. Determined from the VMBC deployments exposed service. | `blockchainUrl="http://192.168.59.102:32223"`  |
+#### Image, Blockchain location settings
+
+| Name                             | Description                                      | Value                       | Type      |
+|----------------------------------|--------------------------------------------------|-----------------------------|-----------|
+| blockchainUrl | URL for ETH-RPC service. Determined from the VMBC deployments exposed service. | `blockchainUrl="http://192.168.59.102:32223"`  | Mandatory |
+| global.imageCredentials.registry | Container registry for image downloads           | ""                          | Mandatory |
+| global.imageCredentials.username | Username to access/download for registry         | ""                          | Mandatory |
+| global.imageCredentials.password | Password to access/download for registry         | 
 
 The ethRPC service port and their liveness could be determined as following:
 ```sh
@@ -51,43 +52,29 @@ Verify a ETHRPC API:
 curl -X POST --data '{"jsonrpc":"2.0","method":"eth_gasPrice","id":1}' --header "Content-Type: application/json" http://192.168.59.102:32223
 {"id":1,"jsonrpc":"2.0","method":"eth_gasPrice","result":"0x0"}
 ```
-
-Image settings:
-The registry settings are similar to VMBC deployment.
-Setup required paths for the image register, repository, tags, credentials etc., 
-
-Eg.,
-```sh
---set global.image.tag="0.0.0.0.7849" 
-```
-
-Container resource settings:
+#### Container resource settings
 There are default settings tuned for current consumption. You can scale up values if required.
 
 Resource names (Refer to values.yaml): 
 ```sh
 walletapp, walletcli, admin, admincli.
 ```
-All resources comprise of settings for CPU and Memory based on units as defined by kubernetes.
+Users can optionally override default APP resource settings. The parameter units are based on [kubernetes semantics](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/).
+| Name                             | Description                        | Example |
+|----------------------------------|--------------------------------------------------|-----------------------------|
+| cpuLimit | max cpu limit | 800m |
+| cpuRequest | requested cpu | 700m |
+| memoryLimit | max memory limit | 500Mi |
+| memoryRequest | requested memory | 400Mi |
+
 Eg.,
 ```sh
-    cpuLimit: 800m
-    cpuRequest: 700m
-    memoryLimit: 500Mi
-    memoryRequest: 400Mi
-
  --set resources.walletapp.cpuLimit=900m --set resources.walletapp.memoryLimit=550Mi
  ```
 
-### helm chart installation
+#### helm chart installation
 ```sh
-helm install --set global.image.tag="0.0.0.0.7849" --set blockchainUrl="http://192.168.59.102:32223"  vmbc-privacy-app-deployment .
-NAME: vmbc-privacy-app-deployment
-LAST DEPLOYED: ....
-NAMESPACE: default
-STATUS: deployed
-REVISION: 1
-TEST SUITE: None
+helm install --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password> --set blockchainUrl=http://192.168.59.102:32223 <name of privacy app deployment> .
  
 kubectl get pods
 NAME                                                     READY   STATUS    RESTARTS   AGE
