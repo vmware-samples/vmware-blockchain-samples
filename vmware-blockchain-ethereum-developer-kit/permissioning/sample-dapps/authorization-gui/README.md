@@ -17,14 +17,22 @@ There are two ways to run this DApp
 ### Command Line Based
 - This option is only supported for MAC Operating System
 - Execute following commands to run the DApp through command line
-- At command line, this app defaults to port `4200`
+- At command line, this app defaults to port `5200`
 
 ```sh
-    npm install --legacy-peer-deps
-    export VMBC_URL=http://x.x.x.x:8545
-    npm run start
+# Change to Source Directory of NFT Platform DApp
+cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/permissioning/sample-dapps/authorization-gui/source
+
+# Install the dependencies
+npm install
+
+# Export the VMBC_URL to the URL of deployed instance of VMware Blockchain
+export VMBC_URL=http://127.0.0.1:8545
+
+# Run the DApp
+npm run start
 ```
-Then  navigate to `http://localhost:4200/`.
+Then  navigate to `http://localhost:5200/`.
 
 ### Further help
 
