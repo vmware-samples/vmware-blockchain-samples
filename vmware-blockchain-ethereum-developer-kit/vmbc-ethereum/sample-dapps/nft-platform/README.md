@@ -50,7 +50,7 @@ npm -v                    # should print v6.14.X
 #### Installing dependencies and running
 ```sh
 # Change to Source Directory of NFT Platform DApp
-/Users/malepatia/Workspace/vmware-samples/vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/vmbc-ethereum/sample-dapps/nft-platform/source/artemis
+cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/vmbc-ethereum/sample-dapps/nft-platform/source/artemis
 
 # Install the dependencies
 npm install
