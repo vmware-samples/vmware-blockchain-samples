@@ -16,7 +16,7 @@ global:
   # The global artifact tag
   image:
     repository: "vmwblockchain/vmbc-eth-permissioning-ui"
-    tag: "0.0.0.0.7854"
+    tag: "0.0.0.0.7849"
 
 ## Configure the configmap parameters that allows you to link the vmbc permissioning dapp installation
 ## @param blockchainUrl Url to link blockchain with vmbc permissioning dapp webpage
