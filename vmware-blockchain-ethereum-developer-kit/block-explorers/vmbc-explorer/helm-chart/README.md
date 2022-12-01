@@ -26,9 +26,15 @@ minikube status             # Verify minikube is stopped.
       helm install <name-of-your-choice> . --set global.imageCredentials.registry=<registry> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password> --set blockchainUrl=<blockchainURL>
     ```
 - Access VMBC explorer webpage using service url
+  - Minikube
     ```sh
       minikube service <name-of-your-choice>-service
     ```
+  - EKS
+    ```sh
+      kubectl get service {name-of-your-choice}-service
+    ```
+    
 ### Remove VMBC Explorer
 - Uninstall
   ```sh
