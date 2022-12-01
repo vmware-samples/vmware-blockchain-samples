@@ -22,13 +22,13 @@ Using the developer kit, Ethereum developer(s) can start developing or porting t
 
 Following is a list of various elements of VMware Ethereum Developer Kit
 
-- [Privacy](https://vmware-samples.github.io/vmware-blockchain-samples/privacy/)
-    - Privacy in VMware (expand on one-liner)
-- Provisioning
+- VMBC Ethereum
     - [Provisioning VMBC Ethereum without Logging](https://vmware-samples.github.io/vmware-blockchain-samples/k8-provisioning/vmbc-four-node-one-client-deployment)
         - Expand without Logging here
     - [Provisioning VMBC Ethereum with Logging](https://vmware-samples.github.io/vmware-blockchain-samples/k8-provisioning/vmbc-four-node-one-client-deployment-with-logging)
         - Expand with Logging here
+- [Privacy](https://vmware-samples.github.io/vmware-blockchain-samples/privacy/)
+    - Privacy in VMware (expand on one-liner)
 - [Permissioning](https://vmware-samples.github.io/vmware-blockchain-samples/permissioning)
     - Write and Read Permissioning feature related elements
 - [Explorer](https://vmware-samples.github.io/vmware-blockchain-samples/explorer/)
