@@ -9,7 +9,7 @@
     "deploy-contract": "npx hardhat run ./scripts/deploy.js",
     "deploy": "npm run import-openzeppelin && npm run hardhat-compile-all && npm run deploy-contract",
     "start-for-container": "ng analytics off && ng serve --host 0.0.0.0 --port 3000 --disable-host-check",
-    "start": "npm run deploy && ng serve --disable-host-check",
+    "start": "npm run deploy && ng serve --port 5200 --disable-host-check",
     "build": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng build --configuration production",
     "import-openzeppelin": "rsync -zarv --prune-empty-dirs --include '*/' --include='*.sol' --exclude='*' node_modules/@openzeppelin contracts",
     "hardhat-compile": "npx hardhat compile && cp -rip artifacts/contracts src/assets/abi",
