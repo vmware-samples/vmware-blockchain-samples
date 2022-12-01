@@ -1,4 +1,5 @@
 import { defaultTheme } from '@vuepress/theme-default'
+import { copyCodePlugin } from "vuepress-plugin-copy-code2";
 
 export default {
   lang: 'en-US',
@@ -6,7 +7,7 @@ export default {
   description: 'Description goes Here',
   base: '/vmware-blockchain-samples/',
   plugins: [
-    ['vuepress-plugin-code-copy', true]
+    ['copyCode', {}]
   ],
   theme: defaultTheme({
     sidebar: 'auto',
