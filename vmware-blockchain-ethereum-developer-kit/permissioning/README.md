@@ -77,7 +77,6 @@ node testReadWrite.js
 ## Troubleshooting Guide
 ### 1. Permission denied Error
 ```sh
-  reason: 'processing response error',
   code: 'SERVER_ERROR',
   body: '{"error":{"code":-32060,"data":"evm error, status code: -2","message":"Permission denied"},"id":58,"jsonrpc":"2.0"}',
 ```
@@ -85,7 +84,6 @@ node testReadWrite.js
 You have enabled write permissioning. Make sure the ethereum account you are using to send transactions or deploy contract has the WRITE/DEPLOY permission. 
 ### 2. Request Not Signed Error
 ```sh 
-  reason: 'processing response error',
   code: 'SERVER_ERROR',
   body: '{"error":{"code":-32602,"message":"Request not signed"},"id":47,"jsonrpc":"2.0"}',
 ```
