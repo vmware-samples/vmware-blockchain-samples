@@ -79,7 +79,7 @@ node testReadWrite.js
 ```sh
   reason: 'processing response error',
   code: 'SERVER_ERROR',
-  body: '{"error":{"code":-31998,"data":"evm error, status code: -2","message":"Permission denied"},"id":58,"jsonrpc":"2.0"}',
+  body: '{"error":{"code":-32060,"data":"evm error, status code: -2","message":"Permission denied"},"id":58,"jsonrpc":"2.0"}',
 ```
 #### Solution
 You have enabled write permissioning. Make sure the ethereum account you are using to send transactions or deploy contract has the WRITE/DEPLOY permission. 
