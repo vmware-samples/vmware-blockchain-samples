@@ -35,7 +35,7 @@ export default {
       url: process.env.VMBC_URL || "http://localhost:8545",
       chainId: Number(process.env.VMBC_CHAIN_ID) || 5000,
       gasPrice : 0,
-      from: '627306090abaB3A6e1400e9345bC60c78a8BEf57'
+      accounts: ['5bedcdfdfe7e3d9444b3494eaee4bb9339be4745d7a4f79cd4bde59d3e9e9dcc']
     },
     ganache: {
       url: "http://localhost:7545",
