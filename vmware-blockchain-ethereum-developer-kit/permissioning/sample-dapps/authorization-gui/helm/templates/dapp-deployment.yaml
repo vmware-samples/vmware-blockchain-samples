@@ -30,11 +30,11 @@ spec:
                   key: VMBC_URL
           resources:
             limits:
-              cpu: "{{ .Values.resources.nft.cpuLimit }}"
-              memory: "{{ .Values.resources.nft.memoryLimit }}"
+              cpu: "{{ .Values.resources.permissioning.cpuLimit }}"
+              memory: "{{ .Values.resources.permissioning.memoryLimit }}"
             requests:
-              cpu: "{{ .Values.resources.nft.cpuRequest }}"
-              memory: "{{ .Values.resources.nft.memoryRequest }}"
+              cpu: "{{ .Values.resources.permissioning.cpuRequest }}"
+              memory: "{{ .Values.resources.permissioning.memoryRequest }}"
       imagePullSecrets:
         - name: {{ .Release.Name }}-regcred
       restartPolicy: Always
