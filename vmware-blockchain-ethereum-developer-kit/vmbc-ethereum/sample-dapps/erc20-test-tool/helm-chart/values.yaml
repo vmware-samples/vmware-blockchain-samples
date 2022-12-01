@@ -15,8 +15,8 @@ global:
     email: ""
   # The global artifact tag
   image:
-    repository: "vmwblockchain/python"
-    tag: "3.9.10"
+    repository: "vmwblockchain/erc20-python"
+    tag: "1.0"
 
 ## Configure the configmap parameters that allows you to link the blockchain ethrpc url
 ## @param blockchainUrl Url to link blockchain ethrpc with erc20 token transfer test
