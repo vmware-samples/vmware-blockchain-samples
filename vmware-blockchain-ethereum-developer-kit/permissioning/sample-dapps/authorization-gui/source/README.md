@@ -2,10 +2,6 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.11.
 
-## Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-
 ### Code scaffolding
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
@@ -17,6 +13,7 @@ Run `ng generate component component-name` to generate a new component. You can 
     export VMBC_URL=http://x.x.x.x:8545
     npm run start
 ```
+Then  navigate to `http://localhost:4200/`.
 
 ### Further help
 
@@ -32,7 +29,7 @@ Make sure you are connected to the right VMBC URL through metmask.
 
 ## Permissioning Config
 
-Note: The project has to be built and deployed using ng serve. Then  navigate to `http://localhost:4200/`.
+Note: The project has to be built and deployed using `npm run start`. Then  navigate to `http://localhost:4200/`.
 
 Inorder to use the permissioning config there are a few steps.
 
@@ -53,7 +50,7 @@ Failed Transaction: If you get a failed transaction message, check the data.
 
 ## ERC20 Test Dapp - Write Enabled
 
-Note: The project has to be built and deployed using ng serve. Then  navigate to `http://localhost:4200/`.
+Note: The project has to be built and deployed using `npm run start`. Then  navigate to `http://localhost:4200/`.
 
 Inorder to use the ERC20 Test Dapp there are a few steps we need to follow. You would need an ERC20 contract. You need to deploy it then use it's contract address inside of the ERC20 Test Dapp.
 
@@ -67,7 +64,7 @@ Note: The From Adress is taken from your current metmask account and the contrac
 7. The "Get Token Balance" button allows you to check the balance of the current user(From Address/Current Metamask Acoount).
 8. The Transfer Tokens button enables you to send ERC20 tokens to the address provided in the "To Address" input field. Click the transfer button metamask pops up the click approve.
 
-### Troubleshoot
+### Troubleshooting
 
 Failed Transaction: If you get a failed transaction message, check the message and data.
  * If it says "Permission denied", this means you didnt give your current address write permission(got to step 6).
@@ -87,7 +84,7 @@ Note: The From Adress is taken from your current metmask account and the contrac
 5. The Get Token Balance button allows you to check the balance of the current user(From Address/Current Metamask Acoount)
 6. The Transfer Tokens button enables you to send ERC20 tokens to the address provided in the "To Address" input field. Click the transfer button metamask pops up the click approve.
 
-### Troubleshoot
+### Troubleshooting
 
 Failed Transaction: If you get a failed transaction message, check the message and data.
  * If it says "ERC20: transfer amount exceeds balance", the current address doesn't have enough tokens.
