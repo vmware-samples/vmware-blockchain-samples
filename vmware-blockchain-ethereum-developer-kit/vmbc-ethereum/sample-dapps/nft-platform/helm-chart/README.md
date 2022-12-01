@@ -9,7 +9,7 @@
 ### Deploy vmbc nft dapp
   - Deployment with parameters
      ```sh
-     helm install --name-template {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set blockchainUrl={blockchainURL}
+     helm install {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set blockchainUrl={blockchainURL}
      ```
 
   - Access vmbc nft dapp webpage using service url
