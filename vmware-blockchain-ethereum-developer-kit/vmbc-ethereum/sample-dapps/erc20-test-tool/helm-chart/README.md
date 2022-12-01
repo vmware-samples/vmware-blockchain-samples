@@ -7,20 +7,20 @@
   ```
 
 ### Deploy vmbc erc20 token transfer test
-  - Deployment with parameters
+  - Deployment with parameters. Replace the blockchainUrl value with the Eth RPC service URL.
      ```sh
-     helm install {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set blockchainUrl={blockchainURL}
+     helm install <name-of-your-choice> . --set global.imageCredentials.registry=<registry> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password> --set blockchainUrl=<blockchainURL>
      ```
         
 ### Run vmbc erc20 token transfer test
   ```sh
-  helm test {name-of-your-choice}
+  helm test <name-of-your-choice> --logs
   ```
         
 ### Remove vmbc erc20 token transfer test ( optional )
   - Uninstall
      ```sh
-     helm uninstall {name-of-your-choice} && kubectl delete pod {name-of-your-choice}-test
+     helm uninstall <name-of-your-choice> && kubectl delete pod <name-of-your-choice>-test
      ```
 
 ## VMBC erc20 token transfer test deployment
@@ -32,8 +32,8 @@
 | global.imageCredentials.username |  Username to access/download python image       | ""                   |    Mandatory       |
 | global.imageCredentials.password |  Password to access/download python image               | ""                   |   Mandatory        |
 | global.imageCredentials.email    | Email to access/download python image        | ""                   |     Optional      |
-| global.image.repository          |        Image name to download for python image        | vmwblockchain/python |   Optional        |
-| global.image.tag                 |             Tag version to download python image               | "3.9.10"                   |    Optional       |
+| global.image.repository          |        Image name to download for python image        | vmwblockchain/erc20-python |   Optional        |
+| global.image.tag                 |             Tag version to download python image               | "1.0"                   |    Optional       |
 | blockchainUrl                    | Url to link blockchain with vmbc erc20 token transfer test | ""                   | Mandatory |
 | testCount                        | Number of erc20 token transfer test                        | 2                    | Optional  |
 | resources.erc20test.cpuLimit          | CPU limit                                                  | 100m                 |       Optional    |
