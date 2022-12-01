@@ -28,9 +28,7 @@ helm chart ( https://helm.sh/docs/intro/install/ )
   ```
 
 ## Detailed configurations for customization
-
-- Configurations
-  List of available configurations in values.yaml. Use "--set" param for setting up the params.
+- List of configurations available for vmbc explorer deployment. Use "--set" param for setting up the params.
 
 | Name                             | Description                                      | Value                       | Type      |
 |----------------------------------|--------------------------------------------------|-----------------------------|-----------|
