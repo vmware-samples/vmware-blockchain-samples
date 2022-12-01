@@ -1,6 +1,6 @@
 # (WIP) ERC20-Swap
 
-This is a Ethereum Sample DApp which comes with few pre-deployed ERC20 based tokens. The accounts mentioned in [Accounts with Tokens](.env) are pre-supplied with tokens to get started.
+This is a Ethereum Sample DApp which comes with few pre-deployed ERC20 based tokens. The accounts mentioned in [Accounts with Tokens](./source/erc20-swap/.env) are pre-supplied with tokens to get started.
 
 ## Features
 - Transfer two types of ERC20 based Tokens across accounts
@@ -62,7 +62,7 @@ Follow the instructions in [helm-chart/README](./helm-chart/README.md)
 - Interact with Metamask Pop Up Window to complete this Transaction
 
 # Appendix
-## Connecting Metamask
+## Connecting Metamask to VMBC
 
 Metamask is available on Google Chrome as an extension, and this is a key requirement
 to this NFT sample.
