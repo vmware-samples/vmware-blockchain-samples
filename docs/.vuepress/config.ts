@@ -5,6 +5,9 @@ export default {
   title: 'VMware Blockchain Ethereum Developer Kit',
   description: 'Description goes Here',
   base: '/vmware-blockchain-samples/',
+  plugins: [
+    ['vuepress-plugin-code-copy', true]
+  ],
   theme: defaultTheme({
     sidebar: 'auto',
     repo: 'vmware-samples/vmware-blockchain-samples',

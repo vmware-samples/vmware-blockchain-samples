@@ -1513,6 +1513,11 @@ vue@^3.2.41:
     "@vue/server-renderer" "3.2.45"
     "@vue/shared" "3.2.45"
 
+vuepress-plugin-code-copy@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/vuepress-plugin-code-copy/-/vuepress-plugin-code-copy-1.0.6.tgz#6431dab764b48b5b203e4936d98b1943651ce4ad"
+  integrity sha512-FiqwMtlb4rEsOI56O6sSkekcd3SlESxbkR2IaTIQxsMOMoalKfW5R9WlR1Pjm10v6jmU661Ex8MR11k9IzrNUg==
+
 vuepress-vite@2.0.0-beta.53:
   version "2.0.0-beta.53"
   resolved "https://registry.yarnpkg.com/vuepress-vite/-/vuepress-vite-2.0.0-beta.53.tgz#6724d5edd99df2d494a8145206192e4cc88e9b9a"
