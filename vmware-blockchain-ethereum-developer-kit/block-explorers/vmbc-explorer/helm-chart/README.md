@@ -1,26 +1,12 @@
-# VMBC Explorer
-A web application has been designed and implemented with universal search, block and transaction detail views. The Auto refresh feature will keep the dashboard live with the updated details. The refresh interval is set to disabled by default, and it can be altered as per the needs, and also it can be disabled when it's not needed. The Browser cache feature will keep accumulating the data fetched in local storage, which will prevent duplicate requests to the EthRPC API. It uses Angular With Clarity Design Framework to adhere to VMWare Web Application Standards. The performance of the blockchain won't be affected by this as it is packaged and deployed in a separate container. The explorer will connect to blockchain only when its deployed and configured with a specific instance URL. With the help of cache and auto refresh interval, the interaction between the blockchain and the explorer can be improved further.
-
-## Prerequisites
-### Host system pre-requisites
+## Host system pre-requisites
 ```
 kubectl ( https://kubernetes.io/docs/tasks/tools/ )
 helm chart ( https://helm.sh/docs/intro/install/ )
 (optional) Minikube (https://minikube.sigs.k8s.io/docs/start/)
 (optional) eksctl (https://eksctl.io/)
 ```
+## Deploy VMBC Explorer
 
-Test for prerequisite installation
-```sh
-kubectl version             # Verify kubectl is installed
-helm version                # Verify helm is installed
-minikube status             # Verify minikube is stopped.
-```
-
-## VMBC Explorer deployment
-
-### Quick Start
-#### Deploy
 - Deployment with parameters. The blockchainUrl value should be set to the Eth RPC service URL.
     ```sh
       helm install <name-of-your-choice> . --set global.imageCredentials.registry=<registry> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password> --set blockchainUrl=<blockchainURL>
@@ -34,14 +20,14 @@ minikube status             # Verify minikube is stopped.
     ```sh
       kubectl get service {name-of-your-choice}-service
     ```
-    
-### Remove VMBC Explorer
+
+## Remove VMBC Explorer
 - Uninstall
   ```sh
     helm uninstall <name-of-your-choice>
   ```
 
-### Detailed configurations for customization
+## Detailed configurations for customization
 
 - Configurations
   List of available configurations in values.yaml. Use "--set" param for setting up the params.
