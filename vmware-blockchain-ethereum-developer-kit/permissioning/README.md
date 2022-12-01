@@ -28,7 +28,7 @@ Follow the steps listed below,
 # Change to write authorization dApp
 cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/permissioning/sample-dapps/write-authorization
 
-# Update the .env file with appropriate VMBC_URL Eg: VMBC_URL="http://x.x.x.x:8545" 
+# Update the .env file with appropriate VMBC_URL Eg: VMBC_URL="http://x.x.x.x:8545"
 
 # Install dependencies
 npm install
@@ -45,21 +45,32 @@ For read permissioning, we need `vmbc-ethers.js` which is a modified version of 
 In `values.yaml`, under `permissioning` section change `ethPermissioningReadEnabled` value to `true` for read permissioning. User has to enable both read and write permissioning to test "read permissioning".
 
 ### How to test read permissioning?
+Follow the steps listed below,
+```sh
+# Change directory into the vmbc-ethers-extension library
+cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/permissioning/sample-dapps/read-write-authorization/integration-library/vmbc-ethers-extension
 
-1. ```cd ../../../integration-libraries/vmbc-ethers.js``` 
-2. ```npm install```
-3. In `read-write-permissioning-sample-dapp-cli`, make sure you have used right Blockchain URL in .env Eg: VMBC_URL="http://x.x.x.x:8545" 
-4. In the testReadWrite.js, enable permissioning flag by calling usePrivatekeyForPermissioning()
-5. Remember, only admin has the permissions to give permissions to other users, hence for checkPermissions() and
-   addPermissions() functions, you have to use usePrivatekeyForPermissioning(ADMIN_ACCOUNT_PRIVATE_KEY). 
-   Other function calls like any read from blockchain or any write to blockchain, you have to use
-   usePrivatekeyForPermissioning(String(accountKeyPair.privateKey)).
-6. ```npm install```
-7. ```node testReadWrite.js```
+# Install dependencies for vmbc-ethers-extension library
+npm install
+
+# Change directory to read test dApp
+cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/permissioning/sample-dapps/read-write-authorization/dapp
+
+# Update the .env file with appropriate VMBC_URL Eg: VMBC_URL="http://x.x.x.x:8545" 
+
+# Install dependencies
+npm install
+
+# Run the dApp
+node testReadWrite.js
+```
+#### Details about testReadWrite dApp
+- In the testReadWrite.js, enable permissioning flag by calling usePrivatekeyForPermissioning()
+- Remember, only admin has the permissions to give permissions to other users, hence for checkPermissions() and addPermissions() functions, you have to use usePrivatekeyForPermissioning(ADMIN_ACCOUNT_PRIVATE_KEY). Other function calls like any read from blockchain or any write to blockchain, you have to use usePrivatekeyForPermissioning(String(accountKeyPair.privateKey)).
 
 
 ### Things to Note
-1. For read permissioning, user has to use vmbc-ethers.js
+1. For read permissioning, user has to use `vmbc-ethers-extension` library
 2. The Metamask and remix tools will NOT work as expected. Because Metamask and Remix are NOT using vmbc-ethers.js
 3. Json-rpc-provider is the one which we have tested for read permissioning.
 
