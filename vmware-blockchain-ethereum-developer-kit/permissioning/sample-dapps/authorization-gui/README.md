@@ -20,7 +20,7 @@ There are two ways to run this DApp
 - At command line, this app defaults to port `4200`
 
 ```sh
-    npm install
+    npm install --legacy-peer-deps
     export VMBC_URL=http://x.x.x.x:8545
     npm run start
 ```
