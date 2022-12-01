@@ -1,14 +1,10 @@
 import { defaultTheme } from '@vuepress/theme-default'
-import { vuepressPluginCodeCopy } from "vuepress-plugin-code-copy";
 
 export default {
   lang: 'en-US',
   title: 'VMware Blockchain Ethereum Developer Kit',
   description: 'Description goes Here',
   base: '/vmware-blockchain-samples/',
-  plugins: [
-    vuepressPluginCodeCopy({}),
-  ],
   theme: defaultTheme({
     sidebar: 'auto',
     repo: 'vmware-samples/vmware-blockchain-samples',
