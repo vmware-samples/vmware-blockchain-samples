@@ -1,5 +1,5 @@
 ## Host system pre-requisites
-  ```sh
+  ```
   kubectl ( https://kubernetes.io/docs/tasks/tools/ )
   helm chart ( https://helm.sh/docs/intro/install/ )
   (optional) minikube (https://minikube.sigs.k8s.io/docs/start/)
@@ -8,27 +8,27 @@
 
 ## Deploy vmbc erc20 swap dapp
   - Deployment with parameters
-  ```sh
-  helm install --name-template {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set blockchainUrl={blockchainURL}
-  # Example: helm install --name-template vmbc-erc20swap . --set global.imageCredentials.registry=vmwaresaas.jfrog.io --set global.imageCredentials.username=testUsername --set global.imageCredentials.password=testPassword --set blockchainUrl=http://127.0.0.1:30545
-  ```
+     ```sh
+     helm install {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set blockchainUrl={blockchainURL}
+     ```
 
   - Access vmbc erc20 swap dapp webpage using service url
-  ```sh
-  Minikube
-    minikube service {name-of-your-choice}-service
-    # Example: minikube service vmbc-erc20swap-service
-  EKS
-    kubectl get service {name-of-your-choice}-service
-    # Example: kubectl get service vmbc-erc20swap-service
-  ```
+  
+     Minikube
+     ```sh
+     minikube service {name-of-your-choice}-service
+     ```
+     
+     EKS
+     ```sh
+     kubectl get service {name-of-your-choice}-service
+     ```
                 
 ## Remove vmbc erc20 swap dapp ( optional )
   - Uninstall
-  ```sh
-  helm uninstall {name-of-your-choice}
-  # Example: helm uninstall vmbc-erc20swap
-  ```
+     ```sh
+     helm uninstall {name-of-your-choice}
+     ```
 
 ## VMBC erc20 swap dapp deployment configurations
   - List of configurations available for vmbc erc20 swap dapp deployment. Use "--set" param for setting up the params.
