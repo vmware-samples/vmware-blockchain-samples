@@ -48,7 +48,6 @@ export default {
       // Sample DApps
       {
         text: 'Sample DApps',
-        link: '/README',
         children: [{
           text: "NFT Platform",
           link: '/vmbc-ethereum/sample-dapps/nft-platform/'

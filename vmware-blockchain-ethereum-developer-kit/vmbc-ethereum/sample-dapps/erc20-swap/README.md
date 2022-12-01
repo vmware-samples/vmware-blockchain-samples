@@ -8,6 +8,15 @@ This is a Ethereum Sample DApp which comes with few pre-deployed ERC20 based tok
 - Swap Tokens among these two types with customizable rate
    - SCT to GST
    - GST to SCT
+
+## Pre-requisites
+- VMBC has been deployed
+- Suggested and Supported Stack
+    - MAC Operating System
+    - Google Chrome browser
+    - Metamask Wallet - [https://metamask.io/](https://metamask.io/)
+- Connecting Metamask to VMBC - [See Appendix](#connecting-metamask-to-vmbc)
+
 ## Running DApp
 There are two ways to run this DApp
 
@@ -17,6 +26,9 @@ There are two ways to run this DApp
 - At command line, this app defaults to port `3000`
 
 ```sh
+# Change to Source Directory of ERC20-Swap DApp
+cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/vmbc-ethereum/sample-dapps/erc20-swap/source/erc20-swap
+
 # Install the dependencies
 npm install
 
@@ -27,36 +39,11 @@ export VMBC_URL=http://127.0.0.1:8545
 npm run start
 ```
 
-The DApp website will be available on `http://localhost:4200`
+The DApp website will be available on `http://localhost:3000`
 
 ### Helm Based
-#### Deployment
-- Pre-requisites
-   - Have a running Kuberenetes instance
-   - Install Helm (https://helm.sh/docs/intro/install/)
-   - Install kubectl (https://kubernetes.io/docs/tasks/tools/#kubectl)
 
-- Once above pre-requisites are met, you can execute following command with replacing of various variables appropriately
-   - `<registry-url>`: URL of the Registry containing Docker image of the DApp
-   - `<registry-username>`: Username for registry
-   - `<registry-password>`: Password for registry
-   - `<blockchain-url>`: URL of VMware Blockchain 
-```sh
-# Helm install the DApp
-helm install erc20-swap . --set global.imageCredentials.registry=<registry-url> --set global.imageCredentials.username=<registry-username> --set global.imageCredentials.password=<registry-password> --set global.image.repository=vmbc-eth-erc20-swap --set global.image.tag=<image-tag> --set blockchainUrl=<blockchain-url>
-```
-#### Reaching UI of the DApp
-##### Minkube
-```sh
-# This command will take the control to the webpage of the DApp in default browser
-minikube service erc20-swap-service
-```
-
-##### Standard Kubernetes Deployment (with External IP support)
-```sh
-# Use the External IP and the Port provided in the output of following command
-kubectl get service erc20-swap-service
-```
+Follow the instructions in [helm-chart/README](./helm-chart/README.md)
 
 ## Using DApp
 

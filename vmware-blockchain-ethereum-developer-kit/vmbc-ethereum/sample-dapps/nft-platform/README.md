@@ -7,6 +7,14 @@ on top of VMware Blockchain (Concord).Developed a client-side application that c
 with VMBC to mint and transfer NFTs. The platform allows users to create digital art NFTs
 on VMware blockchain by providing a title, an image URL and artist name.
 
+## Pre-requisites
+- VMBC has been deployed
+- Suggested and Supported Stack
+    - MAC Operating System
+    - Google Chrome browser
+    - Metamask Wallet - [https://metamask.io/](https://metamask.io/)
+- Connecting Metamask to VMBC - [See Appendix](#connecting-metamask-to-vmbc)
+
 ## Features
 - View all NFTs in the Platform
 - Mint an NFT
@@ -43,6 +51,9 @@ npm -v                    # should print v6.14.X
 
 #### Installing dependencies and running
 ```sh
+# Change to Source Directory of NFT Platform DApp
+cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/vmbc-ethereum/sample-dapps/erc20-swap/source/erc20-swap
+
 # Install the dependencies
 npm install
 
@@ -56,33 +67,8 @@ npm run start
 The DApp website will be available on `http://localhost:4200`
 
 ### Helm Based
-#### Deployment
-- Pre-requisites
-   - Have a running Kuberenetes instance
-   - Install Helm (https://helm.sh/docs/intro/install/)
-   - Install kubectl (https://kubernetes.io/docs/tasks/tools/#kubectl)
 
-- Once above pre-requisites are met, you can execute following command with replacing of various variables appropriately
-   - `<registry-url>`: URL of the Registry containing Docker image of the DApp
-   - `<registry-username>`: Username for registry
-   - `<registry-password>`: Password for registry
-   - `<blockchain-url>`: URL of VMware Blockchain 
-```sh
-# Helm install the DApp
-helm install artemis . --set global.imageCredentials.registry=<registry-url> --set global.imageCredentials.username=<registry-username> --set global.imageCredentials.password=<registry-password> --set global.image.repository=vmbc-eth-artemis --set global.image.tag=<image-tag> --set blockchainUrl=<blockchain-url>
-```
-#### Reaching UI of the DApp
-##### Minkube
-```sh
-# This command will take the control to the webpage of the DApp in default browser
-minikube service artemis-service
-```
-
-##### Standard Kubernetes Deployment (with External IP support)
-```sh
-# Use the External IP and the Port provided in the output of following command
-kubectl get service artemis-service
-```
+Follow the instructions in [helm-chart/README](./helm-chart/README.md)
 
 ## Using DApp
 On the top right corner of the screen you would see Contract with Address. This is the Smart Contract address of this NFT Platform.
@@ -127,12 +113,12 @@ Regarding various Tabs in DApp,
 
 # Appendix
 
-## Connecting Metamask
+## Connecting Metamask to VMBC
 
 Metamask is available on Google Chrome as an extension, and this is a key requirement
 to this NFT sample.
 
-If you have never added your blockchain's EthRPC URL and the chain Id (default 5000)
+If you have never added your VMware Blockchain's URL and the Chain ID (default 5000)
 as a separate network on Metamask, you can click on user profile picture to open the
 dropdown menu and click `Settings` > `Networks` > `Add Network` > `Add Network Manually`
 and provide:
