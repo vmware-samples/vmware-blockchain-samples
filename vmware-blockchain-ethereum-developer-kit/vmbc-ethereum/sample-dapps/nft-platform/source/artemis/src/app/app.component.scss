@@ -1,0 +1,7 @@
+.content-area {
+  padding: 0 !important;
+  margin: 0;
+}
+:host ::ng-deep clr-input-container[id="smart-contract-address-input"] {
+  margin-top: 0.35rem;
+}
