@@ -1,17 +1,29 @@
-# TODO List:
-- [ ] update introduction session using product management inputs
 # Introduction
-The base VMBC would be deployed on a kubernetes cluster leveraging [helm charts](../vmbc-ethereum/vmbc-four-node-one-client-deployment/README.md).
-The following sections brief on the deployment process and associated workflow to try out privacy capabilities. The privacy application would communicate with VMBC using Eth RPC service.
+The privacy of digital asset custody is a critical requirement for enterprises as they consider moving to blockchains. This gets exacerbated with Central Bank Digital Currencies where governments want to balance accountability with privacy in order to prevent money laundering or tax fraud.
+VMBC now provides a solution to this problem. Any ERC20 smart contract can be extended to convert the public tokens to private tokens. These private tokens can be transacted privately, subject to a limit set by the administrator. None, not even the administrator, can see the details of the private transaction, including the source, target or the amount transacted.
+The platform uses Zero Knowledge Proofs to guarantee that the transaction is valid and ensures that there is no double spending.
+The privacy solution is currently in Tech Preview - the APIs may change in the future.
 
+# Architecture
 ## Kubernetes deployment overview
 ![Privacy Depiction](./assets/images/PrivacyAppK8s.svg)
 
-## Prerequisite
-The privacy app requires write and read permission features to get disabled!
+The sample application consists of the following components:
+ 
+- Sample Privacy Wallet Application
+Each user in the system must own a Privacy Wallet to manage their secrets. In order to send private transactions securely, the wallet needs to have an extra secret (besides the Ethereum private key). The wallet communicates with the Privacy Client Library to generate private transaction payloads. It sends transactions to the EthRpc client over JSON RPC.
+ 
+- Admin Application
+The privacy contract administrator deploys the Public Token and the Private Token contracts. It uses the Privacy Client Library to generate the inputs to the Private Token constructor, and calls both constructors. It sends transactions to the EthRpc client over JSON RPC. The Admin Application is also used to set the limits (or budgets) on the amount of tokens that can be transacted privately per user.
+ 
+- Smart Contracts
+As part of the "deploy" command, the admin application deploys two smart contracts - Public Token and Private Token. The Public Token is a standard ERC20 token, with three required modifications. The address of the Private Token is a parameter of the constructor. In addition, it has two additional functions - convertPublicToPrivate and convertPrivateToPublic. The former converts the specified number of ERC20 Public Token to Private Tokens (which can now be transacted privately). The latter converts Private Tokens back to a Public Tokens.
+The Private Token provides interfaces to Mint and Burn private tokens, and to Transfer tokens privately to another user. It calls cryptographic functions implemented in the platform via EVM pre-compiled contracts.
 
 ## How to deploy privacy application
 Deployment leverages the helm charts provided with the development kit for privacy application.
+### Prerequisite
+Deploy kubernetes based leveraging [helm charts](../vmbc-ethereum/vmbc-four-node-one-client-deployment/README.md).
 
 ### Determine the required settings for helm chart installation
 
