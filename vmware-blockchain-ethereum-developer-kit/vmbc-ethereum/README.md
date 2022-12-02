@@ -3,12 +3,15 @@
 | Components | Description |
 |-----------|-------------|
 |  Operating System | Apple® macOS® 12.x |
-|                   |  Linux Ubuntu® 16.x, 20.x |
-|  vCPU  (no ELK)   | 4 vCPU or more |
-|  vCPU  (with ELK) | 8 vCPU or more |
-|  RAM   (no ELK)   | 16 GB of RAM or more |
-|  RAM   (with ELK) | 22 GB of RAM or more |
-|  Disk Space       | 200 GB of free disk space or more |
+|                   | Linux Ubuntu® 16.x, 20.x |
+|  Minikube         | 1.28 or newer |
+|  CPUs             | 4 CPU (8 CPU with ELK) |
+|  Memory           | 16 GB (22 GB with ELK) |
+|  Disk Size        | 200 GB or more |
+
+```sh
+helm install <name of blockchain> . --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password>
+```
 
 # Cloud Deployment
 ## System Requirements for AWS EKS
@@ -17,3 +20,8 @@
 |  Kubernetes       | 1.23 or newer |
 |  EC2 Instances    | 6 nodes of m4.4xlarge |
 |  EBS Volume Type  | gp2 |
+
+```sh
+cd vmware-blockchain-ethereum-developer-kit/vmbc-ethereum/vmbc-four-node-one-client-deployment
+helm install <name of blockchain> . --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password> --set global.storageClassName=gp2 --set resources.replica.cpuRequest=10000m --set resources.replica.cpuLimit=10000m --set resources.replica.memoryRequest=56Gi --set resources.replica.memoryLimit=56Gi --set resources.client.cpuRequest=5000m --set resources.client.cpuLimit=5000m --set resources.client.memoryRequest=28Gi --set resources.client.memoryLimit=28Gi
+```
