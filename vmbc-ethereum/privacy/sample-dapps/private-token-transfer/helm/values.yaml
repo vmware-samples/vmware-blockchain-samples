@@ -10,10 +10,8 @@ global:
   # The credentials for the docker registry. If username/password/email are specified, a corresponding Secret is created.
   imageCredentials:
     registry: ""
-    username: |-
-      ""
-    password: |-
-      ""
+    username: ""
+    password: ""
     email: ""
   image:
     tag: "0.0.0.0.7849"
