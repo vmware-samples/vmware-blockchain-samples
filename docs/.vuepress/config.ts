@@ -22,11 +22,11 @@ export default {
         children: [
           {
             text: 'VMBC Ethereum without Logging',
-            link: '/vmbc-ethereum/vmbc-four-node-one-client-deployment'
+            link: '/vmbc-deployment/vmbc-four-node-one-client-deployment'
           },
           {
             text: 'VMBC Ethereum with Logging',
-            link: '/vmbc-ethereum/vmbc-four-node-one-client-deployment-with-logging'
+            link: '/vmbc-deployment/vmbc-four-node-one-client-deployment-with-logging'
           }
         ]
       },
@@ -50,15 +50,15 @@ export default {
         text: 'Sample DApps',
         children: [{
           text: "NFT Platform",
-          link: '/vmbc-ethereum/sample-dapps/nft-platform/'
+          link: '/sample-dapps/nft-platform/'
         },
         {
           text: 'ERC20 Swap',
-          link: '/vmbc-ethereum/sample-dapps/erc20-swap/'
+          link: '/sample-dapps/erc20-swap/'
         },
         {
           text: 'ERC20 Test Tool',
-          link: '/vmbc-ethereum/sample-dapps/erc20-test-tool/'
+          link: '/sample-dapps/erc20-test-tool/'
         }]
       }
     ],
