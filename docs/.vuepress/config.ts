@@ -2,7 +2,7 @@ import { defaultTheme } from '@vuepress/theme-default'
 
 export default {
   lang: 'en-US',
-  title: 'VMware Blockchain Ethereum Developer Kit',
+  title: 'VMware Blockchain Ethereum',
   description: 'Description goes Here',
   base: '/vmware-blockchain-samples/',
   theme: defaultTheme({

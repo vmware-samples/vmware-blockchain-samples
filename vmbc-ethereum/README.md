@@ -1,4 +1,4 @@
-# (WIP) VMware Blockchain Ethereum Developer Kit
+# (WIP) VMware Blockchain Ethereum
 
 We are so glad that you have found this repository!
 
