@@ -10,7 +10,8 @@
 |  Disk Size        | 200 GB or more |
 
 ```sh
-helm install <name of blockchain> . --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password>
+cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/vmbc-ethereum/vmbc-four-node-one-client-deployment
+helm install --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password> <name of blockchain> .
 ```
 
 # Cloud Deployment
@@ -22,6 +23,6 @@ helm install <name of blockchain> . --set global.imageCredentials.registry=<regi
 |  EBS Volume Type  | gp2 |
 
 ```sh
-cd vmware-blockchain-ethereum-developer-kit/vmbc-ethereum/vmbc-four-node-one-client-deployment
-helm install <name of blockchain> . --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password> --set global.storageClassName=gp2 --set resources.replica.cpuRequest=10000m --set resources.replica.cpuLimit=10000m --set resources.replica.memoryRequest=56Gi --set resources.replica.memoryLimit=56Gi --set resources.client.cpuRequest=5000m --set resources.client.cpuLimit=5000m --set resources.client.memoryRequest=28Gi --set resources.client.memoryLimit=28Gi
+cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/vmbc-ethereum/vmbc-four-node-one-client-deployment
+helm install --set global.storageClassName=gp2 --set resources.replica.cpuRequest=10000m --set resources.replica.cpuLimit=10000m --set resources.replica.memoryRequest=56Gi --set resources.replica.memoryLimit=56Gi --set resources.client.cpuRequest=5000m --set resources.client.cpuLimit=5000m --set resources.client.memoryRequest=28Gi --set resources.client.memoryLimit=28Gi --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password> <name of blockchain> . 
 ```
