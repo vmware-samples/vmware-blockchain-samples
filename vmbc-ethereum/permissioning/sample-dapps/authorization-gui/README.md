@@ -1,7 +1,11 @@
 # Read/Write Permissioning Sample Dapp Ui
 
 ## Features
-Todo Vijay
+- Permissioning Configuration 
+   - Provide permissions(READ/WRITE/DEPLOY) to the given Ethereum account
+- ERC20 Token Tranasfer
+   - By default the deployer will have 1 billion XYZ tokens
+   - XYZ tokens can be transfered across the accounts
 
 ## Pre-requisites
 - VMBC Ethereum has been deployed
