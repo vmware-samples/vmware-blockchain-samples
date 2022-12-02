@@ -23,7 +23,7 @@ The Private Token provides interfaces to Mint and Burn private tokens, and to Tr
 ## How to deploy privacy application
 Deployment leverages the helm charts provided with the development kit for privacy application.
 ### Prerequisite
-Deploy kubernetes based leveraging [helm charts](../vmbc-ethereum/vmbc-four-node-one-client-deployment/README.md).
+Deploy kubernetes based leveraging [helm charts](../vmbc-deployment/vmbc-four-node-one-client-deployment/README.md).
 
 ### Determine the required settings for helm chart installation
 
@@ -107,7 +107,7 @@ vmbc-privacy-app-deployment 	default  	1       	***UTC	deployed	vmbc-privacy-wal
 vmbc-privacy-test-deployment	default  	1       	***UTC	deployed	vmbc-0.1.0                              	1.16.0
 ```
 
-To [enumerate container image version](https://codefresh.io/blog/three-ways-identify-images-running-kubernetes-cluster-2/) running on the pods
+To enumerate container image version running on the pods
 ```sh
 kubectl get pods --all-namespaces -o jsonpath="{..image}" |\
 tr -s '[[:space:]]' '\n' |\
