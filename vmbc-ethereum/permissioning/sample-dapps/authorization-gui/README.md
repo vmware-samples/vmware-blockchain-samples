@@ -52,7 +52,7 @@ Make sure you are connected to the right VMBC URL through metmask.
 
 ## Permissioning Config
 
-Note: The project has to be built and deployed using `npm run start`. Then  navigate to `http://localhost:4200/`.
+Note: The project has to be built and deployed using `npm run start`. Then  navigate to `http://localhost:5200/`.
 
 Inorder to use the permissioning config there are a few steps.
 
@@ -73,7 +73,7 @@ Failed Transaction: If you get a failed transaction message, check the data.
 
 ## ERC20 Test Dapp - Write Enabled
 
-Note: The project has to be built and deployed using `npm run start`. Then  navigate to `http://localhost:4200/`.
+Note: The project has to be built and deployed using `npm run start`. Then  navigate to `http://localhost:5200/`.
 
 Inorder to use the ERC20 Test Dapp there are a few steps we need to follow. You would need an ERC20 contract. You need to deploy it then use it's contract address inside of the ERC20 Test Dapp.
 
@@ -95,7 +95,7 @@ Failed Transaction: If you get a failed transaction message, check the message a
 
 ## ERC20 Test Dapp - Write Disabled
 
-Note: The project has to be built and deployed using `npm run start`. Then  navigate to `http://localhost:4200/`.
+Note: The project has to be built and deployed using `npm run start`. Then  navigate to `http://localhost:5200/`.
 
 Inorder to use the ERC20 Test Dapp there are a few steps we need to follow. You would need an ERC20 contract. You need to deploy it then use it's contract address inside of the ERC20 Test Dapp.
 
