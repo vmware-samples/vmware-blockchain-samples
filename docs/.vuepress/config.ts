@@ -16,16 +16,16 @@ export default {
         text: 'VMBC Ethereum Overview',
         link: '/vmbc-ethereum-overview',
       },
-      // VMBC Ethereum
+      // VMBC Deployment
       {
-        text: 'VMBC Ethereum',
+        text: 'VMBC Deployment',
         children: [
           {
-            text: 'VMBC Ethereum without Logging',
+            text: 'VMBC Deployment without Logging',
             link: '/vmbc-deployment/vmbc-four-node-one-client-deployment'
           },
           {
-            text: 'VMBC Ethereum with Logging',
+            text: 'VMBC Deployment with Logging',
             link: '/vmbc-deployment/vmbc-four-node-one-client-deployment-with-logging'
           }
         ]
@@ -48,18 +48,20 @@ export default {
       // Sample DApps
       {
         text: 'Sample DApps',
-        children: [{
-          text: "NFT Platform",
-          link: '/sample-dapps/nft-platform/'
-        },
-        {
-          text: 'ERC20 Swap',
-          link: '/sample-dapps/erc20-swap/'
-        },
-        {
-          text: 'ERC20 Test Tool',
-          link: '/sample-dapps/erc20-test-tool/'
-        }]
+        children: [
+          {
+            text: "NFT Platform",
+            link: '/sample-dapps/nft-platform/'
+          },
+          {
+            text: 'ERC20 Swap',
+            link: '/sample-dapps/erc20-swap/'
+          },
+          {
+            text: 'ERC20 Test Tool',
+            link: '/sample-dapps/erc20-test-tool/'
+          }
+        ]
       }
     ],
   }),

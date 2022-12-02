@@ -22,21 +22,21 @@ Using the developer kit, Ethereum developer(s) can start developing or porting t
 
 Following is a list of various elements of VMware Ethereum Developer Kit
 
-- VMBC Ethereum
-    - [Provisioning VMBC Ethereum without Logging](https://vmware-samples.github.io/vmware-blockchain-samples/k8-provisioning/vmbc-four-node-one-client-deployment)
+- VMBC Deployment
+    - [VMBC Deployment without Logging](./vmbc-deployment/vmbc-four-node-one-client-deployment/README.md)
         - Expand without Logging here
-    - [Provisioning VMBC Ethereum with Logging](https://vmware-samples.github.io/vmware-blockchain-samples/k8-provisioning/vmbc-four-node-one-client-deployment-with-logging)
+    - [VMBC Deployment with Logging](./vmbc-deployment/vmbc-four-node-one-client-deployment-with-logging/README.md)
         - Expand with Logging here
-- [Privacy](https://vmware-samples.github.io/vmware-blockchain-samples/privacy/)
+- [Privacy](./privacy/README.md)
     - Privacy in VMware (expand on one-liner)
-- [Permissioning](https://vmware-samples.github.io/vmware-blockchain-samples/permissioning)
+- [Permissioning](./permissioning/README.md)
     - Write and Read Permissioning feature related elements
-- [Explorer](https://vmware-samples.github.io/vmware-blockchain-samples/explorer/)
+- [VMBC Explorer](./block-explorers/vmbc-explorer/README.md)
     - Ethereum Block Explorer
 - Sample DApps
-    - [Artemis](https://vmware-samples.github.io/vmware-blockchain-samples/sample-dapps/artemis/)
+    - [NFT Platform](./sample-dapps/nft-platform/README.md)
         - Digital Art NFT Platform
-    - [ERC20-Swap](https://vmware-samples.github.io/vmware-blockchain-samples/sample-dapps/erc20-swap/)
+    - [ERC20-Swap](./sample-dapps/erc20-swap/README.md)
         - DApp to Transfer and Swap ERC20 Tokens
 
 # Popular tools to use with VMware Blockchain Ethereum Developer Kit
