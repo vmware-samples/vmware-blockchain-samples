@@ -27,7 +27,7 @@ Deploy kubernetes based leveraging [helm charts](../vmbc-deployment/vmbc-four-no
 
 ### Determine the required settings for helm chart installation
 
-List of available configurations in [values.yaml](./sample-dapps/private-token-transfer/helm/values.yaml). Use "--set" param for setting up the params.
+List of available configurations in [values.yaml](https://github.com/vmware-samples/vmware-blockchain-samples/blob/stage-dev-kit/vmbc-ethereum/privacy/sample-dapps/private-token-transfer/helm/values.yaml). Use "--set" param for setting up the params.
 Most settings are assigned to predetermined default values and users would only require to set few mandatory settings.
 
 #### Image, Blockchain location settings
