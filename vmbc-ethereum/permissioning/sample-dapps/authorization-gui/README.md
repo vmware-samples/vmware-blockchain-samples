@@ -3,7 +3,7 @@
 ## Features
 - Permissioning Configuration 
    - Provide permissions(READ/WRITE/DEPLOY) to the given Ethereum account
-- ERC20 Token Tranasfer
+- ERC20 Token Transfer
    - By default the deployer will have 1 billion XYZ tokens
    - XYZ tokens can be transfered across the accounts
 
