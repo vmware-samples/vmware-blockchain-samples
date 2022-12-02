@@ -8,7 +8,7 @@
   "scripts": {
     "docs:dev": "vuepress dev docs --config docs/.vuepress/config.ts",
     "docs:build": "vuepress build docs --config docs/.vuepress/config.ts",
-    "docs:copy": "cp -r vmware-ethereum/* docs/"
+    "docs:copy": "cp -r vmbc-ethereum/* docs/"
   },
   "devDependencies": {
     "vuepress": "^2.0.0-beta.53"
