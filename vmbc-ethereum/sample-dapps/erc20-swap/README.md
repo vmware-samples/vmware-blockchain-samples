@@ -27,7 +27,7 @@ There are two ways to run this DApp
 
 ```sh
 # Change to Source Directory of ERC20-Swap DApp
-cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/vmbc-ethereum/sample-dapps/erc20-swap/source/erc20-swap
+cd vmware-blockchain-samples/vmbc-ethereum/sample-dapps/erc20-swap/source/erc20-swap
 
 # Install the dependencies
 npm install
