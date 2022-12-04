@@ -56,10 +56,6 @@ export default {
           {
             text: 'ERC20 Swap',
             link: '/sample-dapps/erc20-swap/'
-          },
-          {
-            text: 'ERC20 Test Tool',
-            link: '/sample-dapps/erc20-test-tool/'
           }
         ]
       }
