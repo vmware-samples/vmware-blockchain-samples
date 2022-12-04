@@ -9,6 +9,10 @@
 ### Deploy vmbc erc20 token transfer test
   - Deployment with parameters. Replace the blockchainUrl value with the Eth RPC service URL.
      ```sh
+     # Change to Helm Chart directory of ERC20 Test Tool Sample DApp
+     cd vmware-blockchain-samples/vmbc-ethereum/sample-dapps/erc20-test-tool/helm-chart
+
+     # Helm install ERC20 Test Tool Sample DApp
      helm install <name-of-your-choice> . --set global.imageCredentials.registry=<registry> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password> --set blockchainUrl=<blockchainURL>
      ```
         

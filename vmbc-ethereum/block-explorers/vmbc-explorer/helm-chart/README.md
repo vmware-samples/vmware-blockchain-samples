@@ -9,6 +9,10 @@ helm chart ( https://helm.sh/docs/intro/install/ )
 
 - Deployment with parameters. The blockchainUrl value should be set to the Eth RPC service URL.
     ```sh
+      # Change to Helm Chart directory of VMBC Explorer
+      cd vmware-blockchain-samples/vmbc-ethereum/block-explorers/vmbc-explorer/helm-chart
+
+      # Helm install VMBC Explorer
       helm install <name-of-your-choice> . --set global.imageCredentials.registry=<registry> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password> --set blockchainUrl=<blockchainURL>
     ```
 - Access VMBC explorer webpage using service url

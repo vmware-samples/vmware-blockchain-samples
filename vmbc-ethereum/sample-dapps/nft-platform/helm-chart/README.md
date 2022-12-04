@@ -9,6 +9,10 @@
 ### Deploy vmbc nft dapp
   - Deployment with parameters
      ```sh
+     # Change to Helm Chart directory of NFT Platform Sample DApp
+     cd vmware-blockchain-samples/vmbc-ethereum/sample-dapps/nft-platform/helm-chart
+
+     # Helm install NFT Platform Sample DApp
      helm install {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set blockchainUrl={blockchainURL}
      ```
 
