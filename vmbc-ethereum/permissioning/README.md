@@ -1,11 +1,13 @@
 # Ethereum Permissioning
 
-In the 1.8 release, VMware Blockchain for Ethereum will implement “account permissioning” as a tech preview feature in accordance with the Enterprise Ethereum Alliance (EEA) specifications to provide the necessary tools and granularity to govern actions permitted by accounts on the blockchain. Permissioning in the context of enterprise blockchains is a required feature for our customers as they seek ways to control access to deploy and execute smart contracts running on the blockchain. The account permissioning feature can be enabled during network creation by providing the necessary parameters in the deployment configurations file. The compiled permissioning smart contract and the account(s) that can grant permissions to other addresses should also be included in the genesis file. The “permission admin” user can use a dApp or the permissioning user interface to control which accounts are allowed to send transactions and specify the type of transactions permitted. Types of transaction can be READ, WRITE and DEPLOY permissions to other accounts. The dApp should be the preferred method to grant access to a large number of accounts.
+In the 1.8 release, VMware Blockchain for Ethereum implements “account permissioning” as a tech preview feature in accordance with the Enterprise Ethereum Alliance (EEA) specifications to provide the necessary tools and granularity to govern actions permitted by accounts on the blockchain. Permissioning in the context of enterprise blockchains is a required feature for our customers as they seek ways to control access to deploy and execute smart contracts running on the blockchain. The account permissioning feature can be enabled during network creation by providing the necessary parameters in the deployment configurations file. The compiled permissioning smart contract and the account(s) that can grant permissions to other addresses should also be included in the genesis file. The “permission admin” user can use a dApp or the permissioning user interface to control which accounts are allowed to send transactions and specify the type of transactions permitted. Types of transaction can be READ, WRITE and DEPLOY permissions to other accounts. The dApp should be the preferred method to grant access to a large number of accounts.
 
 By default in VMBC the permissioning feature is disabled. It means anybody can read and write to blockchain.
 
 ## Permissioning Contract
-Permissioning contract is present at `vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/permissioning/contracts/Permissioning.sol`
+For reference, Permissioning contract is present at `vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/permissioning/contracts/Permissioning.sol`
+
+(Note: This contract is provided here just for reference, this contract is pre-deployed in VMBC Ethereum, changes to this contract's source code here, will not propogate to VMBC)
  
 ## Permissioning fields in `values.yaml`
 
