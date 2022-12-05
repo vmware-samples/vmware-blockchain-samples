@@ -24,7 +24,7 @@ There are two ways to run this DApp
 - At command line, this app defaults to port `5200`
 
 ```sh
-# Change to Source Directory of NFT Platform DApp
+# Change to Source Directory of authorization gui DApp
 cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authorization-gui/source
 
 # Install the dependencies
