@@ -34,7 +34,7 @@ user-1 user-2 user-3
 ```
 - single administrator console
 
-The privacy wallets are not persistent hence not crash resilient. In event of restarts uses should redeploy another instance of privacy application and configure restarted wallet application to leverage the new instance.
+The privacy wallets are not persistent hence not crash resilient. In event of restarts users should redeploy another instance of privacy application and configure restarted wallet application to leverage the new instance.
 ### Determine the required settings for helm chart installation
 
 Helm chart for privacy application deployment is available [HERE](List of available configurations in [values.yaml](https://github.com/vmware-samples/vmware-blockchain-samples/blob/stage-dev-kit/vmbc-ethereum/privacy/sample-dapps/private-token-transfer/helm/).) 
@@ -355,3 +355,10 @@ Private balance: 0 =====> All private tokens converted to public
 Privacy budget: 950
 Last executed tx number: 6
 ```
+
+#### limitation workflow
+To workaround for lack of restart capability, perform the following work flow in event you terminate a wallet.
+
+- You could leverage the restarted instances or optionally uninstall (helm uninstall) and redeploy the privacy application using helm. 
+- Re-deploy (admin deploy) another privacy application instances
+- Retry the privacy workflows described above.
