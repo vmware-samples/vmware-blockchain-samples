@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: privacy-wallet-app-pvc
 spec:
-  storageClassName: "standard"
+  storageClassName: "{{ .Values.global.storageClassName }}"
   accessModes:
     - ReadWriteOnce
   resources:

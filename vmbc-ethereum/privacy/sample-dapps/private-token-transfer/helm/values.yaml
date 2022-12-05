@@ -15,6 +15,7 @@ global:
     email: ""
   image:
     tag: "0.0.0.0.7849"
+  storageClassName: "standard"
 
 privacyWalletApp:
   image:
