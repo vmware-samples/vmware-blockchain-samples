@@ -25,7 +25,7 @@ There are two ways to run this DApp
 
 ```sh
 # Change to Source Directory of NFT Platform DApp
-cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/permissioning/sample-dapps/authorization-gui/source
+cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authorization-gui/source
 
 # Install the dependencies
 npm install --legacy-peer-deps
