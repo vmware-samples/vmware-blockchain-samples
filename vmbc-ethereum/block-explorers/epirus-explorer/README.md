@@ -29,8 +29,8 @@ You can run the developer edition of Epirus for VMWare Blockchain by following t
 ```
 git clone https://github.com/web3labs/epirus-free.git
 cd epirus-free
-NODE_ENDPOINT=http://<node-ip-address>:<rpc-port>/ docker-compose up
 docker-compose pull
+NODE_ENDPOINT=http://<node-ip-address>:<rpc-port>/ docker-compose up
 ```
 
 Where `node-ip-address` is the ip address of the node you are running, and `rpc-port` is the RPC API HTTP port.
