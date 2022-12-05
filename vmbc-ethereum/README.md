@@ -58,14 +58,12 @@ There are two options to deploy VMBC Ethereum, one without logging and one with 
 - [VMBC Deployment](./vmbc-deployment/vmbc-four-node-one-client-deployment/README.md)
 - [VMBC Deployment with Logging](./vmbc-deployment/vmbc-four-node-one-client-deployment-with-logging/README.md)
 
-Note: In terms of features, VMBC Deployment by default has Privacy Contract Enabled and Permissioning Contract disabled
-
-Todo(Sanchita): Add quick intro paragraph about VMBC Deployment
+Note: In terms of features, VMBC Deployment by default has Privacy feature Enabled and Permissioning feature disabled
 
 ## Privacy
 The privacy of digital asset custody is a critical requirement for enterprises as they consider moving to blockchains. This gets exacerbated with Central Bank Digital Currencies where governments want to balance accountability with privacy in order to prevent money laundering or tax fraud. VMBC now provides a solution to this problem. Any ERC20 smart contract can be extended to convert the public tokens to private tokens.
 
-Todo(Senthil): Add a quick start guide to consume Privacy feature
+To explore more details - [Privacy](./privacy/README.md)
 
 ## Permissioning
 Permissioning feature introduces account permissioning in accordance with Enterprise Ethereum Alliance (EEA) specifications. This feature has been designed to work using a pre-deployed [Permissioning Smart Contract](https://github.com/vmware-samples/vmware-blockchain-samples/blob/stage-dev-kit/vmbc-ethereum/permissioning/contracts/Permissioning.sol). Following are the two forms of permissioning offered,
@@ -74,16 +72,16 @@ Permissioning feature introduces account permissioning in accordance with Enterp
 - Read-Write Permissioning
     - Both Read and Write interactions with VMBC is permissioned
 
-Few Notes:
-- Permissioning feature is disabled by default in VMBC. You will have to enable this feature when deploying VMBC
-- Find more information about Permissioning feature [here](./permissioning/README.md) to enable above mentioned types of permissioning and explore Permissioning Sample DApps
+Note: Permissioning feature is disabled by default in VMBC. You will have to enable this feature before deploying VMBC
+
+To explore more details - [Permissioning](./permissioning/README.md)
 
 ## Block Explorers
 There are two options of Block Explorers,
 - [Epirus Explorer](./block-explorers/epirus-explorer/README.md)
+    - Developed by Web3Labs
 - [VMBC Explorer](./block-explorers/vmbc-explorer/README.md)
-
-Todo(Akhil): Add quick intro paragraph about both these explorers
+    - Developed by VMBC
 
 ## Sample DApps
 These are Ethereum Sample DApps developed to showcase conformance to various aspects of Ethereum in VMBC. These Sample DApps have been developed in a generic form, such that these can run on any Ethereum based Blockchain. (These have been verified to work in Public Ethereum Testnet such as Goerli) 
