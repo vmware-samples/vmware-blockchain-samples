@@ -16,15 +16,6 @@ Users can modify the default values in `values.yaml`. All the fields in `genesis
  * **permissioningContractAddress**: The permissioning smart contract is pre-deployed during system boot. Note that this field can't be changed.
  * **permissioningContractBin**: The binary of the permissioning smart contract goes here. If user modified the existing permissioning contract, then the user has to update the new binary here. 
  
-## Authorization GUI
-- This is a Sample GUI DApp which can assist you in providing permissioning to any Ethereum account
-- To provide a permission to an account, you need to use Admin Account of VMBC
-- The details about default Admin account in VMBC is as follows,
- - Admin Account Address: ``
- - Admin Account Private Key: ``
-- To use this Admin Account, import this account into Metamask
-- Link to more details about Running and Using Authorizatioon GUI is [here]()
-
 ## Write Permissioning
 
 ### How to enable write permissioning?
@@ -84,6 +75,15 @@ node testReadWrite.js
 1. For read permissioning, user has to use `vmbc-ethers-extension` library
 2. The Metamask and remix tools will NOT work as expected. Because Metamask and Remix are NOT using vmbc-ethers.js
 3. Json-rpc-provider is the one which we have tested for read permissioning.
+
+## Authorization GUI
+- This is a Sample GUI DApp which can assist you in providing permissioning to any Ethereum account
+- To provide a permission to an account, you need to use Admin Account of VMBC
+- The details about default Admin account in VMBC is as follows,
+ - Admin Account Address: `0xFB389874FB4e03182A7358275eaf78008775c7ed`
+ - Admin Account Private Key: `0x5bedcdfdfe7e3d9444b3494eaee4bb9339be4745d7a4f79cd4bde59d3e9e9dcc`
+- To use this Admin Account, import this account into Metamask
+- Link to more details about Running and Using Authorizatioon GUI is [here](vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authorization-gui/)
 
 ## Troubleshooting Guide
 ### 1. Permission denied Error
