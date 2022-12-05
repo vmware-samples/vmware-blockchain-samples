@@ -1,3 +1,4 @@
+TODO: Fix branch links to master links!
 # Introduction
 The privacy of digital asset custody is a critical requirement for enterprises as they consider moving to blockchains. This gets exacerbated with Central Bank Digital Currencies where governments want to balance accountability with privacy in order to prevent money laundering or tax fraud.
 VMBC now provides a solution to this problem. Any ERC20 smart contract can be extended to convert the public tokens to private tokens. These private tokens can be transacted privately, subject to a limit set by the administrator. None, not even the administrator, can see the details of the private transaction, including the source, target or the amount transacted.
@@ -27,6 +28,7 @@ Deploy kubernetes based leveraging [helm charts](../vmbc-deployment/vmbc-four-no
 
 ### Determine the required settings for helm chart installation
 
+Helm chart for privacy application deployment is available [HERE](List of available configurations in [values.yaml](https://github.com/vmware-samples/vmware-blockchain-samples/blob/stage-dev-kit/vmbc-ethereum/privacy/sample-dapps/private-token-transfer/helm/).) 
 List of available configurations in [values.yaml](https://github.com/vmware-samples/vmware-blockchain-samples/blob/stage-dev-kit/vmbc-ethereum/privacy/sample-dapps/private-token-transfer/helm/values.yaml). Use "--set" param for setting up the params.
 Most settings are assigned to predetermined default values and users would only require to set few mandatory settings.
 
