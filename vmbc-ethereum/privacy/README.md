@@ -26,9 +26,19 @@ Deployment leverages the helm charts provided with the development kit for priva
 ### Prerequisite
 Deploy kubernetes based leveraging [helm charts](../vmbc-deployment/vmbc-four-node-one-client-deployment/README.md).
 
+### Limitations
+This release of privacy demo wallet application 
+-  supports pre-configured set of three users 
+```sh
+user-1 user-2 user-3
+```
+- single administrator console
+
+The privacy wallets are not persistent hence not crash resilient. In event of restarts uses should redeploy another instance of privacy application and configure restarted wallet application to leverage the new instance.
 ### Determine the required settings for helm chart installation
 
 Helm chart for privacy application deployment is available [HERE](List of available configurations in [values.yaml](https://github.com/vmware-samples/vmware-blockchain-samples/blob/stage-dev-kit/vmbc-ethereum/privacy/sample-dapps/private-token-transfer/helm/).) 
+
 List of available configurations in [values.yaml](https://github.com/vmware-samples/vmware-blockchain-samples/blob/stage-dev-kit/vmbc-ethereum/privacy/sample-dapps/private-token-transfer/helm/values.yaml). Use "--set" param for setting up the params.
 Most settings are assigned to predetermined default values and users would only require to set few mandatory settings.
 
@@ -88,8 +98,10 @@ Eg.,
 
 #### helm chart installation
 ```sh
-helm install --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password> --set blockchainUrl=http://192.168.59.102:32223 <name of privacy app deployment> .
- 
+helm install --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password> --set blockchainUrl=<blockchain Eth RPC URL> <name of privacy app deployment> .
+
+# For this sample deployment blockchainUrl=http://192.168.59.102:32223
+
 kubectl get pods
 NAME                                                     READY   STATUS    RESTARTS   AGE
 vmbc-deployment-client-0-clientservice-8c4c88c45-gsdzt   1/1     Running   0          7m19s
