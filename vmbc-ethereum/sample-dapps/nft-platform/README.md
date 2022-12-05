@@ -1,4 +1,4 @@
-# (WIP) NFT Platform
+# NFT Platform
 
 The goal of this project is to build an NFT platform, conforming to ERC 721 standards,
 on top of VMware Blockchain (Concord).Developed a client-side application that communicates

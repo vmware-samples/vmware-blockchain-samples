@@ -1,4 +1,4 @@
-# (WIP) ERC20-Swap
+# ERC20-Swap
 
 This is a Ethereum Sample DApp which comes with few pre-deployed ERC20 based smart contracts. Few of the Ethereum Accounts are are pre-supplied with tokens to get started.
 
