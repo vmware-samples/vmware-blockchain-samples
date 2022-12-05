@@ -83,7 +83,7 @@ node testReadWrite.js
  - Admin Account Address: `0xFB389874FB4e03182A7358275eaf78008775c7ed`
  - Admin Account Private Key: `0x5bedcdfdfe7e3d9444b3494eaee4bb9339be4745d7a4f79cd4bde59d3e9e9dcc`
 - To use this Admin Account, import this account into Metamask
-- Link to more details about Running and Using Authorizatioon GUI is [here](https://github.com/vmware-samples/vmware-blockchain-samples/tree/stage-dev-kit/vmbc-ethereum/permissioning/sample-dapps/authorization-gui)
+- Link to more details about Running and Using Authorizatioon GUI is [here](./sample-dapps/authorization-gui/README.md)
 
 ## Troubleshooting Guide
 ### 1. Permission denied Error
@@ -101,9 +101,7 @@ You have enabled write permissioning. Make sure the ethereum account you are usi
 #### Solution
 You have enabled read permissioning. Make sure you are using `vmbc-ethers-extension` in `package.json` example `"@vmware-blockchain/ethers-extension": "file:../integration-library/vmbc-ethers-extension"`. In addition to that check your DAPP, you should call the setSigningKey() API, example `PROVIDER.setSigningKey({readPermissioningKeyOrEnable: privateKey});` and your DAPP should use JSON RPC provider to interact with Blockchain.
 
-## Reference:
-JSON RPC API - https://ethereum.org/en/developers/docs/apis/json-rpc/
-
-JSON RPC Provider Ethers.js - https://docs.ethers.io/v5/api/providers/jsonrpc-provider/
-
-Web3 Provider Ethers.js - https://docs.ethers.io/v5/api/providers/other/#Web3Provider
+## References
+- JSON RPC API - https://ethereum.org/en/developers/docs/apis/json-rpc/
+- JSON RPC Provider Ethers.js - https://docs.ethers.io/v5/api/providers/jsonrpc-provider/
+- Web3 Provider Ethers.js - https://docs.ethers.io/v5/api/providers/other/#Web3Provider
