@@ -166,3 +166,4 @@ helm delete kibana
 | logManagement.endpoint_1.url        | logstash endpoint url                         | http://logstash-logstash.default.svc.cluster.local | Optional |
 | logManagement.endpoint_1.username   | logstash setup username                       | ""                          | Optional  |
 | logManagement.endpoint_1.password   | logstash setup port                           | ""                          | Optional  |
+| genesisBlock.timestamp           | blockchain creation time in UTC, 24 hours format - YYYY-MM-DD hh:mm:ss | 2022-12-02 00:01:00 | Optional |

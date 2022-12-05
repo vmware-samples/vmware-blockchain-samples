@@ -22,10 +22,13 @@ binaryData:
     {{- $_ := set $allocDict . $gasDict }}
   {{- end }}
   {{- $_ := set $genesisDict "alloc" $allocDict }}
-  {{- $genesisTimestamp := printf "%s-0000" .Values.genesisBlock.timestamp | mustToDate "2006-01-02 15:04:05-0700" | unixEpoch | atoi | printf "0x%x" }}
-  {{- $_ := set $genesisDict "timestamp" $genesisTimestamp }}
   {{- $_ := set $genesisDict "permissioningContractAddress" .Values.genesisBlock.permissioningContractAddress }}
   {{- $_ := set $genesisDict "permissioningContractBin" .Values.genesisBlock.permissioningContractBin }}
+  # {{- $someTime:= mustToDate "2006-01-02 03:04:05-0700" .Values.genesisBlock.timestamp | unixEpoch | atoi | printf "0x%x" }}
+  # {{- $genesisTimestampInGmt:= dateInZone "2006-01-02" $someTime "GMT" }}
+  {{- $_ := set $genesisDict "timestamp" .Values.genesisBlock.timestamp }}
+  # {{- $someTime:= dateInZone "2006-01-02" (.Values.genesisBlock.timestamp) "GMT" }}
+  # {{- $_ := set $genesisDict "timestamp" $someTime }}
   genesis-file: {{ $genesisDict | toJson | b64enc }}
   # end genesis file processing
   # principals locations

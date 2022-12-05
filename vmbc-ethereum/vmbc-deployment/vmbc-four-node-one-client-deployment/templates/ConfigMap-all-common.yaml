@@ -22,6 +22,8 @@ binaryData:
     {{- $_ := set $allocDict . $gasDict }}
   {{- end }}
   {{- $_ := set $genesisDict "alloc" $allocDict }}
+  {{- $genesisTimestamp := printf "%s-0000" .Values.genesisBlock.timestamp | mustToDate "2006-01-02 15:04:05-0700" | unixEpoch | atoi | printf "0x%x" }}
+  {{- $_ := set $genesisDict "timestamp" $genesisTimestamp }}
   {{- $_ := set $genesisDict "permissioningContractAddress" .Values.genesisBlock.permissioningContractAddress }}
   {{- $_ := set $genesisDict "permissioningContractBin" .Values.genesisBlock.permissioningContractBin }}
   genesis-file: {{ $genesisDict | toJson | b64enc }}

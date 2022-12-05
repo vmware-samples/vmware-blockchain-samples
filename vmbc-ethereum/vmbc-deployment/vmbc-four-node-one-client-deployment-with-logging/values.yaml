@@ -131,6 +131,8 @@ genesisBlock:
     ## @param genesisBlock.alloc List of accounts
     ##
     alloc: [fb389874fb4e03182a7358275eaf78008775c7ed]
+    ## @param genesisBlock.timestamp timestamp of genesis creation
+    timestamp: "2022-12-02 00:01:00"
     ## @param genesisBlock.permissioningContractAddress Contract address for permissioning
     ##
     permissioningContractAddress: "0x57a268e7694371880a2c5881bd240db812bbfbf0"

@@ -78,4 +78,5 @@ helm uninstall <name of blockchain>
 | global.storageClass              | Storage class for deployment                     | standard                    | Optional  |
 | global.ethPermissioningWriteEnabled | eth write permission enabled                  | false                       | Optional  |
 | global.ethPermissioningReadEnabled  | eth read permission enabled                   | false                       | Optional  |
+| genesisBlock.timestamp           | blockchain creation time in UTC, 24 hours format - YYYY-MM-DD hh:mm:ss | 2022-12-02 00:01:00 | Optional |
           
