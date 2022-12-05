@@ -13,13 +13,8 @@ The VMware Blockchain team has architected an extensible blockchain platform tha
 Using the developer kit, Ethereum developer(s) can start developing or porting their existing decentralized applications (dApps) to a single host VMware Blockchain deployment on their local desktop/laptop or Cloud VM. 
 
 # System Requirements 
-| Components | Description |
-|-----------|-------------|
-|  Operating System | Apple® macOS® 12.x |
-|                   |  Linux Ubuntu® 16.x, 20.x |
-|  vCPU             | 8 vCPU or more |
-|  RAM              | 22 GB of RAM or more |
-|  Disk Space       | 100 GB of free disk space or more |
+- [For Minikube](./vmbc-deployment/README.md#system-requirements-for-minikube)
+- [For Cloud Deployment](./vmbc-deployment/README.md#system-requirements-for-aws-eks)
 
 # High Level Overview
 
@@ -29,13 +24,13 @@ Following is a list of various elements of VMware Ethereum Developer Kit
 
 - VMBC Deployment
     - [VMBC Deployment without Logging](./vmbc-deployment/vmbc-four-node-one-client-deployment/README.md)
-        - Expand without Logging here
+        - VMBC Deployment using Helm
     - [VMBC Deployment with Logging](./vmbc-deployment/vmbc-four-node-one-client-deployment-with-logging/README.md)
-        - Expand with Logging here
+        - VMBC Deployment using Helm with Logging
 - [Privacy](./privacy/README.md)
-    - Privacy in VMware (expand on one-liner)
+    - Privacy feature with Private Token Transfer Sample DApp
 - [Permissioning](./permissioning/README.md)
-    - Write and Read Permissioning feature related elements
+    - Write and Read Permissioning feature with its Sample DApps
 - [VMBC Explorer](./block-explorers/vmbc-explorer/README.md)
     - Ethereum Block Explorer
 - Sample DApps
