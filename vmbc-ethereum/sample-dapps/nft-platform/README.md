@@ -19,6 +19,12 @@ on VMware blockchain by providing a title, an image URL and artist name.
 - Transfer an NFT
 - View History of an NFT
 
+#### Notes about NFT Platform and Write Permissioning
+- NFT Platform Sample DApp supports running with Write Permissioning enabled in VMBC
+- With default Admin Account
+   - Both Command Line and Helm Based Running of DApp is supported
+- If a non-default Admin Account is used only Command Line Running of DApp is supported
+
 ## Running DApp
 There are two ways to run this DApp
 
@@ -57,6 +63,10 @@ npm install
 
 # Export the VMBC_URL to the URL of deployed instance of VMware Blockchain
 export VMBC_URL=http://127.0.0.1:8545
+
+# If Write Permissioning is enabled and using non-default Admin Account
+vim vmware-blockchain-samples/vmbc-ethereum/sample-dapps/nft-platform/source/artemis/hardhat.config.js
+# Edit the accounts section of the network to the private key of your non-default admin account
 
 # Run the DApp
 npm run start
@@ -108,6 +118,10 @@ Regarding various Tabs in DApp,
     - Current Owner of this NFT
     - Original Minter of this NFT
     - Number of times this NFT was transferred
+
+### Notes about using this DApp when Write Permissioning is enabled:
+- If Write Permissioning is enabled, to perform any write based interactions with VMBC such as Minting an NFT and Transferring an NFT can be only performed when the provided account has Write Permissions. For more information on how to provide Write Permissions to an Ethereum Account, read more about Permissioning [here](../../permissioning/README.md)
+
 
 # Appendix
 

@@ -1,6 +1,6 @@
 # (WIP) ERC20-Swap
 
-This is a Ethereum Sample DApp which comes with few pre-deployed ERC20 based tokens. The accounts mentioned in [Accounts with Tokens](./source/erc20-swap/.env) are pre-supplied with tokens to get started.
+This is a Ethereum Sample DApp which comes with few pre-deployed ERC20 based smart contracts. Few of the Ethereum Accounts are are pre-supplied with tokens to get started.
 
 ## Features
 - Transfer two types of ERC20 based Tokens across accounts
@@ -46,6 +46,7 @@ The DApp website will be available on `http://localhost:3000`
 Follow the instructions in [helm-chart/README](./helm-chart/README.md)
 
 ## Using DApp
+The accounts mentioned in [Accounts with Tokens](https://github.com/vmware-samples/vmware-blockchain-samples/blob/stage-dev-kit/vmbc-ethereum/sample-dapps/erc20-swap/source/erc20-swap/.env) are pre-supplied with tokens. You can use [this guide](./README.md#importing-accounts-in-metamask) to these accounts into your Metamask wallet.
 
 ### Transfer Tokens
 - Select a token from drop down

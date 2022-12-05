@@ -68,7 +68,7 @@ The privacy of digital asset custody is a critical requirement for enterprises a
 Todo(Senthil): Add a quick start guide to consume Privacy feature
 
 ## Permissioning
-Permissioning feature introduces account permissioning in accordance with Enterprise Ethereum Alliance (EEA) specifications. This feature has been designed to work using a pre-deployed [Permissioning Smart Contract](./permissioning/contracts/Permissioning.sol). Following are the two forms of permissioning offered,
+Permissioning feature introduces account permissioning in accordance with Enterprise Ethereum Alliance (EEA) specifications. This feature has been designed to work using a pre-deployed [Permissioning Smart Contract](https://github.com/vmware-samples/vmware-blockchain-samples/blob/stage-dev-kit/vmbc-ethereum/permissioning/contracts/Permissioning.sol). Following are the two forms of permissioning offered,
 - Write Permissioning
     - Write related interactions with VMBC is permissioned
 - Read-Write Permissioning
