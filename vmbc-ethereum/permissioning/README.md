@@ -5,7 +5,7 @@ In the 1.8 release, VMware Blockchain for Ethereum implements “account permiss
 By default in VMBC the permissioning feature is disabled. It means anybody can read and write to blockchain.
 
 ## Permissioning Contract
-For reference, Permissioning contract is present at `vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/permissioning/contracts/Permissioning.sol`
+For reference, Permissioning contract is present at `vmware-blockchain-samples/vmbc-ethereum/permissioning/contracts/Permissioning.sol`
 
 (Note: This contract is provided here just for reference, this contract is pre-deployed in VMBC Ethereum, changes to this contract's source code here, will not propogate to VMBC)
  
@@ -28,7 +28,7 @@ The write permissioning is applicable for both "Contract Deployment" and "Write 
 Follow the steps listed below,
 ```sh
 # Change to write authorization dApp
-cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/permissioning/sample-dapps/write-authorization
+cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/write-authorization
 
 # Update the .env file with appropriate VMBC_URL Eg: VMBC_URL="http://x.x.x.x:8545"
 
@@ -50,13 +50,13 @@ In `values.yaml`, under `permissioning` section change `ethPermissioningReadEnab
 Follow the steps listed below,
 ```sh
 # Change directory into the vmbc-ethers-extension library
-cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/permissioning/sample-dapps/read-write-authorization/integration-library/vmbc-ethers-extension
+cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/read-write-authorization/integration-library/vmbc-ethers-extension
 
 # Install dependencies for vmbc-ethers-extension library
 npm install
 
 # Change directory to read test dApp
-cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/permissioning/sample-dapps/read-write-authorization/dapp
+cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/read-write-authorization/dapp
 
 # Update the .env file with appropriate VMBC_URL Eg: VMBC_URL="http://x.x.x.x:8545" 
 
