@@ -10,7 +10,7 @@
 |  Disk Size        | 200 GB or more |
 
 ```sh
-cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/vmbc-ethereum/vmbc-four-node-one-client-deployment
+cd vmware-blockchain-samples/vmbc-ethereum/vmbc-four-node-one-client-deployment
 helm install --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password> <name of blockchain> .
 ```
 
@@ -23,6 +23,6 @@ helm install --set global.imageCredentials.registry=<registry address> --set glo
 |  EBS Volume Type  | gp2 |
 
 ```sh
-cd vmware-blockchain-samples/vmware-blockchain-ethereum-developer-kit/vmbc-ethereum/vmbc-four-node-one-client-deployment
+cd vmware-blockchain-samples/vmbc-ethereum/vmbc-four-node-one-client-deployment
 helm install --set global.storageClassName=gp2 --set resources.replica.cpuRequest=10000m --set resources.replica.cpuLimit=10000m --set resources.replica.memoryRequest=56Gi --set resources.replica.memoryLimit=56Gi --set resources.client.cpuRequest=5000m --set resources.client.cpuLimit=5000m --set resources.client.memoryRequest=28Gi --set resources.client.memoryLimit=28Gi --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password> <name of blockchain> . 
 ```
