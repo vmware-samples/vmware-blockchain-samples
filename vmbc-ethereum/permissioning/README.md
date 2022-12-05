@@ -15,6 +15,15 @@ Users can modify the default values in `values.yaml`. All the fields in `genesis
  * **alloc**: List of admin accounts who can provide the permissions to other users. These admin accounts by default have read, write and deploy permissions. This field can be modified during blockchain deployment.
  * **permissioningContractAddress**: The permissioning smart contract is pre-deployed during system boot. Note that this field can't be changed.
  * **permissioningContractBin**: The binary of the permissioning smart contract goes here. If user modified the existing permissioning contract, then the user has to update the new binary here. 
+ 
+## Authorization GUI
+- This is a Sample GUI DApp which can assist you in providing permissioning to any Ethereum account
+- To provide a permission to an account, you need to use Admin Account of VMBC
+- The details about default Admin account in VMBC is as follows,
+ - Admin Account Address: ``
+ - Admin Account Private Key: ``
+- To use this Admin Account, import this account into Metamask
+- Link to more details about Running and Using Authorizatioon GUI is [here]()
 
 ## Write Permissioning
 
