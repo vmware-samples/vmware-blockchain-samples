@@ -19,4 +19,4 @@ providerVmbc = new ethers.providers.VmbcJsonRpcProvider("127.0.0.1:8545");
 providerVmbc.setSigningKey({readPermissioningKeyOrEnable: "0xf61ac24a7d0af636dbdee18a146afda453df2118e95ff765dbf843620f931722"});
 ```
 
-For more information about Permissioning and Read Permissioning refer to documentation of [Permissioning](../../permissioning/README.md)
+For more information about Permissioning and Read Permissioning refer to documentation of [Permissioning](../../../../README.md)
