@@ -30,12 +30,8 @@ You can refer to the numbers in the diagram and read the corresponding descripti
 
 VMware Blockchain with Ethereum is currently in Beta and can be deployed on a cloud environment or as a standalone developer kit. It supports the Eth RPC API and enables developers to run Solidity applications seamlessly.
 
-*** **Please note that the VMware Blockchain Ethereum Developer Kit is under early beta and functionality is subject to change** ***
 ## VMBC Ethereum Beta Sign Up
 Todo(Akhil): Mia is working on the blurb which can be added here. Once recieved, add here.
-
-## Target Persona and Deployment Model
-Using the developer kit, Ethereum developer(s) can start developing or porting their existing decentralized applications (dApps) to a single host VMware Blockchain deployment on their local desktop/laptop or Cloud VM. 
 
 ## System Requirements
 Follow the links below for more information about System Requirements in different environments,
@@ -45,102 +41,50 @@ Follow the links below for more information about System Requirements in differe
 ## High Level Overview
 VMware Blockhain Ethereum Website: [https://vmware-samples.github.io/vmware-blockchain-samples](https://vmware-samples.github.io/vmware-blockchain-samples)
 
-Following is a list of various elements of VMware Ethereum Developer Kit
+Following is a list of various elements of VMware Blockchain (VMBC) Ethereum,
 
 - VMBC Deployment
-    - [VMBC Deployment without Logging](./vmbc-deployment/vmbc-four-node-one-client-deployment/README.md)
+    - [VMBC Deployment](./vmbc-deployment/vmbc-four-node-one-client-deployment/README.md)
         - VMBC Deployment using Helm
-    - [VMBC Deployment with Logging](./vmbc-deployment/vmbc-four-node-one-client-deployment-with-logging/README.md)
-        - VMBC Deployment using Helm with Logging
+    - [VMBC Deployment with Logging Collector](./vmbc-deployment/vmbc-four-node-one-client-deployment-with-logging/README.md)
+        - VMBC Deployment using Helm with Logging Collector
 - [Permissioning](./permissioning/README.md)
     - Write and Read Permissioning feature with its Sample DApps
 - [Privacy](./privacy/README.md)
     - Privacy feature with Private Token Transfer Sample DApp
-- [VMBC Explorer](./block-explorers/vmbc-explorer/README.md)
-    - Ethereum Block Explorer
+- Block Explorers
+    - [Epirus Explorer](./block-explorers/epirus-explorer/README.md)
+        - Epirus is a data and analytics platform for VMBC Ethereum
+    - [VMBC Ethereum Block Explorer](./block-explorers/vmbc-explorer/README.md)
+        - Display Blocks and Transactions for VMBC Ethereum
 - Sample DApps
     - [NFT Platform](./sample-dapps/nft-platform/README.md)
         - Digital Art NFT Platform
     - [ERC20-Swap](./sample-dapps/erc20-swap/README.md)
-        - DApp to Transfer and Swap ERC20 Tokens
+        - Transfer and Swap ERC20 Tokens
 
 ## Quick Start Guide
-The following quick start guide provides information on how to deploy the platform and run applications on it. It also provides sample applications and instructions on how to configure the various features and capabilities that are available on the VMBC with Ethereum.
+The following quick start guide provides information on how to deploy VMBC and run applications on it. It also provides sample applications and instructions on how to configure the various features and capabilities that are available on the VMBC Ethereum.
 
 ### Deploy VMware Blockchain Ethereum
-#### Form Factor Options
+#### Deployment Options
 There are multiple form factor ways to deploy VMware Blockchain Ethereum namely, high level system requirements are provided below,
 - [Developer Kit Deployment](./vmbc-deployment/README.md#developer-kit-deployment)
+    - [VMBC Deployment](./vmbc-deployment/vmbc-four-node-one-client-deployment/README.md)
+    - [VMBC Deployment with Logging Collector](./vmbc-deployment/vmbc-four-node-one-client-deployment-with-logging/README.md)
 - [Cloud Deployment](./vmbc-deployment/README.md#cloud-deployment)
+    - [VMBC Deployment](./vmbc-deployment/vmbc-four-node-one-client-deployment/README.md)
 
-#### Deployment Options
-There are two options to deploy VMBC Ethereum, one without logging and one with logging,
-- [VMBC Deployment](./vmbc-deployment/vmbc-four-node-one-client-deployment/README.md)
-- [VMBC Deployment with Logging](./vmbc-deployment/vmbc-four-node-one-client-deployment-with-logging/README.md)
-
-Note: In terms of features, VMBC Deployment by default has Privacy feature Enabled and Permissioning feature disabled
-
-### Ethereum Features
+### Ethereum Base Features
 VMware Blockchain is an enterprise-grade private blockchain based on Ethereum. Therefore, certain VMware Blockchain features must be aligned with the Ethereum ecosystem.
-
-#### VMware Blockchain and Ethereum Genesis File
-The VMware Blockchain genesis file defines the first block in the chain. It contains various configurations that define how the blockchain works.
-
-The genesis file is provided as part of the deployment with default values. Therefore, if operators want to change the default values, they should update the genesis file before deployment.
-
-Currently, the available setting is the free gas mode, enabling the ability not to specify gas fees. See Free Gas Mode.
-
-<details>
-    <summary>Sample VMware Blockchain genesis file</summary>
-
-    {
-        "config": {
-            "chainId": 5000,
-            "homesteadBlock": 0,
-            "eip155Block": 0,
-            "eip158Block": 0
-        },
-        "alloc": {
-            "262c0d7ab5ffd4ede2199f6ea793f819e1abb019": {
-            "balance": "12345"
-            },
-            "5bb088f57365907b1840e45984cae028a82af934": {
-            "balance": "0xabcdef"
-            },
-            "0000a12b3f3d6c9b0d3f126a83ec2dd3dad15f39": {
-            "balance": "0x7fffffffffffffff"
-            }
-        },
-        "nonce": "0x000000000000000",
-        "difficulty": "0x400",
-        "mixhash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-        "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-        "gasLimit": "0xf4240"
-    }
-
-</details>
 
 #### Free-Gas Mode
 In a public Ethereum network, gas refers to the cost necessary to perform a transaction on the network. Miners set the gas price based on supply and demand for the network's computational power to process smart contracts and other transactions. Requiring a fee for every transaction executed on the network provides a layer of security to the Ethereum network, making it too expensive for malicious users to spam the network.
 
 VMware Blockchain is a private, permissioned, and managed network. Therefore, it is not required to charge for computation power or protect it from malicious use. In addition, the SBFT protocol protects it from byzantine attacks. Since gas fees are not required, VMware Blockchain supports a free-gas mode.
 
-##### Enable Free-Gas Mode
-When using the free-gas mode, large contracts do not fail due to lack of gas which is a likely scenario for public Ethereum, and the UI ease of use with tools such as Metamask is enhanced.
-
-Note: Free-gas mode is not enabled by default since some DApps explicitly specify gas.
-
-**Procedure (Todo: Update this procedure)**
-1. Access the genesis.json file.
-    a. The genesis.json file is located in the descriptors directory in VMware Blockchain Orchestrator deployment. The genesis.json file in the descriptors directory overrides the default genesis.json file.
-2. Set the gasLimit parameter in the genesis.json to 0x7FFFFFFFFFFFFFFF to enable the free-gas option.
-3. After the genesis.json file is defined,  the DApp should not specify the gas, the gas price, or the gas limit in the send transaction APIs. Instead, the system automatically calculates gas using eth_gasPrice and eth_estimateGas.
-
-#### EthRPC API Compatability
-##### JSON RPC API Endpoints
-VMware Blockchain with Ethereum supports the EEA (Enterprise Ethereum Alliance) [Client specification standards](https://entethalliance.github.io/client-spec/spec.html#dfn-ethereum-json-rpc-api). The following JSON-RPC API endpoints are supported:
-
-**API reference**: [https://ethereum.org/en/developers/docs/apis/json-rpc](https://ethereum.org/en/developers/docs/apis/json-rpc)
+#### VMBC Supported Ethereum JSON RPC API Endpoints
+VMware Blockchian Ethereum supports the standard interface for Ethereum clients and Enterprise Ethereum Requirements [API Reference](https://ethereum.org/en/developers/docs/apis/json-rpc)
 
  Methods | Description |
 | --- | ----------- |
@@ -169,8 +113,9 @@ VMware Blockchain with Ethereum supports the EEA (Enterprise Ethereum Alliance) 
 | net_listening | Returns true if the Client node is actively listening for network connections.|
 | net_version | Returns the current network ID.|
 
-##### JSON RPC API Batching
-Multiple requests are batched into a single JSON object aligning with [Ethereum JSON RPC Standard](https://www.jsonrpc.org/specification) for optimizing the platform's performance.
+ Construct | Description |
+| --- | ----------- |
+| JSON RPC API Batching | Multiple requests are batched into a single JSON object aligning with [Ethereum JSON RPC Standard](https://www.jsonrpc.org/specification) for optimizing the platform's performance.|
 
 ### Permissioning
 Permissioning feature introduces account permissioning in accordance with Enterprise Ethereum Alliance (EEA) specifications. This feature has been designed to work using a pre-deployed [Permissioning Smart Contract](https://github.com/vmware-samples/vmware-blockchain-samples/blob/stage-dev-kit/vmbc-ethereum/permissioning/contracts/Permissioning.sol). Following are the two forms of permissioning offered,
