@@ -32,6 +32,8 @@ cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/write-auth
 
 # Update the .env file with appropriate VMBC_URL Eg: VMBC_URL="http://x.x.x.x:8545"
 
+# Node.js version 14.20 and up is preferred. 
+
 # Install dependencies
 npm install
 
@@ -59,6 +61,8 @@ npm install
 cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/read-write-authorization/dapp
 
 # Update the .env file with appropriate VMBC_URL Eg: VMBC_URL="http://x.x.x.x:8545" 
+
+# Node.js version 14.20 and up is preferred.
 
 # Install dependencies
 npm install
