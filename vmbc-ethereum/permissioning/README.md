@@ -25,14 +25,12 @@ The write permissioning is applicable for both "Contract Deployment" and "Write 
 
 ### How to test write permissioning?
 
-Follow the steps listed below,
+Follow the steps listed below, Node.js version 14.20 and up is preferred. 
 ```sh
 # Change to write authorization dApp
 cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/write-authorization
 
 # Update the .env file with appropriate VMBC_URL Eg: VMBC_URL="http://x.x.x.x:8545"
-
-# Node.js version 14.20 and up is preferred. 
 
 # Install dependencies
 npm install
@@ -49,7 +47,7 @@ For read permissioning, we need `vmbc-ethers.js` which is a modified version of 
 In `values.yaml`, under `permissioning` section change `ethPermissioningReadEnabled` value to `true` for read permissioning. User has to enable both read and write permissioning to test "read permissioning".
 
 ### How to test read permissioning?
-Follow the steps listed below,
+Follow the steps listed below, Node.js version 14.20 and up is preferred.
 ```sh
 # Change directory into the vmbc-ethers-extension library
 cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/read-write-authorization/integration-library/vmbc-ethers-extension
@@ -61,8 +59,6 @@ npm install
 cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/read-write-authorization/dapp
 
 # Update the .env file with appropriate VMBC_URL Eg: VMBC_URL="http://x.x.x.x:8545" 
-
-# Node.js version 14.20 and up is preferred.
 
 # Install dependencies
 npm install
