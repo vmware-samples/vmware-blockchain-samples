@@ -11,10 +11,8 @@ Kubernetes- minikube**
 
 > ![Graphical user interface, application, website Description
 > automatically
-> generated](./media/image1.png){width="6.268055555555556in"
-> height="2.94375in"}\
-> ![](./media/image2.png){width="6.268055555555556in"
-> height="4.6409722222222225in"}
+> generated](./media/image1.png)\
+> ![](./media/image2.png)
 
 
 Note: Other VM drivers like [VirtualBox](https://www.virtualbox.org/),
