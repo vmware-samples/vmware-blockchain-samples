@@ -49,7 +49,8 @@ Most settings are assigned to predetermined default values and users would only 
 | blockchainUrl | URL for ETH-RPC service. Determined from the VMBC deployments exposed service. | `blockchainUrl="http://192.168.59.102:32223"`  | Mandatory |
 | global.imageCredentials.registry | Container registry for image downloads           | ""                          | Mandatory |
 | global.imageCredentials.username | Username to access/download for registry         | ""                          | Mandatory |
-| global.imageCredentials.password | Password to access/download for registry         | 
+| global.imageCredentials.password | Password to access/download for registry         | ""                          | Mandatory | 
+| global.storageClassName | Storage class settings for persistent storage         | default: "standard"                          | Optional |
 
 The ethRPC service port and their liveness could be determined as following:
 ```sh
