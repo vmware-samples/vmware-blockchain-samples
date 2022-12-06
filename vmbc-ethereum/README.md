@@ -164,7 +164,8 @@ VMware Blockchain with Ethereum supports the EEA (Enterprise Ethereum Alliance) 
 | eth_getTransactionCount | Returns the number of transactions sent from an address.|
 | eth_getTransactionReceipt | Returns the receipt of a transaction by transaction hash.|
 | eth_sendRawTransaction | Creates a message call transaction or a contract creation for signed transactions.|
-| eth_sendTransaction | Creates a message call transaction or a contract creation if the data field contains code.|
+| eth_subscribe | Subscribe to logs that are included in new imported blocks and match the given filter criteria. This uses the WebSocket interface. |
+| eth_unsubscribe | Cancel a current subscription. This uses the WebSocket interface. |
 | net_listening | Returns true if the Client node is actively listening for network connections.|
 | net_version | Returns the current network ID.|
 
