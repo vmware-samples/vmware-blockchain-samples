@@ -223,3 +223,4 @@ Few Notes:
 - Remix
 - Metamask
 - Mythril
+- Slither
