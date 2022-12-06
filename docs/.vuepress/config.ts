@@ -11,11 +11,6 @@ export default {
     contributors: false,
     editLink: false,
     navbar: [
-      // VMBC Ethereum Overview
-      {
-        text: 'VMBC Ethereum Overview',
-        link: '/vmbc-ethereum-overview',
-      },
       // VMBC Deployment
       {
         text: 'VMBC Deployment',
