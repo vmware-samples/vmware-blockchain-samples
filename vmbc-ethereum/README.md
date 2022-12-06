@@ -38,6 +38,7 @@ Todo(Akhil): Mia is working on the blurb which can be added here. Once recieved,
 Using the developer kit, Ethereum developer(s) can start developing or porting their existing decentralized applications (dApps) to a single host VMware Blockchain deployment on their local desktop/laptop or Cloud VM. 
 
 ## System Requirements
+Follow the links below for more information about System Requirements in different environments,
 - [For Minikube](./vmbc-deployment/README.md#system-requirements-for-minikube)
 - [For Cloud Deployment](./vmbc-deployment/README.md#system-requirements-for-aws-eks)
 
