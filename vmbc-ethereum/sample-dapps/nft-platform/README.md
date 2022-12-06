@@ -11,7 +11,7 @@ on VMware blockchain by providing a title, an image URL and artist name.
     - MAC Operating System
     - Google Chrome browser
     - Metamask Wallet - [https://metamask.io/](https://metamask.io/)
-- Connecting Metamask to VMBC - [See Appendix](#connecting-metamask-to-vmbc)
+- Connecting Metamask to VMBC - [See Appendix](../../appendix.md#connecting-metamask-to-vmbc)
 
 ## Features
 - View all NFTs in the Platform
@@ -121,26 +121,3 @@ Regarding various Tabs in DApp,
 
 ### Notes about using this DApp when Write Permissioning is enabled:
 - If Write Permissioning is enabled, to perform any write based interactions with VMBC such as Minting an NFT and Transferring an NFT can be only performed when the provided account has Write Permissions. For more information on how to provide Write Permissions to an Ethereum Account, read more about Permissioning [here](../../permissioning/README.md)
-
-
-# Appendix
-
-## Connecting Metamask to VMBC
-
-Metamask is available on Google Chrome as an extension, and this is a key requirement
-to this NFT sample.
-
-If you have never added your VMware Blockchain's URL and the Chain ID (default 5000)
-as a separate network on Metamask, you can click on user profile picture to open the
-dropdown menu and click `Settings` > `Networks` > `Add Network` > `Add Network Manually`
-and provide:
-
-- Network Name: (Can be freely chosen)
-- New RPC URL: (Your blockchain's EthRPC URL aka. `VMBC_URL`)
-- Chain ID: (Your blockchain's `chainId`, default is usually 5000)
-- Currency Symbol: (Can be freely chosen)
-- Block explorer URL: (optional)
-
-Metamask might not have connected ever on localhost:4200 site, if this is the case,
-you can connect Metamask to the dev site by clicking on `Not Connected` status icon
-and clicking `Connect`
