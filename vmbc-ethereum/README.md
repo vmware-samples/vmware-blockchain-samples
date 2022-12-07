@@ -100,7 +100,7 @@ Note: Permissioning feature is disabled by default in VMBC. You will have to ena
 To explore more details - [Permissioning](./permissioning/README.md)
 
 ### Privacy
-The privacy of digital asset custody is a critical requirement for enterprises as they consider moving to blockchains. This gets exacerbated with Central Bank Digital Currencies where governments want to balance accountability with privacy in order to prevent money laundering or tax fraud. VMBC now provides a solution to this problem. Any ERC20 smart contract can be extended to convert the public tokens to private tokens.
+The privacy of digital asset custody is a critical requirement for enterprises as they consider moving to blockchains. This gets exacerbated with Central Bank Digital Currencies where governments want to balance accountability with privacy in order to prevent money laundering or tax fraud. VMBC now provides a solution to this problem. Any ERC20 smart contract can be extended to convert the public tokens to private tokens. These private tokens can be transacted privately, subject to a limit set by the administrator. None, not even the administrator, can see the details of the private transaction, including the source, target or the amount transacted. The platform uses Zero Knowledge Proofs to guarantee that the transaction is valid and ensures that there is no double spending. The privacy solution is currently in Tech Preview - the APIs may change in the future.
 
 To explore more details - [Privacy](./privacy/README.md)
 
