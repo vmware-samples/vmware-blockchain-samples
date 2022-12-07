@@ -9,6 +9,8 @@
 |  Memory           | 16 GB (22 GB with ELK) |
 |  Disk Size        | 200 GB or more |
 
+Note: If the Apple Laptop is with M1, Minikube setup has some additonal considerations, for more details follow [this page](./MAC-Apple-Silicon-README.md)
+
 ```sh
 cd vmware-blockchain-samples/vmbc-ethereum/vmbc-four-node-one-client-deployment
 helm install --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password> <name of blockchain> .
