@@ -20,7 +20,7 @@ helm install --set global.imageCredentials.registry=<registry address> --set glo
 ## System Requirements for AWS EKS
 | Components | Description |
 |-----------|-------------|
-|  Kubernetes       | 1.23 or newer |
+|  Kubernetes       | 1.22 or newer |
 |  EC2 Instances    | 6 nodes of m4.4xlarge |
 |  EBS Volume Type  | gp2 |
 
