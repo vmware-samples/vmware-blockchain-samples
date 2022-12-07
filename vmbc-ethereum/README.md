@@ -33,7 +33,7 @@ You can refer to the numbers in the diagram and read the corresponding descripti
 VMware Blockchain with Ethereum is currently in Beta and can be deployed on a cloud environment or as a standalone developer kit. It supports the Eth RPC API and enables developers to run Solidity applications seamlessly.
 
 ## VMBC Ethereum Beta Sign Up
-Todo(Akhil): Mia is working on the blurb which can be added here. Once recieved, add here.
+To get started, [sign up for the beta program here](https://via.vmw.com/3HlJCD). Upon signing the Beta License Agreement form, you will receive an exclusive invite to our VMware Blockchain Beta Slack channel where you can access the developer kit, previous webinar recordings, and other resources. [Sign up](https://via.vmw.com/3HlJCD).
 
 ## System Requirements
 Follow the links below for more information about System Requirements in different environments,
