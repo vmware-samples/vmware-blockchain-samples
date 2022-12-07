@@ -16,15 +16,15 @@ export default {
         text: 'VMBC Deployment',
         children: [
           {
-            text: 'System Requirements',
+            text: 'System Requirements and Prerequisites',
             link: '/vmbc-deployment/'
           },
           {
-            text: 'VMBC Deployment without Logging',
+            text: 'VMBC Deployment without Logging Collector',
             link: '/vmbc-deployment/vmbc-four-node-one-client-deployment'
           },
           {
-            text: 'VMBC Deployment with Logging',
+            text: 'VMBC Deployment with Logging Collector',
             link: '/vmbc-deployment/vmbc-four-node-one-client-deployment-with-logging'
           }
         ]
