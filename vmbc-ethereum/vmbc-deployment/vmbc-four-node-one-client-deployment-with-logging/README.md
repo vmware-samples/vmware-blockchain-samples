@@ -4,19 +4,7 @@ Replica here refers to participants in consensus algorithm (concord-bft).
 Client here refers to clients to the blockchain network running ethrpc.
 
 ## Prerequisites
-### Host system pre-requisites
-```
-kubectl ( https://kubernetes.io/docs/tasks/tools/ )
-helm chart ( https://helm.sh/docs/intro/install/ )
-Minikube (https://minikube.sigs.k8s.io/docs/start/)
-```
-
-Test for prerequisite installation
-```sh
-kubectl version             # Verify kubectl is installed
-helm version                # Verify helm is installed
-minikube status             # Verify minikube is stopped.
-```
+Please follow information in [this page](./../README.md)
 
 ### ELK Setup
 
@@ -104,7 +92,7 @@ The below section explains how to install VMBC four node one client deployment o
 ### Quick Start
 #### Deploy
 ```sh
-helm install <name of blockchain> . --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password>
+helm install <name of blockchain> . --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password>i
 ```
 
 #### Test
@@ -167,3 +155,6 @@ helm delete kibana
 | logManagement.endpoint_1.username   | logstash setup username                       | ""                          | Optional  |
 | logManagement.endpoint_1.password   | logstash setup port                           | ""                          | Optional  |
 | genesisBlock.timestamp           | blockchain creation time in UTC, 24 hours format - YYYY-MM-DD hh:mm:ss | 2022-12-02 00:01:00 | Optional |
+
+## Troubleshooting
+Please see [this page](./../Troubleshooting.md)
