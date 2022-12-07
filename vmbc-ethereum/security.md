@@ -48,12 +48,5 @@ VMware Blockchain with Ethereum supports transaction signing using the same meth
 
 Transaction signing protects from non-repudiation. This mechanism lets the platform verify that every command originates from the right place so that commands are executed successfully and not rejected by the Replica Network.
 
-##### Replica Node Private and TLS Key Rotation
-For security reasons, a system operator must be able to replace the Replica node private and TLS keys. The operation of changing keys is called key rotation. The key rotation operation does not require any downtime. An operator can initiate key rotation of a specific Replica node or rotate the keys for all the Replica nodes using a single command.
-
-The key rotation is initiated from the reconfiguration tool. The private key of the operator signs the request for the key rotation, and the Replica Network validates the signature of the request before execution like any other command. For the operation to be successful, the platform must reach a consensus of N-f Replica nodes.
-
-After the keys are rotated, the operation is logged on-chain, and relevant Replica nodes are informed about the new keys.
-
 #### Authenticated Key-Value Ledger
 VMware Blockchain uses a key-value database, RocksDB, for persistent storage. Each Replica node contains RocksDB with the key-value pairs for every number of blocks. A checkpoint is created, and that checkpoint is cryptographically signed by the private key of each Replica node. The VMware Blockchain provides data integrity using a consensus mechanism.

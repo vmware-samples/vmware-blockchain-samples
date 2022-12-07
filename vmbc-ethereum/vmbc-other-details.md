@@ -35,20 +35,3 @@ Todo(Ramki): Do we need the genesis file here in this document?
     }
 
 </details>
-
-#### Free-Gas Mode
-In a public Ethereum network, gas refers to the cost necessary to perform a transaction on the network. Miners set the gas price based on supply and demand for the network's computational power to process smart contracts and other transactions. Requiring a fee for every transaction executed on the network provides a layer of security to the Ethereum network, making it too expensive for malicious users to spam the network.
-
-VMware Blockchain is a private, permissioned, and managed network. Therefore, it is not required to charge for computation power or protect it from malicious use. In addition, the SBFT protocol protects it from byzantine attacks. Since gas fees are not required, VMware Blockchain supports a free-gas mode.
-
-##### Enable Free-Gas Mode
-When using the free-gas mode, large contracts do not fail due to lack of gas which is a likely scenario for public Ethereum, and the UI ease of use with tools such as Metamask is enhanced.
-
-Note: Free-gas mode is not enabled by default since some DApps explicitly specify gas.
-
-Todo(Ramki): Do we need this section of updating to Gas Free mode? Default mode is Gas Free mode already
-**Procedure (Todo: Update this procedure)**
-1. Access the genesis.json file.
-    a. The genesis.json file is located in the descriptors directory in VMware Blockchain Orchestrator deployment. The genesis.json file in the descriptors directory overrides the default genesis.json file.
-2. Set the gasLimit parameter in the genesis.json to 0x7FFFFFFFFFFFFFFF to enable the free-gas option.
-3. After the genesis.json file is defined,  the DApp should not specify the gas, the gas price, or the gas limit in the send transaction APIs. Instead, the system automatically calculates gas using eth_gasPrice and eth_estimateGas.
