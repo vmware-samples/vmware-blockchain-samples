@@ -5,7 +5,6 @@ The genesis file is provided as part of the deployment with default values. Ther
 
 Currently, the available setting is the free gas mode, enabling the ability not to specify gas fees. See Free Gas Mode.
 
-Todo(Ramki): Do we need the genesis file here in this document?
 <details>
     <summary>Sample VMware Blockchain genesis file</summary>
 
