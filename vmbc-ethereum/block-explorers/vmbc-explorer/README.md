@@ -22,3 +22,5 @@ Using the UI, one can navigate and view following data from Blockchain,
 
 Follow the instructions in [helm-chart/README](./helm-chart/README.md)
 
+## Known Issues
+- Genesis Block is not shown in UI but counted in Dashboard for Total Number of Transactions and Blocks
