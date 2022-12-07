@@ -1,5 +1,7 @@
-# Developer Kit Deployment
-## System Requirements for Minikube
+# Developer Kit Deployment - System Requirements and Prerequisites
+
+## Minikube
+### System Requirements
 | Components | Description |
 |-----------|-------------|
 |  Operating System | Apple® macOS® 12.x |
@@ -11,20 +13,39 @@
 
 Note: If the Apple Laptop is with M1, Minikube setup has some additonal considerations, for more details follow [this page](./MAC-Apple-Silicon-README.md)
 
-```sh
-cd vmware-blockchain-samples/vmbc-ethereum/vmbc-four-node-one-client-deployment
-helm install --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password> <name of blockchain> .
+### Prerequisites
+
+Install the following
+```
+kubectl ( https://kubernetes.io/docs/tasks/tools/ )
+helm chart ( https://helm.sh/docs/intro/install/ )
+Minikube (https://minikube.sigs.k8s.io/docs/start/)
 ```
 
-# Cloud Deployment
-## System Requirements for AWS EKS
+## Amazon EKS
+### System Requirements
+
+The below system configurations ensures a high performant blockchain with 670 TPS.
+
 | Components | Description |
 |-----------|-------------|
 |  Kubernetes       | 1.22 or newer |
 |  EC2 Instances    | 6 nodes of m4.4xlarge |
 |  EBS Volume Type  | gp2 |
 
-```sh
-cd vmware-blockchain-samples/vmbc-ethereum/vmbc-four-node-one-client-deployment
-helm install --set global.storageClassName=gp2 --set resources.replica.cpuRequest=10000m --set resources.replica.cpuLimit=10000m --set resources.replica.memoryRequest=56Gi --set resources.replica.memoryLimit=56Gi --set resources.client.cpuRequest=5000m --set resources.client.cpuLimit=5000m --set resources.client.memoryRequest=28Gi --set resources.client.memoryLimit=28Gi --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password> <name of blockchain> . 
+Note: Current default version of Kubernetes on eks is 1.24+.
+However, with storage class gp2, please see https://docs.aws.amazon.com/eks/latest/userguide/storage-classes.html.
+Please deploy eks cluster with kubernetes version 1.22 for correct functionality with storage class gp2.
+
+if >= 1.23 is used to deploy the EKS cluster then users must follow instructions from here to install the EBS CSI driver:
+https://docs.aws.amazon.com/eks/latest/userguide/ebs-csi-migration-faq.html
+to ensure their pods are started correctly.
+
+### Prerequisites
+
+Install the following
+```
+kubectl ( https://kubernetes.io/docs/tasks/tools/ )
+helm chart ( https://helm.sh/docs/intro/install/ )
+eksctl (https://eksctl.io/)
 ```

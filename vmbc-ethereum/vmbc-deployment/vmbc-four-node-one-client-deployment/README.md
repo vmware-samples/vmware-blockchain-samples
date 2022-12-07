@@ -4,27 +4,7 @@ Replica here refers to participants in consensus algorithm (concord-bft).
 Client here refers to clients to the blockchain network running ethrpc.
 
 ## Prerequisites
-### Host system pre-requisites
-```
-kubectl ( https://kubernetes.io/docs/tasks/tools/ )
-helm chart ( https://helm.sh/docs/intro/install/ )
-(optional) Minikube (https://minikube.sigs.k8s.io/docs/start/)
-(optional) eksctl (https://eksctl.io/)
-```
-
-For the purpose of this deployment, one may choose to deploy on minikube or eksctl.
-```
-Note: Current default version of Kubernetes on eks is 1.24+.
-However, with storage class gp2, please see https://docs.aws.amazon.com/eks/latest/userguide/storage-classes.html.
-Please deploy eks cluster with kubernetes version 1.22 for correct functionality with storage class gp2.
-```
-
-Test for prerequisite installation
-```sh
-kubectl version             # Verify kubectl is installed
-helm version                # Verify helm is installed
-minikube status             # Verify minikube is stopped.
-```
+Please follow information in [this page](./../README.md)
 
 ## VMBC four node one client deployment
 
@@ -39,7 +19,7 @@ helm install <name of blockchain> . --set global.imageCredentials.registry=<regi
 
 - EKS
 ```sh
-helm install <name of blockchain> . --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password> --set global.storageClassName=gp2
+helm install <name of blockchain> . --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password> --set global.storageClassName=gp2 --set resources.replica.cpuRequest=10000m --set resources.replica.cpuLimit=10000m --set resources.replica.memoryRequest=56Gi --set resources.replica.memoryLimit=56Gi --set resources.client.cpuRequest=5000m --set resources.client.cpuLimit=5000m --set resources.client.memoryRequest=28Gi --set resources.client.memoryLimit=28Gi
 ```
 
 #### Test
@@ -79,4 +59,7 @@ helm uninstall <name of blockchain>
 | global.ethPermissioningWriteEnabled | eth write permission enabled                  | false                       | Optional  |
 | global.ethPermissioningReadEnabled  | eth read permission enabled                   | false                       | Optional  |
 | genesisBlock.timestamp           | blockchain creation time in UTC, 24 hours format - YYYY-MM-DD hh:mm:ss | 2022-12-02 00:01:00 | Optional |
+
+## Troubleshooting
+Please see [this page](./../Troubleshooting.md)
           
