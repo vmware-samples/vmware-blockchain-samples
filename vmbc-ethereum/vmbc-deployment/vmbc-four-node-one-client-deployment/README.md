@@ -21,6 +21,7 @@ helm install <name of blockchain> . --set global.imageCredentials.registry=<regi
 ```sh
 helm install <name of blockchain> . --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password> --set global.storageClassName=gp2 --set resources.replica.cpuRequest=10000m --set resources.replica.cpuLimit=10000m --set resources.replica.memoryRequest=56Gi --set resources.replica.memoryLimit=56Gi --set resources.client.cpuRequest=5000m --set resources.client.cpuLimit=5000m --set resources.client.memoryRequest=28Gi --set resources.client.memoryLimit=28Gi
 ```
+Note that it may take upto 5 mins for the blockchain to be operational the first time it's deployed. Please wait for 5 mins or until you see ```client_id=8 is serving - the pool is ready``` in the ```vmbc-deployment-client-0-clientservice-xxx-yyy``` pod logs.
 
 #### Test
 - Get ethrpc endpoint
