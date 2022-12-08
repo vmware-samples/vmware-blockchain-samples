@@ -5,7 +5,7 @@ The sample VMware Blockchain for Ethereum deployment includes a set of Helm char
 Replica nodes are the participants in the consensus algorithm, concord-bft. Client nodes are the clients in the blockchain network running ethrpc.
 
 The current sample deployment has been tested on the following components:
--	Minikube with a VirtualBox driver
+-	Minikube with VirtualBox, Hyperkit and Docker drivers
 -	Hosted on AWS EKS
 
 ## Deployment Prerequisites
