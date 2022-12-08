@@ -17,8 +17,6 @@ VMware Blockchian Ethereum supports the standard interface for Ethereum clients 
 | eth_getCode | Returns code at a given address.|
 | eth_getLogs | Returns an array of all logs matching a given filter object.|
 | eth_getStorageAt | Returns the value from a storage position at a given address.|
-| eth_getTransactionByBlockHashAndIndex	 | Returns information about a transaction by block hash and transaction index position.|
-| eth_getTransactionByBlockNumberAndIndex | Returns information about a transaction by block number and transaction index position.|
 | eth_getTransactionByHash | Returns the information about a transaction requested by transaction hash.|
 | eth_getTransactionCount | Returns the number of transactions sent from an address.|
 | eth_getTransactionReceipt | Returns the receipt of a transaction by transaction hash.|
