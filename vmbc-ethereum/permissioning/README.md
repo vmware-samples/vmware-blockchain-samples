@@ -46,7 +46,7 @@ node testWrite.js
 
 ### How to enable read permissioning?
 
-For read permissioning, we need `vmbc-ethers.js` which is a modified version of open-source ethersjs. 
+For read permissioning, we need `vmbc-ethers-extension` which is a modified version of open-source ethersjs. 
 In `values.yaml`, under `permissioning` section change `ethPermissioningReadEnabled` value to `true` for read permissioning. User has to enable both read and write permissioning to test "read permissioning".
 
 ### How to test read permissioning?
