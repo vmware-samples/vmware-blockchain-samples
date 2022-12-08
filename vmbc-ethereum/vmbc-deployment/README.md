@@ -22,6 +22,12 @@ helm chart ( https://helm.sh/docs/intro/install/ )
 Minikube (https://minikube.sigs.k8s.io/docs/start/)
 ```
 
+Make sure Minikube is running with required configs as presented above. To test, you may run
+```
+minikube status
+minikube config view
+```
+
 ## Amazon EKS
 ### System Requirements
 
@@ -49,3 +55,5 @@ kubectl ( https://kubernetes.io/docs/tasks/tools/ )
 helm chart ( https://helm.sh/docs/intro/install/ )
 eksctl (https://eksctl.io/)
 ```
+
+Make sure you have created a cluster on EKS with above configurations and you are using EKS context.
