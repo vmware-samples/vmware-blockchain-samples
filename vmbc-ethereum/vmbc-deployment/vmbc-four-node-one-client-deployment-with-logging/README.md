@@ -1,10 +1,10 @@
 # VMBC Four Node One Client Sample Deployment With Logging
-This is a sample set of Helm charts for a four replica one client VMWare blockchain deployment on Kubernetes on choice of host on a single cluster only. Current sample has been tested with minikube with virtualbox driver as hosts.
+This is a sample set of Helm charts for a four replica one client VMWare blockchain deployment on Kubernetes on choice of host on a single cluster only. Current sample has been tested with minikube.
 Replica here refers to participants in consensus algorithm (concord-bft).
 Client here refers to clients to the blockchain network running ethrpc.
 
 ## Prerequisites
-Please follow information in [this page](./../README.md)
+Make sure that you implement all the required prerequisites. See [Deployment Prerequisites](./../README.md).
 
 ### ELK Setup
 
