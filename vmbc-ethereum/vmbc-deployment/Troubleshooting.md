@@ -44,3 +44,9 @@ It takes a little while for ethrpc to boot up for the first time. Please wait fo
 ### "minikube service list" is not showing me blockchain url.
 
 Run ```minikube service client-0-ethrpc``` to fetch the url. You can also use ```kubectl port-forward svc/client-0-ethrpc 8545:8545``` in case you want to use a particular port number.
+
+
+
+
+
+If your issues are not addressed above | feedback | suggestions, [please raise a ticket](https://github.com/vmware-samples/vmware-blockchain-samples/issues)
