@@ -13,18 +13,18 @@ export default {
     navbar: [
       // VMBC Deployment
       {
-        text: 'VMBC Deployment',
+        text: 'Blockchain Deployment',
         children: [
           {
             text: 'System Requirements and Prerequisites',
             link: '/vmbc-deployment/'
           },
           {
-            text: 'VMBC Deployment without Logging Collector',
+            text: 'Blockchain Deployment without Logging Collector',
             link: '/vmbc-deployment/vmbc-four-node-one-client-deployment'
           },
           {
-            text: 'VMBC Deployment with Logging Collector',
+            text: 'Blockchain Deployment with Logging Collector',
             link: '/vmbc-deployment/vmbc-four-node-one-client-deployment-with-logging'
           }
         ]
@@ -46,7 +46,7 @@ export default {
       },
       // Sample DApps
       {
-        text: 'Sample DApps',
+        text: 'Sample dApps',
         children: [
           {
             text: "NFT Platform",
