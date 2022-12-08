@@ -94,6 +94,7 @@ The below section explains how to install VMBC four node one client deployment o
 ```sh
 helm install <name of blockchain> . --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password>i
 ```
+Note that it may take upto 5 mins for the blockchain to be operational the first time it's deployed. Please wait for 5 mins or until you see ```client_id=8 is serving - the pool is ready``` in the ```vmbc-deployment-client-0-clientservice-xxx-yyy``` pod logs.
 
 #### Test
 - Get ethrpc endpoint
