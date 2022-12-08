@@ -1,5 +1,4 @@
-
-![Logo](https://www.vmware.com/content/dam/digitalmarketing/microsites/en/images/timeline/vmware-logo-2009-latest.jpg)
+<img src="./assets/vmware-blockchain-logo.jpg" width="150">
 
 
 # VMWare Blockchain Samples
