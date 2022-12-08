@@ -28,9 +28,17 @@ Note that it might take up to 5 mins for the blockchain nodes to be operational 
 
 #### Test your deployment.
 - Get the ethrpc endpoint.
-    ```sh
-    minikube service list
-    ```
+
+  Run the following command to get ethrpc endpoint on Minikube
+  ```sh
+  minikube service list
+  ```
+    
+  Run the following command to get ethrpc endpoint on EKS
+  ```
+  kubectl get svc
+  ```
+  
   Note: If you do not see a URL, try an alternate ```minikube service client-0-ethrpc``` command.
   
 - Run the ethrpc curl command.
@@ -42,6 +50,8 @@ Note that it might take up to 5 mins for the blockchain nodes to be operational 
     {"id":1,"jsonrpc":"2.0","method":"eth_getBlockByNumber","result":{"extraData":"0x","gasLimit":"0x7fffffffffffffff","gasUsed":"0x0","hash":"0x92e4414494ec1b4752faea0d80e79f618d447743f32eff4153c5e391be1d1a88","miner":"0x52a06a6cBEF9543244C530F52b602712FE5dfb74","nonce":"0x0000000000000000","number":"0x0","parentHash":"0x0000000000000000000000000000000000000000000000000000000000000000","size":1,"stateRoot":"0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470","timestamp":"0x1669680399","transactions":[{"blockHash":"0x92e4414494ec1b4752faea0d80e79f618d447743f32eff4153c5e391be1d1a88","blockNumber":"0x0","contractAddress":"0x","from":"0x0000000000000000000000000000000000000000","gas":"0x0","gasPrice":0,"hash":"0x77f5bd9e7dbe2c2772f58f53431dfdfa205991ec4ff0b2bc385adecefd8895be","input":"0x","logs":[],"nonce":"0x0","to":"0xfb389874fb4e03182a7358275eaf78008775c7ed","transactionIndex":"0x0","value":"0x0000000000000000000000000000000000000000000000007fffffffffffffff"}]}}
     ```
     
+  See [Troubleshooting](./../Troubleshooting.md) for any errors.
+  
 #### Uninstall VMware Blockchain Nodes.
 ```sh
 helm uninstall <name of blockchain>
