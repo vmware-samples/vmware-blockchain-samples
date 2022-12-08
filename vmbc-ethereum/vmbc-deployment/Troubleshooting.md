@@ -39,8 +39,8 @@ Please use docker driver to mitigate this. Remember to be a non-root user.
 
 ### The curl test is hung
 
-It takes a little while for ethrpc to boot up for the first time. Please wait for a few minutes. The system should be ready when you see the \`\`\` client\_id=8 is serving - the pool is ready \`\`\` message in the vmbc-deployment-client-0-clientservice-xxx pod logs.
+It takes a little while for ethrpc to boot up for the first time. Please wait for a few minutes. The system should be ready when you see the ``` client\_id=8 is serving - the pool is ready ``` message in the vmbc-deployment-client-0-clientservice-xxx pod logs.
 
 ### "minikube service list" is not showing me blockchain url.
 
-Run \`\`\`minikube service client-0-ethrpc\`\`\` to fetch the url. You can also use \`\`\`kubectl port-forward svc/client-0-ethrpc 8545:8545\`\`\` in case you want to use a particular port number.
+Run ```minikube service client-0-ethrpc``` to fetch the url. You can also use ```kubectl port-forward svc/client-0-ethrpc 8545:8545``` in case you want to use a particular port number.
