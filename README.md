@@ -51,12 +51,12 @@ Please adhere to this project's `code of conduct`.
 - [@NickSneo](https://github.com/NickSneo)
 - [@saanvijay](https://github.com/saanvijay)
 - [@saiakhil2012](https://github.com/saiakhil2012)
-- [dinkar2](https://github.com/dinkar2)
-- [sanchitaroy](https://github.com/sanchitaroy)
-- [amittullo](https://github.com/amittullo)
-- [rtellamsetty](https://github.com/rtellamsetty)
-- [eswarscode](https://github.com/eswarscode)
-- [Tensaiyez](https://github.com/Tensaiyez)
+- [@dinkar2](https://github.com/dinkar2)
+- [@sanchitaroy](https://github.com/sanchitaroy)
+- [@amittullo](https://github.com/amittullo)
+- [@rtellamsetty](https://github.com/rtellamsetty)
+- [@eswarscode](https://github.com/eswarscode)
+- [@Tensaiyez](https://github.com/Tensaiyez)
 
 ## License
 
