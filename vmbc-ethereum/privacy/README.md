@@ -27,20 +27,22 @@ Deployment leverages the helm charts provided with the development kit for priva
 Deploy kubernetes based leveraging [helm charts](../vmbc-deployment/vmbc-four-node-one-client-deployment/README.md).
 
 ### Limitations
-This release of privacy demo wallet application 
--  supports pre-configured set of three users 
+- The privacy capabilities are not currently supported with permission enabled blockchain. VMBC must be deployed with read and write permissions disabled before trying out privacy.
+
+- This release supports the following sample application wallets:
+  - single administrator wallet and CLI console application.
+  - supports pre-configured set of three user wallets and corresponding CLI console application.
 ```sh
 user-1 user-2 user-3
 ```
-- single administrator console
 
-The privacy wallets are ***NOT persistent*** hence not crash resilient. In event of restarts users should redeploy another instance of privacy application and configure restarted wallet application to leverage the new instance.
+- The sample privacy wallets are ***NOT persistent*** hence not crash resilient. In event of restarts users should redeploy another instance of privacy application and configure restarted wallet application to leverage the new instance.
+
 ### Determine the required settings for helm chart installation
 
 Helm chart for privacy application deployment is available [HERE](List of available configurations in [values.yaml](https://github.com/vmware-samples/vmware-blockchain-samples/blob/stage-dev-kit/vmbc-ethereum/privacy/sample-dapps/private-token-transfer/helm/).) 
 
-List of available configurations in [values.yaml](https://github.com/vmware-samples/vmware-blockchain-samples/blob/stage-dev-kit/vmbc-ethereum/privacy/sample-dapps/private-token-transfer/helm/values.yaml). Use "--set" param for setting up the params.
-Most settings are assigned to predetermined default values and users would only require to set few mandatory settings.
+List of available configurations and default values available in [values.yaml](https://github.com/vmware-samples/vmware-blockchain-samples/blob/stage-dev-kit/vmbc-ethereum/privacy/sample-dapps/private-token-transfer/helm/values.yaml).
 
 #### Image, Blockchain location settings
 
@@ -193,7 +195,7 @@ response: ok
 ### Wallet application CLI workflow samples:
 - Wallet converts privacy funds from public funds. These private tokens are then leveraged for anonymous transfers.
 - Transfers private funds anonymously between users
-- Transfers public funds transparently between users
+- Transfers public funds between users
 - Converts privacy funds back to public funds
 
 #### User-1 <==> User-2 Samples:
