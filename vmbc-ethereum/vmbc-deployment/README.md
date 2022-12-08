@@ -11,7 +11,7 @@
 |  Memory           | 16 GB (22 GB with ELK) |
 |  Disk Size        | 200 GB or more |
 
-Note: If the Apple Laptop is with M1, Minikube setup has some additonal considerations, for more details follow [this page](./MAC-Apple-Silicon-README.md)
+Note: If the Apple Laptop is with M1, Make sure you have installed Docker Desktop. Minikube should use docker driver.
 
 ### Prerequisites
 
