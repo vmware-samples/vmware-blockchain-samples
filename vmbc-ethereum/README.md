@@ -3,11 +3,11 @@ home: false
 ---
 # VMware Blockchain for Ethereum Overview 
 
-VMware Blockchain technology provides enterprise-based companies with an innovative business transformation opportunity allowing them to build or digitize existing business networks.
+VMware Blockchain (VMBC) is an enterprise-grade blockchain platform that powers business ecosystems, digital asset experiences and dApps.
 
-The Ethereum technology stack contains smart contracts, developer tools, wallets, and an overall ecosystem, a comprehensive stack for building or digitizing existing blockchain networks.
+The Ethereum technology stack — from EVM, Solidity smart contracts, APIs, developer tools, and its overall ecosystem — is the broadest and most mature stack on which to build blockchain networks. Yet, there are several critical gaps Ethereum platforms have that make them difficult to use for enterprise use cases, such as lack of robust privacy and scalability for complex workloads, governance mechanisms, and enterprise-class operational support characteristics. To address these gaps, VMware launched VMware Blockchain for Ethereum, available now in beta. VMware Blockchain for Ethereum is built using open enterprise-centric architecture. The solution is an Ethereum Virtual Machine (EVM) compatible decentralized and permissioned infrastructure platform that provides trust, predictable costs, and instant transaction finality while being Byzantine Fault Tolerant.
 
-Several enterprise-critical gaps exist in public and permissioned Ethereum platforms despite Ethereum's significance and maturity. For example, limited throughput, lack of robust privacy capabilities without trade-off security, variable transaction costs and finality, and enterprise-grade services for mission-critical use cases.
+VMware Blockchain for Ethereum comprises blockchain nodes running the open-source EVM evmone 0.8.2, orchestration utilities, Solidity 0.8.16, and third-party integrations. As a result, developers can build on any public or private cloud to deploy their dApps and smart contracts leveraging standard tools such as Truffle, HardHat, and integrations with MetaMask.
 
 ## Why Use VMware Blockchain for Ethereum? 
 
@@ -43,8 +43,11 @@ VMware Blockchain is an enterprise-grade private blockchain based on Ethereum. T
 
 #### Free-Gas Mode
 In a public Ethereum network, gas refers to the cost necessary to perform a transaction on the network. Miners set the gas price based on supply and demand for the network's computational power to process smart contracts and other transactions. Requiring a fee for every transaction executed on the network provides a layer of security to the Ethereum network, making it too expensive for malicious users to spam the network.
+VMware Blockchain is a private, permissioned, and managed network. Therefore, it is not required to charge for computation power or protect it from malicious use. In addition, the SBFT protocol protects it from byzantine attacks. Since gas fees are not required, VMware Blockchain by default has free-gas mode enabled.
 
-VMware Blockchain is a private, permissioned, and managed network. Therefore, it is not required to charge for computation power or protect it from malicious use. In addition, the SBFT protocol protects it from byzantine attacks. Since gas fees are not required, VMware Blockchain has free-gas mode enabled.
+#### Privacy
+In many use cases, businesses and users end-need to be able to conduct transactions securely and privately, without revealing their personal information or the details of their transactions to others. To strike a balance between privacy and performance, VMware Blockchain carefully designed and implemented its privacy solution. 
+Now, any ERC20 smart contract can be extended to convert the public tokens to private tokens. These private tokens can be transacted privately, subject to a limit set by the administrator. Not even the administrator, can see the details of the private transaction, including the source, target or the amount transacted. The platform uses Zero Knowledge Proofs to guarantee that the transaction is valid and ensures that there is no double spending. The privacy solution is currently in Tech Preview - the APIs may change in the future.
 
 #### Supported Ethereum JSON RPC API Endpoints
 VMware Blockchain for Ethereum supports the standard interface for Ethereum clients and Enterprise Ethereum Requirements [API Reference](https://ethereum.org/en/developers/docs/apis/json-rpc). For details, see [Supported API Endpoints](./supported-apis.md).
