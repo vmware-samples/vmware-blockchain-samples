@@ -41,7 +41,7 @@ docker-compose down
 ```
 Where `node-ip-address` is the ip address of the node you are running, and `rpc-port` is the RPC API HTTP port.
 
-You will then be able to access the Epirus instance at http://localhost/
+You will then be able to access the Epirus instance at [http://localhost/](http://localhost/)
 
 ### Hosted plans
 
@@ -54,4 +54,4 @@ Web3 Labs provides hosted plans that provides additional functionality including
 - Production SLAs
 - Large transaction volumes (100,000,000+)
 
-You can view more information on these plans https://www.web3labs.com/blockchain-explorer-epirus-plans, or contact Web3 Labs directly via [hi@web3labs.com](mailto:hi@web3labs.com?subject=Epirus hosted plans).
+You can view more information on these plans [https://www.web3labs.com/blockchain-explorer-epirus-plans](https://www.web3labs.com/blockchain-explorer-epirus-plans), or contact Web3 Labs directly via [hi@web3labs.com](mailto:hi@web3labs.com?subject=Epirus hosted plans).
