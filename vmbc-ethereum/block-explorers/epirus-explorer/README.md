@@ -1,11 +1,11 @@
-# Sirato for VMWare Blockchain
+# Sirato for VMware Blockchain
 
 Todo(Ramki): Need to get sirato-dashboard.png file
 <!--- ![alt text](sirato-dashboard.png "Sirato dashboard") --->
 
 ### Overview
 
-Sirato is a data and analytics platform for VMWare Blockchain for Ethereum.
+Sirato is a data and analytics platform for VMware Blockchain for Ethereum.
 
 It provides a rich API, and easy to use interface to provide information on the various assets such as tokens, and smart contracts deployed on blockchains. 
 
@@ -30,7 +30,7 @@ In addition you can use its search functionality to locate specific accounts, bl
 Todo(Ramki): Need to get sirato-transactions.png file
 <!--- ![alt text](sirato-transactions.png "Sirato transactions") --->
 
-You can run the developer edition of Sirato for VMWare Blockchain by following the instructions available [here](https://github.com/web3labs/epirus-free/). Sirato support Kubernetes deployment which seamlessly integrates with VMware Blockchain for Ethereum Kubernetes deployment model.
+You can run the developer edition of Sirato for VMware Blockchain by following the instructions available [here](https://github.com/web3labs/epirus-free/). Sirato support Kubernetes deployment which seamlessly integrates with VMware Blockchain for Ethereum Kubernetes deployment model.
 
 ### Hosted plans
 
