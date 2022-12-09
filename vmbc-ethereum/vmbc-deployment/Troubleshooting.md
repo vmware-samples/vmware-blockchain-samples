@@ -4,7 +4,7 @@
 
 ### I am on Apple M1. I am having trouble deploying VMBC on Minikube.
 
-If the Apple Laptop is with M1, make sure you have installed Docker Desktop. Minikube should use docker driver.
+We do not currently support VMBC on Apple's M1 processor. We are working on adding support for this and will update the documentation when it's available.
 
 ### I am using Amazon EKS for deployment. My current Kubernetes version is 1.24. I am unable to deploy VMBC with storage class gp2.
 
