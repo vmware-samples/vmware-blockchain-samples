@@ -7,7 +7,7 @@ By default in VMware Blockchain the permissioning feature is disabled. It means 
 ## Permissioning Contract
 For reference, Permissioning contract is present at `vmware-blockchain-samples/vmbc-ethereum/permissioning/contracts/Permissioning.sol`
 
-(Note: This contract is provided here just for reference, this contract is pre-deployed in VMware Blockchain Ethereum, changes to this contract's source code here, will not propogate to VMware Blockchain)
+(Note: This contract is provided here just for reference, this contract is pre-deployed in VMware Blockchain for Ethereum, changes to this contract's source code here, will not propogate to VMware Blockchain)
  
 ## Permissioning fields in `values.yaml`
 

@@ -8,7 +8,7 @@
    - XYZ tokens can be transfered across the accounts
 
 ## Pre-requisites
-- VMware Blockchain Ethereum has been deployed
+- VMware Blockchain for Ethereum has been deployed
 - Suggested and Supported Stack
     - MAC Operating System
     - Google Chrome browser

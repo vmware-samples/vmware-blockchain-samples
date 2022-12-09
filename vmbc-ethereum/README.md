@@ -1,7 +1,7 @@
 ---
 home: false
 ---
-# VMware Blockchain Ethereum Overview 
+# VMware Blockchain for Ethereum Overview 
 
 VMware Blockchain technology provides enterprise-based companies with an innovative business transformation opportunity allowing them to build or digitize existing business networks.
 
