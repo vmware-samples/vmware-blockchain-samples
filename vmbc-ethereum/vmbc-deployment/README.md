@@ -6,13 +6,14 @@
 |-----------|-------------|
 |  Operating System | Apple® macOS® 12.x |
 |                   | Linux Ubuntu® 16.x, 20.x |
+|  Processor Architecture | 64-bit (AMD64. x86-64) |
 |  Minikube         | 1.28 or newer |
 |  CPUs             | 4 CPU (8 CPU with ELK) |
 |  Memory           | 16 GB (22 GB with ELK) |
 |  Disk Size        | 200 GB or more |
 
 Note: 
-We do not currently support VMBC on Apple's M1 processor. We are working on adding support for this and will update the documentation when it's available.
+We do not currently support VMBC on Apple's M1 and ARM64 processor. We are working on adding support for this and will update the documentation when it's available.
 
 ### Prerequisites
 
