@@ -2,7 +2,7 @@ import { defaultTheme } from '@vuepress/theme-default'
 
 export default {
   lang: 'en-US',
-  title: 'VMware Blockchain Ethereum',
+  title: 'VMware Blockchain for Ethereum',
   description: 'VMware Blockchain for Ethereum Docs',
   base: '/vmware-blockchain-samples/',
   theme: defaultTheme({
@@ -44,11 +44,11 @@ export default {
         text: 'Block Explorers',
         children: [
           {
-            text: "Epirus Explorer",
-            link: '/block-explorers/epirus-explorer/'
+            text: "Sirato Explorer",
+            link: '/block-explorers/sirato-explorer/'
           },
           {
-            text: 'VMBC Explorer',
+            text: 'VMware Blockchain Explorer',
             link: '/block-explorers/vmbc-explorer/'
           }
         ]
