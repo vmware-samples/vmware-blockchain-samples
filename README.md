@@ -10,7 +10,6 @@
 
 - [@ramkri123](https://github.com/ramkri123)
 - [@dparmar](https://github.com/dparmar)
-- [@saiakhil2012](https://github.com/saiakhil2012)
 
 ## Contributors
 
