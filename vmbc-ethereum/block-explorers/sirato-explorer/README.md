@@ -1,7 +1,6 @@
 # Sirato for VMware Blockchain
 
-Todo(Ramki): Need to get sirato-dashboard.png file
-<!--- ![alt text](sirato-dashboard.png "Sirato dashboard") --->
+![alt text](./assets/sirato-dashboard.png "Sirato dashboard")
 
 ### Overview
 
@@ -27,15 +26,13 @@ In addition you can use its search functionality to locate specific accounts, bl
 
 ### Free plan
 
-Todo(Ramki): Need to get sirato-transactions.png file
-<!--- ![alt text](sirato-transactions.png "Sirato transactions") --->
+![alt text](./assets/sirato-transactions.png "Sirato transactions")
 
-You can run the developer edition of Sirato for VMware Blockchain by following the instructions available [here](https://github.com/web3labs/epirus-free/). Sirato support Kubernetes deployment which seamlessly integrates with VMware Blockchain for Ethereum Kubernetes deployment model.
+You can run the developer edition of Sirato for VMware Blockchain by following the instructions available [here](https://github.com/web3labs/epirus-free/). Sirato supports Kubernetes deployment which seamlessly integrates with VMware Blockchain for Ethereum Kubernetes deployment model.
 
 ### Hosted plans
 
-Todo(Ramki): Need to get sirato-verified-sourcecode.png file
-<!--- ![alt text](sirato-verified-sourcecode.png "Sirato verified sourcecode") --->
+![alt text](./assets/sirato-verified-sourcecode.png "Sirato verified sourcecode")
 
 Web3 Labs provides hosted plans that provides additional functionality including:
 
