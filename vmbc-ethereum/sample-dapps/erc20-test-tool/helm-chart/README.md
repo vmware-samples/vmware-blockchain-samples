@@ -6,7 +6,7 @@
   (optional) eksctl (https://eksctl.io/)
   ```
 
-### Deploy vmbc erc20 token transfer test
+### Deploy VMware Blockchain erc20 token transfer test
   - Deployment with parameters. Replace the blockchainUrl value with the Eth RPC service URL.
      ```sh
      # Change to Helm Chart directory of ERC20 Test Tool Sample DApp
@@ -16,19 +16,19 @@
      helm install <name-of-your-choice> . --set global.imageCredentials.registry=<registry> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password> --set blockchainUrl=<blockchainURL>
      ```
         
-### Run vmbc erc20 token transfer test
+### Run VMware Blockchain erc20 token transfer test
   ```sh
   helm test <name-of-your-choice> --logs
   ```
         
-### Remove vmbc erc20 token transfer test ( optional )
+### Remove VMware Blockchain erc20 token transfer test ( optional )
   - Uninstall
      ```sh
      helm uninstall <name-of-your-choice> && kubectl delete pod <name-of-your-choice>-test
      ```
 
-## VMBC erc20 token transfer test deployment
-  - List of configurations available for vmbc erc20 token transfer test deployment. Use "--set" param for setting up the params.
+## VMware Blockchain erc20 token transfer test deployment
+  - List of configurations available for VMware Blockchain erc20 token transfer test deployment. Use "--set" param for setting up the params.
 
 | Name                             | Description                                                | Value                | Type      |
 |----------------------------------|------------------------------------------------------------|----------------------|-----------|

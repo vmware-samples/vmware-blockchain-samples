@@ -21,7 +21,7 @@ VMware Blockchain is an enterprise-grade decentralized trust platform that enabl
 
 VMware Blockchain comprises one or more Client Nodes and a Replica Network. The Client nodes provide DApps access to the blockchain data by exposing an ETH JSON RPC interface for sending and receiving requests to and from the Replica Network. The Replica Network is a network of n replicas, where n=3f+1, that participate in the BFT consensus protocol. Each Replica node has an EVM execution engine, which stores the state in an authenticated key-value ledger.
 
-![VMBC with Ethereum Request Flow](./vmbc-with-ethereum-request-flow.png)
+![VMware Blockchain with Ethereum Request Flow](./vmbc-with-ethereum-request-flow.png)
 
 Refer to the numbers in the diagram and read the corresponding description to learn about each step that describes the VMware Blockchain for Ethereum request flow.
 1.	The DApp creates and signs a request using a local or an external wallet and awaits a response. The request can vary from loading a new smart contract, listing the existing active smart contracts, or activating a function within a current smart contract. For example, a request can either start a smart contract function that fetches a balance that does not alter the state or activate a smart contract function that transfers funds from one party to another, which changes the state.
@@ -92,7 +92,7 @@ VMware Blockchain for Ethereum provides several security features to keep blockc
 ### Block Explorers
 The following options of Block Explorers are available:
 - [Epirus Explorer](./block-explorers/epirus-explorer/README.md) - Developed by Web3Labs
-- [VMBC Explorer](./block-explorers/vmbc-explorer/README.md) - Developed by VMware Blockchain for Ethereum
+- [VMware Blockchain Explorer](./block-explorers/vmbc-explorer/README.md) - Developed by VMware Blockchain for Ethereum
 
 ### Sample DApps
 The Ethereum sample DApps conform to various aspects of Ethereum in VMware Blockchain. These sample DApps are developed in a generic form to run on any Ethereum-based Blockchain. In addition, the sample DApps have been verified to work in Public Ethereum Testnet such as Goerli.

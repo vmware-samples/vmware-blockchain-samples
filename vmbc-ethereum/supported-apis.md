@@ -1,4 +1,4 @@
-# VMBC Supported Ethereum JSON RPC API Endpoints
+# VMware Blockchain Supported Ethereum JSON RPC API Endpoints
 VMware Blockchian Ethereum supports the standard interface for Ethereum clients and Enterprise Ethereum Requirements [API Reference](https://ethereum.org/en/developers/docs/apis/json-rpc)
 
  Methods | Description |

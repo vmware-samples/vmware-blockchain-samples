@@ -1,4 +1,4 @@
-# VMBC Four Node One Client Sample Deployment With Logging
+# VMware Blockchain Four Node One Client Sample Deployment With Logging
 The sample VMware Blockchain for Ethereum deployment includes a set of Helm charts for four Replica nodes and one Client node. The deployment on Kubernetes must only be on a supported host with a single cluster. 
 
 Replica nodes are the participants in the consensus algorithm, concord-bft. Client nodes are the clients in the blockchain network running ethrpc.
@@ -88,9 +88,9 @@ Make sure that you implement all the required prerequisites. See [Deployment Pre
      LOGSTASH
      ```
 
-## VMBC four node one client deployment
+## VMware Blockchain four node one client deployment
 
-The below section explains how to install VMBC four node one client deployment on minikube.
+The below section explains how to install VMware Blockchain four node one client deployment on minikube.
 
 ### Quick Start
 #### Deploy

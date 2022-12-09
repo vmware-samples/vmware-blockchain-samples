@@ -1,4 +1,4 @@
-# VMBC Ethereum Security
+# VMware Blockchain Ethereum Security
 
 ### Security
 VMware Blockchain provides several security features to keep blockchain data secure. These security features are supported by the VMware Blockchain platform and are not specific to the Ethereum implementation.

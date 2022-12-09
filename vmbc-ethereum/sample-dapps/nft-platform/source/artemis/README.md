@@ -4,7 +4,7 @@
 
 The goal of this project is to build an NFT platform, conforming to ERC 721 standards,
 on top of VMware Blockchain (Concord).Developed a client-side application that communicates
-with VMBC to mint and transfer NFTs. The platform allows users to create digital art NFTs
+with VMware Blockchain to mint and transfer NFTs. The platform allows users to create digital art NFTs
 on VMware blockchain by providing a title, an image URL and artist name.
 
 ## Features

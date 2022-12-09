@@ -8,14 +8,14 @@
    - XYZ tokens can be transfered across the accounts
 
 ## Pre-requisites
-- VMBC Ethereum has been deployed
+- VMware Blockchain Ethereum has been deployed
 - Suggested and Supported Stack
     - MAC Operating System
     - Google Chrome browser
     - Metamask Wallet - [https://metamask.io/](https://metamask.io/)
-- Setting up Metamask for VMBC
-   - Connecting Metamask to VMBC- [See Appendix](../../appendix.md#connecting-metamask-to-vmbc)
-   - Reset Metamsk Account - [See Appendix](../../appendix.md#connecting-metamask-to-vmbc)
+- Setting up Metamask for VMware Blockchain
+   - Connecting Metamask to VMware Blockchain- [See Appendix](../../appendix.md#connecting-metamask-to-vmbc)
+   - Reset Metamask Account - [See Appendix](../../appendix.md#connecting-metamask-to-vmbc)
 
 ## Running DApp
 There are two ways to run this DApp
@@ -80,7 +80,7 @@ Note: The project has to be built and deployed using `npm run start`. Then  navi
 Inorder to use the ERC20 Test Dapp there are a few steps we need to follow. You would need an ERC20 contract. You need to deploy it then use it's contract address inside of the ERC20 Test Dapp.
 
 1. Give the address that you'll be using to deploy the ERC20 contract permission to deploy. You can do this through the Permissioning Config ui.
-2. Deploy any ERC20 Smart Contract on VMBC blockchian(Same blockchain metmask is connected to) using the address that was given permision to deploy.
+2. Deploy any ERC20 Smart Contract on VMware Blockchain blockchian(Same blockchain metmask is connected to) using the address that was given permision to deploy.
 3. Copy contract address and provide it in variable "contractAddress" found in src/app/dapp/dapp.component.ts. 
 4. Save file and run ng serve.
 5. Navigate to ERC20 Test Dapp found on the left pane.
@@ -101,7 +101,7 @@ Note: The project has to be built and deployed using `npm run start`. Then  navi
 
 Inorder to use the ERC20 Test Dapp there are a few steps we need to follow. You would need an ERC20 contract. You need to deploy it then use it's contract address inside of the ERC20 Test Dapp.
 
-1. Deploy any ERC20 Smart Contract on VMBC blockchian(Same blockchain metmask is connected to)
+1. Deploy any ERC20 Smart Contract on VMware Blockchain blockchian(Same blockchain metmask is connected to)
 2. Copy contract address and provide it in variable "contractAddress" found in src/app/dapp/dapp.component.ts. 
 3. Save file and run ng serve.
 4. Navigate to ERC20 Test Dapp found on the left pane.

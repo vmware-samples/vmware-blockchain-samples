@@ -10,14 +10,14 @@ This is a Ethereum Sample DApp which comes with few pre-deployed ERC20 based sma
    - GST to SCT
 
 ## Pre-requisites
-- VMBC has been deployed
+- VMware Blockchain has been deployed
 - Suggested and Supported Stack
     - MAC Operating System
     - Google Chrome browser
     - Metamask Wallet - [https://metamask.io/](https://metamask.io/)
-- Setting up Metamask for VMBC
-   - Connecting Metamask to VMBC- [See Appendix](../../appendix.md#connecting-metamask-to-vmbc)
-   - Reset Metamsk Account - [See Appendix](../../appendix.md#connecting-metamask-to-vmbc)
+- Setting up Metamask for VMware Blockchain
+   - Connecting Metamask to VMware Blockchain- [See Appendix](../../appendix.md#connecting-metamask-to-vmbc)
+   - Reset Metamask Account - [See Appendix](../../appendix.md#connecting-metamask-to-vmbc)
 
 ## Running DApp
 There are two ways to run this DApp

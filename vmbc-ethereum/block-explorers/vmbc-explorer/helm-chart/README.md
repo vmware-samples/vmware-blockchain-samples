@@ -5,14 +5,14 @@ helm chart ( https://helm.sh/docs/intro/install/ )
 (optional) Minikube (https://minikube.sigs.k8s.io/docs/start/)
 (optional) eksctl (https://eksctl.io/)
 ```
-## Deploy VMBC Explorer
+## Deploy VMware Blockchain Explorer
 
 - Deployment with parameters. The blockchainUrl value should be set to the Eth RPC service URL.
     ```sh
-      # Change to Helm Chart directory of VMBC Explorer
+      # Change to Helm Chart directory of VMware Blockchain Explorer
       cd vmware-blockchain-samples/vmbc-ethereum/block-explorers/vmbc-explorer/helm-chart
 
-      # Helm install VMBC Explorer
+      # Helm install VMware Blockchain Explorer
       helm install <name-of-your-choice> . --set global.imageCredentials.registry=<registry> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password> --set blockchainUrl=<blockchainURL>
     ```
 - Access VMBC explorer webpage using service url
@@ -25,7 +25,7 @@ helm chart ( https://helm.sh/docs/intro/install/ )
       kubectl get service {name-of-your-choice}-service
     ```
 
-## Remove VMBC Explorer
+## Remove VMware Blockchain Explorer
 - Uninstall
   ```sh
     helm uninstall <name-of-your-choice>

@@ -1,7 +1,7 @@
 TODO: Fix branch links to master links!
 # Introduction
 The privacy of digital asset custody is a critical requirement for enterprises as they consider moving to blockchains. This gets exacerbated with Central Bank Digital Currencies where governments want to balance accountability with privacy in order to prevent money laundering or tax fraud.
-VMBC now provides a solution to this problem. Any ERC20 smart contract can be extended to convert the public tokens to private tokens. These private tokens can be transacted privately, subject to a limit set by the administrator. None, not even the administrator, can see the details of the private transaction, including the source, target or the amount transacted.
+VMware Blockchain now provides a solution to this problem. Any ERC20 smart contract can be extended to convert the public tokens to private tokens. These private tokens can be transacted privately, subject to a limit set by the administrator. None, not even the administrator, can see the details of the private transaction, including the source, target or the amount transacted.
 The platform uses Zero Knowledge Proofs to guarantee that the transaction is valid and ensures that there is no double spending.
 The privacy solution is currently in Tech Preview - the APIs may change in the future.
 
@@ -27,7 +27,7 @@ Deployment leverages the helm charts provided with the development kit for priva
 Deploy kubernetes based leveraging [helm charts](../vmbc-deployment/vmbc-four-node-one-client-deployment/README.md).
 
 ### Limitations
-- The privacy capabilities are not currently supported with permission enabled blockchain. VMBC must be deployed with read and write permissions disabled before trying out privacy.
+- The privacy capabilities are not currently supported with permission enabled blockchain. VMware Blockchain must be deployed with read and write permissions disabled before trying out privacy.
 
 - This release supports the following sample application wallets:
   - single administrator wallet and CLI console application.

@@ -1,6 +1,6 @@
 # Appendix
 
-## Connecting Metamask to VMBC
+## Connecting Metamask to VMware Blockchain
 
 Metamask is available on Google Chrome as an extension, and this is a key requirement
 to this NFT sample.

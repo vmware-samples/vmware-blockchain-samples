@@ -6,7 +6,7 @@
   (optional) eksctl (https://eksctl.io/)
   ```
 
-## Deploy vmbc erc20 swap dapp
+## Deploy VMware Blockchain erc20 swap dapp
   - Deployment with parameters
      ```sh
      # Change to Helm Chart directory of ERC20-Swap Sample DApp
@@ -16,7 +16,7 @@
      helm install {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set blockchainUrl={blockchainURL}
      ```
 
-  - Access vmbc erc20 swap dapp webpage using service url
+  - Access VMware Blockchain erc20 swap dapp webpage using service url
   
      Minikube
      ```sh
@@ -28,14 +28,14 @@
      kubectl get service {name-of-your-choice}-service
      ```
                 
-## Remove vmbc erc20 swap dapp ( optional )
+## Remove VMware Blockchain erc20 swap dapp ( optional )
   - Uninstall
      ```sh
      helm uninstall {name-of-your-choice}
      ```
 
-## VMBC erc20 swap dapp deployment configurations
-  - List of configurations available for vmbc erc20 swap dapp deployment. Use "--set" param for setting up the params.
+## VMware Blockchain erc20 swap dapp deployment configurations
+  - List of configurations available for VMware Blockchain erc20 swap dapp deployment. Use "--set" param for setting up the params.
 
 | Name                             | Description                                  | Value                        | Type      |
 |----------------------------------|----------------------------------------------|------------------------------|-----------|

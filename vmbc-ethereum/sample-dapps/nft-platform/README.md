@@ -2,18 +2,18 @@
 
 The goal of this project is to build an NFT platform, conforming to ERC 721 standards,
 on top of VMware Blockchain (Concord).Developed a client-side application that communicates
-with VMBC to mint and transfer NFTs. The platform allows users to create digital art NFTs
+with VMware Blockchain to mint and transfer NFTs. The platform allows users to create digital art NFTs
 on VMware blockchain by providing a title, an image URL and artist name.
 
 ## Pre-requisites
-- VMBC has been deployed
+- VMware Blockchain has been deployed
 - Suggested and Supported Stack
     - MAC Operating System
     - Google Chrome browser
     - Metamask Wallet - [https://metamask.io/](https://metamask.io/)
-- Setting up Metamask for VMBC
-   - Connecting Metamask to VMBC- [See Appendix](../../appendix.md#connecting-metamask-to-vmbc)
-   - Reset Metamsk Account - [See Appendix](../../appendix.md#connecting-metamask-to-vmbc)
+- Setting up Metamask for VMware Blockchain
+   - Connecting Metamask to VMware Blockchain- [See Appendix](../../appendix.md#connecting-metamask-to-vmbc)
+   - Reset Metamask Account - [See Appendix](../../appendix.md#connecting-metamask-to-vmbc)
 
 ## Features
 - View all NFTs in the Platform
@@ -22,7 +22,7 @@ on VMware blockchain by providing a title, an image URL and artist name.
 - View History of an NFT
 
 #### Notes about NFT Platform and Write Permissioning
-- NFT Platform Sample DApp supports running with Write Permissioning enabled in VMBC
+- NFT Platform Sample DApp supports running with Write Permissioning enabled in VMware Blockchain
 - With default Admin Account
    - Both Command Line and Helm Based Running of DApp is supported
 - If a non-default Admin Account is used only Command Line Running of DApp is supported
@@ -122,4 +122,4 @@ Regarding various Tabs in DApp,
     - Number of times this NFT was transferred
 
 ### Notes about using this DApp when Write Permissioning is enabled:
-- If Write Permissioning is enabled, to perform any write based interactions with VMBC such as Minting an NFT and Transferring an NFT can be only performed when the provided account has Write Permissions. For more information on how to provide Write Permissions to an Ethereum Account, read more about Permissioning [here](../../permissioning/README.md)
+- If Write Permissioning is enabled, to perform any write based interactions with VMware Blockchain such as Minting an NFT and Transferring an NFT can be only performed when the provided account has Write Permissions. For more information on how to provide Write Permissions to an Ethereum Account, read more about Permissioning [here](../../permissioning/README.md)

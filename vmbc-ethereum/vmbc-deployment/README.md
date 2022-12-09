@@ -13,7 +13,7 @@
 |  Disk Size        | 200 GB or more |
 
 Note: 
-We do not currently support VMBC on Apple's M1 and ARM64 processor. We are working on adding support for this and will update the documentation when it's available.
+We do not currently support VMware Blockchain on Apple's M1 and ARM64 processor. We are working on adding support for this and will update the documentation when it's available.
 
 ### Prerequisites
 

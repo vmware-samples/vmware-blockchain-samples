@@ -6,7 +6,7 @@
   (optional) eksctl (https://eksctl.io/)
   ```
 
-### Deploy vmbc nft dapp
+### Deploy VMware Blockchain nft dapp
   - Deployment with parameters
      ```sh
      # Change to Helm Chart directory of NFT Platform Sample DApp
@@ -16,7 +16,7 @@
      helm install {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set blockchainUrl={blockchainURL}
      ```
 
-  - Access vmbc nft dapp webpage using service url
+  - Access VMware Blockchain nft dapp webpage using service url
   
      Minikube
      ```sh
@@ -28,13 +28,13 @@
      kubectl get service {name-of-your-choice}-service
      ```
                 
-### Remove vmbc nft dapp ( optional )
+### Remove VMware Blockchain nft dapp ( optional )
   ```sh
   helm uninstall {name-of-your-choice}
   ```
 
-## VMBC nft dapp deployment configurations
-  - List of configurations available for vmbc nft dapp deployment. Use "--set" param for setting up the params.
+## VMware Blockchain nft dapp deployment configurations
+  - List of configurations available for VMware Blockchain nft dapp deployment. Use "--set" param for setting up the params.
 
 | Name                             | Description                                       | Value                        | Type      |
 |----------------------------------|---------------------------------------------------|------------------------------|-----------|

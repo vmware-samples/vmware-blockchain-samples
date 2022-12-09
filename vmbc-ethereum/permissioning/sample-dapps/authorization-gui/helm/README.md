@@ -6,13 +6,13 @@
   (optional) eksctl (https://eksctl.io/)
   ```
 
-### Deploy vmbc permissioning-ui dapp
+### Deploy VMware Blockchain permissioning-ui dapp
   - Deployment with parameters
      ```sh
      helm install {name-of-your-choice} . --set global.imageCredentials.registry={registry} --set global.imageCredentials.username={username} --set global.imageCredentials.password={password} --set blockchainUrl={blockchainURL}
      ```
 
-  - Access vmbc permissioning dapp webpage using service url
+  - Access VMware Blockchain permissioning dapp webpage using service url
   
      Minikube
      ```sh
@@ -24,13 +24,13 @@
      kubectl get service {name-of-your-choice}-service
      ```
                 
-### Remove vmbc permissioning dapp ( optional )
+### Remove VMware Blockchain permissioning dapp ( optional )
   ```sh
   helm uninstall {name-of-your-choice}
   ```
 
-## VMBC permissioning dapp deployment configurations
-  - List of configurations available for vmbc permissioning dapp deployment. Use "--set" param for setting up the params.
+## VMware Blockchain permissioning dapp deployment configurations
+  - List of configurations available for VMware Blockchain permissioning dapp deployment. Use "--set" param for setting up the params.
 
 | Name                             | Description                                       | Value                        | Type      |
 |----------------------------------|---------------------------------------------------|------------------------------|-----------|

@@ -1,12 +1,12 @@
-# VMBC Deployment troubleshooting guide
+# VMware Blockchain Deployment troubleshooting guide
 
 ## FAQ
 
-### I am on Apple M1. I am having trouble deploying VMBC on Minikube.
+### I am on Apple M1. I am having trouble deploying VMware Blockchain on Minikube.
 
-We do not currently support VMBC on Apple's M1 processor. We are working on adding support for this and will update the documentation when it's available.
+We do not currently support VMware Blockchain on Apple's M1 processor. We are working on adding support for this and will update the documentation when it's available.
 
-### I am using Amazon EKS for deployment. My current Kubernetes version is 1.24. I am unable to deploy VMBC with storage class gp2.
+### I am using Amazon EKS for deployment. My current Kubernetes version is 1.24. I am unable to deploy VMware Blockchain with storage class gp2.
 
 If >= 1.23 is used to deploy the EKS cluster then users must follow instructions from here to install the EBS CSI driver: https://docs.aws.amazon.com/eks/latest/userguide/ebs-csi-migration-faq.html to ensure their pods are started correctly.
 
