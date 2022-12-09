@@ -11,7 +11,8 @@
 |  Memory           | 16 GB (22 GB with ELK) |
 |  Disk Size        | 200 GB or more |
 
-Note: If the Apple Laptop is with M1, make sure you have installed Docker Desktop. Minikube should use docker driver.
+Note: 
+We do not currently support VMBC on Apple's M1 processor. We are working on adding support for this and will update the documentation when it's available.
 
 ### Prerequisites
 
