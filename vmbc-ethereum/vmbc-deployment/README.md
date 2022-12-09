@@ -6,7 +6,7 @@
 |-----------|-------------|
 |  Operating System | Apple® macOS® 12.x |
 |                   | Linux Ubuntu® 16.x, 20.x |
-|  Processor Architecture | 64-bit (AMD64. x86-64) |
+|  Processor Architecture | 64-bit (AMD64, x86-64) |
 |  Minikube         | 1.28 or newer |
 |  CPUs             | 4 CPU (8 CPU with ELK) |
 |  Memory           | 16 GB (22 GB with ELK) |
