@@ -1,6 +1,7 @@
 # Sirato for VMWare Blockchain
 
-![alt text](sirato-dashboard.png "Sirato dashboard")
+Todo(Ramki): Need to get sirato-dashboard.png file
+<!--- ![alt text](sirato-dashboard.png "Sirato dashboard") --->
 
 ### Overview
 
@@ -26,7 +27,8 @@ In addition you can use its search functionality to locate specific accounts, bl
 
 ### Free plan
 
-![alt text](sirato-transactions.png "Sirato transactions")
+Todo(Ramki): Need to get sirato-transactions.png file
+<!--- ![alt text](sirato-transactions.png "Sirato transactions") --->
 
 You can run the developer edition of Sirato for VMWare Blockchain by following the instructions available [here](https://github.com/web3labs/Sirato-free).
 
@@ -39,13 +41,14 @@ docker-compose pull
 
 Where `node-ip-address` is the ip address of the node you are running, and `rpc-port` is the RPC API HTTP port.
 
-You will then be able to access the Sirato instance at http://localhost/
+You will then be able to access the Sirato instance at [http://localhost/](http://localhost/)
 
 Alternatively, you can use Kubernetes following the instructions [here](https://github.com/web3labs/epirus-free/tree/master/k8s).
 
 ### Hosted plans
 
-![alt text](sirato-verified-sourcecode.png "Sirato verified sourcecode")
+Todo(Ramki): Need to get sirato-verified-sourcecode.png file
+<!--- ![alt text](sirato-verified-sourcecode.png "Sirato verified sourcecode") --->
 
 Web3 Labs provides hosted plans that provides additional functionality including:
 
@@ -57,8 +60,8 @@ Web3 Labs provides hosted plans that provides additional functionality including
 - Production SLAs
 - Large transaction volumes (100,000,000+)
 
-You can view more information on these plans https://www.web3labs.com/blockchain-explorer-sirato-plans, or contact Web3 Labs directly via [hi@web3labs.com](mailto:hi@web3labs.com?subject=Sirato hosted plans).
+You can view more information on these plans [https://www.web3labs.com/blockchain-explorer-sirato-plans](https://www.web3labs.com/blockchain-explorer-sirato-plans), or contact Web3 Labs directly via [hi@web3labs.com](mailto:hi@web3labs.com?subject=Sirato hosted plans).
 
-### Todo: Limitations
+### Todo(Ramki): Limitations
 - Currently Epirus Explorer does not support running on Apple M1 MAC
   - Find a Link to their issue reference (official)
