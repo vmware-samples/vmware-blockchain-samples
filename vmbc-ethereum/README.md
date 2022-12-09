@@ -13,18 +13,18 @@ Several enterprise-critical gaps exist in public and permissioned Ethereum platf
 
 The VMware Blockchain technology is built using an open enterprise-centric architecture with an Ethereum Virtual Machine (EVM). As a result, it is a compatible decentralized and permissioned infrastructure platform that provides trust, predictable costs, and instant transaction finality while being Byzantine Fault Tolerant.
 
-VMware Blockchain for Ethereum comprises blockchain nodes running the open-source EVM evmone 0.8.2 version, orchestration utilities, Solidity 0.8.16 version, and third-party integrations. As a result, developers can construct or extend a platform on any public or private cloud to deploy their DApps and smart contracts leveraging standard tools such as Truffle, HardHat, and integrations with MetaMask Institutional.
+VMware Blockchain for Ethereum comprises blockchain nodes running the open-source EVM evmone 0.8.2 version, orchestration utilities, Solidity 0.8.16 version, and third-party integrations. As a result, developers can construct or extend a platform on any public or private cloud to deploy their dApps and smart contracts leveraging standard tools such as Truffle, HardHat, and integrations with MetaMask Institutional.
 
 ## Architecture
 
 VMware Blockchain is an enterprise-grade decentralized trust platform that enables you to transact and share data securely. With VMware Blockchain, you can create permissioned decentralized business networks. In addition, the decentralized trust platform removes the need to rely on a central data repository that is a single point of failure.
 
-VMware Blockchain comprises one or more Client Nodes and a Replica Network. The Client nodes provide DApps access to the blockchain data by exposing an ETH JSON RPC interface for sending and receiving requests to and from the Replica Network. The Replica Network is a network of n replicas, where n=3f+1, that participate in the BFT consensus protocol. Each Replica node has an EVM execution engine, which stores the state in an authenticated key-value ledger.
+VMware Blockchain comprises one or more Client Nodes and a Replica Network. The Client nodes provide dApps access to the blockchain data by exposing an ETH JSON RPC interface for sending and receiving requests to and from the Replica Network. The Replica Network is a network of n replicas, where n=3f+1, that participate in the BFT consensus protocol. Each Replica node has an EVM execution engine, which stores the state in an authenticated key-value ledger.
 
 ![VMware Blockchain for Ethereum Request Flow](./vmbc-with-ethereum-request-flow.png)
 
 Refer to the numbers in the diagram and read the corresponding description to learn about each step that describes the VMware Blockchain for Ethereum request flow.
-1.	The DApp creates and signs a request using a local or an external wallet and awaits a response. The request can vary from loading a new smart contract, listing the existing active smart contracts, or activating a function within a current smart contract. For example, a request can either start a smart contract function that fetches a balance that does not alter the state or activate a smart contract function that transfers funds from one party to another, which changes the state.
+1.	The dApp creates and signs a request using a local or an external wallet and awaits a response. The request can vary from loading a new smart contract, listing the existing active smart contracts, or activating a function within a current smart contract. For example, a request can either start a smart contract function that fetches a balance that does not alter the state or activate a smart contract function that transfers funds from one party to another, which changes the state.
 
 2.	The request is created and sent as an ETH JSON RPC request.
 
@@ -94,23 +94,23 @@ The following options of Block Explorers are available:
 - [Epirus Explorer](./block-explorers/epirus-explorer/README.md) - Developed by Web3Labs
 - [VMware Blockchain Explorer](./block-explorers/vmbc-explorer/README.md) - Developed by VMware Blockchain for Ethereum
 
-### Sample DApps
-The Ethereum sample DApps conform to various aspects of Ethereum in VMware Blockchain. These sample DApps are developed in a generic form to run on any Ethereum-based Blockchain. In addition, the sample DApps have been verified to work in Public Ethereum Testnet such as Goerli.
+### Sample dApps
+The Ethereum sample dApps conform to various aspects of Ethereum in VMware Blockchain. These sample dApps are developed in a generic form to run on any Ethereum-based Blockchain. In addition, the sample dApps have been verified to work in Public Ethereum Testnet such as Goerli.
 
-The sample DApps are UI-based. Therefore, the ports exposed by the sample DApps must be available to a system with UI for the DApps to work.
+The sample dApps are UI-based. Therefore, the ports exposed by the sample dApps must be available to a system with UI for the dApps to work.
 
-The following sample DApps are available:
+The following sample dApps are available:
 - [ERC20 Swap](./sample-dapps/erc20-swap/README.md)
-    - During boot-up, the DApp deploys some ERC20 token Smart Contracts
+    - During boot-up, the dApp deploys some ERC20 token Smart Contracts
     - Supports transfer of ERC20 tokens across accounts
     - Supports swap across a couple of types of ERC20 tokens across accounts
 - [NFT Platform](./sample-dapps/nft-platform/README.md)
-    - During boot-up, the DApp deploys an ERC721-based Smart Contract
+    - During boot-up, the dApp deploys an ERC721-based Smart Contract
     - Provides a platform to mint NFTs, transfer NFTs across accounts, and view all the NFTs and their history
 
 ## Developer Tools
 
-You can use the following tools to configure the sample DApps.
+You can use the following tools to configure the sample dApps.
 
 - Hardhat
 - Truffle

@@ -13,12 +13,12 @@ on VMware blockchain by providing a title, an image URL and artist name.
 - Transfer an NFT
 - View History of an NFT
 
-## Running DApp
-There are two ways to run this DApp
+## Running dApp
+There are two ways to run this dApp
 
 ### Command Line Based
 - This option is only supported for MAC Operating System
-- Execute following commands to run the DApp through command line
+- Execute following commands to run the dApp through command line
 - At command line, this app defaults to port `4200`
 
 #### Installing Node.js with NVM
@@ -49,11 +49,11 @@ npm install
 # Export the VMBC_URL to the URL of deployed instance of VMware Blockchain
 export VMBC_URL=http://127.0.0.1:8545
 
-# Run the DApp
+# Run the dApp
 npm run start
 ```
 
-The DApp website will be available on `http://localhost:4200`
+The dApp website will be available on `http://localhost:4200`
 
 ### Helm Based
 #### Deployment
@@ -63,18 +63,18 @@ The DApp website will be available on `http://localhost:4200`
    - Install kubectl (https://kubernetes.io/docs/tasks/tools/#kubectl)
 
 - Once above pre-requisites are met, you can execute following command with replacing of various variables appropriately
-   - `<registry-url>`: URL of the Registry containing Docker image of the DApp
+   - `<registry-url>`: URL of the Registry containing Docker image of the dApp
    - `<registry-username>`: Username for registry
    - `<registry-password>`: Password for registry
    - `<blockchain-url>`: URL of VMware Blockchain 
 ```sh
-# Helm install the DApp
+# Helm install the dApp
 helm install artemis . --set global.imageCredentials.registry=<registry-url> --set global.imageCredentials.username=<registry-username> --set global.imageCredentials.password=<registry-password> --set global.image.repository=vmbc-eth-artemis --set global.image.tag=<image-tag> --set blockchainUrl=<blockchain-url>
 ```
-#### Reaching UI of the DApp
+#### Reaching UI of the dApp
 ##### Minkube
 ```sh
-# This command will take the control to the webpage of the DApp in default browser
+# This command will take the control to the webpage of the dApp in default browser
 minikube service artemis-service
 ```
 
@@ -84,10 +84,10 @@ minikube service artemis-service
 kubectl get service artemis-service
 ```
 
-## Using DApp
+## Using dApp
 On the top right corner of the screen you would see Contract with Address. This is the Smart Contract address of this NFT Platform.
-### Navigating DApp
-Regarding various Tabs in DApp,
+### Navigating dApp
+Regarding various Tabs in dApp,
 - `All NFTs`: shows all the NFTs minted on the NFT Platform
 - `Owned NFTs`: showes NFTs owned by you
 - `Minted by You`: shows NFTs minted by you

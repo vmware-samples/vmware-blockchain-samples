@@ -44,7 +44,7 @@ After the new key pair is published, the old one is deleted from all the Replica
 Every message transmitted on the Replica Network is then signed with the Replica node private key using the multi-signature scheme. To verify the signature, the receiver of the message must know the signing parties' exact order. The receiver also gets a bit-vector of signers with the message transmitted with a multi-signed message.
 
 ##### Transaction Signing and Verification
-VMware Blockchain for Ethereum supports transaction signing using the same method supported in public Ethereum. The DApp wallet application cryptographically signs transactions. The Replica Network verifies the signature before executing the command.
+VMware Blockchain for Ethereum supports transaction signing using the same method supported in public Ethereum. The dApp wallet application cryptographically signs transactions. The Replica Network verifies the signature before executing the command.
 
 Transaction signing protects from non-repudiation. This mechanism lets the platform verify that every command originates from the right place so that commands are executed successfully and not rejected by the Replica Network.
 

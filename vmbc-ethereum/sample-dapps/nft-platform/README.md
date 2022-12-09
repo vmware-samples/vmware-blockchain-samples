@@ -22,17 +22,17 @@ on VMware blockchain by providing a title, an image URL and artist name.
 - View History of an NFT
 
 #### Notes about NFT Platform and Write Permissioning
-- NFT Platform Sample DApp supports running with Write Permissioning enabled in VMware Blockchain
+- NFT Platform Sample dApp supports running with Write Permissioning enabled in VMware Blockchain
 - With default Admin Account
-   - Both Command Line and Helm Based Running of DApp is supported
-- If a non-default Admin Account is used only Command Line Running of DApp is supported
+   - Both Command Line and Helm Based Running of dApp is supported
+- If a non-default Admin Account is used only Command Line Running of dApp is supported
 
-## Running DApp
-There are two ways to run this DApp
+## Running dApp
+There are two ways to run this dApp
 
 ### Command Line Based
 - This option is only supported for MAC Operating System
-- Execute following commands to run the DApp through command line
+- Execute following commands to run the dApp through command line
 - At command line, this app defaults to port `4200`
 
 #### Installing Node.js with NVM
@@ -57,7 +57,7 @@ npm -v                    # should print v6.14.X
 
 #### Installing dependencies and running
 ```sh
-# Change to Source Directory of NFT Platform DApp
+# Change to Source Directory of NFT Platform dApp
 cd vmware-blockchain-samples/vmbc-ethereum/sample-dapps/nft-platform/source/artemis
 
 # Install the dependencies
@@ -70,20 +70,20 @@ export VMBC_URL=http://127.0.0.1:8545
 vim vmware-blockchain-samples/vmbc-ethereum/sample-dapps/nft-platform/source/artemis/hardhat.config.js
 # Edit the accounts section of the network to the private key of your non-default admin account
 
-# Run the DApp
+# Run the dApp
 npm run start
 ```
 
-The DApp website will be available on `http://localhost:4200`
+The dApp website will be available on `http://localhost:4200`
 
 ### Helm Based
 
 Follow the instructions in [helm-chart/README](./helm-chart/README.md)
 
-## Using DApp
+## Using dApp
 On the top right corner of the screen you would see Contract with Address. This is the Smart Contract address of this NFT Platform.
-### Navigating DApp
-Regarding various Tabs in DApp,
+### Navigating dApp
+Regarding various Tabs in dApp,
 - `All NFTs`: shows all the NFTs minted on the NFT Platform
 - `Owned NFTs`: showes NFTs owned by you
 - `Minted by You`: shows NFTs minted by you
@@ -121,5 +121,5 @@ Regarding various Tabs in DApp,
     - Original Minter of this NFT
     - Number of times this NFT was transferred
 
-### Notes about using this DApp when Write Permissioning is enabled:
+### Notes about using this dApp when Write Permissioning is enabled:
 - If Write Permissioning is enabled, to perform any write based interactions with VMware Blockchain such as Minting an NFT and Transferring an NFT can be only performed when the provided account has Write Permissions. For more information on how to provide Write Permissions to an Ethereum Account, read more about Permissioning [here](../../permissioning/README.md)

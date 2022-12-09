@@ -1,6 +1,6 @@
 # ERC20-Swap
 
-This is a Ethereum Sample DApp which comes with few pre-deployed ERC20 based smart contracts. Few of the Ethereum Accounts are are pre-supplied with tokens to get started.
+This is a Ethereum Sample dApp which comes with few pre-deployed ERC20 based smart contracts. Few of the Ethereum Accounts are are pre-supplied with tokens to get started.
 
 ## Features
 - Transfer two types of ERC20 based Tokens across accounts
@@ -19,16 +19,16 @@ This is a Ethereum Sample DApp which comes with few pre-deployed ERC20 based sma
    - Connecting Metamask to VMware Blockchain- [See Appendix](../../appendix.md#connecting-metamask-to-vmbc)
    - Reset Metamask Account - [See Appendix](../../appendix.md#connecting-metamask-to-vmbc)
 
-## Running DApp
-There are two ways to run this DApp
+## Running dApp
+There are two ways to run this dApp
 
 ### Command Line Based
 - This option is only supported for MAC Operating System
-- Execute following commands to run the DApp through command line
+- Execute following commands to run the dApp through command line
 - At command line, this app defaults to port `3000`
 
 ```sh
-# Change to Source Directory of ERC20-Swap DApp
+# Change to Source Directory of ERC20-Swap dApp
 cd vmware-blockchain-samples/vmbc-ethereum/sample-dapps/erc20-swap/source/erc20-swap
 
 # Install the dependencies
@@ -37,17 +37,17 @@ npm install
 # Export the VMBC_URL to the URL of deployed instance of VMware Blockchain
 export VMBC_URL=http://127.0.0.1:8545
 
-# Run the DApp
+# Run the dApp
 npm run start
 ```
 
-The DApp website will be available on `http://localhost:3000`
+The dApp website will be available on `http://localhost:3000`
 
 ### Helm Based
 
 Follow the instructions in [helm-chart/README](./helm-chart/README.md)
 
-## Using DApp
+## Using dApp
 The accounts mentioned in [Accounts with Tokens](https://github.com/vmware-samples/vmware-blockchain-samples/blob/stage-dev-kit/vmbc-ethereum/sample-dapps/erc20-swap/source/erc20-swap/.env) are pre-supplied with tokens. You can use [this guide in Appendix](../../appendix.md#importing-accounts-in-metamask) to import these accounts into your Metamask wallet.
 
 ### Transfer Tokens

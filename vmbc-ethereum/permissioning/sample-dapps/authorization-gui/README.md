@@ -1,4 +1,4 @@
-# Read/Write Permissioning Sample Dapp Ui
+# Read/Write Permissioning Sample dApp Ui
 
 ## Features
 - Permissioning Configuration 
@@ -17,16 +17,16 @@
    - Connecting Metamask to VMware Blockchain- [See Appendix](../../appendix.md#connecting-metamask-to-vmbc)
    - Reset Metamask Account - [See Appendix](../../appendix.md#connecting-metamask-to-vmbc)
 
-## Running DApp
-There are two ways to run this DApp
+## Running dApp
+There are two ways to run this dApp
 
 ### Command Line Based
 - This option is only supported for MAC Operating System
-- Execute following commands to run the DApp through command line
+- Execute following commands to run the dApp through command line
 - At command line, this app defaults to port `5200`
 
 ```sh
-# Change to Source Directory of authorization gui DApp
+# Change to Source Directory of authorization gui dApp
 cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authorization-gui/source
 
 # Install the dependencies
@@ -35,7 +35,7 @@ npm install --legacy-peer-deps
 # Export the VMBC_URL to the URL of deployed instance of VMware Blockchain
 export VMBC_URL=http://127.0.0.1:8545
 
-# Run the DApp
+# Run the dApp
 npm run start
 ```
 Then  navigate to `http://localhost:5200/`.
@@ -73,17 +73,17 @@ Failed Transaction: If you get a failed transaction message, check the data.
 * If you see the error message "Not an Admin" make sure the metamask account that is currently being used is an admin account.
 
 
-## ERC20 Test Dapp - Write Enabled
+## ERC20 Test dApp - Write Enabled
 
 Note: The project has to be built and deployed using `npm run start`. Then  navigate to `http://localhost:5200/`.
 
-Inorder to use the ERC20 Test Dapp there are a few steps we need to follow. You would need an ERC20 contract. You need to deploy it then use it's contract address inside of the ERC20 Test Dapp.
+Inorder to use the ERC20 Test dApp there are a few steps we need to follow. You would need an ERC20 contract. You need to deploy it then use it's contract address inside of the ERC20 Test dApp.
 
 1. Give the address that you'll be using to deploy the ERC20 contract permission to deploy. You can do this through the Permissioning Config ui.
 2. Deploy any ERC20 Smart Contract on VMware Blockchain blockchian(Same blockchain metmask is connected to) using the address that was given permision to deploy.
 3. Copy contract address and provide it in variable "contractAddress" found in src/app/dapp/dapp.component.ts. 
 4. Save file and run ng serve.
-5. Navigate to ERC20 Test Dapp found on the left pane.
+5. Navigate to ERC20 Test dApp found on the left pane.
 Note: The From Adress is taken from your current metmask account and the contract address is the ERC20 Smart Contract address deployed in step 2.
 6. Using the permissioning config give the from address write permission.
 7. The "Get Token Balance" button allows you to check the balance of the current user(From Address/Current Metamask Acoount).
@@ -95,16 +95,16 @@ Failed Transaction: If you get a failed transaction message, check the message a
  * If it says "Permission denied", this means you didnt give your current address write permission(got to step 6).
  * If it says "ERC20: transfer amount exceeds balance", the current address doesn't have enough tokens.
 
-## ERC20 Test Dapp - Write Disabled
+## ERC20 Test dApp - Write Disabled
 
 Note: The project has to be built and deployed using `npm run start`. Then  navigate to `http://localhost:5200/`.
 
-Inorder to use the ERC20 Test Dapp there are a few steps we need to follow. You would need an ERC20 contract. You need to deploy it then use it's contract address inside of the ERC20 Test Dapp.
+Inorder to use the ERC20 Test dApp there are a few steps we need to follow. You would need an ERC20 contract. You need to deploy it then use it's contract address inside of the ERC20 Test dApp.
 
 1. Deploy any ERC20 Smart Contract on VMware Blockchain blockchian(Same blockchain metmask is connected to)
 2. Copy contract address and provide it in variable "contractAddress" found in src/app/dapp/dapp.component.ts. 
 3. Save file and run ng serve.
-4. Navigate to ERC20 Test Dapp found on the left pane.
+4. Navigate to ERC20 Test dApp found on the left pane.
 Note: The From Adress is taken from your current metmask account and the contract address is the ERC20 Smart Contract address deployed in step 1.
 5. The Get Token Balance button allows you to check the balance of the current user(From Address/Current Metamask Acoount)
 6. The Transfer Tokens button enables you to send ERC20 tokens to the address provided in the "To Address" input field. Click the transfer button metamask pops up the click approve.

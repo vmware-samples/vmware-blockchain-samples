@@ -80,7 +80,7 @@ node testReadWrite.js
 3. Json-rpc-provider is the one which we have tested for read permissioning.
 
 ## Authorization GUI
-- This is a Sample GUI DApp which can assist you in providing permissioning to any Ethereum account
+- This is a Sample GUI dApp which can assist you in providing permissioning to any Ethereum account
 - To provide a permission to an account, you need to use Admin Account of VMware Blockchain
 - The details about default Admin account in VMware Blockchain is as follows,
  - Admin Account Address: `0xFB389874FB4e03182A7358275eaf78008775c7ed`
