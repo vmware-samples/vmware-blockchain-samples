@@ -37,6 +37,7 @@ user-1 user-2 user-3
 ```
 
 - The sample privacy wallets are ***NOT persistent*** hence not crash resilient. In event of restarts users should redeploy another instance of privacy application and configure restarted wallet application to leverage the new instance.
+- Operations with any other user name will lead to indertministic results.
 
 ### Determine the required settings for helm chart installation
 
