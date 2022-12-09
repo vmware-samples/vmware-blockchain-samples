@@ -15,7 +15,7 @@
     - Metamask Wallet - [https://metamask.io/](https://metamask.io/)
 - Setting up Metamask for VMware Blockchain
    - Connecting Metamask to VMware Blockchain- [See Appendix](../../../appendix.md#connecting-metamask-to-vmware-blockchain)
-   - Reset Metamask Account - [See Appendix](../../../appendix.md#resetting-account-in-metamask)
+   - Reset Metamask Accounts - [See Appendix](../../../appendix.md#resetting-account-in-metamask)
 
 ## Running dApp
 There are two ways to run this dApp
