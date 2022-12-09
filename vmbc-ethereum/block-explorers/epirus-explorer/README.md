@@ -55,3 +55,8 @@ Web3 Labs provides hosted plans that provides additional functionality including
 - Large transaction volumes (100,000,000+)
 
 You can view more information on these plans [https://www.web3labs.com/blockchain-explorer-epirus-plans](https://www.web3labs.com/blockchain-explorer-epirus-plans), or contact Web3 Labs directly via [hi@web3labs.com](mailto:hi@web3labs.com?subject=Epirus hosted plans).
+
+
+### Todo: Limitations
+- Currently Epirus Explorer does not support running on Apple M1 MAC
+  - Find a Link to their issue reference (official)
