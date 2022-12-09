@@ -11,7 +11,9 @@ on VMware blockchain by providing a title, an image URL and artist name.
     - MAC Operating System
     - Google Chrome browser
     - Metamask Wallet - [https://metamask.io/](https://metamask.io/)
-- Connecting Metamask to VMBC - [See Appendix](../../appendix.md#connecting-metamask-to-vmbc)
+- Setting up Metamask for VMBC
+   - Connecting Metamask to VMBC- [See Appendix](../../appendix.md#connecting-metamask-to-vmbc)
+   - Reset Metamsk Account - [See Appendix](../../appendix.md#connecting-metamask-to-vmbc)
 
 ## Features
 - View all NFTs in the Platform

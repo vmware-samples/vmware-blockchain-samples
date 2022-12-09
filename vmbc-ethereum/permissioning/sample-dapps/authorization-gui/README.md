@@ -13,7 +13,9 @@
     - MAC Operating System
     - Google Chrome browser
     - Metamask Wallet - [https://metamask.io/](https://metamask.io/)
-- Connecting Metamask to VMBC - [See Appendix](../../../appendix.md#connecting-metamask-to-vmbc)
+- Setting up Metamask for VMBC
+   - Connecting Metamask to VMBC- [See Appendix](../../appendix.md#connecting-metamask-to-vmbc)
+   - Reset Metamsk Account - [See Appendix](../../appendix.md#connecting-metamask-to-vmbc)
 
 ## Running DApp
 There are two ways to run this DApp
