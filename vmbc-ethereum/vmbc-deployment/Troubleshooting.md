@@ -45,7 +45,8 @@ It takes a little while for ethrpc to boot up for the first time. Please wait fo
 
 Run ```minikube service client-0-ethrpc``` to fetch the url. You can also use ```kubectl port-forward svc/client-0-ethrpc 8545:8545``` in case you want to use a particular port number.
 
-
+### I am getting "CrashLoopBackOff" error when I do "kubectl get pods"
+A. We have seen this issue in arm64 architecture and are working on it. Meanwhile please use amd64 machine instead. If you are not on arm64 and still seeing an issue, please raise an issue with details of your system and logs.
 
 
 
