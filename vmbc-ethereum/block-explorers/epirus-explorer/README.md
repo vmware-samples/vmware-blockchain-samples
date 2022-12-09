@@ -30,20 +30,7 @@ In addition you can use its search functionality to locate specific accounts, bl
 Todo(Ramki): Need to get sirato-transactions.png file
 <!--- ![alt text](sirato-transactions.png "Sirato transactions") --->
 
-You can run the developer edition of Sirato for VMWare Blockchain by following the instructions available [here](https://github.com/web3labs/Sirato-free).
-
-```
-git clone https://github.com/web3labs/Sirato-free.git
-cd Sirato-free
-NODE_ENDPOINT=http://<node-ip-address>:<rpc-port>/ docker-compose up
-docker-compose pull
-```
-
-Where `node-ip-address` is the ip address of the node you are running, and `rpc-port` is the RPC API HTTP port.
-
-You will then be able to access the Sirato instance at [http://localhost/](http://localhost/)
-
-Alternatively, you can use Kubernetes following the instructions [here](https://github.com/web3labs/epirus-free/tree/master/k8s).
+You can run the developer edition of Sirato for VMWare Blockchain by following the instructions available [here](https://github.com/web3labs/sirato-free).
 
 ### Hosted plans
 
