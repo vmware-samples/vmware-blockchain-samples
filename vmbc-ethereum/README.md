@@ -59,11 +59,6 @@ This quick start guide provides information on deploying VMware Blockchain for E
 
 VMware Blockhain for Ethereum Documentation, see [https://vmware-samples.github.io/vmware-blockchain-samples](https://vmware-samples.github.io/vmware-blockchain-samples).
 
-| System Requirements | Deployment Options  | Permissioning and Privacy | Security | Block Explorers | Sample DApps |
-| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
-| [Minikube](./vmbc-deployment/README.md#system-requirements-for-minikube) | [VMware Blockhain for Ethereum Deployment](./vmbc-deployment/vmbc-four-node-one-client-deployment/README.md) | [Read and Write Permissioning with Sample DApps](./permissioning/README.md) | [Security](./security.md) | [Epirus Data and Analytics Platform](./block-explorers/epirus-explorer/README.md) | [ Digital Art NFT Platform](./sample-dapps/nft-platform/README.md)
-| [Cloud Deployment](./vmbc-deployment/README.md#system-requirements-for-aws-eks) | [VMware Blockhain for Ethereum Deployment with Logging Collector](./vmbc-deployment/vmbc-four-node-one-client-deployment-with-logging/README.md) | [Privacy with Private Token Transfer Sample DApp](./privacy/README.md) | Cryptographic Algorithms | [VMware Blockhain for Ethereum Block Explorer](./block-explorers/vmbc-explorer/README.md) | [ Transfer and Swap ERC20 Tokens](./sample-dapps/erc20-swap/README.md)
-
 ### System Requirements
 Make sure that your environment meets the specific system requirements. 
 - [Minikube](./vmbc-deployment/README.md#system-requirements-for-minikube)
