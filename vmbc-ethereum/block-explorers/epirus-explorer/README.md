@@ -30,7 +30,7 @@ In addition you can use its search functionality to locate specific accounts, bl
 Todo(Ramki): Need to get sirato-transactions.png file
 <!--- ![alt text](sirato-transactions.png "Sirato transactions") --->
 
-You can run the developer edition of Sirato for VMWare Blockchain by following the instructions available [here](https://github.com/web3labs/sirato-free).
+You can run the developer edition of Sirato for VMWare Blockchain by following the instructions available [here](https://github.com/web3labs/sirato-free/). Sirato support Kubernetes deployment which seamlessly integrates with VMware Blockchain for Ethereum Kubernetes deployment model.
 
 ### Hosted plans
 
