@@ -57,6 +57,7 @@ Please adhere to this project's `code of conduct`.
 - [@rtellamsetty](https://github.com/rtellamsetty)
 - [@eswarscode](https://github.com/eswarscode)
 - [@Tensaiyez](https://github.com/Tensaiyez)
+- [@kevinx1vmw](https://github.com/kevinx1vmw)
 
 ## License
 
