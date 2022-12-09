@@ -66,10 +66,10 @@ Make sure that your environment meets the specific system requirements.
 
 ### Deployment Options
 You can use the developer kit or the cloud option to deploy VMware Blockchain for Ethereum. 
-- [Developer Kit Deployment](./vmbc-deployment/README.md#developer-kit-deployment)
+- [Developer Kit Deployment](./vmbc-deployment/README.md#developer-kit-deployment---system-requirements-and-prerequisites)
     - [VMware Blockchain for Ethereum Deployment](./vmbc-deployment/vmbc-four-node-one-client-deployment/README.md)
     - [VMware Blockchain for Ethereum Deployment with Logging Collector](./vmbc-deployment/vmbc-four-node-one-client-deployment-with-logging/README.md)
-- [Cloud Deployment](./vmbc-deployment/README.md#cloud-deployment)
+- [Cloud Deployment](./vmbc-deployment/README.md#amazon-eks)
     - [VMware Blockchain for Ethereum Deployment](./vmbc-deployment/vmbc-four-node-one-client-deployment/README.md)
 
 ### Permissioning
