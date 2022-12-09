@@ -86,7 +86,7 @@ node testReadWrite.js
  - Admin Account Address: `0xFB389874FB4e03182A7358275eaf78008775c7ed`
  - Admin Account Private Key: `0x5bedcdfdfe7e3d9444b3494eaee4bb9339be4745d7a4f79cd4bde59d3e9e9dcc`
 - To use this Admin Account, import this account into Metamask
-- Link to more details about Running and Using Authorizatioon GUI is [here](./sample-dapps/authorization-gui/README.md)
+- Link to more details about Running and Using Authorization GUI is [here](./sample-dapps/authorization-gui/README.md)
 
 ## Troubleshooting Guide
 ### 1. Permission denied Error

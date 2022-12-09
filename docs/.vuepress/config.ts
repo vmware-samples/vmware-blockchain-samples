@@ -3,7 +3,7 @@ import { defaultTheme } from '@vuepress/theme-default'
 export default {
   lang: 'en-US',
   title: 'VMware Blockchain Ethereum',
-  description: 'Description goes Here',
+  description: 'VMware Blockchain for Ethereum Docs',
   base: '/vmware-blockchain-samples/',
   theme: defaultTheme({
     sidebar: 'auto',
@@ -11,7 +11,7 @@ export default {
     contributors: false,
     editLink: false,
     navbar: [
-      // VMBC Deployment
+      // Blockchain Deployment
       {
         text: 'Blockchain Deployment',
         children: [
@@ -41,8 +41,17 @@ export default {
       },
       // Block Explorer
       {
-        text: 'Block Explorer',
-        link: '/block-explorers/vmbc-explorer/',
+        text: 'Block Explorers',
+        children: [
+          {
+            text: "Epirus Explorer",
+            link: '/block-explorers/epirus-explorer/'
+          },
+          {
+            text: 'VMBC Explorer',
+            link: '/block-explorers/vmbc-explorer/'
+          }
+        ]
       },
       // Sample DApps
       {
