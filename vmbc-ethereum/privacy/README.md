@@ -1,4 +1,3 @@
-TODO: Fix branch links to master links!
 # Introduction
 The privacy of digital asset custody is a critical requirement for enterprises as they consider moving to blockchains. This gets exacerbated with Central Bank Digital Currencies where governments want to balance accountability with privacy in order to prevent money laundering or tax fraud.
 VMware Blockchain now provides a solution to this problem. Any ERC20 smart contract can be extended to convert the public tokens to private tokens. These private tokens can be transacted privately, subject to a limit set by the administrator. None, not even the administrator, can see the details of the private transaction, including the source, target or the amount transacted.
