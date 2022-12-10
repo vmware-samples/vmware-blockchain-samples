@@ -94,7 +94,7 @@ VMware Blockchain for Ethereum provides several security features to keep blockc
 
 ### Block Explorers
 The following options of Block Explorers are available:
-- [Sirato Explorer](./block-explorers/epirus-explorer/README.md) - Developed by Web3Labs
+- [Sirato Explorer](./block-explorers/sirato-explorer/README.md) - Developed by Web3Labs
 - [VMware Blockchain Explorer](./block-explorers/vmbc-explorer/README.md) - Developed by VMware Blockchain for Ethereum
 
 ### Sample dApps
