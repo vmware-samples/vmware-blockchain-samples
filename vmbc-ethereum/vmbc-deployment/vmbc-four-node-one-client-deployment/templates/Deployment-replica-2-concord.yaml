@@ -1,0 +1,195 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vmbc-deployment-replica-2-concord
+  labels:
+    app: replica-2-concord
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+      app: replica-2-concord
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/ConfigMap-replica-2-concord.yaml") . | sha256sum }}
+      labels:
+        app: replica-2-concord
+    spec:
+      imagePullSecrets:
+        - name: vmwathena-regcred
+      volumes:
+        {{- $configfile := "fluentd/config/fluent.conf" }}
+        {{- $fluent := $.Files.Get $configfile }}
+        {{ if $fluent }}
+        - name: vmbc-docker-log
+          hostPath:
+            path: /var/log/pods
+        - name: vmbc-docker-lib
+          hostPath:
+            path: /var/lib/docker/containers
+        - name: vmbc-configmap-fluentd
+          configMap:
+            name: vmbc-configmap-fluentd
+        {{ end }}
+        - name: concord-replica-2-volume
+          persistentVolumeClaim:
+            claimName: concord-pvc-{{ .Values.global.blockchainId }}-replica-2
+        - name: config-common-volume
+          configMap:
+            name: vmbc-configmap-common
+        - name: config-concord-volume
+          configMap:
+            name: vmbc-configmap-replica-2-concord
+        - name: secret-volume
+          secret:
+            secretName: vmbc-secret-replica-2-concord
+      containers:
+        - name: replica-2-concord
+          image: {{ include "concord.image" . }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5458
+              protocol: TCP
+            - containerPort: 50051
+              protocol: TCP
+            - name: "tcp-3501"
+              containerPort: 3501
+              protocol: TCP
+            - name: "udp-3501"
+              containerPort: 3501
+              protocol: UDP
+            - name: "tcp-3502"
+              containerPort: 3502
+              protocol: TCP
+            - name: "udp-3502"
+              containerPort: 3502
+              protocol: UDP
+            - name: "tcp-3503"
+              containerPort: 3503
+              protocol: TCP
+            - name: "udp-3503"
+              containerPort: 3503
+              protocol: UDP
+            - name: "tcp-3504"
+              containerPort: 3504
+              protocol: TCP
+            - name: "udp-3504"
+              containerPort: 3504
+              protocol: UDP
+            - name: "tcp-3505"
+              containerPort: 3505
+              protocol: TCP
+            - name: "udp-3505"
+              containerPort: 3505
+              protocol: UDP
+          resources:
+            limits:
+              cpu: "{{ .Values.resources.replica.cpuLimit | default .Values.resources.replica.defaultCpuLimit }}"
+              memory: "{{ .Values.resources.replica.memoryLimit | default .Values.resources.replica.defaultMemoryLimit }}"
+            requests:
+              cpu: "{{ .Values.resources.replica.cpuRequest | default .Values.resources.replica.defaultCpuRequest }}"
+              memory: "{{ .Values.resources.replica.memoryRequest | default .Values.resources.replica.defaultMemoryRequest }}"
+          volumeMounts:
+            - name: concord-replica-2-volume
+              mountPath: /concord/rocksdbdata
+              subPath: rocksdbdata
+            - name: concord-replica-2-volume
+              mountPath: /concord/log
+              subPath: log
+            - name: concord-replica-2-volume
+              mountPath: /concord/config-generated
+              subPath: config-generated
+            - name: concord-replica-2-volume
+              mountPath: /concord/config-local
+              subPath: config-local
+            ##########################################
+            #           config file volumes          #
+            ##########################################
+            ### Common files
+            # cert files
+            {{- range $path, $_ := .Files.Glob "replica-2/config/concord/config-local/tls_certs/*/node.cert" }}
+            {{- $prefixRemoved := $path | replace "replica-2/config" "" }}
+            {{- $key := $path | replace "replica-2/config/concord/config-local" "common" | replace "/" "-" }}
+            - name: config-common-volume
+              mountPath: {{ $prefixRemoved }}
+              subPath: {{ $key }}
+            {{- end }}
+            # genesis file
+            {{- $genesisfile := "replica-2/config/concord/config-public/genesis.json" }}
+            {{- $genesisfilePrefixRemoved := $genesisfile | replace "replica-2/config" "" }}
+            - name: config-common-volume
+              mountPath: {{ $genesisfilePrefixRemoved }}
+              subPath: genesis-file
+            # principals locations
+            {{- $principalslocationsfile := "replica-2/config/concord/config-public/transaction_signing_keys/principals.locations.json" }}
+            {{- $principalslocationsfilePrefixRemoved := $principalslocationsfile | replace "replica-2/config" "" }}
+            - name: config-common-volume
+              mountPath: {{ $principalslocationsfilePrefixRemoved }}
+              subPath: principals-locations-file
+            ### component-specific files
+            # deployment config file
+            {{- $depconfigfile := "replica-2/config/concord/config-local/deployment.config" }}
+            {{- $depconfigfilePrefixRemoved := $depconfigfile | replace "replica-2/config" "" }}
+            - name: config-concord-volume
+              mountPath: {{ $depconfigfilePrefixRemoved }}
+              subPath: deployment-config-file
+            # secrets config file
+            {{- $secretsconfigfile := "replica-2/config/concord/config-local/secrets.config" }}
+            {{- $secretsconfigfilePrefixRemoved := $secretsconfigfile | replace "replica-2/config" "" }}
+            - name: config-concord-volume
+              mountPath: {{ $secretsconfigfilePrefixRemoved }}
+              subPath: secrets-config-file
+
+            ##########################################
+            #           Secrets volumes              #
+            ##########################################
+            # cert private keys
+            {{- range $path, $_ := .Files.Glob "replica-2/config/concord/config-local/tls_certs/*/*.pem" }}
+            {{- $prefixRemoved := $path | replace "replica-2/config" "" }}
+            - name: secret-volume
+              mountPath: {{ $prefixRemoved }}
+              subPath: {{ $path | replace "/" "-" }}
+            {{- end }}
+            # transaction signing public key
+            {{- range $path, $_ := .Files.Glob "replica-2/config/concord/config-public/transaction_signing_keys/*/transaction_signing_pub.pem" }}
+            {{- $prefixRemoved := $path | replace "replica-2/config" "" }}
+            - name: secret-volume
+              mountPath: {{ $prefixRemoved }}
+              subPath: {{ $path | replace "/" "-" }}
+            {{- end }}
+            # operator public key
+            {{- $operatorpublickey := "replica-2/config/concord/config-public/operator_pub.pem" }}
+            {{- $operatorpublickeyPrefixRemoved := $operatorpublickey | replace "replica-2/config" "" }}
+            - name: secret-volume
+              mountPath: {{ $operatorpublickeyPrefixRemoved }}
+              subPath: operator-public-key-file
+        {{- $configfile := "fluentd/config/fluent.conf" }}
+        {{- $fluent := $.Files.Get $configfile }}
+        {{ if $fluent }}
+        - name: fluentd
+          image: {{ include "fluentd.image" . }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MULTI_LOGGING_ENABLED
+              value: "true"
+            - name: SERVICE_NODE_NAME
+              value: replica-2
+            - name: SERVICE_KIND_NAME
+              value: "concord"
+            - name: LOGGING_URL
+              value: {{ .Values.logManagement.endpoint_1.url }}
+          volumeMounts:
+            - name: vmbc-docker-log
+              mountPath: /vmbc/logs/pods
+              readOnly: false
+            - name: vmbc-docker-lib
+              mountPath: /var/lib/docker/containers
+              readOnly: false
+            - name: vmbc-configmap-fluentd
+              mountPath: /fluentd/etc/fluent.conf
+              subPath: fluent.conf
+        {{ end }}

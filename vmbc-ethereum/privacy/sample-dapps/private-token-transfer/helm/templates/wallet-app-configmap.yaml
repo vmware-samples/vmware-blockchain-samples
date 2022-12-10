@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-configmap
+data:
+  VMBC_URL: {{ .Values.blockchainUrl }}
+  PRIVACY_CONFIG_PATH: {{ .Values.privacyConfigPath }}

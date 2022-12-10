@@ -1,0 +1,32 @@
+{
+    "blockchain": {
+        "url": "http://127.0.0.1:8545"
+    },
+    "permissioning": {
+        "contractAddress": "",
+        "adminAccount": {
+            "address": "",
+            "privateKey": ""
+        }
+    },
+    "accounts": [
+        {
+            "address": "",
+            "permissions": {
+                "requiredPermissions": ["DEPLOY"]
+            }
+        },
+        {
+            "address": "",
+            "permissions": {
+                "requiredPermissions": ["WRITE"]
+            }
+        },
+        {
+            "address": "",
+            "permissions": {
+                "requiredPermissions": ["WRITE"]
+            }
+        }
+    ]
+}

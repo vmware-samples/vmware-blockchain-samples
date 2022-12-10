@@ -1,0 +1,94 @@
+<form clrForm>
+  <div class="clr-row clr-justify-content-start">
+    <div class="clr-col-1">
+      <clr-input-container>
+        <label class="clr-control-label">
+          <style>
+         div {
+           white-space: nowrap;
+         }
+         </style>From Address <span class="spanFrom">{{fromAddress}}</span></label>
+         
+        <clr-control-error>From Address field is required!</clr-control-error>
+      </clr-input-container>
+    </div>
+    <div class="clr-col-3">
+
+    </div>
+      <div class="clr-col-3">
+        <button class="btn btn-primary" (click)="onGetBalance()">Get Token Balance</button>
+      </div>
+  </div>
+  <div class="clr-row clr-justify-content-start">
+  <div class="clr-col-3">
+    <clr-input-container>
+      <label>To Address</label>
+      <input placeholder="Address" class="foo" clrInput [(ngModel)]="toAddress" name="toAddress" required (change)="onToAddressChange($event)"/>
+      <clr-control-error>To Address field is required!</clr-control-error>
+    </clr-input-container>
+  </div>
+  </div>
+  <div class="clr-row clr-justify-content-start">
+  <div class="clr-col">
+    <clr-input-container>
+      <label>Contract Address <span class="spanContract"> {{contractAddress}}</span></label>
+    </clr-input-container>
+  </div>
+  </div>
+  <div class="clr-row clr-justify-content-middle">
+    <div class="clr-col-3">
+      <clr-input-container>
+       <label>Tokens</label>
+        <input placeholder="Tokens" class="foo" clrInput [(ngModel)]="tokens" name="tokens" required (change)="onTokensChange($event)"/>
+        <clr-control-error>Balance field is required!</clr-control-error>
+      </clr-input-container>
+    </div>
+    <div class="clr-col clr-offset-sm-1">
+      <button class="btn btn-primary" (click)="transferTokens($event)">Transfer Tokens</button>
+    </div>
+  </div>
+</form>
+
+<div class="modal" *ngIf="transferModal">
+  <div class="modal-dialog modal-dialog" role="dialog" aria-hidden="true">
+      <div class="modal-content">
+          <div class="modal-header">
+              <button aria-label="Close" class="close" type="button" (click)="onCloseModal()">
+                  <clr-icon aria-hidden="true" shape="close"></clr-icon>
+              </button>
+              <h3 class="modal-title">Token Transfer</h3>
+          </div>
+          <div class="modal-body">
+            <div [ngClass]="transferTokens" *ngIf="tokenTransfer"> <p class="success"><strong>Successful Transaction!</strong></p></div>
+            <div class="modal-body" [ngClass]="transferTokens" *ngIf="tokenTransfer">{{response.hash}}</div>
+            <div class="failed" [ngClass]="transferTokens" *ngIf="failedTransfer"> <p class="failed"><strong>Failed Transaction!</strong></p></div>
+            <div [ngClass]="transferTokens" *ngIf="failedTransfer"> <div class="failedWrap"><strong>Message: </strong>{{errorMessage}}</div></div>
+            <div [ngClass]="transferTokens" *ngIf="failedTransfer"> <div class="failedWrap"><strong>Data: </strong>{{errorData}}</div></div>
+          </div>
+      </div>
+  </div>
+  <div class="modal-backdrop" aria-hidden="true"></div>
+</div>
+
+<div class="modal" *ngIf="tokenBalanceModal">
+  <div class="modal-dialog modal-dialog" role="dialog" aria-hidden="true">
+      <div class="modal-content">
+          <div class="modal-header">
+              <button aria-label="Close" class="close" type="button" (click)="onCloseModal()">
+                  <clr-icon aria-hidden="true" shape="close"></clr-icon>
+              </button>
+              <h3 class="modal-title">Token Balance</h3>
+          </div>
+          <div class="modal-body">
+            <div *ngIf="balanceAmount; else failedGetBalance">
+              <strong>User Address: </strong>{{fromAddress}}
+             <div><strong>Token Balance: </strong>{{balance}}</div>
+            </div>
+           <ng-template #failedGetBalance>
+             <strong>Retreiving Balance Failed </strong>
+           </ng-template>
+          </div>
+      </div>
+  </div>
+  <div class="modal-backdrop" aria-hidden="true"></div>
+</div>

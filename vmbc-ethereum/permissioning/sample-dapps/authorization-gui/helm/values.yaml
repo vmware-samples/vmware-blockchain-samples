@@ -1,0 +1,35 @@
+## @section Global parameters
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageCredentials
+##
+
+## @param global.imageCredentials Global Docker image registry
+##
+global:
+  # The credentials for the docker registry. If username/password/email are specified, a corresponding Secret is created.
+  imageCredentials:
+    registry: ""
+    username: ""
+    password: ""
+    email: ""
+  # The global artifact tag
+  image:
+    repository: "vmwblockchain/vmbc-eth-permissioning-ui"
+    tag: "0.0.0.0.7849"
+
+## Configure the configmap parameters that allows you to link the vmbc permissioning dapp installation
+## @param blockchainUrl Url to link blockchain with vmbc permissioning dapp webpage
+##
+blockchainUrl: ""
+
+## Configure the resources for vmbc permissioning dapp deployment
+## @param resources Resources for vmbc permissioning dapp deployment
+##
+resources:
+  # @param permissioning VMBC permissioning dapp resources
+  permissioning:
+    cpuLimit: 1000m
+    cpuRequest: 100m
+    memoryLimit: 2Gi
+    memoryRequest: 1Gi

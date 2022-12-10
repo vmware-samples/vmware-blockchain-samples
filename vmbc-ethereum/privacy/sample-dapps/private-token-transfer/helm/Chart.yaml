@@ -1,0 +1,6 @@
+apiVersion: v2
+name: vmbc-privacy-wallet-app-deployment
+description: A Helm chart for vmbc privacy wallet app demonstration
+type: application
+version: 0.1.0
+appVersion: "1.16.0"

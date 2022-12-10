@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vmbc-deployment-privacy-admin
+  labels:
+    app: privacy-admin-{{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: privacy-admin-{{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: privacy-admin-{{ .Release.Name }}
+    spec:
+      volumes:
+        - name: wallet-app-storage
+          persistentVolumeClaim:
+            claimName: privacy-wallet-app-pvc
+      containers:
+        - name: privacy-admin
+          image: {{ include "privacyadmin.image" . }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: VMBC_CHAIN_ID
+              value: "5000"
+            - name: VMBC_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-configmap
+                  key: VMBC_URL
+            - name: PRIVACY_CONFIG_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-configmap
+                  key: PRIVACY_CONFIG_PATH
+          resources:
+            limits:
+              cpu: "{{ .Values.resources.admin.cpuLimit }}"
+              memory: "{{ .Values.resources.admin.memoryLimit }}"
+            requests:
+              cpu: "{{ .Values.resources.admin.cpuRequest }}"
+              memory: "{{ .Values.resources.admin.memoryRequest }}"                   
+          volumeMounts:
+            - name: wallet-app-storage
+              mountPath: "/app/config"
+        - name: privacy-admin-cli
+          image: {{ include "privacyadmincli.image" . }}
+          imagePullPolicy: IfNotPresent
+          stdin: true
+          tty: true
+          env:
+            - name: PRIVACY_WALLET_ADMIN_GRPC_PORT
+              value: "49000"          
+          resources:
+            limits:
+              cpu: "{{ .Values.resources.admincli.cpuLimit }}"
+              memory: "{{ .Values.resources.admincli.memoryLimit }}"
+            requests:
+              cpu: "{{ .Values.resources.admincli.cpuRequest }}"
+              memory: "{{ .Values.resources.admincli.memoryRequest }}"     
+          volumeMounts:
+            - name: wallet-app-storage
+              mountPath: "{{ .Values.privacyConfigPath }}"             
+      imagePullSecrets:
+        - name: {{ .Release.Name }}-regcred
+      restartPolicy: Always
