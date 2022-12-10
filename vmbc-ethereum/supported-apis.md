@@ -28,3 +28,6 @@ VMware Blockchian Ethereum supports the standard interface for Ethereum clients 
  Construct | Description |
 | --- | ----------- |
 | JSON RPC API Batching | Multiple requests are batched into a single JSON object aligning with [Ethereum JSON RPC Standard](https://www.jsonrpc.org/specification) for optimizing the platform's performance.|
+
+## Limitations
+- Contract upgrades using hardhat is not supported yet
