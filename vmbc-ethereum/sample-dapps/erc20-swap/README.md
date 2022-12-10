@@ -48,7 +48,7 @@ The dApp website will be available on `http://localhost:3000`
 Follow the instructions in [helm-chart/README](./helm-chart/README.md)
 
 ## Using dApp
-The accounts mentioned in [Accounts with Tokens](https://github.com/vmware-samples/vmware-blockchain-samples/blob/stage-dev-kit/vmbc-ethereum/sample-dapps/erc20-swap/source/erc20-swap/.env) are pre-supplied with tokens. You can use [this guide in Appendix](../../appendix.md#importing-accounts-in-metamask) to import these accounts into your Metamask wallet.
+The accounts mentioned in [Accounts with Tokens](https://github.com/vmware-samples/vmware-blockchain-samples/blob/master/vmbc-ethereum/sample-dapps/erc20-swap/source/erc20-swap/.env) are pre-supplied with tokens. You can use [this guide in Appendix](../../appendix.md#importing-accounts-in-metamask) to import these accounts into your Metamask wallet.
 
 ### Transfer Tokens
 - Select a token from drop down

@@ -76,7 +76,7 @@ You can use the developer kit or the cloud option to deploy VMware Blockchain fo
     - [VMware Blockchain for Ethereum Deployment](./vmbc-deployment/vmbc-four-node-one-client-deployment/README.md)
 
 ### Permissioning
-Permissioning introduces account permissioning per Enterprise Ethereum Alliance (EEA) specifications. This feature is designed to work using a pre-deployed [Permissioning Smart Contract](https://github.com/vmware-samples/vmware-blockchain-samples/blob/stage-dev-kit/vmbc-ethereum/permissioning/contracts/Permissioning.sol). The following forms of permissioning are available:
+Permissioning introduces account permissioning per Enterprise Ethereum Alliance (EEA) specifications. This feature is designed to work using a pre-deployed [Permissioning Smart Contract](https://github.com/vmware-samples/vmware-blockchain-samples/blob/master/vmbc-ethereum/permissioning/contracts/Permissioning.sol). The following forms of permissioning are available:
 - Write Permissioning - Write-related interactions with VMware Blockchain for Ethereum are permissioned.
 - Read-Write Permissioning - Both read and write interactions with VMware Blockchain for Ethereum are permissioned.
 

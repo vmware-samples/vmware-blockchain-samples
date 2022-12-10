@@ -3,7 +3,7 @@
 
 # Getting Started
 - VMware Blockchain for Ethereum Beta
-  - [Github Link](https://github.com/vmware-samples/vmware-blockchain-samples/tree/stage-dev-kit/vmbc-ethereum)
+  - [Github Link](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/vmbc-ethereum)
   - [Github Docs Website Link](https://vmware-samples.github.io/vmware-blockchain-samples/)
 
 ## Maintainers

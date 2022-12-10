@@ -40,9 +40,9 @@ user-1 user-2 user-3
 
 ### Determine the required settings for helm chart installation
 
-Helm chart for privacy application deployment is available [HERE](List of available configurations in [values.yaml](https://github.com/vmware-samples/vmware-blockchain-samples/blob/stage-dev-kit/vmbc-ethereum/privacy/sample-dapps/private-token-transfer/helm/).) 
+Helm chart for privacy application deployment is available [HERE](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/vmbc-ethereum/privacy/sample-dapps/private-token-transfer/helm)
 
-List of available configurations and default values available in [values.yaml](https://github.com/vmware-samples/vmware-blockchain-samples/blob/stage-dev-kit/vmbc-ethereum/privacy/sample-dapps/private-token-transfer/helm/values.yaml).
+List of available configurations and default values available in [values.yaml](https://github.com/vmware-samples/vmware-blockchain-samples/blob/master/vmbc-ethereum/privacy/sample-dapps/private-token-transfer/helm/values.yaml).
 
 #### Image, Blockchain location settings
 
