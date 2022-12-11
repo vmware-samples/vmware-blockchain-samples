@@ -32,6 +32,7 @@
 - [@redblackfast](https://github.com/redblackfast)
 - [@Tensaiyez](https://github.com/Tensaiyez)
 - [@kevinx1vmw](https://github.com/kevinx1vmw)
+- [@bsenthilr](https://github.com/bsenthilr)
 
 ## License
 
