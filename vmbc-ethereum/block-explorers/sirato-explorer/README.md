@@ -1,12 +1,12 @@
 # Sirato for VMware Blockchain
 
-![alt text](./assets/sirato-dashboard.png "Sirato dashboard")
-
 ### Overview
 
 Sirato is a data and analytics platform for VMware Blockchain for Ethereum.
 
 It provides a rich API, and easy to use interface to provide information on the various assets such as tokens, and smart contracts deployed on blockchains. 
+
+![alt text](./assets/sirato-dashboard.png "Sirato dashboard")
 
 ### Features
 
@@ -26,15 +26,13 @@ In addition you can use its search functionality to locate specific accounts, bl
 
 ### Free plan
 
-![alt text](./assets/sirato-transactions.png "Sirato transactions")
+You can run the developer edition of Sirato for VMware Blockchain by following the instructions available [here](https://github.com/web3labs/sirato-free/). Sirato supports Kubernetes deployment which seamlessly integrates with VMware Blockchain for Ethereum Kubernetes deployment model.
 
-You can run the developer edition of Sirato for VMware Blockchain by following the instructions available [here](https://github.com/web3labs/epirus-free/). Sirato supports Kubernetes deployment which seamlessly integrates with VMware Blockchain for Ethereum Kubernetes deployment model.
+![alt text](./assets/sirato-transactions.png "Sirato transactions")
 
 ### Hosted plans
 
-![alt text](./assets/sirato-verified-sourcecode.png "Sirato verified sourcecode")
-
-Web3 Labs provides hosted plans that provides additional functionality including:
+Web3 Labs provides [hosted plans](https://www.web3labs.com/blockchain-explorer-sirato-plans) that provides additional functionality including:
 
 - Custom branding and hosting at a custom domain
 - Dedicated views of tokens
@@ -44,4 +42,6 @@ Web3 Labs provides hosted plans that provides additional functionality including
 - Production SLAs
 - Large transaction volumes (100,000,000+)
 
-You can view more information on these plans [https://www.web3labs.com/blockchain-explorer-sirato-plans](https://www.web3labs.com/blockchain-explorer-sirato-plans), or contact Web3 Labs directly via [hi@web3labs.com](mailto:hi@web3labs.com?subject=Sirato hosted plans).
+![alt text](./assets/sirato-verified-sourcecode.png "Sirato verified sourcecode")
+
+You can view more information on these plans [here](https://www.web3labs.com/blockchain-explorer-sirato-plans), or contact Web3 Labs directly via [hi@web3labs.com](mailto:hi@web3labs.com?subject=Sirato%20hosted%20plans).
