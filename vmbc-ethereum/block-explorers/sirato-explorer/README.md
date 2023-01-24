@@ -45,3 +45,5 @@ Web3 Labs provides [hosted plans](https://www.web3labs.com/blockchain-explorer-s
 ![alt text](./assets/sirato-verified-sourcecode.png "Sirato verified sourcecode")
 
 You can view more information on these plans [here](https://www.web3labs.com/blockchain-explorer-sirato-plans), or contact Web3 Labs directly via [hi@web3labs.com](mailto:hi@web3labs.com?subject=Sirato%20hosted%20plans).
+
+Watch a demo of how Sirato on VMware Blockchain for Ethereum works [here](https://youtu.be/tGXH1OL8Gzs).
