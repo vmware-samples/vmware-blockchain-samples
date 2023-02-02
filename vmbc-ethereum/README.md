@@ -19,7 +19,7 @@ VMware Blockchain for Ethereum comprises blockchain nodes running the open-sourc
 
 VMware Blockchain is an enterprise-grade decentralized trust platform that enables you to transact and share data securely. With VMware Blockchain, you can create permissioned decentralized business networks. In addition, the decentralized trust platform removes the need to rely on a central data repository that is a single point of failure.
 
-VMware Blockchain comprises one or more Client Nodes and a Replica Network. The Client nodes provide dApps access to the blockchain data by exposing an ETH JSON RPC interface for sending and receiving requests to and from the Replica Network. The Replica Network is a network of n replicas, where n=3f+1, that participate in the BFT consensus protocol. Each Replica node has an EVM execution engine, which stores the state in an authenticated key-value ledger.
+VMware Blockchain comprises one or more Client Nodes and a Replica Network. The Client nodes provide dApps access to the blockchain data by exposing an ETH JSON RPC interface for sending and receiving requests to and from the Replica Network. The Replica Network is a network of n replicas, where n=3f+1, that participate in the SBFT consensus protocol in VMBC Ethreum. Each Replica node has an EVM execution engine, which stores the state in an authenticated key-value ledger.
 
 ![VMware Blockchain for Ethereum Request Flow](./vmbc-with-ethereum-request-flow.png)
 
