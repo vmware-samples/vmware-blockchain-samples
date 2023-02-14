@@ -1,6 +1,9 @@
 ---
 home: false
 ---
+
+## Disclaimer: This is a Staging Branch that has Work in Progress items. It is not intended for public consumption
+
 # VMware Blockchain for Ethereum Overview 
 
 VMware Blockchain (VMBC) is an enterprise-grade blockchain platform that powers business ecosystems, digital asset experiences and dApps.
