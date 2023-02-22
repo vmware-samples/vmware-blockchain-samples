@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vmbc-configmap-client-0-clientservice
+binaryData:
+  # client service config file
+  {{- $clientserviceconfigfile := "client-0/config/clientservice/clientservice.config" }}
+  clientservice-config-file: {{ $.Files.Get $clientserviceconfigfile | b64enc }}
+  # environment vars file
+  {{- $environmentvarsfile := "client-0/config/clientservice/environment-vars" }}
+  environment-vars-file: {{ $.Files.Get $environmentvarsfile | b64enc }}

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vmbc-configmap-replica-1-concord
+binaryData:
+  # deployment config file
+  # Parameterize deployment.config file from Values if needed:
+  # - convert config file to dict
+  # - replace values from Values.yaml
+  {{- $depconfigfile := "replica-1/config/concord/config-local/deployment.config" }}
+  {{- $deploymentDict := $.Files.Get $depconfigfile | fromYaml }}
+  {{- $_ := set $deploymentDict "eth_permissioning_write_enabled" .Values.permissioning.ethPermissioningWriteEnabled }}
+  {{- $_ := set $deploymentDict "eth_permissioning_read_enabled" .Values.permissioning.ethPermissioningReadEnabled }}
+  deployment-config-file: {{ $deploymentDict | toYaml | b64enc }}
+  # secrets config file
+  {{- $secretsconfigfile := "replica-1/config/concord/config-local/secrets.config" }}
+  secrets-config-file: {{ $.Files.Get $secretsconfigfile | b64enc }}

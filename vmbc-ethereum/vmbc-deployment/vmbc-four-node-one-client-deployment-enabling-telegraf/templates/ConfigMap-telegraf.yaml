@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vmbc-configmap-telegraf
+data:
+  {{- $tplString :=  include "telegraf.urlConcatenation"  . }}
+  {{ (.Files.Glob "telegraf/telegraf.conf").AsConfig | replace "$PULL_ENDPOINTS"  $tplString | indent 12 }}

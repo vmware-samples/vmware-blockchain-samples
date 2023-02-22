@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telegraf-deployment
+spec:
+  selector:
+    matchLabels:
+      app: telegraf
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: telegraf
+    spec:
+      imagePullSecrets:
+        - name: vmwathena-regcred
+      containers:
+        - name: telegraf
+          image: {{ include "telegraf.image" . }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: CW_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: vmbc-secret-telegraf
+                  key: CW_ACCESS_KEY
+            - name: CW_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: vmbc-secret-telegraf
+                  key: CW_SECRET_KEY
+            - name: CW_TOKEN_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: vmbc-secret-telegraf
+                  key: CW_TOKEN_KEY
+          volumeMounts:
+            - name: vmbc-configmap-telegraf
+              mountPath: /etc/telegraf/telegraf.conf
+              subPath: telegraf.conf
+      volumes:
+        - name: vmbc-configmap-telegraf
+          configMap:
+            name: vmbc-configmap-telegraf
