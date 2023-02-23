@@ -54,6 +54,9 @@ spec:
           ports:
             - containerPort: 5458
               protocol: TCP
+            - name: "tcp-9891"
+              containerPort: 9891
+              protocol: TCP
             - containerPort: 50051
               protocol: TCP
             - name: "tcp-3501"

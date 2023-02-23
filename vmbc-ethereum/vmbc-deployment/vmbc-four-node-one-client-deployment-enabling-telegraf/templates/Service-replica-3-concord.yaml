@@ -15,6 +15,10 @@ spec:
       port: 5458
       protocol: TCP
       targetPort: 5458
+    - name: 'tcp-9891'
+      port: 9891
+      protocol: TCP
+      targetPort: 9891
   selector:
     app: replica-3-concord
 
