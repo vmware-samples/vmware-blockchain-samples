@@ -6,7 +6,7 @@ home: false
 
 # VMware Blockchain for Ethereum Overview 
 
-VMware Blockchain (VMBC) is an enterprise-grade blockchain platform that powers business ecosystems, digital asset experiences and dApps.
+VMware Blockchain (VMBC) for Ethereum is an enterprise-grade blockchain platform that powers business ecosystems, digital asset experiences and dApps.
 
 The Ethereum technology stack — from EVM, Solidity smart contracts, APIs, developer tools, and its overall ecosystem — is the broadest and most mature stack on which to build blockchain networks. Yet, there are several critical gaps Ethereum platforms have that make them difficult to use for enterprise use cases, such as lack of robust privacy and scalability for complex workloads, governance mechanisms, and enterprise-class operational support characteristics. To address these gaps, VMware launched VMware Blockchain for Ethereum, available now in beta. VMware Blockchain for Ethereum is built using open enterprise-centric architecture. The solution is an Ethereum Virtual Machine (EVM) compatible decentralized and permissioned infrastructure platform that provides trust, predictable costs, and instant transaction finality while being Byzantine Fault Tolerant.
 
