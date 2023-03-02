@@ -10,13 +10,13 @@ VMware Blockchain (VMBC) is an enterprise-grade blockchain platform that powers 
 
 The Ethereum technology stack — from EVM, Solidity smart contracts, APIs, developer tools, and its overall ecosystem — is the broadest and most mature stack on which to build blockchain networks. Yet, there are several critical gaps Ethereum platforms have that make them difficult to use for enterprise use cases, such as lack of robust privacy and scalability for complex workloads, governance mechanisms, and enterprise-class operational support characteristics. To address these gaps, VMware launched VMware Blockchain for Ethereum, available now in beta. VMware Blockchain for Ethereum is built using open enterprise-centric architecture. The solution is an Ethereum Virtual Machine (EVM) compatible decentralized and permissioned infrastructure platform that provides trust, predictable costs, and instant transaction finality while being Byzantine Fault Tolerant.
 
-VMware Blockchain for Ethereum comprises blockchain nodes running the open-source EVM evmone 0.8.2, orchestration utilities, Solidity 0.8.16, and third-party integrations. As a result, developers can build on any public or private cloud to deploy their dApps and smart contracts leveraging standard tools such as Truffle, HardHat, and integrations with MetaMask.
+VMware Blockchain for Ethereum comprises blockchain nodes running the open-source EVM evmone 0.8.2, orchestration utilities, Solidity 0.8.19, and third-party integrations. As a result, developers can build on any public or private cloud to deploy their dApps and smart contracts leveraging standard tools such as Truffle, HardHat, and integrations with MetaMask.
 
 ## Why Use VMware Blockchain for Ethereum? 
 
 The VMware Blockchain technology is built using an open enterprise-centric architecture with an Ethereum Virtual Machine (EVM). As a result, it is a compatible decentralized and permissioned infrastructure platform that provides trust, predictable costs, and instant transaction finality while being Byzantine Fault Tolerant.
 
-VMware Blockchain for Ethereum comprises blockchain nodes running the open-source EVM evmone 0.8.2 version, orchestration utilities, Solidity 0.8.16 version, and third-party integrations. As a result, developers can construct or extend a platform on any public or private cloud to deploy their dApps and smart contracts leveraging standard tools such as Truffle, HardHat, and integrations with MetaMask Institutional.
+VMware Blockchain for Ethereum comprises blockchain nodes running the open-source EVM evmone 0.8.2 version, orchestration utilities, Solidity 0.8.19 version, and third-party integrations. As a result, developers can construct or extend a platform on any public or private cloud to deploy their dApps and smart contracts leveraging standard tools such as Truffle, HardHat, and integrations with MetaMask Institutional.
 
 ## Architecture
 
