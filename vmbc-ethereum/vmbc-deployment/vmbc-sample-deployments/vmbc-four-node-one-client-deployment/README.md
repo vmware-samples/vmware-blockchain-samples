@@ -9,37 +9,37 @@ The current sample deployment has been tested on the following components:
 -	Hosted on AWS EKS
 
 ## Deployment Prerequisites
-Make sure that you implement all the required prerequisites. See [Deployment Prerequisites](./../README.md).
+Make sure that you implement all the required prerequisites. See [System Requirements](./../README.md).
 
 ## VMware Blockchain Node Deployment
 
-You can deploy four Replica nodes and one Client node on Minikube or EKS.
+You can deploy four Replica nodes and one Client node on Minikube or AWS EKS.
 
-#### Run the following command to deploy Minikube. 
+#### Deploy Minikube. 
 ```sh
 helm install <name of blockchain> . --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password>
 ```
 
-#### Run the following command to deploy EKS.
+#### Deploy AWS EKS.
 ```sh
 helm install <name of blockchain> . --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password> --set global.storageClassName=gp2 --set resources.replica.cpuRequest=10000m --set resources.replica.cpuLimit=10000m --set resources.replica.memoryRequest=56Gi --set resources.replica.memoryLimit=56Gi --set resources.client.cpuRequest=5000m --set resources.client.cpuLimit=5000m --set resources.client.memoryRequest=28Gi --set resources.client.memoryLimit=28Gi
 ```
-Note that it might take up to 5 mins for the blockchain nodes to be operational after deployment. Open the pod logs ```vmbc-deployment-client-0-clientservice-xxx-yyy``` and wait until you see the ```client_id=8 is serving - the pool is ready``` notification.
+**Note**: It might take up to 5 mins for the blockchain nodes to be operational after deployment. Open the pod logs ```vmbc-deployment-client-0-clientservice-xxx-yyy``` and wait for the ```client_id=8 is serving - the pool is ready``` notification.
 
 #### Test your deployment.
 - Get the ethrpc endpoint.
 
-  Run the following command to get ethrpc endpoint on Minikube
+  Run the following command to get ethrpc endpoint on Minikube.
   ```sh
   minikube service list
   ```
     
-  Run the following command to get ethrpc endpoint on EKS
+  Run the following command to get ethrpc endpoint on EKS.
   ```
   kubectl get svc
   ```
   
-  Note: If you do not see a URL, try an alternate ```minikube service client-0-ethrpc``` command.
+  **Note**: If you do not see a URL, try an alternate ```minikube service client-0-ethrpc``` command.
   
 - Run the ethrpc curl command.
     ```sh
@@ -52,7 +52,7 @@ Note that it might take up to 5 mins for the blockchain nodes to be operational 
     
   See [Troubleshooting](./../Troubleshooting.md) for any errors.
   
-#### Uninstall VMware Blockchain Nodes.
+#### Uninstall the VMware Blockchain Nodes.
 ```sh
 helm uninstall <name of blockchain>
 ```
