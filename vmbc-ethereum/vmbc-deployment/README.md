@@ -1,6 +1,7 @@
-# Developer Kit Deployment - System Requirements and Prerequisites
-
+# System Requirements and Installation
+Before you deploy VMware Blockchain for Ethereum, your environment must meet specific system requirements.
 ## Minikube
+Verify that your environment supports the following system and installation requirements.
 ### System Requirements
 | Components | Description |
 |-----------|-------------|
@@ -12,28 +13,26 @@
 |  Memory           | 16 GB (22 GB with ELK) |
 |  Disk Size        | 200 GB or more |
 
-Note: 
-We do not currently support VMware Blockchain on Apple's M1 and ARM64 processor. We are working on adding support for this and will update the documentation when it's available.
+**Note**: 
+Apple M1 and ARM64 processors are not supported.
 
-### Prerequisites
+### Installation Instructions
 
-Install the following
-```
-kubectl ( https://kubernetes.io/docs/tasks/tools/ )
-helm chart ( https://helm.sh/docs/intro/install/ )
-Minikube (https://minikube.sigs.k8s.io/docs/start/)
-```
+Follow the instructions to install
+[kubectl] ( https://kubernetes.io/docs/tasks/tools/ ), 
+[Helm chart] ( https://helm.sh/docs/intro/install/ ), and 
+[Minikube] (https://minikube.sigs.k8s.io/docs/start/) in your environment.
 
-Make sure Minikube is running with required configs as presented above. To test, you may run
+For Minikube, verify that it is running with the required configurations.
 ```
 minikube status
 minikube config view
 ```
 
 ## Amazon EKS
+Verify that your environment supports the following system and installation requirements.
 ### System Requirements
-
-The below system configurations ensures a high performant blockchain with 670 TPS.
+The listed system configurations guarantee blockchain with 670 TPS.
 
 | Components | Description |
 |-----------|-------------|
@@ -41,21 +40,15 @@ The below system configurations ensures a high performant blockchain with 670 TP
 |  EC2 Instances    | 6 nodes of m4.4xlarge |
 |  EBS Volume Type  | gp2 |
 
-Note: Current default version of Kubernetes on eks is 1.24+.
-However, with storage class gp2, please see https://docs.aws.amazon.com/eks/latest/userguide/storage-classes.html.
-Please deploy eks cluster with kubernetes version 1.22 for correct functionality with storage class gp2.
+**Note**: The default version of Kubernetes on EKS is 1.24 or higher. For storage class gp2, see https://docs.aws.amazon.com/eks/latest/userguide/storage-classes.html. Deploy EKS cluster with Kubernetes version 1.22 for storage with class gp2 to work properly.
 
-if >= 1.23 is used to deploy the EKS cluster then users must follow instructions from here to install the EBS CSI driver:
-https://docs.aws.amazon.com/eks/latest/userguide/ebs-csi-migration-faq.html
-to ensure their pods are started correctly.
+If a 1.23 or lower version is deployed in the EKS cluster, users must follow the https://docs.aws.amazon.com/eks/latest/userguide/ebs-csi-migration-faq.html instructions to install the EBS CSI driver to make sure that the pods are started properly.
 
-### Prerequisites
+### Installation Instructions
 
-Install the following
-```
-kubectl ( https://kubernetes.io/docs/tasks/tools/ )
-helm chart ( https://helm.sh/docs/intro/install/ )
-eksctl (https://eksctl.io/)
-```
+Follow the instructions to install
+[kubectl] ( https://kubernetes.io/docs/tasks/tools/ ),
+[Helm chart] ( https://helm.sh/docs/intro/install/ ), and
+[eksctl] (https://eksctl.io/) in your environment.
 
-Make sure you have created a cluster on EKS with above configurations and you are using EKS context.
+**Note**: Check whether you have created a cluster on EKS with the above configurations using the EKS context.
