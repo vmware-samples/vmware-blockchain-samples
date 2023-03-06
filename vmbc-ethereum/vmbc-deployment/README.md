@@ -19,9 +19,9 @@ Apple M1 and ARM64 processors are not supported.
 ### Installation Instructions
 
 Follow the instructions to install
-[kubectl] ( https://kubernetes.io/docs/tasks/tools/ ), 
-[Helm chart] ( https://helm.sh/docs/intro/install/ ), and 
-[Minikube] (https://minikube.sigs.k8s.io/docs/start/) in your environment.
+[kubectl]( https://kubernetes.io/docs/tasks/tools/ ), 
+[Helm chart]( https://helm.sh/docs/intro/install/ ), and 
+[Minikube](https://minikube.sigs.k8s.io/docs/start/) in your environment.
 
 For Minikube, verify that it is running with the required configurations.
 ```
@@ -47,8 +47,8 @@ If a 1.23 or lower version is deployed in the EKS cluster, users must follow the
 ### Installation Instructions
 
 Follow the instructions to install
-[kubectl] ( https://kubernetes.io/docs/tasks/tools/ ),
-[Helm chart] ( https://helm.sh/docs/intro/install/ ), and
-[eksctl] (https://eksctl.io/) in your environment.
+[kubectl]( https://kubernetes.io/docs/tasks/tools/ ),
+[Helm chart]( https://helm.sh/docs/intro/install/ ), and
+[eksctl](https://eksctl.io/) in your environment.
 
 **Note**: Check whether you have created a cluster on EKS with the above configurations using the EKS context.
