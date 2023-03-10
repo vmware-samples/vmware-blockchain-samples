@@ -1,0 +1,634 @@
+**************************************************
+VMware Blockchain Orchestrator(c) Vmware Inc. 2022
+**************************************************
+
+[INFO ] [2023-02-22 22:55:01.446] [thread=main] [OpID=] [user=] [org=] [function=CastorApplication] [message=Starting CastorApplication using Java 11.0.17 on ffd787e08ea3 with PID 9 (/k8s-orchestrator/vmware-blockchain-developer-kit/bin/cli/k8s-cli-1.0.0-SNAPSHOT.jar started by root in /k8s-orchestrator/vmware-blockchain-developer-kit)]
+[INFO ] [2023-02-22 22:55:01.446] [thread=background-preinit] [OpID=] [user=] [org=] [function=Version] [message=HV000001: Hibernate Validator 6.2.3.Final]
+[INFO ] [2023-02-22 22:55:01.545] [thread=main] [OpID=] [user=] [org=] [function=CastorApplication] [message=The following 1 profile is active: "standalone"]
+[INFO ] [2023-02-22 22:55:03.239] [thread=main] [OpID=] [user=] [org=] [function=ConfigurationService] [message=Setting cache expiry (minutes): 45]
+[INFO ] [2023-02-22 22:55:03.263] [thread=main] [OpID=] [user=] [org=] [function=ConfigurationService] [message=Using concord config-gen binary at: /k8s-orchestrator/vmware-blockchain-developer-kit/bin/genconfig_tool/linux/conc_genconfig]
+[INFO ] [2023-02-22 22:55:03.264] [thread=main] [OpID=] [user=] [org=] [function=ConfigurationService] [message=ConfigurationService instance initialized]
+[INFO ] [2023-02-22 22:55:03.627] [thread=main] [OpID=] [user=] [org=] [function=ClientGroupNodeSizingPropertiesProcessor] [message=Processed predefined client node sizing file: classpath:client_group_vsphere_node_sizing_internal.json]
+[INFO ] [2023-02-22 22:55:03.629] [thread=main] [OpID=] [user=] [org=] [function=ClientGroupNodeSizingPropertiesProcessor] [message=Predefined form-factors: SMALL, MEDIUM, LARGE]
+[INFO ] [2023-02-22 22:55:03.630] [thread=main] [OpID=] [user=] [org=] [function=ClientGroupNodeSizingPropertiesProcessor] [message=No custom node sizing properties file found at: file:/descriptors/client_group_node_sizing.json]
+[INFO ] [2023-02-22 22:55:03.633] [thread=main] [OpID=] [user=] [org=] [function=GenesisJsonProcessor] [message=Custom Genesis file is not provided. Using default Genesis file. ]
+[INFO ] [2023-02-22 22:55:03.634] [thread=main] [OpID=] [user=] [org=] [function=GenesisJsonProcessor] [message=Genesis block file does not exist in  custom path / default path.]
+[INFO ] [2023-02-22 22:55:04.042] [thread=main] [OpID=] [user=] [org=] [function=CastorApplication] [message=Started CastorApplication in 3.508 seconds (JVM running for 5.179)]
+[INFO ] [2023-02-22 22:55:04.045] [thread=main] [OpID=] [user=] [org=] [function=DeployerServiceImpl] [message=Starting Castor deployer service]
+[INFO ] [2023-02-22 22:55:04.046] [thread=main] [OpID=] [user=] [org=] [function=DeployerServiceImpl] [message=Using provided deployment type: GENERATE]
+[INFO ] [2023-02-22 22:55:04.171] [thread=main] [OpID=] [user=] [org=] [function=ValidatorServiceImpl] [message=Validating provisioning...]
+[INFO ] [2023-02-22 22:55:04.388] [thread=main] [OpID=] [user=] [org=] [function=ValidatorServiceImpl] [message=Finished provisioning validation, found 0 errors]
+[INFO ] [2023-02-22 22:55:04.538] [thread=main] [OpID=] [user=] [org=] [function=DeploymentHelper] [message=Generated consortium id: 967a2ee0-c4a5-40e8-a9fe-24951eb32a83 for consortium: castor-consortium-1]
+[INFO ] [2023-02-22 22:55:04.540] [thread=main] [OpID=] [user=] [org=] [function=DeploymentHelper] [message=Using blockchainId: 746d220e-1eb9-4d15-ae1b-a224cee8d396]
+[INFO ] [2023-02-22 22:55:04.544] [thread=main] [OpID=] [user=] [org=] [function=DeploymentHelper] [message=Building sites]
+[INFO ] [2023-02-22 22:55:04.553] [thread=main] [OpID=] [user=] [org=] [function=DeploymentHelper] [message=Secure Store type set to: INSECURE]
+[INFO ] [2023-02-22 22:55:04.553] [thread=main] [OpID=] [user=] [org=] [function=DeploymentHelper] [message=Secrets will not be encrypted.]
+[INFO ] [2023-02-22 22:55:04.567] [thread=main] [OpID=] [user=] [org=] [function=K8sDeploymentHelper] [message=Building VSphere site information]
+[INFO ] [2023-02-22 22:55:04.658] [thread=main] [OpID=] [user=] [org=] [function=DeploymentHelper] [message=Signature save is empty. Defaulting toSIGNATURE]
+[INFO ] [2023-02-22 22:55:04.666] [thread=main] [OpID=] [user=] [org=] [function=ProvisioningService] [message=CreateDeployment request received, session id c71bb47e-ad85-4a9e-958e-6ecd84d4f0d0]
+[INFO ] [2023-02-22 22:55:04.666] [thread=main] [OpID=] [user=] [org=] [function=ProvisioningService] [message=Deployment Platform: K8s]
+[INFO ] [2023-02-22 22:55:04.679] [thread=main] [OpID=] [user=] [org=] [function=NodeConfiguration] [message=No wavefront URL specified, excluding service: WAVEFRONT_PROXY]
+[INFO ] [2023-02-22 22:55:04.680] [thread=main] [OpID=] [user=] [org=] [function=NodeConfiguration] [message=No log management configurations specified, excluding service: LOGGING]
+[INFO ] [2023-02-22 22:55:04.682] [thread=main] [OpID=] [user=] [org=] [function=NodeConfigurationUtil] [message=CRE is enabled.]
+[INFO ] [2023-02-22 22:55:04.683] [thread=main] [OpID=] [user=] [org=] [function=NodeConfigurationUtil] [message=Excluding service: 'LOGGING' from installation for node type: 'REPLICA', node id: '4c36cf7a-02d8-4dd5-9fe3-095fcfb4635c']
+[INFO ] [2023-02-22 22:55:04.689] [thread=main] [OpID=] [user=] [org=] [function=NodeConfiguration] [message=No wavefront URL specified, excluding service: WAVEFRONT_PROXY]
+[INFO ] [2023-02-22 22:55:04.690] [thread=main] [OpID=] [user=] [org=] [function=NodeConfiguration] [message=No log management configurations specified, excluding service: LOGGING]
+[INFO ] [2023-02-22 22:55:04.690] [thread=main] [OpID=] [user=] [org=] [function=NodeConfigurationUtil] [message=CRE is enabled.]
+[INFO ] [2023-02-22 22:55:04.690] [thread=main] [OpID=] [user=] [org=] [function=NodeConfigurationUtil] [message=Excluding service: 'LOGGING' from installation for node type: 'REPLICA', node id: 'd56b1931-157d-4db7-a5ac-4c2d005d1b4c']
+[INFO ] [2023-02-22 22:55:04.691] [thread=main] [OpID=] [user=] [org=] [function=NodeConfiguration] [message=No wavefront URL specified, excluding service: WAVEFRONT_PROXY]
+[INFO ] [2023-02-22 22:55:04.691] [thread=main] [OpID=] [user=] [org=] [function=NodeConfiguration] [message=No log management configurations specified, excluding service: LOGGING]
+[INFO ] [2023-02-22 22:55:04.691] [thread=main] [OpID=] [user=] [org=] [function=NodeConfigurationUtil] [message=CRE is enabled.]
+[INFO ] [2023-02-22 22:55:04.691] [thread=main] [OpID=] [user=] [org=] [function=NodeConfigurationUtil] [message=Excluding service: 'LOGGING' from installation for node type: 'REPLICA', node id: '8824e311-8934-434d-b80a-313f29ff548b']
+[INFO ] [2023-02-22 22:55:04.692] [thread=main] [OpID=] [user=] [org=] [function=NodeConfiguration] [message=No wavefront URL specified, excluding service: WAVEFRONT_PROXY]
+[INFO ] [2023-02-22 22:55:04.692] [thread=main] [OpID=] [user=] [org=] [function=NodeConfiguration] [message=No log management configurations specified, excluding service: LOGGING]
+[INFO ] [2023-02-22 22:55:04.692] [thread=main] [OpID=] [user=] [org=] [function=NodeConfigurationUtil] [message=CRE is enabled.]
+[INFO ] [2023-02-22 22:55:04.692] [thread=main] [OpID=] [user=] [org=] [function=NodeConfigurationUtil] [message=Excluding service: 'LOGGING' from installation for node type: 'REPLICA', node id: '893e3308-1ea1-454b-850a-770651ee91f0']
+[INFO ] [2023-02-22 22:55:04.693] [thread=main] [OpID=] [user=] [org=] [function=NodeConfiguration] [message=No wavefront URL specified, excluding service: WAVEFRONT_PROXY]
+[INFO ] [2023-02-22 22:55:04.693] [thread=main] [OpID=] [user=] [org=] [function=NodeConfiguration] [message=No log management configurations specified, excluding service: LOGGING]
+[INFO ] [2023-02-22 22:55:04.693] [thread=main] [OpID=] [user=] [org=] [function=NodeConfigurationUtil] [message=CRE is enabled.]
+[INFO ] [2023-02-22 22:55:04.693] [thread=main] [OpID=] [user=] [org=] [function=NodeConfigurationUtil] [message=Excluding service: 'LOGGING' from installation for node type: 'CLIENT', node id: 'c407885c-cdb2-4e7b-900a-468aa19277ae']
+[INFO ] [2023-02-22 22:55:04.693] [thread=main] [OpID=] [user=] [org=] [function=NodeConfiguration] [message=No wavefront URL specified, excluding service: WAVEFRONT_PROXY]
+[INFO ] [2023-02-22 22:55:04.694] [thread=main] [OpID=] [user=] [org=] [function=NodeConfiguration] [message=No log management configurations specified, excluding service: LOGGING]
+[INFO ] [2023-02-22 22:55:04.694] [thread=main] [OpID=] [user=] [org=] [function=NodeConfigurationUtil] [message=CRE is enabled.]
+[INFO ] [2023-02-22 22:55:04.706] [thread=main] [OpID=] [user=] [org=] [function=ProvisioningService] [message=Carrying out deployment plan.]
+[INFO ] [2023-02-22 22:55:04.707] [thread=main] [OpID=] [user=] [org=] [function=ProvisioningService] [message=Deployment request received.]
+[INFO ] [2023-02-22 22:55:04.710] [thread=main] [OpID=] [user=] [org=] [function=ProvisioningService] [message=Generating configuration for the blockchain 746d220e-1eb9-4d15-ae1b-a224cee8d396]
+[INFO ] [2023-02-22 22:55:04.749] [thread=main] [OpID=] [user=] [org=] [function=ConfigurationService] [message=Request received. Session Id : c71bb47e-ad85-4a9e-958e-6ecd84d4f0d0
+ Request : header {
+  id: "c71bb47e-ad85-4a9e-958e-6ecd84d4f0d0"
+}
+consortium_id: "967a2ee0-c4a5-40e8-a9fe-24951eb32a83"
+blockchain_id: "746d220e-1eb9-4d15-ae1b-a224cee8d396"
+generic_properties {
+  values {
+    key: "BLOCKCHAIN_ID"
+    value: "746d220e-1eb9-4d15-ae1b-a224cee8d396"
+  }
+  values {
+    key: "BLOCKCHAIN_VERSION"
+    value: "0.0.0.0.8139"
+  }
+  values {
+    key: "ENCRYPT_SECRETS"
+    value: "False"
+  }
+  values {
+    key: "SIGNATURE_SAVE"
+    value: "SIGNATURE"
+  }
+}
+nodes {
+  key: "CLIENT"
+  value {
+    entries {
+      id: "c407885c-cdb2-4e7b-900a-468aa19277ae"
+      type: CLIENT
+      node_ip: "client-0"
+      services: TELEGRAF
+      services: ETHEREUM_API
+      services: CONCORD_CLIENT_SERVICE
+      services: CONCORD_CLIENT_RECONFIGURATOR
+      properties {
+        values {
+          key: "BLOCKCHAIN_ID"
+          value: "746d220e-1eb9-4d15-ae1b-a224cee8d396"
+        }
+        values {
+          key: "BLOCKCHAIN_VERSION"
+          value: "0.0.0.0.8139"
+        }
+        values {
+          key: "CLIENT_BACKUP_ENABLED"
+          value: "false"
+        }
+        values {
+          key: "CLIENT_CONFIG_PROPERTIES"
+          value: "{\n}"
+        }
+        values {
+          key: "CLIENT_GROUP_ID"
+          value: "c407885c-cdb2-4e7b-900a-468aa19277ae"
+        }
+        values {
+          key: "CLIENT_POSTGRES_PROPERTIES"
+          value: "{\n  \"values\": {\n    \"max_connections\": \"300\",\n    \"shared_buffers\": \"4GB\",\n    \"effective_cache_size\": \"12GB\",\n    \"maintenance_work_mem\": \"1GB\",\n    \"checkpoint_completion_target\": \"0.9\",\n    \"wal_buffers\": \"16MB\",\n    \"default_statistics_target\": \"100\",\n    \"random_page_cost\": \"4\",\n    \"effective_io_concurrency\": \"2\",\n    \"work_mem\": \"40MB\",\n    \"min_wal_size\": \"2GB\",\n    \"max_wal_size\": \"8GB\",\n    \"max_worker_processes\": \"4\",\n    \"max_parallel_workers_per_gather\": \"2\",\n    \"max_parallel_workers\": \"4\",\n    \"max_parallel_maintenance_workers\": \"2\"\n  }\n}"
+        }
+        values {
+          key: "CPU_LIMIT"
+          value: "100m"
+        }
+        values {
+          key: "CPU_REQUESTED"
+          value: "100m"
+        }
+        values {
+          key: "ENABLE_AZURE_METRICS"
+          value: "false"
+        }
+        values {
+          key: "ENCRYPT_SECRETS"
+          value: "False"
+        }
+        values {
+          key: "MEMORY_LIMIT"
+          value: "500Mi"
+        }
+        values {
+          key: "MEMORY_REQUESTED"
+          value: "500Mi"
+        }
+        values {
+          key: "MULTI_LOGGING_CONFIG"
+          value: "{\n}"
+        }
+        values {
+          key: "NODE_NAME"
+          value: "client-0"
+        }
+        values {
+          key: "PRIVATE_IP"
+          value: "client-0"
+        }
+        values {
+          key: "SIGNATURE_SAVE"
+          value: "SIGNATURE"
+        }
+        values {
+          key: "STORAGE_CLASS_NAME"
+          value: "standard"
+        }
+        values {
+          key: "STORAGE_REQUESTED"
+          value: "8Gi"
+        }
+        values {
+          key: "TELEGRAF_FILTERS_COLLECTION"
+          value: "{\n}"
+        }
+        values {
+          key: "ZONE_NAME"
+          value: "k8s-zone-A"
+        }
+      }
+    }
+  }
+}
+nodes {
+  key: "OPERATOR"
+  value {
+    entries {
+      id: "cf36aebd-0a0a-4235-926a-b054072df4b8"
+      type: OPERATOR
+      node_ip: "operator-0"
+      services: CONCORD_OPERATOR
+      properties {
+        values {
+          key: "BLOCKCHAIN_ID"
+          value: "746d220e-1eb9-4d15-ae1b-a224cee8d396"
+        }
+        values {
+          key: "BLOCKCHAIN_VERSION"
+          value: "0.0.0.0.8139"
+        }
+        values {
+          key: "CPU_LIMIT"
+          value: "100m"
+        }
+        values {
+          key: "CPU_REQUESTED"
+          value: "100m"
+        }
+        values {
+          key: "ENABLE_AZURE_METRICS"
+          value: "false"
+        }
+        values {
+          key: "ENCRYPT_SECRETS"
+          value: "False"
+        }
+        values {
+          key: "MEMORY_LIMIT"
+          value: "500Mi"
+        }
+        values {
+          key: "MEMORY_REQUESTED"
+          value: "500Mi"
+        }
+        values {
+          key: "MULTI_LOGGING_CONFIG"
+          value: "{\n}"
+        }
+        values {
+          key: "NODE_NAME"
+          value: "operator-0"
+        }
+        values {
+          key: "OPERATOR_PUBLIC_KEY"
+          value: "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAngUEmzah49nVVlarA1Jpe55ZtnBGeAz3HfO+X9wUYQI=\n-----END PUBLIC KEY-----"
+        }
+        values {
+          key: "PRIVATE_IP"
+          value: "operator-0"
+        }
+        values {
+          key: "SIGNATURE_SAVE"
+          value: "SIGNATURE"
+        }
+        values {
+          key: "TELEGRAF_FILTERS_COLLECTION"
+          value: "{\n}"
+        }
+        values {
+          key: "ZONE_NAME"
+          value: "k8s-zone-A"
+        }
+      }
+    }
+  }
+}
+nodes {
+  key: "REPLICA"
+  value {
+    entries {
+      id: "4c36cf7a-02d8-4dd5-9fe3-095fcfb4635c"
+      node_ip: "replica-0"
+      services: TELEGRAF
+      services: CONCORD
+      properties {
+        values {
+          key: "BLOCKCHAIN_ID"
+          value: "746d220e-1eb9-4d15-ae1b-a224cee8d396"
+        }
+        values {
+          key: "BLOCKCHAIN_VERSION"
+          value: "0.0.0.0.8139"
+        }
+        values {
+          key: "CPU_LIMIT"
+          value: "100m"
+        }
+        values {
+          key: "CPU_REQUESTED"
+          value: "100m"
+        }
+        values {
+          key: "ENABLE_AZURE_METRICS"
+          value: "false"
+        }
+        values {
+          key: "ENCRYPT_SECRETS"
+          value: "False"
+        }
+        values {
+          key: "GENESIS"
+          value: "{\n  \"config\": {\n    \"chainId\": 5000,\n    \"homesteadBlock\": 0,\n    \"eip155Block\": 0,\n    \"eip158Block\": 0\n  },\n  \"alloc\": {\n    \"fb389874fb4e03182a7358275eaf78008775c7ed\": {\n      \"balance\": \"0x7fffffffffffffff\"\n    }\n  },\n  \"nonce\": \"0x000000000000000\",\n  \"difficulty\": \"0x400\",\n  \"mixhash\": \"0x0000000000000000000000000000000000000000000000000000000000000000\",\n  \"parentHash\": \"0x0000000000000000000000000000000000000000000000000000000000000000\",\n  \"gasLimit\": \"0x7fffffffffffffff\",\n  \"timestamp\": \"0x0\",\n  \"permissioningInternalAccount\": \"0x3b6fd79db47d366519b6b0229fb75494bf7e7d07\",\n  \"permissioningContractAddress\": \"0x57a268e7694371880a2c5881bd240db812bbfbf0\",\n  \"permissioningContractBin\": \"6080604052600080553480156200001557600080fd5b5060405162000b8238038062000b8283398181016040528101906200003b919062000322565b600081511162000082576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004016200007990620003fa565b60405180910390fd5b60005b81518110156200012457600460026001600817171760016000848481518110620000b457620000b36200041c565b5b602002602001015173ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548160ff021916908360ff16021790555080806200011b9062000484565b91505062000085565b50805160008190555050620004d1565b6000604051905090565b600080fd5b600080fd5b600080fd5b6000601f19601f8301169050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052604160045260246000fd5b62000198826200014d565b810181811067ffffffffffffffff82111715620001ba57620001b96200015e565b5b80604052505050565b6000620001cf62000134565b9050620001dd82826200018d565b919050565b600067ffffffffffffffff8211156200020057620001ff6200015e565b5b602082029050602081019050919050565b600080fd5b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b6000620002438262000216565b9050919050565b620002558162000236565b81146200026157600080fd5b50565b60008151905062000275816200024a565b92915050565b6000620002926200028c84620001e2565b620001c3565b90508083825260208201905060208402830185811115620002b857620002b762000211565b5b835b81811015620002e55780620002d0888262000264565b845260208401935050602081019050620002ba565b5050509392505050565b600082601f83011262000307576200030662000148565b5b8151620003198482602086016200027b565b91505092915050565b6000602082840312156200033b576200033a6200013e565b5b600082015167ffffffffffffffff8111156200035c576200035b62000143565b5b6200036a84828501620002ef565b91505092915050565b600082825260208201905092915050565b7f4174206c65617374206f6e652061646d696e206164647265737320726571756960008201527f7265640000000000000000000000000000000000000000000000000000000000602082015250565b6000620003e260238362000373565b9150620003ef8262000384565b604082019050919050565b600060208201905081810360008301526200041581620003d3565b9050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052603260045260246000fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b6000819050919050565b600062000491826200047a565b91507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff8203620004c657620004c56200044b565b5b600182019050919050565b6106a180620004e16000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c80630c022bbe1461003b5780638f907af014610057575b600080fd5b61005560048036038101906100509190610565565b610087565b005b610071600480360381019061006c9190610565565b61035e565b60405161007e91906105d3565b60405180910390f35b6100943360006008610374565b6100d3576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004016100ca9061064b565b60405180910390fd5b60008160ff1603610141578060ff168273ffffffffffffffffffffffffffffffffffffffff168473ffffffffffffffffffffffffffffffffffffffff167fc7262695771bdf4ea9c25885b800c0bc8d018ca37f04b26442c28d6214ea93a160405160405180910390a46101a0565b8060ff168273ffffffffffffffffffffffffffffffffffffffff168473ffffffffffffffffffffffffffffffffffffffff167f1b8547495b9b7c7e5fc976f16a2adff97eb2f0bf7e8380e7de2bc79f3fde0ec960405160405180910390a45b600073ffffffffffffffffffffffffffffffffffffffff168373ffffffffffffffffffffffffffffffffffffffff16036102315780600260008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548160ff021916908360ff160217905550610359565b600073ffffffffffffffffffffffffffffffffffffffff168273ffffffffffffffffffffffffffffffffffffffff16036102c25780600160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548160ff021916908360ff160217905550610358565b80600360008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548160ff021916908360ff1602179055505b5b505050565b600061036b848484610374565b90509392505050565b600080600160008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060009054906101000a900460ff1660ff1690506000600260008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060009054906101000a900460ff1660ff1690506000600360008873ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060008773ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060009054906101000a900460ff1660ff1690508460ff168560ff168284861717161493505050509392505050565b600080fd5b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b60006104f9826104ce565b9050919050565b610509816104ee565b811461051457600080fd5b50565b60008135905061052681610500565b92915050565b600060ff82169050919050565b6105428161052c565b811461054d57600080fd5b50565b60008135905061055f81610539565b92915050565b60008060006060848603121561057e5761057d6104c9565b5b600061058c86828701610517565b935050602061059d86828701610517565b92505060406105ae86828701610550565b9150509250925092565b60008115159050919050565b6105cd816105b8565b82525050565b60006020820190506105e860008301846105c4565b92915050565b600082825260208201905092915050565b7f4e6f7420616e2041646d696e0000000000000000000000000000000000000000600082015250565b6000610635600c836105ee565b9150610640826105ff565b602082019050919050565b6000602082019050818103600083015261066481610628565b905091905056fea2646970667358221220370e2f95d17db66d19fd6fbb067c54c2ee8e8bdb65c12a5b99536ec21114fe0b64736f6c634300080d0033\"\n}"
+        }
+        values {
+          key: "MEMORY_LIMIT"
+          value: "2000Mi"
+        }
+        values {
+          key: "MEMORY_REQUESTED"
+          value: "2000Mi"
+        }
+        values {
+          key: "MULTI_LOGGING_CONFIG"
+          value: "{\n}"
+        }
+        values {
+          key: "NODE_NAME"
+          value: "replica-0"
+        }
+        values {
+          key: "PRIVATE_IP"
+          value: "replica-0"
+        }
+        values {
+          key: "SIGNATURE_SAVE"
+          value: "SIGNATURE"
+        }
+        values {
+          key: "STORAGE_CLASS_NAME"
+          value: "standard"
+        }
+        values {
+          key: "STORAGE_REQUESTED"
+          value: "8Gi"
+        }
+        values {
+          key: "TELEGRAF_FILTERS_COLLECTION"
+          value: "{\n}"
+        }
+        values {
+          key: "ZONE_NAME"
+          value: "k8s-zone-A"
+        }
+      }
+    }
+    entries {
+      id: "d56b1931-157d-4db7-a5ac-4c2d005d1b4c"
+      node_ip: "replica-1"
+      services: TELEGRAF
+      services: CONCORD
+      properties {
+        values {
+          key: "BLOCKCHAIN_ID"
+          value: "746d220e-1eb9-4d15-ae1b-a224cee8d396"
+        }
+        values {
+          key: "BLOCKCHAIN_VERSION"
+          value: "0.0.0.0.8139"
+        }
+        values {
+          key: "CPU_LIMIT"
+          value: "100m"
+        }
+        values {
+          key: "CPU_REQUESTED"
+          value: "100m"
+        }
+        values {
+          key: "ENABLE_AZURE_METRICS"
+          value: "false"
+        }
+        values {
+          key: "ENCRYPT_SECRETS"
+          value: "False"
+        }
+        values {
+          key: "GENESIS"
+          value: "{\n  \"config\": {\n    \"chainId\": 5000,\n    \"homesteadBlock\": 0,\n    \"eip155Block\": 0,\n    \"eip158Block\": 0\n  },\n  \"alloc\": {\n    \"fb389874fb4e03182a7358275eaf78008775c7ed\": {\n      \"balance\": \"0x7fffffffffffffff\"\n    }\n  },\n  \"nonce\": \"0x000000000000000\",\n  \"difficulty\": \"0x400\",\n  \"mixhash\": \"0x0000000000000000000000000000000000000000000000000000000000000000\",\n  \"parentHash\": \"0x0000000000000000000000000000000000000000000000000000000000000000\",\n  \"gasLimit\": \"0x7fffffffffffffff\",\n  \"timestamp\": \"0x0\",\n  \"permissioningInternalAccount\": \"0x3b6fd79db47d366519b6b0229fb75494bf7e7d07\",\n  \"permissioningContractAddress\": \"0x57a268e7694371880a2c5881bd240db812bbfbf0\",\n  \"permissioningContractBin\": \"6080604052600080553480156200001557600080fd5b5060405162000b8238038062000b8283398181016040528101906200003b919062000322565b600081511162000082576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004016200007990620003fa565b60405180910390fd5b60005b81518110156200012457600460026001600817171760016000848481518110620000b457620000b36200041c565b5b602002602001015173ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548160ff021916908360ff16021790555080806200011b9062000484565b91505062000085565b50805160008190555050620004d1565b6000604051905090565b600080fd5b600080fd5b600080fd5b6000601f19601f8301169050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052604160045260246000fd5b62000198826200014d565b810181811067ffffffffffffffff82111715620001ba57620001b96200015e565b5b80604052505050565b6000620001cf62000134565b9050620001dd82826200018d565b919050565b600067ffffffffffffffff8211156200020057620001ff6200015e565b5b602082029050602081019050919050565b600080fd5b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b6000620002438262000216565b9050919050565b620002558162000236565b81146200026157600080fd5b50565b60008151905062000275816200024a565b92915050565b6000620002926200028c84620001e2565b620001c3565b90508083825260208201905060208402830185811115620002b857620002b762000211565b5b835b81811015620002e55780620002d0888262000264565b845260208401935050602081019050620002ba565b5050509392505050565b600082601f83011262000307576200030662000148565b5b8151620003198482602086016200027b565b91505092915050565b6000602082840312156200033b576200033a6200013e565b5b600082015167ffffffffffffffff8111156200035c576200035b62000143565b5b6200036a84828501620002ef565b91505092915050565b600082825260208201905092915050565b7f4174206c65617374206f6e652061646d696e206164647265737320726571756960008201527f7265640000000000000000000000000000000000000000000000000000000000602082015250565b6000620003e260238362000373565b9150620003ef8262000384565b604082019050919050565b600060208201905081810360008301526200041581620003d3565b9050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052603260045260246000fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b6000819050919050565b600062000491826200047a565b91507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff8203620004c657620004c56200044b565b5b600182019050919050565b6106a180620004e16000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c80630c022bbe1461003b5780638f907af014610057575b600080fd5b61005560048036038101906100509190610565565b610087565b005b610071600480360381019061006c9190610565565b61035e565b60405161007e91906105d3565b60405180910390f35b6100943360006008610374565b6100d3576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004016100ca9061064b565b60405180910390fd5b60008160ff1603610141578060ff168273ffffffffffffffffffffffffffffffffffffffff168473ffffffffffffffffffffffffffffffffffffffff167fc7262695771bdf4ea9c25885b800c0bc8d018ca37f04b26442c28d6214ea93a160405160405180910390a46101a0565b8060ff168273ffffffffffffffffffffffffffffffffffffffff168473ffffffffffffffffffffffffffffffffffffffff167f1b8547495b9b7c7e5fc976f16a2adff97eb2f0bf7e8380e7de2bc79f3fde0ec960405160405180910390a45b600073ffffffffffffffffffffffffffffffffffffffff168373ffffffffffffffffffffffffffffffffffffffff16036102315780600260008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548160ff021916908360ff160217905550610359565b600073ffffffffffffffffffffffffffffffffffffffff168273ffffffffffffffffffffffffffffffffffffffff16036102c25780600160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548160ff021916908360ff160217905550610358565b80600360008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548160ff021916908360ff1602179055505b5b505050565b600061036b848484610374565b90509392505050565b600080600160008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060009054906101000a900460ff1660ff1690506000600260008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060009054906101000a900460ff1660ff1690506000600360008873ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060008773ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060009054906101000a900460ff1660ff1690508460ff168560ff168284861717161493505050509392505050565b600080fd5b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b60006104f9826104ce565b9050919050565b610509816104ee565b811461051457600080fd5b50565b60008135905061052681610500565b92915050565b600060ff82169050919050565b6105428161052c565b811461054d57600080fd5b50565b60008135905061055f81610539565b92915050565b60008060006060848603121561057e5761057d6104c9565b5b600061058c86828701610517565b935050602061059d86828701610517565b92505060406105ae86828701610550565b9150509250925092565b60008115159050919050565b6105cd816105b8565b82525050565b60006020820190506105e860008301846105c4565b92915050565b600082825260208201905092915050565b7f4e6f7420616e2041646d696e0000000000000000000000000000000000000000600082015250565b6000610635600c836105ee565b9150610640826105ff565b602082019050919050565b6000602082019050818103600083015261066481610628565b905091905056fea2646970667358221220370e2f95d17db66d19fd6fbb067c54c2ee8e8bdb65c12a5b99536ec21114fe0b64736f6c634300080d0033\"\n}"
+        }
+        values {
+          key: "MEMORY_LIMIT"
+          value: "2000Mi"
+        }
+        values {
+          key: "MEMORY_REQUESTED"
+          value: "2000Mi"
+        }
+        values {
+          key: "MULTI_LOGGING_CONFIG"
+          value: "{\n}"
+        }
+        values {
+          key: "NODE_NAME"
+          value: "replica-1"
+        }
+        values {
+          key: "PRIVATE_IP"
+          value: "replica-1"
+        }
+        values {
+          key: "SIGNATURE_SAVE"
+          value: "SIGNATURE"
+        }
+        values {
+          key: "STORAGE_CLASS_NAME"
+          value: "standard"
+        }
+        values {
+          key: "STORAGE_REQUESTED"
+          value: "8Gi"
+        }
+        values {
+          key: "TELEGRAF_FILTERS_COLLECTION"
+          value: "{\n}"
+        }
+        values {
+          key: "ZONE_NAME"
+          value: "k8s-zone-A"
+        }
+      }
+    }
+    entries {
+      id: "8824e311-8934-434d-b80a-313f29ff548b"
+      node_ip: "replica-2"
+      services: TELEGRAF
+      services: CONCORD
+      properties {
+        values {
+          key: "BLOCKCHAIN_ID"
+          value: "746d220e-1eb9-4d15-ae1b-a224cee8d396"
+        }
+        values {
+          key: "BLOCKCHAIN_VERSION"
+          value: "0.0.0.0.8139"
+        }
+        values {
+          key: "CPU_LIMIT"
+          value: "100m"
+        }
+        values {
+          key: "CPU_REQUESTED"
+          value: "100m"
+        }
+        values {
+          key: "ENABLE_AZURE_METRICS"
+          value: "false"
+        }
+        values {
+          key: "ENCRYPT_SECRETS"
+          value: "False"
+        }
+        values {
+          key: "GENESIS"
+          value: "{\n  \"config\": {\n    \"chainId\": 5000,\n    \"homesteadBlock\": 0,\n    \"eip155Block\": 0,\n    \"eip158Block\": 0\n  },\n  \"alloc\": {\n    \"fb389874fb4e03182a7358275eaf78008775c7ed\": {\n      \"balance\": \"0x7fffffffffffffff\"\n    }\n  },\n  \"nonce\": \"0x000000000000000\",\n  \"difficulty\": \"0x400\",\n  \"mixhash\": \"0x0000000000000000000000000000000000000000000000000000000000000000\",\n  \"parentHash\": \"0x0000000000000000000000000000000000000000000000000000000000000000\",\n  \"gasLimit\": \"0x7fffffffffffffff\",\n  \"timestamp\": \"0x0\",\n  \"permissioningInternalAccount\": \"0x3b6fd79db47d366519b6b0229fb75494bf7e7d07\",\n  \"permissioningContractAddress\": \"0x57a268e7694371880a2c5881bd240db812bbfbf0\",\n  \"permissioningContractBin\": \"6080604052600080553480156200001557600080fd5b5060405162000b8238038062000b8283398181016040528101906200003b919062000322565b600081511162000082576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004016200007990620003fa565b60405180910390fd5b60005b81518110156200012457600460026001600817171760016000848481518110620000b457620000b36200041c565b5b602002602001015173ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548160ff021916908360ff16021790555080806200011b9062000484565b91505062000085565b50805160008190555050620004d1565b6000604051905090565b600080fd5b600080fd5b600080fd5b6000601f19601f8301169050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052604160045260246000fd5b62000198826200014d565b810181811067ffffffffffffffff82111715620001ba57620001b96200015e565b5b80604052505050565b6000620001cf62000134565b9050620001dd82826200018d565b919050565b600067ffffffffffffffff8211156200020057620001ff6200015e565b5b602082029050602081019050919050565b600080fd5b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b6000620002438262000216565b9050919050565b620002558162000236565b81146200026157600080fd5b50565b60008151905062000275816200024a565b92915050565b6000620002926200028c84620001e2565b620001c3565b90508083825260208201905060208402830185811115620002b857620002b762000211565b5b835b81811015620002e55780620002d0888262000264565b845260208401935050602081019050620002ba565b5050509392505050565b600082601f83011262000307576200030662000148565b5b8151620003198482602086016200027b565b91505092915050565b6000602082840312156200033b576200033a6200013e565b5b600082015167ffffffffffffffff8111156200035c576200035b62000143565b5b6200036a84828501620002ef565b91505092915050565b600082825260208201905092915050565b7f4174206c65617374206f6e652061646d696e206164647265737320726571756960008201527f7265640000000000000000000000000000000000000000000000000000000000602082015250565b6000620003e260238362000373565b9150620003ef8262000384565b604082019050919050565b600060208201905081810360008301526200041581620003d3565b9050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052603260045260246000fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b6000819050919050565b600062000491826200047a565b91507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff8203620004c657620004c56200044b565b5b600182019050919050565b6106a180620004e16000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c80630c022bbe1461003b5780638f907af014610057575b600080fd5b61005560048036038101906100509190610565565b610087565b005b610071600480360381019061006c9190610565565b61035e565b60405161007e91906105d3565b60405180910390f35b6100943360006008610374565b6100d3576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004016100ca9061064b565b60405180910390fd5b60008160ff1603610141578060ff168273ffffffffffffffffffffffffffffffffffffffff168473ffffffffffffffffffffffffffffffffffffffff167fc7262695771bdf4ea9c25885b800c0bc8d018ca37f04b26442c28d6214ea93a160405160405180910390a46101a0565b8060ff168273ffffffffffffffffffffffffffffffffffffffff168473ffffffffffffffffffffffffffffffffffffffff167f1b8547495b9b7c7e5fc976f16a2adff97eb2f0bf7e8380e7de2bc79f3fde0ec960405160405180910390a45b600073ffffffffffffffffffffffffffffffffffffffff168373ffffffffffffffffffffffffffffffffffffffff16036102315780600260008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548160ff021916908360ff160217905550610359565b600073ffffffffffffffffffffffffffffffffffffffff168273ffffffffffffffffffffffffffffffffffffffff16036102c25780600160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548160ff021916908360ff160217905550610358565b80600360008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548160ff021916908360ff1602179055505b5b505050565b600061036b848484610374565b90509392505050565b600080600160008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060009054906101000a900460ff1660ff1690506000600260008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060009054906101000a900460ff1660ff1690506000600360008873ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060008773ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060009054906101000a900460ff1660ff1690508460ff168560ff168284861717161493505050509392505050565b600080fd5b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b60006104f9826104ce565b9050919050565b610509816104ee565b811461051457600080fd5b50565b60008135905061052681610500565b92915050565b600060ff82169050919050565b6105428161052c565b811461054d57600080fd5b50565b60008135905061055f81610539565b92915050565b60008060006060848603121561057e5761057d6104c9565b5b600061058c86828701610517565b935050602061059d86828701610517565b92505060406105ae86828701610550565b9150509250925092565b60008115159050919050565b6105cd816105b8565b82525050565b60006020820190506105e860008301846105c4565b92915050565b600082825260208201905092915050565b7f4e6f7420616e2041646d696e0000000000000000000000000000000000000000600082015250565b6000610635600c836105ee565b9150610640826105ff565b602082019050919050565b6000602082019050818103600083015261066481610628565b905091905056fea2646970667358221220370e2f95d17db66d19fd6fbb067c54c2ee8e8bdb65c12a5b99536ec21114fe0b64736f6c634300080d0033\"\n}"
+        }
+        values {
+          key: "MEMORY_LIMIT"
+          value: "2000Mi"
+        }
+        values {
+          key: "MEMORY_REQUESTED"
+          value: "2000Mi"
+        }
+        values {
+          key: "MULTI_LOGGING_CONFIG"
+          value: "{\n}"
+        }
+        values {
+          key: "NODE_NAME"
+          value: "replica-2"
+        }
+        values {
+          key: "PRIVATE_IP"
+          value: "replica-2"
+        }
+        values {
+          key: "SIGNATURE_SAVE"
+          value: "SIGNATURE"
+        }
+        values {
+          key: "STORAGE_CLASS_NAME"
+          value: "standard"
+        }
+        values {
+          key: "STORAGE_REQUESTED"
+          value: "8Gi"
+        }
+        values {
+          key: "TELEGRAF_FILTERS_COLLECTION"
+          value: "{\n}"
+        }
+        values {
+          key: "ZONE_NAME"
+          value: "k8s-zone-A"
+        }
+      }
+    }
+    entries {
+      id: "893e3308-1ea1-454b-850a-770651ee91f0"
+      node_ip: "replica-3"
+      services: TELEGRAF
+      services: CONCORD
+      properties {
+        values {
+          key: "BLOCKCHAIN_ID"
+          value: "746d220e-1eb9-4d15-ae1b-a224cee8d396"
+        }
+        values {
+          key: "BLOCKCHAIN_VERSION"
+          value: "0.0.0.0.8139"
+        }
+        values {
+          key: "CPU_LIMIT"
+          value: "100m"
+        }
+        values {
+          key: "CPU_REQUESTED"
+          value: "100m"
+        }
+        values {
+          key: "ENABLE_AZURE_METRICS"
+          value: "false"
+        }
+        values {
+          key: "ENCRYPT_SECRETS"
+          value: "False"
+        }
+        values {
+          key: "GENESIS"
+          value: "{\n  \"config\": {\n    \"chainId\": 5000,\n    \"homesteadBlock\": 0,\n    \"eip155Block\": 0,\n    \"eip158Block\": 0\n  },\n  \"alloc\": {\n    \"fb389874fb4e03182a7358275eaf78008775c7ed\": {\n      \"balance\": \"0x7fffffffffffffff\"\n    }\n  },\n  \"nonce\": \"0x000000000000000\",\n  \"difficulty\": \"0x400\",\n  \"mixhash\": \"0x0000000000000000000000000000000000000000000000000000000000000000\",\n  \"parentHash\": \"0x0000000000000000000000000000000000000000000000000000000000000000\",\n  \"gasLimit\": \"0x7fffffffffffffff\",\n  \"timestamp\": \"0x0\",\n  \"permissioningInternalAccount\": \"0x3b6fd79db47d366519b6b0229fb75494bf7e7d07\",\n  \"permissioningContractAddress\": \"0x57a268e7694371880a2c5881bd240db812bbfbf0\",\n  \"permissioningContractBin\": \"6080604052600080553480156200001557600080fd5b5060405162000b8238038062000b8283398181016040528101906200003b919062000322565b600081511162000082576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004016200007990620003fa565b60405180910390fd5b60005b81518110156200012457600460026001600817171760016000848481518110620000b457620000b36200041c565b5b602002602001015173ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548160ff021916908360ff16021790555080806200011b9062000484565b91505062000085565b50805160008190555050620004d1565b6000604051905090565b600080fd5b600080fd5b600080fd5b6000601f19601f8301169050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052604160045260246000fd5b62000198826200014d565b810181811067ffffffffffffffff82111715620001ba57620001b96200015e565b5b80604052505050565b6000620001cf62000134565b9050620001dd82826200018d565b919050565b600067ffffffffffffffff8211156200020057620001ff6200015e565b5b602082029050602081019050919050565b600080fd5b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b6000620002438262000216565b9050919050565b620002558162000236565b81146200026157600080fd5b50565b60008151905062000275816200024a565b92915050565b6000620002926200028c84620001e2565b620001c3565b90508083825260208201905060208402830185811115620002b857620002b762000211565b5b835b81811015620002e55780620002d0888262000264565b845260208401935050602081019050620002ba565b5050509392505050565b600082601f83011262000307576200030662000148565b5b8151620003198482602086016200027b565b91505092915050565b6000602082840312156200033b576200033a6200013e565b5b600082015167ffffffffffffffff8111156200035c576200035b62000143565b5b6200036a84828501620002ef565b91505092915050565b600082825260208201905092915050565b7f4174206c65617374206f6e652061646d696e206164647265737320726571756960008201527f7265640000000000000000000000000000000000000000000000000000000000602082015250565b6000620003e260238362000373565b9150620003ef8262000384565b604082019050919050565b600060208201905081810360008301526200041581620003d3565b9050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052603260045260246000fd5b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b6000819050919050565b600062000491826200047a565b91507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff8203620004c657620004c56200044b565b5b600182019050919050565b6106a180620004e16000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c80630c022bbe1461003b5780638f907af014610057575b600080fd5b61005560048036038101906100509190610565565b610087565b005b610071600480360381019061006c9190610565565b61035e565b60405161007e91906105d3565b60405180910390f35b6100943360006008610374565b6100d3576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004016100ca9061064b565b60405180910390fd5b60008160ff1603610141578060ff168273ffffffffffffffffffffffffffffffffffffffff168473ffffffffffffffffffffffffffffffffffffffff167fc7262695771bdf4ea9c25885b800c0bc8d018ca37f04b26442c28d6214ea93a160405160405180910390a46101a0565b8060ff168273ffffffffffffffffffffffffffffffffffffffff168473ffffffffffffffffffffffffffffffffffffffff167f1b8547495b9b7c7e5fc976f16a2adff97eb2f0bf7e8380e7de2bc79f3fde0ec960405160405180910390a45b600073ffffffffffffffffffffffffffffffffffffffff168373ffffffffffffffffffffffffffffffffffffffff16036102315780600260008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548160ff021916908360ff160217905550610359565b600073ffffffffffffffffffffffffffffffffffffffff168273ffffffffffffffffffffffffffffffffffffffff16036102c25780600160008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548160ff021916908360ff160217905550610358565b80600360008573ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060008473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548160ff021916908360ff1602179055505b5b505050565b600061036b848484610374565b90509392505050565b600080600160008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060009054906101000a900460ff1660ff1690506000600260008673ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060009054906101000a900460ff1660ff1690506000600360008873ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060008773ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060009054906101000a900460ff1660ff1690508460ff168560ff168284861717161493505050509392505050565b600080fd5b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b60006104f9826104ce565b9050919050565b610509816104ee565b811461051457600080fd5b50565b60008135905061052681610500565b92915050565b600060ff82169050919050565b6105428161052c565b811461054d57600080fd5b50565b60008135905061055f81610539565b92915050565b60008060006060848603121561057e5761057d6104c9565b5b600061058c86828701610517565b935050602061059d86828701610517565b92505060406105ae86828701610550565b9150509250925092565b60008115159050919050565b6105cd816105b8565b82525050565b60006020820190506105e860008301846105c4565b92915050565b600082825260208201905092915050565b7f4e6f7420616e2041646d696e0000000000000000000000000000000000000000600082015250565b6000610635600c836105ee565b9150610640826105ff565b602082019050919050565b6000602082019050818103600083015261066481610628565b905091905056fea2646970667358221220370e2f95d17db66d19fd6fbb067c54c2ee8e8bdb65c12a5b99536ec21114fe0b64736f6c634300080d0033\"\n}"
+        }
+        values {
+          key: "MEMORY_LIMIT"
+          value: "2000Mi"
+        }
+        values {
+          key: "MEMORY_REQUESTED"
+          value: "2000Mi"
+        }
+        values {
+          key: "MULTI_LOGGING_CONFIG"
+          value: "{\n}"
+        }
+        values {
+          key: "NODE_NAME"
+          value: "replica-3"
+        }
+        values {
+          key: "PRIVATE_IP"
+          value: "replica-3"
+        }
+        values {
+          key: "SIGNATURE_SAVE"
+          value: "SIGNATURE"
+        }
+        values {
+          key: "STORAGE_CLASS_NAME"
+          value: "standard"
+        }
+        values {
+          key: "STORAGE_REQUESTED"
+          value: "8Gi"
+        }
+        values {
+          key: "TELEGRAF_FILTERS_COLLECTION"
+          value: "{\n}"
+        }
+        values {
+          key: "ZONE_NAME"
+          value: "k8s-zone-A"
+        }
+      }
+    }
+  }
+}
+operator {
+  public_signing_key: "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAngUEmzah49nVVlarA1Jpe55ZtnBGeAz3HfO+X9wUYQI=\n-----END PUBLIC KEY-----"
+}
+]
+[INFO ] [2023-02-22 22:55:04.776] [thread=main] [OpID=] [user=] [org=] [function=BftClientConfigUtil] [message=outputPath /tmp/clients-18115944609514675751]
+[WARN ] [2023-02-22 22:55:04.831] [thread=main] [OpID=] [user=] [org=] [function=BftClientConfigUtil] [message=File EthereumBftclientConfigTemplate.yaml does not exist: EthereumBftclientConfigTemplate.yaml (No such file or directory)
+ Using localized config yaml input template]
+[INFO ] [2023-02-22 22:55:04.966] [thread=ForkJoinPool.commonPool-worker-3] [OpID=] [user=] [org=] [function=BftClientConfigUtil] [message=ConfigGenTool Output: ]
+[INFO ] [2023-02-22 22:55:04.966] [thread=ForkJoinPool.commonPool-worker-3] [OpID=] [user=] [org=] [function=BftClientConfigUtil] [message=2023-02-22T22:55:04,933,+0000|INFO ||concord.conc_genconfig||||conc_genconfig.cpp:304|conc_genconfig launched. configuration type all | [SQ:0]
+2023-02-22T22:55:04,961,+0000|INFO ||concord.conc_genconfig||||conc_genconfig.cpp:376|conc_genconfig completed successfully. | [SQ:1]
+]
+[INFO ] [2023-02-22 22:55:04.992] [thread=main] [OpID=] [user=] [org=] [function=ConfigurationService] [message=Generated bft client configurations for session Id : c71bb47e-ad85-4a9e-958e-6ecd84d4f0d0]
+[WARN ] [2023-02-22 22:55:04.994] [thread=main] [OpID=] [user=] [org=] [function=ConcordConfigUtil] [message=File EthereumConcordConfigTemplate.yaml does not exist: EthereumConcordConfigTemplate.yaml (No such file or directory)
+ Using localized config yaml input template]
+[INFO ] [2023-02-22 22:55:05.000] [thread=main] [OpID=] [user=] [org=] [function=GenericConcordConfigUtil] [message=event group enable false]
+[INFO ] [2023-02-22 22:55:05.024] [thread=main] [OpID=] [user=] [org=] [function=ConcordConfigUtil] [message=Generated out Concord Config yaml file at /tmp/replicas-11608725930780578317/dockerConfigurationInput.yaml]
+[INFO ] [2023-02-22 22:55:05.076] [thread=ForkJoinPool.commonPool-worker-3] [OpID=] [user=] [org=] [function=ConcordConfigUtil] [message=ConfigGenTool Output: 2023-02-22T22:55:05,030,+0000|INFO ||concord.conc_genconfig||||conc_genconfig.cpp:304|conc_genconfig launched. configuration type application | [SQ20232023-02-22T22:55:05,044,+0000|INFO ||concord.conc_genconfig||||conc_genconfig.cpp:152|Beginning key generation for the requested cluster. Depending on the cluster size, this may take a while... | [SQ:1]
+2023-02-22T22:55:05,044,+0000|INFO ||concord.configuration||||configuration_manager.cpp:3313|Generating threshold cryptographic keys for slow path commit cryptosystem... | [SQ:2]
+2023-02-22T22:55:05,044,+0000|INFO ||concord.configuration||||configuration_manager.cpp:3315|Generating threshold cryptographic keys for commit cryptosystem... | [SQ:3]
+2023-02-22T22:55:05,044,+0000|INFO ||concord.configuration||||configuration_manager.cpp:3319|Generating threshold cryptographic keys for optimistic fast path commit cryptosystem... | [SQ:4]
+2023-02-22T22:55:05,045,+0000|INFO ||concord.configuration||||configuration_manager.cpp:3324|Generating Concord-BFT replica main keys... | [SQ:5]
+2023-02-22T22:55:05,045,+0000|INFO ||concord.conc_genconfig||||conc_genconfig.cpp:154|Key generation complete. | [SQ20222023-02-22T22:55:05,052,+0000|INFO ||concord.conc_genconfig||||conc_genconfig.cpp:237|Configuration file application1.config (1 of 4) written. | [2023-02023-02-22T22:55:05,058,+0000|INFO ||concord.conc_genconfig||||conc_genconfig.cpp:237|Configuration file application2.config (2 of 4) written2023-02-22T2023-02-22T22:55:05,065,+0000|INFO ||concord.conc_genconfig||||conc_genconfig.cpp:237|Configuration file application3.config (3 of 4) wr2023-02-22T22:55:05,073,+0000|INFO ||concord.conc_genconfig||||conc_genconfig.cpp:237|Configuration file deploy4.config (4 of 4) written. | [SQ:10]
+2023-02-22T22:55:05,073,+0000|INFO ||concord.conc_genconfig||||conc_genconfig.cpp:376|conc_genconfig completed successfully. | [SQ:11]
+cessfully. | [SQ:11]
+]
+[INFO ] [2023-02-22 22:55:05.079] [thread=ForkJoinPool.commonPool-worker-3] [OpID=] [user=] [org=] [function=ConcordConfigUtil] [message=All replicas including read replicas are already captured. No action required.]
+[INFO ] [2023-02-22 22:55:05.079] [thread=ForkJoinPool.commonPool-worker-3] [OpID=] [user=] [org=] [function=ConcordConfigUtil] [message=Node principal after adding read replicas {0=[4, 0], 1=[5, 1], 2=[6, 2], 3=[7, 3]}]
+[INFO ] [2023-02-22 22:55:05.083] [thread=main] [OpID=] [user=] [org=] [function=ConfigurationService] [message=Generated concord configurations for session Id : c71bb47e-ad85-4a9e-958e-6ecd84d4f0d0]
+[WARN ] [2023-02-22 22:55:05.087] [thread=main] [OpID=] [user=] [org=] [function=ConcordOperatorConfigUtil] [message=File ConcordOperatorConfigTemplate.yaml does not exist: ConcordOperatorConfigTemplate.yaml (No such file or directory)
+ Using localized config yaml input template]
+[INFO ] [2023-02-22 22:55:05.105] [thread=ForkJoinPool.commonPool-worker-3] [OpID=] [user=] [org=] [function=ConcordOperatorConfigUtil] [message=ConfigGenTool Output: ]
+[INFO ] [2023-02-22 22:55:05.106] [thread=ForkJoinPool.commonPool-worker-3] [OpID=] [user=] [org=] [function=ConcordOperatorConfigUtil] [message=2023-02-22T22:55:05,096,+0000|INFO ||concord.conc_genconfig||||conc_genconfig.cpp:304|conc_genconfig launched. configuration type all | [SQ:0]
+2023-02-22T22:55:05,104,+0000|INFO ||concord.conc_genconfig||||conc_genconfig.cpp:376|conc_genconfig completed successfully. | [SQ:1]
+]
+[INFO ] [2023-02-22 22:55:05.124] [thread=main] [OpID=] [user=] [org=] [function=ConfigurationService] [message=Generated operator configurations for session Id : c71bb47e-ad85-4a9e-958e-6ecd84d4f0d0]
+[INFO ] [2023-02-22 22:55:05.353] [thread=main] [OpID=] [user=] [org=] [function=ConfigurationServiceHelper] [message=No config required for serviceType CONCORD_CLIENT_RECONFIGURATOR]
+[INFO ] [2023-02-22 22:55:05.353] [thread=main] [OpID=] [user=] [org=] [function=ConfigurationService] [message=Generated node independent configurations for session Id : c71bb47e-ad85-4a9e-958e-6ecd84d4f0d0]
+[INFO ] [2023-02-22 22:55:05.354] [thread=main] [OpID=] [user=] [org=] [function=ConfigurationService] [message=Creating secrets for session Id c71bb47e-ad85-4a9e-958e-6ecd84d4f0d0]
+[INFO ] [2023-02-22 22:55:05.678] [thread=main] [OpID=] [user=] [org=] [function=IdentityManagementUtilV2] [message=All node Ids in this deployment [4c36cf7a-02d8-4dd5-9fe3-095fcfb4635c, d56b1931-157d-4db7-a5ac-4c2d005d1b4c, 8824e311-8934-434d-b80a-313f29ff548b, 893e3308-1ea1-454b-850a-770651ee91f0, c407885c-cdb2-4e7b-900a-468aa19277ae, cf36aebd-0a0a-4235-926a-b054072df4b8]]
+[INFO ] [2023-02-22 22:55:05.684] [thread=main] [OpID=] [user=] [org=] [function=IdentityManagementUtilV2] [message=Total node mappings available for client node c407885c-cdb2-4e7b-900a-468aa19277ae is 1]
+[INFO ] [2023-02-22 22:55:05.685] [thread=main] [OpID=] [user=] [org=] [function=IdentityManagementUtilV2] [message=Total node mappings available for replica node 8824e311-8934-434d-b80a-313f29ff548b is 1]
+[INFO ] [2023-02-22 22:55:05.685] [thread=main] [OpID=] [user=] [org=] [function=IdentityManagementUtilV2] [message=Total node mappings available for replica node 893e3308-1ea1-454b-850a-770651ee91f0 is 2]
+[INFO ] [2023-02-22 22:55:05.685] [thread=main] [OpID=] [user=] [org=] [function=IdentityManagementUtilV2] [message=Total node mappings available for replica node d56b1931-157d-4db7-a5ac-4c2d005d1b4c is 3]
+[INFO ] [2023-02-22 22:55:05.686] [thread=main] [OpID=] [user=] [org=] [function=IdentityManagementUtilV2] [message=Total node mappings available for operator node cf36aebd-0a0a-4235-926a-b054072df4b8 is 1]
+[INFO ] [2023-02-22 22:55:05.686] [thread=main] [OpID=] [user=] [org=] [function=IdentityManagementUtilV2] [message=Total node mappings available for replica node 4c36cf7a-02d8-4dd5-9fe3-095fcfb4635c is 4]
+[INFO ] [2023-02-22 22:55:05.688] [thread=main] [OpID=] [user=] [org=] [function=ConfigurationService] [message=Generated tls identity elements for session id: c71bb47e-ad85-4a9e-958e-6ecd84d4f0d0]
+[INFO ] [2023-02-22 22:55:05.689] [thread=main] [OpID=] [user=] [org=] [function=ConfigurationService] [message=Persisting configurations for session: c71bb47e-ad85-4a9e-958e-6ecd84d4f0d0, node: 8824e311-8934-434d-b80a-313f29ff548b in memory...]
+[INFO ] [2023-02-22 22:55:05.694] [thread=main] [OpID=] [user=] [org=] [function=ConfigurationService] [message=Persisting configurations for session: c71bb47e-ad85-4a9e-958e-6ecd84d4f0d0, node: c407885c-cdb2-4e7b-900a-468aa19277ae in memory...]
+[INFO ] [2023-02-22 22:55:05.695] [thread=main] [OpID=] [user=] [org=] [function=ConfigurationService] [message=Persisting configurations for session: c71bb47e-ad85-4a9e-958e-6ecd84d4f0d0, node: 893e3308-1ea1-454b-850a-770651ee91f0 in memory...]
+[INFO ] [2023-02-22 22:55:05.696] [thread=main] [OpID=] [user=] [org=] [function=ConfigurationService] [message=Persisting configurations for session: c71bb47e-ad85-4a9e-958e-6ecd84d4f0d0, node: d56b1931-157d-4db7-a5ac-4c2d005d1b4c in memory...]
+[INFO ] [2023-02-22 22:55:05.697] [thread=main] [OpID=] [user=] [org=] [function=ConfigurationService] [message=Persisting configurations for session: c71bb47e-ad85-4a9e-958e-6ecd84d4f0d0, node: cf36aebd-0a0a-4235-926a-b054072df4b8 in memory...]
+[INFO ] [2023-02-22 22:55:05.697] [thread=main] [OpID=] [user=] [org=] [function=ConfigurationService] [message=Persisting configurations for session: c71bb47e-ad85-4a9e-958e-6ecd84d4f0d0, node: 4c36cf7a-02d8-4dd5-9fe3-095fcfb4635c in memory...]
+[INFO ] [2023-02-22 22:55:05.700] [thread=main] [OpID=] [user=] [org=] [function=ConfigHelper] [message=Configuration request - header: id: "c71bb47e-ad85-4a9e-958e-6ecd84d4f0d0"
+, blockchain Id: 746d220e-1eb9-4d15-ae1b-a224cee8d396, consortium Id: 967a2ee0-c4a5-40e8-a9fe-24951eb32a83, blockchainType: ETHEREUM, genericProperties values {
+  key: "BLOCKCHAIN_ID"
+  value: "746d220e-1eb9-4d15-ae1b-a224cee8d396"
+}
+values {
+  key: "BLOCKCHAIN_VERSION"
+  value: "0.0.0.0.8139"
+}
+values {
+  key: "ENCRYPT_SECRETS"
+  value: "False"
+}
+values {
+  key: "SIGNATURE_SAVE"
+  value: "SIGNATURE"
+}
+]
+[INFO ] [2023-02-22 22:55:07.771] [thread=main] [OpID=] [user=] [org=] [function=ProvisioningService] [message=Create replica nodes (if applicable)]
+[INFO ] [2023-02-22 22:55:07.773] [thread=main] [OpID=] [user=] [org=] [function=ProvisioningService] [message=Create read full copy client nodes (if applicable)]
+[INFO ] [2023-02-22 22:55:07.774] [thread=main] [OpID=] [user=] [org=] [function=ProvisioningService] [message=Create client nodes (if applicable)]
+[INFO ] [2023-02-22 22:55:07.775] [thread=main] [OpID=] [user=] [org=] [function=ProvisioningService] [message=Deployment of nodes completed for session c71bb47e-ad85-4a9e-958e-6ecd84d4f0d0.]
+[INFO ] [2023-02-22 22:55:07.775] [thread=main] [OpID=] [user=] [org=] [function=ProvisioningService] [message=Deployment session(c71bb47e-ad85-4a9e-958e-6ecd84d4f0d0) completed]
+[INFO ] [2023-02-22 22:55:07.779] [thread=main] [OpID=] [user=] [org=] [function=ProvisionerServiceImpl] [message=Deployment submitted, request id c71bb47e-ad85-4a9e-958e-6ecd84d4f0d0]
+[INFO ] [2023-02-22 22:55:07.780] [thread=main] [OpID=] [user=] [org=] [function=DeployerServiceImpl] [message=Deployment completed with status: SUCCESS]

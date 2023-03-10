@@ -1,0 +1,125 @@
+{
+  "nodes": [
+    {
+      "nodeId": "c432067a-fa56-41c3-b62c-53c5638e3545",
+      "names": [
+        ""
+      ],
+      "properties": {
+        "CPU_LIMIT": "100m",
+        "CPU_REQUESTED": "100m",
+        "BLOCKCHAIN_ID": "746d220e-1eb9-4d15-ae1b-a224cee8d396",
+        "STORAGE_CLASS_NAME": "standard",
+        "BLOCKCHAIN_VERSION": "0.0.0.0.8139",
+        "SIGNATURE_SAVE": "SIGNATURE",
+        "ZONE_NAME": "k8s-zone-A",
+        "NODE_NAME": "replica-1",
+        "ENCRYPT_SECRETS": "False",
+        "MEMORY_REQUESTED": "2000Mi",
+        "STORAGE_REQUESTED": "8Gi",
+        "PRIVATE_IP": "replica-1",
+        "MEMORY_LIMIT": "2000Mi"
+      }
+    },
+    {
+      "nodeId": "232a1456-d84d-4f16-8192-91737431afb0",
+      "names": [
+        ""
+      ],
+      "properties": {
+        "CPU_LIMIT": "100m",
+        "CPU_REQUESTED": "100m",
+        "BLOCKCHAIN_ID": "746d220e-1eb9-4d15-ae1b-a224cee8d396",
+        "STORAGE_CLASS_NAME": "standard",
+        "BLOCKCHAIN_VERSION": "0.0.0.0.8139",
+        "SIGNATURE_SAVE": "SIGNATURE",
+        "ZONE_NAME": "k8s-zone-A",
+        "NODE_NAME": "replica-0",
+        "ENCRYPT_SECRETS": "False",
+        "MEMORY_REQUESTED": "2000Mi",
+        "STORAGE_REQUESTED": "8Gi",
+        "PRIVATE_IP": "replica-0",
+        "MEMORY_LIMIT": "2000Mi"
+      }
+    },
+    {
+      "nodeId": "54494355-67c5-4f04-99c1-8df0832452bb",
+      "names": [
+        ""
+      ],
+      "properties": {
+        "CPU_LIMIT": "100m",
+        "CPU_REQUESTED": "100m",
+        "BLOCKCHAIN_ID": "746d220e-1eb9-4d15-ae1b-a224cee8d396",
+        "STORAGE_CLASS_NAME": "standard",
+        "BLOCKCHAIN_VERSION": "0.0.0.0.8139",
+        "SIGNATURE_SAVE": "SIGNATURE",
+        "ZONE_NAME": "k8s-zone-A",
+        "NODE_NAME": "replica-3",
+        "ENCRYPT_SECRETS": "False",
+        "MEMORY_REQUESTED": "2000Mi",
+        "STORAGE_REQUESTED": "8Gi",
+        "PRIVATE_IP": "replica-3",
+        "MEMORY_LIMIT": "2000Mi"
+      }
+    },
+    {
+      "nodeId": "45b36454-6615-4b63-93db-8fcee077a64d",
+      "names": [
+        ""
+      ],
+      "properties": {
+        "CPU_LIMIT": "100m",
+        "CPU_REQUESTED": "100m",
+        "BLOCKCHAIN_ID": "746d220e-1eb9-4d15-ae1b-a224cee8d396",
+        "CLIENT_GROUP_ID": "45b36454-6615-4b63-93db-8fcee077a64d",
+        "STORAGE_CLASS_NAME": "standard",
+        "BLOCKCHAIN_VERSION": "0.0.0.0.8139",
+        "SIGNATURE_SAVE": "SIGNATURE",
+        "ZONE_NAME": "k8s-zone-A",
+        "NODE_NAME": "client-0",
+        "CLIENT_CONFIG_PROPERTIES": "{\n}",
+        "ENCRYPT_SECRETS": "False",
+        "CLIENT_ENDPOINT": "https://{{ip}}:8545",
+        "MEMORY_REQUESTED": "500Mi",
+        "STORAGE_REQUESTED": "8Gi",
+        "CLIENT_POSTGRES_PROPERTIES": "{\n  \"values\": {\n    \"max_connections\": \"300\",\n    \"shared_buffers\": \"4GB\",\n    \"effective_cache_size\": \"12GB\",\n    \"maintenance_work_mem\": \"1GB\",\n    \"checkpoint_completion_target\": \"0.9\",\n    \"wal_buffers\": \"16MB\",\n    \"default_statistics_target\": \"100\",\n    \"random_page_cost\": \"4\",\n    \"effective_io_concurrency\": \"2\",\n    \"work_mem\": \"40MB\",\n    \"min_wal_size\": \"2GB\",\n    \"max_wal_size\": \"8GB\",\n    \"max_worker_processes\": \"4\",\n    \"max_parallel_workers_per_gather\": \"2\",\n    \"max_parallel_workers\": \"4\",\n    \"max_parallel_maintenance_workers\": \"2\"\n  }\n}",
+        "PRIVATE_IP": "client-0",
+        "MEMORY_LIMIT": "500Mi",
+        "CLIENT_BACKUP_ENABLED": "false"
+      }
+    },
+    {
+      "nodeId": "1d3e09d5-0061-4e9b-a5f2-7f93ba03c788",
+      "names": [
+        ""
+      ],
+      "properties": {
+        "CPU_LIMIT": "100m",
+        "CPU_REQUESTED": "100m",
+        "BLOCKCHAIN_ID": "746d220e-1eb9-4d15-ae1b-a224cee8d396",
+        "STORAGE_CLASS_NAME": "standard",
+        "BLOCKCHAIN_VERSION": "0.0.0.0.8139",
+        "SIGNATURE_SAVE": "SIGNATURE",
+        "ZONE_NAME": "k8s-zone-A",
+        "NODE_NAME": "replica-2",
+        "ENCRYPT_SECRETS": "False",
+        "MEMORY_REQUESTED": "2000Mi",
+        "STORAGE_REQUESTED": "8Gi",
+        "PRIVATE_IP": "replica-2",
+        "MEMORY_LIMIT": "2000Mi"
+      }
+    }
+  ],
+  "metadata": {
+    "deploymentType": "GENERATE",
+    "consortiumName": "castor-consortium-1",
+    "startingTime": "2023-02-22T22:51:36.4755",
+    "blockchainVersion": "0.0.0.0.8139",
+    "finishingTime": "2023-02-22T22:51:40.497677",
+    "deploymentRequestId": "5b7d869e-6c49-429f-acd9-0b7612e83555",
+    "blockchainId": "746d220e-1eb9-4d15-ae1b-a224cee8d396",
+    "consortiumId": "9d2414af-ea67-40a1-8c6f-358d6aa3d771",
+    "status": "SUCCESS"
+  }
+}

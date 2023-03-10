@@ -1,0 +1,7 @@
+export REPLICAS=concord:50051
+export CLIENTSERVICE_TRC_INSECURE=false
+export CLIENTSERVICE_TRC_TLS_PATH=/config/clientservice/tls_certs
+export JAEGER_AGENT_ADDRESS=
+export CLIENTSERVICE_CONFIG=/config/clientservice/clientservice.config
+export CLIENTSERVICE_PORT=50505
+export CLIENTSERVICE_TRC_ID=p25aa81a9_52bd_4bf9_9252_7da6a0df98b0

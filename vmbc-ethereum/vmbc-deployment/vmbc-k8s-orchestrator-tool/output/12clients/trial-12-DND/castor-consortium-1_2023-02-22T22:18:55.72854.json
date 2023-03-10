@@ -1,0 +1,427 @@
+{
+  "nodes": [
+    {
+      "nodeId": "a5a2d6e0-abef-4711-aadb-8bc63731d290",
+      "names": [
+        ""
+      ],
+      "properties": {
+        "CPU_LIMIT": "100m",
+        "CPU_REQUESTED": "100m",
+        "BLOCKCHAIN_ID": "746d220e-1eb9-4d15-ae1b-a224cee8d396",
+        "STORAGE_CLASS_NAME": "gp2",
+        "BLOCKCHAIN_VERSION": "0.0.0.0.8278",
+        "SIGNATURE_SAVE": "SIGNATURE",
+        "ZONE_NAME": "k8s-zone-A",
+        "NODE_NAME": "replica-2",
+        "ENCRYPT_SECRETS": "False",
+        "MEMORY_REQUESTED": "2000Mi",
+        "NUM_BFT_CLIENTS": "5",
+        "STORAGE_REQUESTED": "8Gi",
+        "PRIVATE_IP": "replica-2",
+        "MEMORY_LIMIT": "2000Mi"
+      }
+    },
+    {
+      "nodeId": "12579584-f514-4ea4-8abd-08b06ce5a092",
+      "names": [
+        ""
+      ],
+      "properties": {
+        "CPU_LIMIT": "100m",
+        "CPU_REQUESTED": "100m",
+        "BLOCKCHAIN_ID": "746d220e-1eb9-4d15-ae1b-a224cee8d396",
+        "CLIENT_GROUP_ID": "12579584-f514-4ea4-8abd-08b06ce5a092",
+        "STORAGE_CLASS_NAME": "gp2",
+        "BLOCKCHAIN_VERSION": "0.0.0.0.8278",
+        "SIGNATURE_SAVE": "SIGNATURE",
+        "ZONE_NAME": "k8s-zone-A",
+        "NODE_NAME": "client-3",
+        "CLIENT_CONFIG_PROPERTIES": "{\n}",
+        "ENCRYPT_SECRETS": "False",
+        "CLIENT_ENDPOINT": "https://{{ip}}:8545",
+        "MEMORY_REQUESTED": "500Mi",
+        "NUM_BFT_CLIENTS": "5",
+        "STORAGE_REQUESTED": "8Gi",
+        "CLIENT_POSTGRES_PROPERTIES": "{\n  \"values\": {\n    \"max_connections\": \"300\",\n    \"shared_buffers\": \"4GB\",\n    \"effective_cache_size\": \"12GB\",\n    \"maintenance_work_mem\": \"1GB\",\n    \"checkpoint_completion_target\": \"0.9\",\n    \"wal_buffers\": \"16MB\",\n    \"default_statistics_target\": \"100\",\n    \"random_page_cost\": \"4\",\n    \"effective_io_concurrency\": \"2\",\n    \"work_mem\": \"40MB\",\n    \"min_wal_size\": \"2GB\",\n    \"max_wal_size\": \"8GB\",\n    \"max_worker_processes\": \"4\",\n    \"max_parallel_workers_per_gather\": \"2\",\n    \"max_parallel_workers\": \"4\",\n    \"max_parallel_maintenance_workers\": \"2\"\n  }\n}",
+        "PRIVATE_IP": "client-3",
+        "MEMORY_LIMIT": "500Mi",
+        "CLIENT_BACKUP_ENABLED": "false"
+      }
+    },
+    {
+      "nodeId": "22545c38-c0c1-4840-8e12-3d4443cb22fb",
+      "names": [
+        ""
+      ],
+      "properties": {
+        "CPU_LIMIT": "100m",
+        "CPU_REQUESTED": "100m",
+        "BLOCKCHAIN_ID": "746d220e-1eb9-4d15-ae1b-a224cee8d396",
+        "CLIENT_GROUP_ID": "22545c38-c0c1-4840-8e12-3d4443cb22fb",
+        "STORAGE_CLASS_NAME": "gp2",
+        "BLOCKCHAIN_VERSION": "0.0.0.0.8278",
+        "SIGNATURE_SAVE": "SIGNATURE",
+        "ZONE_NAME": "k8s-zone-A",
+        "NODE_NAME": "client-9",
+        "CLIENT_CONFIG_PROPERTIES": "{\n}",
+        "ENCRYPT_SECRETS": "False",
+        "CLIENT_ENDPOINT": "https://{{ip}}:8545",
+        "MEMORY_REQUESTED": "500Mi",
+        "NUM_BFT_CLIENTS": "5",
+        "STORAGE_REQUESTED": "8Gi",
+        "CLIENT_POSTGRES_PROPERTIES": "{\n  \"values\": {\n    \"max_connections\": \"300\",\n    \"shared_buffers\": \"4GB\",\n    \"effective_cache_size\": \"12GB\",\n    \"maintenance_work_mem\": \"1GB\",\n    \"checkpoint_completion_target\": \"0.9\",\n    \"wal_buffers\": \"16MB\",\n    \"default_statistics_target\": \"100\",\n    \"random_page_cost\": \"4\",\n    \"effective_io_concurrency\": \"2\",\n    \"work_mem\": \"40MB\",\n    \"min_wal_size\": \"2GB\",\n    \"max_wal_size\": \"8GB\",\n    \"max_worker_processes\": \"4\",\n    \"max_parallel_workers_per_gather\": \"2\",\n    \"max_parallel_workers\": \"4\",\n    \"max_parallel_maintenance_workers\": \"2\"\n  }\n}",
+        "PRIVATE_IP": "client-9",
+        "MEMORY_LIMIT": "500Mi",
+        "CLIENT_BACKUP_ENABLED": "false"
+      }
+    },
+    {
+      "nodeId": "ce814e11-8333-4fdb-a4bf-2e9dcae0139d",
+      "names": [
+        ""
+      ],
+      "properties": {
+        "CPU_LIMIT": "100m",
+        "CPU_REQUESTED": "100m",
+        "BLOCKCHAIN_ID": "746d220e-1eb9-4d15-ae1b-a224cee8d396",
+        "STORAGE_CLASS_NAME": "gp2",
+        "BLOCKCHAIN_VERSION": "0.0.0.0.8278",
+        "SIGNATURE_SAVE": "SIGNATURE",
+        "ZONE_NAME": "k8s-zone-A",
+        "NODE_NAME": "replica-1",
+        "ENCRYPT_SECRETS": "False",
+        "MEMORY_REQUESTED": "2000Mi",
+        "NUM_BFT_CLIENTS": "5",
+        "STORAGE_REQUESTED": "8Gi",
+        "PRIVATE_IP": "replica-1",
+        "MEMORY_LIMIT": "2000Mi"
+      }
+    },
+    {
+      "nodeId": "252f5038-4011-4a8b-a57a-1849d4de8817",
+      "names": [
+        ""
+      ],
+      "properties": {
+        "CPU_LIMIT": "100m",
+        "CPU_REQUESTED": "100m",
+        "BLOCKCHAIN_ID": "746d220e-1eb9-4d15-ae1b-a224cee8d396",
+        "STORAGE_CLASS_NAME": "gp2",
+        "BLOCKCHAIN_VERSION": "0.0.0.0.8278",
+        "SIGNATURE_SAVE": "SIGNATURE",
+        "ZONE_NAME": "k8s-zone-A",
+        "NODE_NAME": "replica-3",
+        "ENCRYPT_SECRETS": "False",
+        "MEMORY_REQUESTED": "2000Mi",
+        "NUM_BFT_CLIENTS": "5",
+        "STORAGE_REQUESTED": "8Gi",
+        "PRIVATE_IP": "replica-3",
+        "MEMORY_LIMIT": "2000Mi"
+      }
+    },
+    {
+      "nodeId": "53737844-5352-40d1-a3c0-f69544f44b2c",
+      "names": [
+        ""
+      ],
+      "properties": {
+        "CPU_LIMIT": "100m",
+        "CPU_REQUESTED": "100m",
+        "BLOCKCHAIN_ID": "746d220e-1eb9-4d15-ae1b-a224cee8d396",
+        "CLIENT_GROUP_ID": "53737844-5352-40d1-a3c0-f69544f44b2c",
+        "STORAGE_CLASS_NAME": "gp2",
+        "BLOCKCHAIN_VERSION": "0.0.0.0.8278",
+        "SIGNATURE_SAVE": "SIGNATURE",
+        "ZONE_NAME": "k8s-zone-A",
+        "NODE_NAME": "client-10",
+        "CLIENT_CONFIG_PROPERTIES": "{\n}",
+        "ENCRYPT_SECRETS": "False",
+        "CLIENT_ENDPOINT": "https://{{ip}}:8545",
+        "MEMORY_REQUESTED": "500Mi",
+        "NUM_BFT_CLIENTS": "5",
+        "STORAGE_REQUESTED": "8Gi",
+        "CLIENT_POSTGRES_PROPERTIES": "{\n  \"values\": {\n    \"max_connections\": \"300\",\n    \"shared_buffers\": \"4GB\",\n    \"effective_cache_size\": \"12GB\",\n    \"maintenance_work_mem\": \"1GB\",\n    \"checkpoint_completion_target\": \"0.9\",\n    \"wal_buffers\": \"16MB\",\n    \"default_statistics_target\": \"100\",\n    \"random_page_cost\": \"4\",\n    \"effective_io_concurrency\": \"2\",\n    \"work_mem\": \"40MB\",\n    \"min_wal_size\": \"2GB\",\n    \"max_wal_size\": \"8GB\",\n    \"max_worker_processes\": \"4\",\n    \"max_parallel_workers_per_gather\": \"2\",\n    \"max_parallel_workers\": \"4\",\n    \"max_parallel_maintenance_workers\": \"2\"\n  }\n}",
+        "PRIVATE_IP": "client-10",
+        "MEMORY_LIMIT": "500Mi",
+        "CLIENT_BACKUP_ENABLED": "false"
+      }
+    },
+    {
+      "nodeId": "65d90752-e78c-4d25-9275-0fb812e3fcc2",
+      "names": [
+        ""
+      ],
+      "properties": {
+        "CPU_LIMIT": "100m",
+        "CPU_REQUESTED": "100m",
+        "BLOCKCHAIN_ID": "746d220e-1eb9-4d15-ae1b-a224cee8d396",
+        "CLIENT_GROUP_ID": "65d90752-e78c-4d25-9275-0fb812e3fcc2",
+        "STORAGE_CLASS_NAME": "gp2",
+        "BLOCKCHAIN_VERSION": "0.0.0.0.8278",
+        "SIGNATURE_SAVE": "SIGNATURE",
+        "ZONE_NAME": "k8s-zone-A",
+        "NODE_NAME": "client-8",
+        "CLIENT_CONFIG_PROPERTIES": "{\n}",
+        "ENCRYPT_SECRETS": "False",
+        "CLIENT_ENDPOINT": "https://{{ip}}:8545",
+        "MEMORY_REQUESTED": "500Mi",
+        "NUM_BFT_CLIENTS": "5",
+        "STORAGE_REQUESTED": "8Gi",
+        "CLIENT_POSTGRES_PROPERTIES": "{\n  \"values\": {\n    \"max_connections\": \"300\",\n    \"shared_buffers\": \"4GB\",\n    \"effective_cache_size\": \"12GB\",\n    \"maintenance_work_mem\": \"1GB\",\n    \"checkpoint_completion_target\": \"0.9\",\n    \"wal_buffers\": \"16MB\",\n    \"default_statistics_target\": \"100\",\n    \"random_page_cost\": \"4\",\n    \"effective_io_concurrency\": \"2\",\n    \"work_mem\": \"40MB\",\n    \"min_wal_size\": \"2GB\",\n    \"max_wal_size\": \"8GB\",\n    \"max_worker_processes\": \"4\",\n    \"max_parallel_workers_per_gather\": \"2\",\n    \"max_parallel_workers\": \"4\",\n    \"max_parallel_maintenance_workers\": \"2\"\n  }\n}",
+        "PRIVATE_IP": "client-8",
+        "MEMORY_LIMIT": "500Mi",
+        "CLIENT_BACKUP_ENABLED": "false"
+      }
+    },
+    {
+      "nodeId": "400d60ae-18f8-4f8c-8330-4ad24a8f98a3",
+      "names": [
+        ""
+      ],
+      "properties": {
+        "CPU_LIMIT": "100m",
+        "CPU_REQUESTED": "100m",
+        "BLOCKCHAIN_ID": "746d220e-1eb9-4d15-ae1b-a224cee8d396",
+        "CLIENT_GROUP_ID": "400d60ae-18f8-4f8c-8330-4ad24a8f98a3",
+        "STORAGE_CLASS_NAME": "gp2",
+        "BLOCKCHAIN_VERSION": "0.0.0.0.8278",
+        "SIGNATURE_SAVE": "SIGNATURE",
+        "ZONE_NAME": "k8s-zone-A",
+        "NODE_NAME": "client-6",
+        "CLIENT_CONFIG_PROPERTIES": "{\n}",
+        "ENCRYPT_SECRETS": "False",
+        "CLIENT_ENDPOINT": "https://{{ip}}:8545",
+        "MEMORY_REQUESTED": "500Mi",
+        "NUM_BFT_CLIENTS": "5",
+        "STORAGE_REQUESTED": "8Gi",
+        "CLIENT_POSTGRES_PROPERTIES": "{\n  \"values\": {\n    \"max_connections\": \"300\",\n    \"shared_buffers\": \"4GB\",\n    \"effective_cache_size\": \"12GB\",\n    \"maintenance_work_mem\": \"1GB\",\n    \"checkpoint_completion_target\": \"0.9\",\n    \"wal_buffers\": \"16MB\",\n    \"default_statistics_target\": \"100\",\n    \"random_page_cost\": \"4\",\n    \"effective_io_concurrency\": \"2\",\n    \"work_mem\": \"40MB\",\n    \"min_wal_size\": \"2GB\",\n    \"max_wal_size\": \"8GB\",\n    \"max_worker_processes\": \"4\",\n    \"max_parallel_workers_per_gather\": \"2\",\n    \"max_parallel_workers\": \"4\",\n    \"max_parallel_maintenance_workers\": \"2\"\n  }\n}",
+        "PRIVATE_IP": "client-6",
+        "MEMORY_LIMIT": "500Mi",
+        "CLIENT_BACKUP_ENABLED": "false"
+      }
+    },
+    {
+      "nodeId": "41f0ef8b-d43f-4204-bea7-2e93d23bb081",
+      "names": [
+        ""
+      ],
+      "properties": {
+        "CPU_LIMIT": "100m",
+        "CPU_REQUESTED": "100m",
+        "BLOCKCHAIN_ID": "746d220e-1eb9-4d15-ae1b-a224cee8d396",
+        "CLIENT_GROUP_ID": "41f0ef8b-d43f-4204-bea7-2e93d23bb081",
+        "STORAGE_CLASS_NAME": "gp2",
+        "BLOCKCHAIN_VERSION": "0.0.0.0.8278",
+        "SIGNATURE_SAVE": "SIGNATURE",
+        "ZONE_NAME": "k8s-zone-A",
+        "NODE_NAME": "client-0",
+        "CLIENT_CONFIG_PROPERTIES": "{\n}",
+        "ENCRYPT_SECRETS": "False",
+        "CLIENT_ENDPOINT": "https://{{ip}}:8545",
+        "MEMORY_REQUESTED": "500Mi",
+        "NUM_BFT_CLIENTS": "5",
+        "STORAGE_REQUESTED": "8Gi",
+        "CLIENT_POSTGRES_PROPERTIES": "{\n  \"values\": {\n    \"max_connections\": \"300\",\n    \"shared_buffers\": \"4GB\",\n    \"effective_cache_size\": \"12GB\",\n    \"maintenance_work_mem\": \"1GB\",\n    \"checkpoint_completion_target\": \"0.9\",\n    \"wal_buffers\": \"16MB\",\n    \"default_statistics_target\": \"100\",\n    \"random_page_cost\": \"4\",\n    \"effective_io_concurrency\": \"2\",\n    \"work_mem\": \"40MB\",\n    \"min_wal_size\": \"2GB\",\n    \"max_wal_size\": \"8GB\",\n    \"max_worker_processes\": \"4\",\n    \"max_parallel_workers_per_gather\": \"2\",\n    \"max_parallel_workers\": \"4\",\n    \"max_parallel_maintenance_workers\": \"2\"\n  }\n}",
+        "PRIVATE_IP": "client-0",
+        "MEMORY_LIMIT": "500Mi",
+        "CLIENT_BACKUP_ENABLED": "false"
+      }
+    },
+    {
+      "nodeId": "37d86575-4a93-4975-bb04-a8b52d05b89c",
+      "names": [
+        ""
+      ],
+      "properties": {
+        "CPU_LIMIT": "100m",
+        "CPU_REQUESTED": "100m",
+        "BLOCKCHAIN_ID": "746d220e-1eb9-4d15-ae1b-a224cee8d396",
+        "CLIENT_GROUP_ID": "37d86575-4a93-4975-bb04-a8b52d05b89c",
+        "STORAGE_CLASS_NAME": "gp2",
+        "BLOCKCHAIN_VERSION": "0.0.0.0.8278",
+        "SIGNATURE_SAVE": "SIGNATURE",
+        "ZONE_NAME": "k8s-zone-A",
+        "NODE_NAME": "client-5",
+        "CLIENT_CONFIG_PROPERTIES": "{\n}",
+        "ENCRYPT_SECRETS": "False",
+        "CLIENT_ENDPOINT": "https://{{ip}}:8545",
+        "MEMORY_REQUESTED": "500Mi",
+        "NUM_BFT_CLIENTS": "5",
+        "STORAGE_REQUESTED": "8Gi",
+        "CLIENT_POSTGRES_PROPERTIES": "{\n  \"values\": {\n    \"max_connections\": \"300\",\n    \"shared_buffers\": \"4GB\",\n    \"effective_cache_size\": \"12GB\",\n    \"maintenance_work_mem\": \"1GB\",\n    \"checkpoint_completion_target\": \"0.9\",\n    \"wal_buffers\": \"16MB\",\n    \"default_statistics_target\": \"100\",\n    \"random_page_cost\": \"4\",\n    \"effective_io_concurrency\": \"2\",\n    \"work_mem\": \"40MB\",\n    \"min_wal_size\": \"2GB\",\n    \"max_wal_size\": \"8GB\",\n    \"max_worker_processes\": \"4\",\n    \"max_parallel_workers_per_gather\": \"2\",\n    \"max_parallel_workers\": \"4\",\n    \"max_parallel_maintenance_workers\": \"2\"\n  }\n}",
+        "PRIVATE_IP": "client-5",
+        "MEMORY_LIMIT": "500Mi",
+        "CLIENT_BACKUP_ENABLED": "false"
+      }
+    },
+    {
+      "nodeId": "2721b49e-a8a5-4ef4-8dea-ffe37b21a5af",
+      "names": [
+        ""
+      ],
+      "properties": {
+        "CPU_LIMIT": "100m",
+        "CPU_REQUESTED": "100m",
+        "BLOCKCHAIN_ID": "746d220e-1eb9-4d15-ae1b-a224cee8d396",
+        "CLIENT_GROUP_ID": "2721b49e-a8a5-4ef4-8dea-ffe37b21a5af",
+        "STORAGE_CLASS_NAME": "gp2",
+        "BLOCKCHAIN_VERSION": "0.0.0.0.8278",
+        "SIGNATURE_SAVE": "SIGNATURE",
+        "ZONE_NAME": "k8s-zone-A",
+        "NODE_NAME": "client-11",
+        "CLIENT_CONFIG_PROPERTIES": "{\n}",
+        "ENCRYPT_SECRETS": "False",
+        "CLIENT_ENDPOINT": "https://{{ip}}:8545",
+        "MEMORY_REQUESTED": "500Mi",
+        "NUM_BFT_CLIENTS": "5",
+        "STORAGE_REQUESTED": "8Gi",
+        "CLIENT_POSTGRES_PROPERTIES": "{\n  \"values\": {\n    \"max_connections\": \"300\",\n    \"shared_buffers\": \"4GB\",\n    \"effective_cache_size\": \"12GB\",\n    \"maintenance_work_mem\": \"1GB\",\n    \"checkpoint_completion_target\": \"0.9\",\n    \"wal_buffers\": \"16MB\",\n    \"default_statistics_target\": \"100\",\n    \"random_page_cost\": \"4\",\n    \"effective_io_concurrency\": \"2\",\n    \"work_mem\": \"40MB\",\n    \"min_wal_size\": \"2GB\",\n    \"max_wal_size\": \"8GB\",\n    \"max_worker_processes\": \"4\",\n    \"max_parallel_workers_per_gather\": \"2\",\n    \"max_parallel_workers\": \"4\",\n    \"max_parallel_maintenance_workers\": \"2\"\n  }\n}",
+        "PRIVATE_IP": "client-11",
+        "MEMORY_LIMIT": "500Mi",
+        "CLIENT_BACKUP_ENABLED": "false"
+      }
+    },
+    {
+      "nodeId": "f5e297b3-f5f7-4b94-ba6b-fa38e35e7dc9",
+      "names": [
+        ""
+      ],
+      "properties": {
+        "CPU_LIMIT": "100m",
+        "CPU_REQUESTED": "100m",
+        "BLOCKCHAIN_ID": "746d220e-1eb9-4d15-ae1b-a224cee8d396",
+        "CLIENT_GROUP_ID": "f5e297b3-f5f7-4b94-ba6b-fa38e35e7dc9",
+        "STORAGE_CLASS_NAME": "gp2",
+        "BLOCKCHAIN_VERSION": "0.0.0.0.8278",
+        "SIGNATURE_SAVE": "SIGNATURE",
+        "ZONE_NAME": "k8s-zone-A",
+        "NODE_NAME": "client-2",
+        "CLIENT_CONFIG_PROPERTIES": "{\n}",
+        "ENCRYPT_SECRETS": "False",
+        "CLIENT_ENDPOINT": "https://{{ip}}:8545",
+        "MEMORY_REQUESTED": "500Mi",
+        "NUM_BFT_CLIENTS": "5",
+        "STORAGE_REQUESTED": "8Gi",
+        "CLIENT_POSTGRES_PROPERTIES": "{\n  \"values\": {\n    \"max_connections\": \"300\",\n    \"shared_buffers\": \"4GB\",\n    \"effective_cache_size\": \"12GB\",\n    \"maintenance_work_mem\": \"1GB\",\n    \"checkpoint_completion_target\": \"0.9\",\n    \"wal_buffers\": \"16MB\",\n    \"default_statistics_target\": \"100\",\n    \"random_page_cost\": \"4\",\n    \"effective_io_concurrency\": \"2\",\n    \"work_mem\": \"40MB\",\n    \"min_wal_size\": \"2GB\",\n    \"max_wal_size\": \"8GB\",\n    \"max_worker_processes\": \"4\",\n    \"max_parallel_workers_per_gather\": \"2\",\n    \"max_parallel_workers\": \"4\",\n    \"max_parallel_maintenance_workers\": \"2\"\n  }\n}",
+        "PRIVATE_IP": "client-2",
+        "MEMORY_LIMIT": "500Mi",
+        "CLIENT_BACKUP_ENABLED": "false"
+      }
+    },
+    {
+      "nodeId": "5764573f-065d-4fb5-b1ee-6c5ed40ad30e",
+      "names": [
+        ""
+      ],
+      "properties": {
+        "CPU_LIMIT": "100m",
+        "CPU_REQUESTED": "100m",
+        "BLOCKCHAIN_ID": "746d220e-1eb9-4d15-ae1b-a224cee8d396",
+        "CLIENT_GROUP_ID": "5764573f-065d-4fb5-b1ee-6c5ed40ad30e",
+        "STORAGE_CLASS_NAME": "gp2",
+        "BLOCKCHAIN_VERSION": "0.0.0.0.8278",
+        "SIGNATURE_SAVE": "SIGNATURE",
+        "ZONE_NAME": "k8s-zone-A",
+        "NODE_NAME": "client-7",
+        "CLIENT_CONFIG_PROPERTIES": "{\n}",
+        "ENCRYPT_SECRETS": "False",
+        "CLIENT_ENDPOINT": "https://{{ip}}:8545",
+        "MEMORY_REQUESTED": "500Mi",
+        "NUM_BFT_CLIENTS": "5",
+        "STORAGE_REQUESTED": "8Gi",
+        "CLIENT_POSTGRES_PROPERTIES": "{\n  \"values\": {\n    \"max_connections\": \"300\",\n    \"shared_buffers\": \"4GB\",\n    \"effective_cache_size\": \"12GB\",\n    \"maintenance_work_mem\": \"1GB\",\n    \"checkpoint_completion_target\": \"0.9\",\n    \"wal_buffers\": \"16MB\",\n    \"default_statistics_target\": \"100\",\n    \"random_page_cost\": \"4\",\n    \"effective_io_concurrency\": \"2\",\n    \"work_mem\": \"40MB\",\n    \"min_wal_size\": \"2GB\",\n    \"max_wal_size\": \"8GB\",\n    \"max_worker_processes\": \"4\",\n    \"max_parallel_workers_per_gather\": \"2\",\n    \"max_parallel_workers\": \"4\",\n    \"max_parallel_maintenance_workers\": \"2\"\n  }\n}",
+        "PRIVATE_IP": "client-7",
+        "MEMORY_LIMIT": "500Mi",
+        "CLIENT_BACKUP_ENABLED": "false"
+      }
+    },
+    {
+      "nodeId": "d3dacfe2-da0e-417d-aa51-0c51f2cac47d",
+      "names": [
+        ""
+      ],
+      "properties": {
+        "CPU_LIMIT": "100m",
+        "CPU_REQUESTED": "100m",
+        "BLOCKCHAIN_ID": "746d220e-1eb9-4d15-ae1b-a224cee8d396",
+        "STORAGE_CLASS_NAME": "gp2",
+        "BLOCKCHAIN_VERSION": "0.0.0.0.8278",
+        "SIGNATURE_SAVE": "SIGNATURE",
+        "ZONE_NAME": "k8s-zone-A",
+        "NODE_NAME": "replica-0",
+        "ENCRYPT_SECRETS": "False",
+        "MEMORY_REQUESTED": "2000Mi",
+        "NUM_BFT_CLIENTS": "5",
+        "STORAGE_REQUESTED": "8Gi",
+        "PRIVATE_IP": "replica-0",
+        "MEMORY_LIMIT": "2000Mi"
+      }
+    },
+    {
+      "nodeId": "79e28049-7e31-48aa-9422-cff32744c867",
+      "names": [
+        ""
+      ],
+      "properties": {
+        "CPU_LIMIT": "100m",
+        "CPU_REQUESTED": "100m",
+        "BLOCKCHAIN_ID": "746d220e-1eb9-4d15-ae1b-a224cee8d396",
+        "CLIENT_GROUP_ID": "79e28049-7e31-48aa-9422-cff32744c867",
+        "STORAGE_CLASS_NAME": "gp2",
+        "BLOCKCHAIN_VERSION": "0.0.0.0.8278",
+        "SIGNATURE_SAVE": "SIGNATURE",
+        "ZONE_NAME": "k8s-zone-A",
+        "NODE_NAME": "client-1",
+        "CLIENT_CONFIG_PROPERTIES": "{\n}",
+        "ENCRYPT_SECRETS": "False",
+        "CLIENT_ENDPOINT": "https://{{ip}}:8545",
+        "MEMORY_REQUESTED": "500Mi",
+        "NUM_BFT_CLIENTS": "5",
+        "STORAGE_REQUESTED": "8Gi",
+        "CLIENT_POSTGRES_PROPERTIES": "{\n  \"values\": {\n    \"max_connections\": \"300\",\n    \"shared_buffers\": \"4GB\",\n    \"effective_cache_size\": \"12GB\",\n    \"maintenance_work_mem\": \"1GB\",\n    \"checkpoint_completion_target\": \"0.9\",\n    \"wal_buffers\": \"16MB\",\n    \"default_statistics_target\": \"100\",\n    \"random_page_cost\": \"4\",\n    \"effective_io_concurrency\": \"2\",\n    \"work_mem\": \"40MB\",\n    \"min_wal_size\": \"2GB\",\n    \"max_wal_size\": \"8GB\",\n    \"max_worker_processes\": \"4\",\n    \"max_parallel_workers_per_gather\": \"2\",\n    \"max_parallel_workers\": \"4\",\n    \"max_parallel_maintenance_workers\": \"2\"\n  }\n}",
+        "PRIVATE_IP": "client-1",
+        "MEMORY_LIMIT": "500Mi",
+        "CLIENT_BACKUP_ENABLED": "false"
+      }
+    },
+    {
+      "nodeId": "26be3861-f35d-4495-beca-6a41083db221",
+      "names": [
+        ""
+      ],
+      "properties": {
+        "CPU_LIMIT": "100m",
+        "CPU_REQUESTED": "100m",
+        "BLOCKCHAIN_ID": "746d220e-1eb9-4d15-ae1b-a224cee8d396",
+        "CLIENT_GROUP_ID": "26be3861-f35d-4495-beca-6a41083db221",
+        "STORAGE_CLASS_NAME": "gp2",
+        "BLOCKCHAIN_VERSION": "0.0.0.0.8278",
+        "SIGNATURE_SAVE": "SIGNATURE",
+        "ZONE_NAME": "k8s-zone-A",
+        "NODE_NAME": "client-4",
+        "CLIENT_CONFIG_PROPERTIES": "{\n}",
+        "ENCRYPT_SECRETS": "False",
+        "CLIENT_ENDPOINT": "https://{{ip}}:8545",
+        "MEMORY_REQUESTED": "500Mi",
+        "NUM_BFT_CLIENTS": "5",
+        "STORAGE_REQUESTED": "8Gi",
+        "CLIENT_POSTGRES_PROPERTIES": "{\n  \"values\": {\n    \"max_connections\": \"300\",\n    \"shared_buffers\": \"4GB\",\n    \"effective_cache_size\": \"12GB\",\n    \"maintenance_work_mem\": \"1GB\",\n    \"checkpoint_completion_target\": \"0.9\",\n    \"wal_buffers\": \"16MB\",\n    \"default_statistics_target\": \"100\",\n    \"random_page_cost\": \"4\",\n    \"effective_io_concurrency\": \"2\",\n    \"work_mem\": \"40MB\",\n    \"min_wal_size\": \"2GB\",\n    \"max_wal_size\": \"8GB\",\n    \"max_worker_processes\": \"4\",\n    \"max_parallel_workers_per_gather\": \"2\",\n    \"max_parallel_workers\": \"4\",\n    \"max_parallel_maintenance_workers\": \"2\"\n  }\n}",
+        "PRIVATE_IP": "client-4",
+        "MEMORY_LIMIT": "500Mi",
+        "CLIENT_BACKUP_ENABLED": "false"
+      }
+    }
+  ],
+  "metadata": {
+    "deploymentType": "GENERATE",
+    "consortiumName": "castor-consortium-1",
+    "startingTime": "2023-02-22T22:18:55.730418",
+    "blockchainVersion": "0.0.0.0.8278",
+    "finishingTime": "2023-02-22T22:18:57.626793",
+    "deploymentRequestId": "7956ac24-5837-4852-8eb5-aa6302d586d6",
+    "blockchainId": "746d220e-1eb9-4d15-ae1b-a224cee8d396",
+    "consortiumId": "69f93fb0-17d3-4ff7-a087-92607ffd397d",
+    "status": "SUCCESS"
+  }
+}

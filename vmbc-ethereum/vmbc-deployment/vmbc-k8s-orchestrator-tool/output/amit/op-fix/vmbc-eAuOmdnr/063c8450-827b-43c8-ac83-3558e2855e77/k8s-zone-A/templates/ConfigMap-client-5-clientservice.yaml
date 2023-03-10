@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vmbc-configmap-client-5-clientservice
+  labels:
+    blockchainId: {{ .Values.global.blockchainId }}
+binaryData:
+  # client service config file
+  {{- $clientserviceconfigfile := "client-5/config/clientservice/clientservice.config" }}
+  clientservice-config-file: {{ $.Files.Get $clientserviceconfigfile | b64enc }}
+  # environment vars file
+  {{- $environmentvarsfile := "client-5/config/clientservice/environment-vars" }}
+  environment-vars-file: {{ $.Files.Get $environmentvarsfile | b64enc }}

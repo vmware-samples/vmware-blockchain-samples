@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: init-container-command-script-config
+binaryData:
+  # init container command script file
+  {{- $initcontainercommandscriptfile := "init-container-command.sh"}}
+  init-container-script-config-file: {{ $.Files.Get $initcontainercommandscriptfile | b64enc }}

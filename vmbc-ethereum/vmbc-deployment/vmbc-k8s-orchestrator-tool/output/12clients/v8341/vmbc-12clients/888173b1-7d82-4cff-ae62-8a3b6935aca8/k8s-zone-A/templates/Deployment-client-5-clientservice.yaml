@@ -1,0 +1,176 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vmbc-deployment-client-5-clientservice
+  labels:
+    app: client-5-clientservice
+    blockchainId: {{ .Values.global.blockchainId }}
+spec:
+  replicas: {{ .Values.global.replicaCount }}
+  selector:
+    matchLabels:
+      app: client-5-clientservice
+      blockchainId: {{ .Values.global.blockchainId }}
+  template:
+    metadata:
+      labels:
+        app: client-5-clientservice
+        blockchainId: {{ .Values.global.blockchainId }}
+    spec:
+      securityContext:
+        fsGroup: 1244
+        fsGroupChangePolicy: OnRootMismatch
+      imagePullSecrets:
+        - name: vmwathena-regcred
+      volumes:
+        {{- $fluent := $.Files.Get "fluentd/config/fluent.conf" }}
+        {{ if $fluent }}
+        - name: vmbc-docker-log
+          hostPath:
+            path: /var/log/pods
+        - name: vmbc-docker-lib
+          hostPath:
+            path: /var/lib/docker/containers
+        - name: vmbc-configmap-fluentd
+          configMap:
+            name: vmbc-configmap-fluentd
+        {{ end }}
+        # client persistent volume claim
+        - name: client-client-5-volume
+          persistentVolumeClaim:
+            claimName: client-pvc-{{ .Values.global.blockchainId }}-client-5
+        # common configmap volume
+        - name: config-common-volume
+          configMap:
+            name: vmbc-configmap-common
+          # component specific configmap volume
+        - name: config-clientservice-volume
+          configMap:
+            name: vmbc-configmap-client-5-clientservice
+        - name: config-init-container-command-script-volume
+          configMap:
+            name: init-container-command-script-config
+            defaultMode: 0777
+        # component specific secret volume
+        - name: secret-clientservice-volume
+          secret:
+            secretName: vmbc-secret-client-5-clientservice
+      containers:
+        - name: client-5-clientservice
+          image: {{ include "clientservice.image" . }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 50505
+              protocol: TCP
+            - name: "tcp-9891"
+              containerPort: 9891
+              protocol: TCP
+          resources:
+            limits:
+              cpu: "{{ .Values.resources.client.cpuLimit | default .Values.resources.client.defaultCpuLimit }}"
+              memory: "{{ .Values.resources.client.memoryLimit | default .Values.resources.client.defaultMemoryLimit }}"
+            requests:
+              cpu: "{{ .Values.resources.client.cpuRequest | default .Values.resources.client.defaultCpuRequest }}"
+              memory: "{{ .Values.resources.client.memoryRequest | default .Values.resources.client.defaultMemoryRequest }}"
+          volumeMounts:
+            ##########################################
+            #           config file volumes          #
+            ##########################################
+            ### Common files
+            # cert files
+            - name: client-client-5-volume
+              mountPath: /config/clientservice/tls_certs
+              subPath: {{.Release.Namespace}}/{{.Values.global.blockchainId}}/client-5/clientservice/tls_certs
+            ### component-specific files
+            # client service config file
+            {{- $clientserviceconfigfile := "client-5/config/clientservice/clientservice.config" }}
+            {{- $clientserviceconfigfilePrefixRemoved := $clientserviceconfigfile | replace "client-5" "" }}
+            - name: config-clientservice-volume
+              mountPath: {{ $clientserviceconfigfilePrefixRemoved }}
+              subPath: clientservice-config-file
+            # environment vars file
+            {{- $environmentvarsfile := "client-5/config/clientservice/environment-vars" }}
+            {{- $environmentvarsfilePrefixRemoved := $environmentvarsfile | replace "client-5" "" }}
+            - name: config-clientservice-volume
+              mountPath: {{ $environmentvarsfilePrefixRemoved }}
+              subPath: environment-vars-file
+            ##########################################
+            #           Secrets volumes              #
+            ##########################################
+            # transaction signing private key
+            {{- $transactionsigningkeyfile := "client-5/config/clientservice/signing_keys/transaction_signing_priv.pem" }}
+            {{- $transactionsigningkeyfilePrefixRemoved := $transactionsigningkeyfile | replace "client-5" "" }}
+            - name: secret-clientservice-volume
+              mountPath: {{ $transactionsigningkeyfilePrefixRemoved }}
+              subPath:   clientservice-transaction-signing-key-file
+        {{- $fluent := $.Files.Get "fluentd/config/fluent.conf" }}
+        {{ if $fluent }}
+        - name: fluentd
+          image: {{ include "fluentd.image" . }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MULTI_LOGGING_ENABLED
+              value: "true"
+            - name: SERVICE_NODE_NAME
+              value: client-5
+            - name: SERVICE_KIND_NAME
+              value: "clientservice"
+            - name: LOGGING_URL
+              value: {{ .Values.logManagement.endpoint_1.url }}
+          volumeMounts:
+            - name: vmbc-docker-log
+              mountPath: /vmbc/logs/pods
+              readOnly: false
+            - name: vmbc-docker-lib
+              mountPath: /var/lib/docker/containers
+              readOnly: true
+            - name: vmbc-configmap-fluentd
+              mountPath: /fluentd/etc/fluent.conf
+              subPath: fluent.conf
+              readOnly: true
+        {{ end }}
+      initContainers:
+        - name: init-container
+          image: {{ include "clientservice.image" . }}
+          command: [ "/bin/bash", "-ec", "/init-container/script/init-container-script-config-file " ]
+          env:
+            - name: CONFIG_DIR
+              value: {{.Release.Namespace}}/{{ .Values.global.blockchainId }}/client-5
+            - name: CONFIG_OVERRIDE
+              value: "{{ .Values.global.config.configOverride }}"
+            - name: CONCORD_VOLUME
+              value: "client-client-5-volume"
+          volumeMounts:
+            - mountPath: /config
+              name: client-client-5-volume
+            ##########################################
+            #           config file volumes          #
+            ##########################################
+            ### Common files
+            # cert files
+            {{- range $path, $_ := .Files.Glob "client-5/config/clientservice/tls_certs/*/node.cert" }}
+            {{- $prefixRemoved := $path | replace "client-5/config" "" }}
+            {{- $key := $path | replace "client-5/config/clientservice" "common" | replace "/" "-" }}
+            - name: config-common-volume
+              mountPath: {{ $prefixRemoved }}
+              subPath: {{ $key }}
+            {{- end }}
+            ##########################################
+            #           Secrets volumes              #
+            ##########################################
+            # cert private keys
+            {{- range $path, $_ := .Files.Glob "client-5/config/clientservice/tls_certs/*/pk.pem" }}
+            {{- $prefixRemoved := $path | replace "client-5/config" "" }}
+            - name: secret-clientservice-volume
+              mountPath: {{ $prefixRemoved }}
+              subPath: {{ $path | replace "/" "-" }}
+            {{- end }}
+            - name: config-init-container-command-script-volume
+              mountPath: /init-container/script/
+          resources:
+            limits:
+              cpu: "{{ .Values.resources.initContainer.cpuLimit }}"
+              memory: "{{ .Values.resources.initContainer.memoryLimit }}"
+            requests:
+              cpu: "{{ .Values.resources.initContainer.cpuRequest }}"
+              memory: "{{ .Values.resources.initContainer.memoryRequest }}"

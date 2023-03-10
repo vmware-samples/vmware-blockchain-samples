@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vmbc-deployment-client-2-cre
+  labels:
+    app: client-2-cre
+    blockchainId: {{ .Values.global.blockchainId }}
+spec:
+  replicas: {{ .Values.global.replicaCount }}
+  selector:
+    matchLabels:
+      app: client-2-cre
+      blockchainId: {{ .Values.global.blockchainId }}
+  template:
+    metadata:
+      labels:
+        app: client-2-cre
+        blockchainId: {{ .Values.global.blockchainId }}
+    spec:
+      imagePullSecrets:
+        - name: vmwathena-regcred
+      volumes:
+        # client persistent volume claim
+        - name: client-client-2-volume
+          persistentVolumeClaim:
+            claimName: client-pvc-{{ .Values.global.blockchainId }}-client-2
+        # component specific configmap volume
+        - name: config-cre-volume
+          configMap:
+            name: vmbc-configmap-client-2-cre
+        # component specific secret volume
+        - name: secret-cre-volume
+          secret:
+            secretName: vmbc-secret-client-2-cre
+      containers:
+        - name: client-2-cre
+          image: {{ include "cre.image" . }}
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: "{{ .Values.resources.client.cpuLimit | default .Values.resources.client.defaultCpuLimit }}"
+              memory: "{{ .Values.resources.client.memoryLimit | default .Values.resources.client.defaultMemoryLimit }}"
+            requests:
+              cpu: "{{ .Values.resources.client.cpuRequest | default .Values.resources.client.defaultCpuRequest }}"
+              memory: "{{ .Values.resources.client.memoryRequest | default .Values.resources.client.defaultMemoryRequest }}"
+          volumeMounts:
+            - name: client-client-2-volume
+              mountPath: /config/clientservice/tls_certs
+              subPath: {{.Release.Namespace}}/{{.Values.global.blockchainId}}/client-2/clientservice/tls_certs
+            ### component-specific files
+            # client/participant service config file
+            {{- $clientserviceconfigfile := "client-2/config/clientservice/clientservice.config" }}
+            {{- $clientserviceconfigfilePrefixRemoved := $clientserviceconfigfile | replace "client-2/config/clientservice/clientservice.config" "/cre/bftConfig/participant.config" }}
+            - name: config-cre-volume
+              mountPath: {{ $clientserviceconfigfilePrefixRemoved }}
+              subPath: clientservice-config-file
+            # environment vars file
+            {{- $environmentvarsfile := "client-2/config/clientservice/environment-vars" }}
+            {{- $environmentvarsfilePrefixRemoved := $environmentvarsfile | replace "client-2" "" }}
+            - name: config-cre-volume
+              mountPath: {{ $environmentvarsfilePrefixRemoved }}
+              subPath: environment-vars-file
+            ##########################################
+            #           Secrets volumes              #
+            ##########################################
+            # transaction signing private key
+            {{- $transactionsigningkeyfile := "client-2/config/clientservice/signing_keys/transaction_signing_priv.pem" }}
+            {{- $transactionsigningkeyfilePrefixRemoved := $transactionsigningkeyfile | replace "client-2" "" }}
+            - name: secret-cre-volume
+              mountPath: {{ $transactionsigningkeyfilePrefixRemoved }}
+              subPath:   clientservice-transaction-signing-key-file
+      initContainers:
+        - name: init-container
+          image: {{ include "cre.image" . }}
+          command: ["/bin/bash", "-ec", "echo 'Start verifying if files exist in persistent volume client-client-2-volume';
+          while [ ! -d /config/{{.Release.Namespace}}/{{.Values.global.blockchainId}}/client-2/clientservice/tls_certs ]; do
+            sleep 5;
+          done;
+          echo 'End verifying for files exist in persistent volume client-client-2-volume' "]
+          volumeMounts:
+            - mountPath: /config
+              name: client-client-2-volume
+          resources:
+            limits:
+              cpu: "{{ .Values.resources.initContainer.cpuLimit }}"
+              memory: "{{ .Values.resources.initContainer.memoryLimit }}"
+            requests:
+              cpu: "{{ .Values.resources.initContainer.cpuRequest }}"
+              memory: "{{ .Values.resources.initContainer.memoryRequest }}"

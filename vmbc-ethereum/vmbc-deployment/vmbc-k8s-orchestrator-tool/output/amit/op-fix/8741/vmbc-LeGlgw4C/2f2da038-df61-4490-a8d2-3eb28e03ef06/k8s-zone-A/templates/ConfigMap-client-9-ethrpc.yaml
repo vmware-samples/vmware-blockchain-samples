@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vmbc-configmap-client-9-ethrpc
+  labels:
+    blockchainId: {{ .Values.global.blockchainId }}
+binaryData:
+  # environment vars file
+  {{- $environmentvarsfile := "client-9/config/ethrpc/environment-vars" }}
+  environment-vars-file: {{ $.Files.Get $environmentvarsfile | b64enc }}

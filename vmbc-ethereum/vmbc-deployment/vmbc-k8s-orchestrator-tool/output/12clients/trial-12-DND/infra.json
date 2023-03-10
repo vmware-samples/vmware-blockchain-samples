@@ -1,0 +1,1 @@
+{"organization":{"blockchainVersion":"0.0.0.0.8278","generatePassword":false,"advancedFeatures":{"NUM_BFT_CLIENTS":"5"},"secureStore":{"storeType":"INSECURE"}},"zones":[{"k8s":{},"containerRegistry":{"registryName":"blockchain-docker-internal.artifactory.eng.vmware.com","userName":"\u003cREPLACE_ME\u003e","password":"\u003cREPLACE_ME\u003e"},"name":"k8s-zone-A"}]}

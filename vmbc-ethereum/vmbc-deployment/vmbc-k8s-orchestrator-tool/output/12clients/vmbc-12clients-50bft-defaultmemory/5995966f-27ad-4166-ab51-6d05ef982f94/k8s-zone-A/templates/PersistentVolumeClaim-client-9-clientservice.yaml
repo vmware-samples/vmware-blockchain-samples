@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  # common pvc for clientservices, cre and operator
+  name: client-pvc-{{ .Values.global.blockchainId }}-client-9
+  labels:
+    blockchainId: {{ .Values.global.blockchainId }}
+spec:
+  storageClassName: "{{ .Values.storageClassNames.client.client9 | default .Values.global.storageClassName}}"
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "{{ .Values.resources.client.storageRequest | default .Values.resources.client.defaultStorageRequest }}"
