@@ -49,6 +49,6 @@ Run ```minikube service client-0-ethrpc``` to fetch the url. You can also use ``
 A. We have seen this issue in arm64 architecture and are working on it. Meanwhile please use amd64 machine instead. If you are not on arm64 and still seeing an issue, please raise an issue with details of your system and logs.
 
 ### How can I view a demo of the deployment and installation process? 
-You can view of demo of the latest beta release from our blockchain specialists at any time here. You can also access previous webinar recordings in our #vmware-blockchain-beta Slack channel. Please reach out to our team if you do not have access. 
+You can view of demo of the latest beta release from our blockchain specialists at any time [here.] (https://vimeo.com/779426439) You can also access previous webinar recordings in our #vmware-blockchain-beta Slack channel. Please reach out to our team if you do not have access. 
 
 If your issues are not addressed above | feedback | suggestions, [please raise a ticket](https://github.com/vmware-samples/vmware-blockchain-samples/issues)
