@@ -10,7 +10,7 @@ There will be two options for TLS Modes namely ServerTLS and MutualTLS which can
 
 Following diagram depicts both mTLS and serverTLS which have been enabled in two different Client Nodes
 
-(Todo: Insert diagram here)
+![Server and Mutual TLS Depiction](./assets/images/server-and-mutual-tls-depiction.png)
 
 **Description of the Depiction**
 - Each DApp and EthRPC Server instance have certificates depicted along side. These are the certificates and keys required for the respective components
@@ -41,7 +41,7 @@ DApp would have to handle following aspects,
 Following are the depictions for two of the ways EthRPC can be configured to verify JWT Token,
 
 #### JWT Token Verification using Live Authorization Server
-(Todo: Inset diagram here)
+![Client JWT with Live OAuth Server Depiction](./assets/images/client-jwt-live-oauth-server-depiction.png)
 
 Following is the sequence of steps,
 
@@ -51,7 +51,7 @@ Following is the sequence of steps,
 3. EthRPC would communicate with the JWT Authorization Server to get the public key for verifying the JWT Token received from DApp. EthRPC would cache the public keys of Authorization server for 5 minutes
 
 #### JWT Token Verification using Local Public Key
-(Todo: Inset diagram here)
+![Client JWT with Live OAuth Server Depiction](./assets/images/client-jwt-local-jwks-depiction.png)
 
 Following is the sequence of steps,
 
