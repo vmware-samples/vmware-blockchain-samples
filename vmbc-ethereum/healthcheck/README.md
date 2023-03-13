@@ -18,7 +18,8 @@ In the logs, we can differentiate between healthcheck contract logs and actual b
 
 | Name                             | Description                                      | Value                       | Type      |
 |----------------------------------|--------------------------------------------------|-----------------------------|-----------|
-| healthcheck.healthcheckEnable | To enable healthcheck remote logging           | default: "false"                         | Optional |
+| healthcheck.healthcheckEnable | To enable healthcheck remote logging           | default: "false"                         | Mandatory |
+| healthcheck.dapp.healthcheckInterval | Send transactions for every given interval in seconds. Interval range >= 5mins and <= 24 hours         | default: "300" (5 minutes)                         | Optional |
 | healthcheck.vmbc.blockchainUrl | URL for ETH-RPC service. Determined from the VMBC deployments exposed service. | `blockchainUrl="http://localhost:8545"`  | Mandatory |
 | healthcheck.dapp.imageCredentials.registry | Container registry for image downloads           | ""                          | Mandatory |
 | healthcheck.dapp.imageCredentials.username | Username to access/download for registry         | ""                          | Mandatory |
