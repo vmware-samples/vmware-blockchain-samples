@@ -12,18 +12,19 @@ The SDK currently provides a sample NodeJS based DAPP implementation. Future ver
 ## Node-JS based DAPP
 ![NodeJS DAPP](./docs/sdk-components.png)
 ### NODEJS App overview
-Sample NodeJS DAPP are build using [privacy wallet library](privacy-lib/privacy-wallet.js). 
+The sample NodeJS dApps are build using [privacy library](privacy-lib/), which is a JavaScript convenience interface to the Privacy Wallet Service. The [Privacy wallet service](https://github.com/vmware/concord-bft/tree/master/utt/privacy-wallet-service) holds all sensitive assets, including privacy keys and tokens. It is essentially a GRPC server and the IDL is specified under [wallet-api.proto](https://github.com/vmware/concord-bft/blob/master/utt/privacy-wallet-service/proto/api/v1/wallet-api.proto).
+
+The Node Administrator dApp and the Node User dApp are samples - VMware Blockchain customers will likely change them in order to create their own privacy applications. The privacy wallet service and the privacy library are not expected to be changed by customers.
 
 | DAPP  | Remark | Location | Docker File | 
 | ------------- | ------------- | ------------- |------------- |
 | Node Administrator DAPP  | NodeJS based administrator DAPP  | [Admin-Node-DAPP](./admin-dapp/privacy-admin-dapp.js) | [DockerfileAdminDApp](./docker/DockerfileAdminDApp) |
 | Node User DAPP  | NodeJS based user DAPP  | [User-Node-DAPP](./user-dapp/privacy-user-dapp.js) | [DockerfileUserDApp](./docker/DockerfileUserDApp) |
-| Privacy wallet service | utt wallet | [Privacy wallet service](https://github.com/vmware/concord-bft/tree/master/utt/privacy-wallet-service) | [DockerfilePrivacyService](./docker/DockerfilePrivacyService) |
+| Privacy wallet service | Privacy wallet with support for private tokens | [Privacy wallet service](https://github.com/vmware/concord-bft/tree/master/utt/privacy-wallet-service) | [DockerfilePrivacyService](./docker/DockerfilePrivacyService) |
 
-The companion **privacy wallet service** is essentially the UTT(C++) service that aids with supporting UTT. All the DAPP inturn use this service as backend. The source code of this service is under github open source library. This service can be considered as privacy wallet and holds all sensitive assets including privacy keys and tokens.
+The administartor DAPP is build with [Admin API](privacy-lib/privacy-admin-wallet.js) of privacy library and smart contract API.
 
-[Privacy wallet service](https://github.com/vmware/concord-bft/tree/master/utt/privacy-wallet-service)
-This is a GRPC server in essence and the IDL is specified under [wallet-api.proto](https://github.com/vmware/concord-bft/blob/master/utt/privacy-wallet-service/proto/api/v1/wallet-api.proto).
+The user DAPP is build with the [user API](privacy-lib/privacy-wallet.js) of privacy library and smart contract API.
 
  #### Smart contracts
  SDK includes:
@@ -32,7 +33,7 @@ This is a GRPC server in essence and the IDL is specified under [wallet-api.prot
  | Privacy Token  | Privacy token transfer based smart contract | [PrivateToken.sol](./privacy-lib/contracts/PrivateToken.sol) | 
  | Public Token  | Public token transfer based smart contract | [PublicToken.sol](./privacy-lib/contracts/PublicToken.sol) | 
 
-These can be used as reference companion.
+Some portions of the Privacy Token contract, such as the registration flow, may be changed, but the rest is expected to be used as-is. The Public Token contract can be changed, but the convertPublicToPrivate and convertPrivateToPublic functions must remain.
 ## Browser based DAPP
 SDK will soon support web browser based DAPP sample implementation.
 The draft sources are available for reference.
