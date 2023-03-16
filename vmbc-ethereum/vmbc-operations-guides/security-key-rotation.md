@@ -10,15 +10,35 @@ VMware Blockchain uses a number of security keys that should be periodically rot
 ```
 helm upgrade <name of blockchain installation> <path to blockchain helm charts> --set operator.install=true --reuse-values
 ```
+sample:
+```
+helm upgrade vmbc-test-2 . --set operator.install=true --reuse-values
+Release "vmbc-test-2" has been upgraded. Happy Helming!
+NAME: vmbc-test-2
+LAST DEPLOYED: Thu Mar 16 11:33:36 2023
+NAMESPACE: default
+STATUS: deployed
+REVISION: 2
+TEST SUITE: None
+```
 ### Check revision history
 ```
 helm history <name of blockchain installation>
+```
+sample:
+```
+helm history vmbc-test-2
+REVISION	UPDATED                 	STATUS    	CHART     	APP VERSION	DESCRIPTION     
+1       	Thu Mar 16 11:17:06 2023	superseded	vmbc-0.1.0	1.16.0     	Install complete
+2       	Thu Mar 16 11:33:36 2023	deployed  	vmbc-0.1.0	1.16.0     	Upgrade complete
 ```
 ### Enter the operator pod
 #### Get pod name
 ```
 kubectl get pods
 ```
+sample:
+<TODO>
 copy the pod name with "operator" keyword in it.
 #### Exec into the operator pod
 ```
