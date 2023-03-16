@@ -235,11 +235,39 @@ Once "operator" operations are completed then rollback to previous revision usin
 ```
 helm rollback <name of blockchain installation>
 ```
+sample:
+```
+helm rollback vmbc-test-2
+Rollback was a success! Happy Helming!
+```
 Verify the helm revision history and make sure to rollback to the version without operator pod.
 ```
 helm history <name of blockchain installation>
 ```
+sample:
+```
+helm history vmbc-test-2
+REVISION	UPDATED                 	STATUS    	CHART     	APP VERSION	DESCRIPTION     
+1       	Thu Mar 16 11:45:59 2023	superseded	vmbc-0.1.0	1.16.0     	Install complete
+2       	Thu Mar 16 11:49:45 2023	superseded	vmbc-0.1.0	1.16.0     	Upgrade complete
+3       	Thu Mar 16 13:00:04 2023	deployed  	vmbc-0.1.0	1.16.0     	Rollback to 1 
+```
 Verify the operator pod is no longer exists.
 ```
 kubectl get pods
+```
+sample:
+```
+kubectl get pods
+NAME                                                      READY   STATUS    RESTARTS   AGE
+vmbc-deployment-client-0-clientservice-57f895798d-gw69n   1/1     Running   0          25m
+vmbc-deployment-client-0-cre-6c447bb8ff-q77n9             1/1     Running   0          75m
+vmbc-deployment-client-0-ethrpc-596dbf9488-krp7x          1/1     Running   0          75m
+vmbc-deployment-client-1-clientservice-55d75c6ccb-vzqtg   1/1     Running   0          75m
+vmbc-deployment-client-1-cre-5c8df9bf56-sbvgc             1/1     Running   0          75m
+vmbc-deployment-client-1-ethrpc-7568989c87-mtnvn          1/1     Running   0          75m
+vmbc-deployment-replica-0-concord-644b6f7c-shlf7          1/1     Running   0          75m
+vmbc-deployment-replica-1-concord-6655cddd4d-9zr94        1/1     Running   0          75m
+vmbc-deployment-replica-2-concord-649d85c9d9-xptsx        1/1     Running   0          75m
+vmbc-deployment-replica-3-concord-57745996-m7m2l          1/1     Running   0          75m
 ```
