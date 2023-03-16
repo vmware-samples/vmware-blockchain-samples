@@ -217,6 +217,11 @@ For multiple clients with cli-uuid-0, cli-uuid-1
 ```
 ./concop key-exchange execute --tls --operator
 ```
+sample:
+```
+root@vmbc-deployment-operator-0-operator-5496c96cfb-jsrph:/operator# ./concop key-exchange execute --tls --operator
+{"succ":true}
+```
 Note: You may need to perform other operator operations so that TLS handshake happens with replicas and new operator key will be reflected on replicas. Example: Perform any command from [blockchain wedge](./blockchain-wedge-unwedge.md)
 
 Note: Operator key rotation is not fully supported for multi cluster environment where all cluster have their own operator. Impact: If you rotate the operator key in one cluster then in a different cluster containing operator, communication might break since it may n have updated key.
