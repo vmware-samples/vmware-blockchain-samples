@@ -124,7 +124,7 @@ async function convertPrivateToPublic() {
     console.log("Converting ", value, " private token to public token");
     let userId = await values.getUserId()
     await privacy_wallet.convert_private_to_public(values.getPrivateTokenAbi(), values.privacyContractAddress, values.getPublicTokenAbi(), values.publicContractAddress, 
-        undefined, userId, value, parseInt(lastAddedTxNum) + 1);
+        undefined, undefined, userId, value);
 }
 
 async function sendPrivateTokenTransfer(privateTransferAddressbookNumber) {

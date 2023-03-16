@@ -3,10 +3,10 @@
 The privacy lib contains the source code needed in order to deploy and negotiate with the utt privacy distributed application on top of an existing VMBC.
 
 ## Solidity Contracts
-The privacy application is user contracts can be found under the `./contracts` directory.
+The privacy application user contracts can be found under the `./contracts` directory.
 ### Privacy Contract
-Most of the utt operations requires an advanced cryptographic techniques that are not supported by a standard EVM  (see the [paper](https://eprint.iacr.org/2022/452.pdf)). VMBC mitigates this by extending the standard EVN using a pre-complied instruction which can be invoked by a special solidity assembly calls. 
-VMBC deploys on its startup a group of system contracts, including a utt system contract (the **privacy virtual contract**) which encapsulates the implementation of the above assembly calls as well as some internal implementation details of the utt infrastructure (such as utt signature MPC algorithm and recovery mechanism).
+Most of the utt operations require advanced cryptographic techniques that are not supported by a standard EVM  (see the [paper](https://eprint.iacr.org/2022/452.pdf)). VMBC mitigates this by extending the standard EVM using a pre-complied instruction which can be invoked by a special solidity assembly calls. 
+On start VMBC deploys a group of system contracts, including an utt system contract (the **privacy virtual contract**), which encapsulates the implementation of the above assembly calls, as well as some internal implementation details of the utt infrastructure (such as utt signature MPC algorithm and recovery mechanism).
 
 As part of the privacy library, the privacy contract (`./contracts/PrivateToken.sol`) is an implementation of the utt algorithm, based on the privacy virtual contract functionality. 
 Even though it is only a one possible implementation of the utt logic, the implementation has an impact on other parts of the library (such as the user logic) and it is not expected to be changed by the user.
@@ -19,33 +19,33 @@ The `./contractsPublicToken.sol` contract derives from a standard ERC20 contract
 
 ## Privacy Wallet 
 The privacy wallet is composed of two parts: 
-1. A Privacy Wallet Service - The service responsible for holding asset and supporting the privacy workflow.
-2. A Privacy Wallet Frontend Application (DAPP) - The frontend application responsible for talking with VMBC (using a web3 client). It can read/write from/to the contracts, update the results in the Privacy Wallet service and ask it to produce a new utt transaction based on the current state.
+1. A Privacy Wallet Service - The service responsible for holding assets and supporting the privacy workflow.
+2. A Privacy Wallet Frontend Application (DAPP) - The front-end application responsible for talking with VMBC (using a web3 client). It can read/write from/to the contracts, update the results in the Privacy Wallet service and ask it to produce a new utt transaction based on the current state.
 
-The current implementation assumes there is an already a deployed Privacy Wallet Service and that it talks over a specific protobuf specification (see `./wallet-api.proto`).
+The current implementation assumes there is an already deployed Privacy Wallet Service and that it talks over a specific protobuf specification (see `./wallet-api.proto`).
 
 ### Privacy Wallet State
-The privacy wallet state is synced with the privacy contract based on a sequence number the privacy contract maintains. Each transaction is assigned with a unique sequence number, when a syncing a wallet, we should first get the latest global known sequence number from the privacy contract, then we need to rotate from our local last known sequence number to the latest global known sequence number, ask from the privacy contract the updates for the given sequence number and update the Wallet Service
+The privacy wallet state is synced with the privacy contract based on a sequence number the privacy contract maintains. Each transaction is assigned with a unique sequence number, when syncing a wallet, we should first get the latest global known sequence number from the privacy contract, then we need to rotate from our local last known sequence number to the latest global known sequence number, ask from the privacy contract the updates for the given sequence number and update the Wallet Service.
 
 ### privacy-wallet library
-Most of the privacy transactions are in fact two phased (or even more) transactions. Once the committers commit and execute the transaction, they initiates an asynchronous process in which they compute the MPC signature. A transaction is completed only when its signature is completed. Hence, dealing with the privacy contract requires some prior knowledge about the utt protocol.
+Most of the privacy transactions are in fact two-phased (or even more) transactions. Once the committers commit and execute the transaction, they initiate an asynchronous process in which they compute the MPC signature. A transaction is completed only when its signature is completed. Hence, dealing with the privacy contract requires some prior knowledge about the utt protocol.
 
-The privacy wallet library is a layer that abstracts out the details of the utt algorithm and exposing a simple developer friendly API for DAPP creation. 
+The privacy wallet library is a layer that abstracts out the details of the utt algorithm and exposes a simple developer friendly API for DAPP creation. 
 To use the library, a developer simply needs to import `privacy-wallet.js` and start working with the privacy logic "out of the box".
 
 ![Components-high-level-overview](./components-high-level-diagram.png)
 
 # privacy-wallet API
-The following method are exposed by `privacy-wallet.js`:
+The following methods are exposed by `privacy-wallet.js`:
 | Method | Description |
 | ------ | ----------- |
 | <a href="#configure">configure</a> | configure the backend wallet service | 
 | <a href="#convert_public_to_private">convert_public_to_private</a> | convert public tokens to private tokens |
 | <a href="#claim_transferred_coins">claim_transferred_coins</a> | claim coins that were transferred by another user |
-| <a href="#sync_state">sync_state</a> | Sync the application state |
+| <a href="#sync_state">sync_state</a> | Sync the application's state |
 | <a href="#get_privacy_state">get_privacy_state</a> | get the privacy state from the privacy wallet service |
 | <a href="#transfer">transfer</a> | transfer a given amount of tokens to another privacy user |
-| <a href="#convert_private_to_public">convert_private_to_public</a> | convert private token to public tokens |
+| <a href="#convert_private_to_public">convert_private_to_public</a> | convert private tokens to public tokens |
 | <a href="#get_privacy_budget">get_privacy_budget</a> | gets the privacy budget token from the contract |
 | <a href="#set_grpc_callback">set_grpc_callback</a> | set a callback for sending grpc requests |
 | <a href="#set_transaction_callback">set_transaction_callback</a> | set a callback for sending transaction requests |
@@ -53,7 +53,7 @@ The following method are exposed by `privacy-wallet.js`:
 <a name="configure"></a>
 
 ## configure(privacy_contract_abi, privacy_contract_address, privateKey, publicKey, user_id) ⇒ <code>bool</code>
-configure the backend wallet service. This method should be called every time the Wallet Service starts
+configure the back-end wallet service. This method should be called every time the Wallet Service starts
 
 **Kind**: global function  
 **Returns**: <code>bool</code> - true on success, false on failure  
@@ -142,7 +142,7 @@ transfer a given amount of tokens to another privacy user
 | --- | --- | --- |
 | privacy_contract_abi | <code>string</code> | the privacy contract abi |
 | privacy_contract_address | <code>string</code> | the privacy contract address |
-| shielded_account_private_key | <code>string</code> \| <code>undefined</code> | the relay ethereum account private key, in case of using an injected wallet, pass undefined |
+| shielded_account_private_key | <code>string</code> \| <code>undefined</code> | the shielded ethereum account private key, in case of using an injected wallet, pass undefined |
 | recipient_id | <code>string</code> | the recipient id |
 | recipient_public_key | <code>bytes</code> | the recipient RSA public key (PKCS#8 PEM format) |
 | value | <code>BigInt</code> | the number of tokens to transfer |

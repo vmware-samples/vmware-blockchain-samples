@@ -1,15 +1,13 @@
 # VMware Privacy SDK
 # SDK overview
-Our initial release of privacy SDK only supported a C++ CLI application that users can try out to explore the privacy design aspects and workflow. This was not a developer friendly.
+The Privacy SDK allows JavaScript developers to develop their own privacy applications.
 
-The current privacy SDK release is developer friendly! 
 The taxonomy of SDK is shown below:
 ![Taxonomy of privacy SDK](./docs/SDK-overview.png)
 
-# Overview
-The primary candidate at core of the organization is [Privacy Library](./privacy-lib). This library is the SDK layer that abstracts UTT privacy implementation details and provides simple javascript API for Dapp development.
+The primary component at the core of the SDK is [Privacy Library](./privacy-lib). The VMware privacy solution is built on cryptographic technology described in [paper](https://eprint.iacr.org/2022/452.pdf). The Privacy Library abstracts away the cryptographic complexity and provides a simple javascript API for Dapp development.
 
-SDK currently provides sample NodeJS based DAPP implementation. The future versions would also provide sample Web Browser based DAPP.
+The SDK currently provides a sample NodeJS based DAPP implementation. Future versions will also provide a fully deployable sample Web Browser based DAPP. Sample source code of web browser DAPP is also provided as reference.
 
 ## Node-JS based DAPP
 ![NodeJS DAPP](./docs/sdk-components.png)
@@ -52,3 +50,8 @@ Privacy application helm charts can be used for kubernetes deployment.
  | ------------- | ------------- |
 |[Node-JS APP helm charts](./k8s/helm-charts/Chart.yaml)| [Readme](./k8s/Readme.md) |
 | Browser-JS APP helm charts | To be supported soon! |
+
+## Docker files
+All the containers are available via artifactory. 
+The reference docker files are provided with SDK. 
+Users can modify the reference paths based on their container build context to tailor for their environment.
