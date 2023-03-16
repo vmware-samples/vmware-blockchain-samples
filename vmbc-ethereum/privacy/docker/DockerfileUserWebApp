@@ -1,0 +1,23 @@
+FROM athena-docker-local.artifactory.eng.vmware.com/node:14.19.0 as node
+
+WORKDIR /app
+
+# RUN apt-get update || : && apt-get install python3 -y
+COPY privacy-dapp/user-web-dapp/ ./user-web-dapp/
+COPY privacy-dapp/privacy-lib/ ./privacy-lib/
+COPY concord/submodules/concord-bft/utt/privacy-wallet-service/proto/api/v1/wallet-api.proto ./privacy-lib/wallet-api.proto
+
+# todo: figure out how to share node_modules using single package json!
+RUN cd privacy-lib && npm install --registry=http://build-artifactory.eng.vmware.com:80/artifactory/api/npm/npm
+RUN cd user-web-dapp && npm install --registry=http://build-artifactory.eng.vmware.com:80/artifactory/api/npm/npm
+
+# Enviroinment Variables
+COPY privacy-demo/docker/.env .
+
+RUN wget https://github.com/grpc/grpc-web/releases/download/1.4.2/protoc-gen-grpc-web-1.4.2-linux-x86_64 \
+    && mv protoc-gen-grpc-web-1.4.2-linux-x86_64 /usr/local/bin/protoc-gen-grpc-web \
+    && chmod +x /usr/local/bin/protoc-gen-grpc-web
+RUN cd user-web-dapp && npx webpack
+
+WORKDIR /app/user-web-dapp
+ENTRYPOINT ["python3", "-m", "http.server"]

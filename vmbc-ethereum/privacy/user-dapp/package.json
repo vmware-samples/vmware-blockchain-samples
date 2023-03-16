@@ -1,0 +1,28 @@
+{
+  "name": "privacy-admin-dapp-simple-example",
+  "version": "0.1.0",
+  "description": "privacy admin dapp simple example",
+  "main": "privacy-admin-dapp.js",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.7.2",
+    "@grpc/proto-loader": "^0.7.3",
+    "commander": "^10.0.0",
+    "config": "^3.3.9",
+    "dotenv": "^16.0.1",
+    "ethers": "^5.7.2",
+    "google-protobuf": "~3.15.0",
+    "grpc-web": "~1.4.2",
+    "lodash": "~4.17.0",
+    "solc": "^0.8.16",
+    "web3": "^1.7.5",
+    "webpack": "~4.43.0",
+    "webpack-cli": "~3.3.11", 
+    "crypto-js": "^4.1.1"
+  },
+  "browser": {
+    "tls": false,
+    "fs": false,
+    "child_process": false,
+    "net": false
+  }
+}

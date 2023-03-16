@@ -1,0 +1,43 @@
+# Containerize UTT library exposed as an GRPC service!
+# Run with: --add-host=host.docker.internal:host-gateway
+
+ARG CONCORD_BFT_IMAGE_REPO="athena-docker-local.artifactory.eng.vmware.com/concord-bft"
+ARG CONCORD_BFT_IMAGE_TAG="0.49"
+FROM ${CONCORD_BFT_IMAGE_REPO}:${CONCORD_BFT_IMAGE_TAG} as builder
+
+# Compile wallet command line app
+COPY concord/submodules/concord-bft /concord-bft
+
+WORKDIR /concord-bft
+
+ARG CC="clang-9"
+ARG CXX="clang++-9"
+
+RUN mkdir build
+RUN cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_WALLET_CLI=On -DBUILD_PRIVACY_WALLET_LIBRARY=On -B build/ -S .
+RUN cmake --build build/ --target privacy-wallet-service
+
+FROM athena-docker-local.artifactory.eng.vmware.com/ubuntu:18.04
+RUN apt-get update && apt-get install -y netcat
+
+# Wallet service - Node.js gRPC server using web3.js
+WORKDIR /app
+
+# Get the installed libraries and applications from the earlier stage.
+COPY --from=builder /usr/local/ /usr/local/
+COPY --from=builder /concord-bft/build/utt/privacy-wallet-service/privacy-wallet-service .
+
+# Regenerate the shared-library cache.
+RUN ldconfig && ldconfig /usr/local/ssl/lib/
+
+COPY privacy-demo/docker/entrypoint_privacy_service.sh .
+RUN chmod +x entrypoint_privacy_service.sh
+
+# Enviroinment Variables
+# the values are not requred to be explicity specified since the entire env variables are copied.
+# this is done explicitly more for documentation and to cross check if the 
+# containers ENV are satisfied by kubernetes config map / deployments
+ENV PRIVACY_WALLET_GRPC_SERVICE_PORT=49002
+
+COPY privacy-demo/docker/.env .
+ENTRYPOINT ["./entrypoint_privacy_service.sh"]

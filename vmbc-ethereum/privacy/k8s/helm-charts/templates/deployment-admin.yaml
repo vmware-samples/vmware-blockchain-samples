@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: privacy-admin-dapp
+  labels:
+    app: privacy-admin-dapp
+spec:
+  persistentVolumeClaimRetentionPolicy:
+    whenScaled: Delete
+    whenDeleted: Delete
+  replicas: 1
+  selector:
+    matchLabels:
+      app: privacy-admin-dapp
+  template:
+    metadata:
+      labels:
+        app: privacy-admin-dapp
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: privacy-admin-wallet-service
+          image: {{ include "privacy-service.image" . }}
+          imagePullPolicy: IfNotPresent
+          stdin: true
+          tty: true
+          env:
+            - name: PRIVACY_WALLET_ADMIN_GRPC_PORT
+              value: "49002"          
+            - name: PRIVACY_WALLET_GRPC_SERVICE_LISTEN_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-configmap
+                  key: PRIVACY_WALLET_GRPC_SERVICE_LISTEN_URL
+            - name: PRIVACY_WALLET_GRPC_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-configmap
+                  key: PRIVACY_WALLET_GRPC_SERVICE_URL
+          resources:
+            limits:
+              cpu: "{{ .Values.resources.privacyservice.cpuLimit }}"
+              memory: "{{ .Values.resources.privacyservice.memoryLimit }}"
+            requests:
+              cpu: "{{ .Values.resources.privacyservice.cpuRequest }}"
+              memory: "{{ .Values.resources.privacyservice.memoryRequest }}"     
+          volumeMounts:
+            - name: privacy-admin-wallet-service-storage
+              mountPath: "/app/wallet-db/"
+        - name: privacy-admin-dapp
+          image: {{ include "admin-dapp.image" . }}
+          imagePullPolicy: IfNotPresent
+          command: [ "/bin/bash", "-c", "--" ]
+          args: [ "while true; do sleep 300; done;" ]
+          env:
+            - name: VMBC_CHAIN_ID
+              value: "{{ .Values.chainID }}"
+            - name: VMBC_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-configmap
+                  key: VMBC_URL
+            - name: PRIVACY_WALLET_DAPP_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-configmap
+                  key: PRIVACY_STORAGE_PATH
+            - name: PRIVACY_WALLET_GRPC_SERVICE_LISTEN_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-configmap
+                  key: PRIVACY_WALLET_GRPC_SERVICE_LISTEN_URL
+            - name: PRIVACY_WALLET_GRPC_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-configmap
+                  key: PRIVACY_WALLET_GRPC_SERVICE_URL
+          resources:
+            limits:
+              cpu: "{{ .Values.resources.admindapp.cpuLimit }}"
+              memory: "{{ .Values.resources.admindapp.memoryLimit }}"
+            requests:
+              cpu: "{{ .Values.resources.admindapp.cpuRequest }}"
+              memory: "{{ .Values.resources.admindapp.memoryRequest }}"                   
+          volumeMounts:
+            - name: privacy-admin-dapp-storage
+              mountPath: "{{ .Values.privacyDAppStoragePath }}"
+      imagePullSecrets:
+        - name: {{ .Release.Name }}-regcred
+      restartPolicy: Always
+  volumeClaimTemplates:
+  - metadata:
+      name: privacy-admin-dapp-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "{{ .Values.global.storageClassName }}"
+      resources:
+        requests:
+          storage: 200Mi
+  - metadata:
+      name: privacy-admin-wallet-service-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "{{ .Values.global.storageClassName }}"
+      resources:
+        requests:
+          storage: 200Mi

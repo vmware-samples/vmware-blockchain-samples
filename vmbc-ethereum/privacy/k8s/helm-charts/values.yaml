@@ -1,0 +1,77 @@
+## @section Global parameters
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageCredentials
+##
+
+## @param global.imageCredentials Global Docker image registry
+##
+global:
+  # The credentials for the docker registry. If username/password/email are specified, a corresponding Secret is created.
+  imageCredentials:
+    registry: "blockchain-docker-internal.artifactory.eng.vmware.com"
+    username: ""
+    password: ""
+    email: ""
+  image:
+    tag: "0.0.0.8389"
+  storageClassName: "standard"
+
+privacyService:
+  image:
+    repository: "vmwblockchain/privacy-wallet-service"
+    tag: ""
+
+adminDApp:
+  image:
+    repository: "vmwblockchain/privacy-admin-dapp"
+    tag: ""
+
+userDApp:
+  image:
+    repository: "vmwblockchain/privacy-user-dapp"
+    tag: ""
+
+## Specify an imagePullPolicy (Required)
+## It's recommended to change this to 'Always' if the image tag is 'latest'
+## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
+##
+imagePullPolicy: IfNotPresent
+
+## @param blockchainUrl Url to link blockchain with vmbc dapp webpage
+##
+## While the dns name client-0-ethrpc should resolve to the minikube IP, it requires minikube tunnel to be run.
+## For now, this needs further debugging, so the user is required to override the URL by passing it in at the time of deployment
+## REF: https://minikube.sigs.k8s.io/docs/handbook/accessing/#example-of-loadbalancer
+blockchainUrl: "client-0-ethrpc:8545"
+
+blockchainPubSubUrl: "client-0-ethrpc:8546"
+
+chainID: "5000"
+
+## dApp storage path
+privacyDAppStoragePath: "/app/storage/"
+
+## default value for privacy service GRPC port
+privacyServiceGrpcServerUrl: "0.0.0.0:49002" 
+
+## Configure the resources for vmbc dapp deployment
+## @param resources Resources for vmbc dapp deployment
+##
+resources:
+  # @param VMBC wallet app resources
+  privacyservice:
+    cpuLimit: 200m
+    cpuRequest: 100m
+    memoryLimit: 200Mi
+    memoryRequest: 100Mi
+  admindapp:
+    cpuLimit: 800m
+    cpuRequest: 700m
+    memoryLimit: 500Mi
+    memoryRequest: 400Mi
+  userdapp:
+    cpuLimit: 800m
+    cpuRequest: 700m
+    memoryLimit: 500Mi
+    memoryRequest: 400Mi

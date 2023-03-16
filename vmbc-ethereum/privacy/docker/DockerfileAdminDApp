@@ -1,0 +1,17 @@
+FROM athena-docker-local.artifactory.eng.vmware.com/node:14.19.0 as node
+
+WORKDIR /app
+
+# Node.js web3 service and contracts
+COPY privacy-dapp/admin-dapp/ ./admin-dapp/
+COPY privacy-dapp/privacy-lib/ ./privacy-lib/
+COPY concord/submodules/concord-bft/utt/privacy-wallet-service/proto/api/v1/wallet-api.proto ./privacy-lib/wallet-api.proto
+
+# todo: figure out how to share node_modules using single package json!
+RUN cd privacy-lib && npm install --registry=http://build-artifactory.eng.vmware.com:80/artifactory/api/npm/npm
+RUN cd admin-dapp && npm install --registry=http://build-artifactory.eng.vmware.com:80/artifactory/api/npm/npm
+
+# Enviroinment Variables
+COPY privacy-demo/docker/.env .
+
+ENTRYPOINT ["/bin/bash"]

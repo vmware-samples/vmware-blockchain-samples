@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-configmap
+data:
+  VMBC_URL: {{ .Values.blockchainUrl }}
+  VMBC_PUB_SUB_URL: {{ .Values.blockchainPubSubUrl }}
+  PRIVACY_STORAGE_PATH: {{ .Values.privacyDAppStoragePath }}
+  PRIVACY_WALLET_GRPC_SERVICE_LISTEN_URL: {{ .Values.privacyServiceGrpcServerUrl }}
+  PRIVACY_WALLET_GRPC_SERVICE_URL: {{ .Values.privacyServiceGrpcServerUrl }}

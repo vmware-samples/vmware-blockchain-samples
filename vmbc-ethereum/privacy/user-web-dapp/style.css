@@ -1,0 +1,46 @@
+body {
+    background-color: rgb(0, 145, 218);
+    font-family: "Metropolis Light";
+  }
+
+h1 {
+    text-align: center;
+    text-shadow: 2px 2px;
+}
+
+h2 {
+    text-align: center;
+}
+
+button {
+    font-family: "Metropolis Light";
+    background-color: rgb(29, 66, 138);
+    color: white;
+    border-width: 0px;
+    min-height: 1cm;
+    min-width: 1cm;
+    width: 5cm;
+    clear: left;
+}
+
+input {
+    font-family: "Metropolis Light";
+    background-color: rgb(29, 66, 138);
+    color: white;
+    min-height: 1cm;
+}
+
+button:hover {
+    background-color: rgb(0, 145, 218);
+    color: black;
+}
+
+footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+}
+
+#footerLogo {
+    width: 150px;
+  }

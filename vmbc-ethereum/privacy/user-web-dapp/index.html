@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>gRPC-Web Example</title>
+<h1>Sample UTT based user app</h1>
+<h3 id="userID"></h3>
+<h3 id="account"><button id="connectButton" onclick="connectWallet()"><b>Connect</b></button></h3>
+<!-- <link rel="stylesheet" href="style.css"> -->
+<script src="dist/main.js"></script>
+</head>
+<body onload="onPageLoaded()">
+<p>Open up the developer console and see the logs for the output.</p>
+
+<div id="privateKeyUploadDiv">
+  <input type="file" id="myKeys" multiple />
+</div>
+
+<div id="appConfigure">
+  <p>Wallet service: <input id="walletServiceUrl" value="http://localhost:8080"></p>
+  <p>VMBC node: <input id="vmbcUrl" value="http://localhost:8545"></p>
+  <p><button id="setWalletServiceUrl" onclick="setWalletServiceUrl()"><b>wallet configure</b></button></p>
+</div>
+
+<div id="publicInfoDiv">
+<p id="blockNumber"></p>
+<p id="publicBalance"></p>
+</div>
+<div id="privateInfoDiv">
+  <p id="lastAddedTxNum"></p>
+  <p id="privateBalance"></p>
+  <p id="privacyBudget"></p>
+</div>
+
+<button id="showPublicTransferButton" onclick=showPublicTransfer()><b>Public transfer</b></button>
+<button id="showPrivateTransferButton" onclick=showPrivateTransfer()><b>Private transfer</b></button>
+<button id="showConversionsDiv" onclick=showConversions()><b>Conversion</b></button>
+<button id="showDebugDiv" onclick="showDebug()"><b>Debug</b></button>
+<br>
+<div id="publicTransferDiv">
+<div>Public transfer recipient: <input type="text" id="transferRecipient" value="0x" size="22" /></div>
+<div>Public transfer value: <input type="text" id="transferValue" value="0" /></div>
+<button id="sendTxButton" onclick="sendPublicTokenTransfer()"><b>Send public transfer</b></button>
+</div>
+
+<div id="privateTransferDiv">
+<div>Private transfer value: <input type="text" id="privateTransferValue" value="0" /></div>
+<p id="knownRecipientsDiv"></p>
+<button onclick="localStorage.clear(); showPrivateTransferAddressbook()"><b>Clear local storage</b></button><br/>
+<b>Add new recipient</b>
+<div>Private transfer recipient: <input type="text" id="privateTransferRecipientId" value="" size="22" /></div>
+<div>Recipient public key: <br><textarea id="privateTransferRecipientPubKey" value="" rows="9" cols="64"></textarea></div>
+<input type="file" id="pkFile" onchange="handleFile()">
+
+<button id="addPrivateTransferRecipientButton" onclick="addPrivateTransferRecipient()">
+<b>Add recipient</b></button>
+</div>
+
+<div id="conversionsDiv">
+<div>Convert public token to private token: <input type="text" id="publicToPrivateValue" value="0" /></div>
+<button id="publicToPrivateButton" onclick="convertPublicToPrivate()"><b>Convert pub->priv</b></button>
+<div>Convert private token to public token: <input type="text" id="privateToPublicValue" value="0" /></div>
+<button id="privateToPublicButton" onclick="convertPrivateToPublic()"><b>Convert priv->pub</b></button>
+</div>
+
+<div id="debugDiv">
+<button id="updateButton" onclick="UpdateInfo()"><b>Update</b></button>
+<div>Sync from tx: <input type="text" id="syncFromTxNumber" value="0" /></div>
+<button id="sync" onclick="syncTriggered()"><b>Sync</b></button>
+</div>
+
+<p id="minting"></p>
+
+<!-- <footer>
+  <a href="https://octo.vmware.com/author/blockchain/"><img src="./vmware-blockchain-logo.jpg" id="logo"></a>
+</footer> -->
+</body>
+</html>

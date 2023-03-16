@@ -1,0 +1,14 @@
+{
+  "name": "privacy-admin-dapp-simple-example",
+  "version": "0.1.0",
+  "description": "privacy admin dapp simple example",
+  "main": "privacy-admin-dapp.js",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.7.2",
+    "@grpc/proto-loader": "^0.7.3",
+    "dotenv": "^16.0.1",
+    "solc": "^0.8.16",
+    "web3": "^1.7.5",
+    "commander": "^10.0.0"
+  }
+}
