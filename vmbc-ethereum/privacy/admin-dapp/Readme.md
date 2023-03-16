@@ -1,12 +1,12 @@
 # Privacy admin DAPP 
-The admin-dapp is a Nodejs based application that demonstrate privacy application administrators workflow.
+The admin-dapp is a Nodejs based application that demonstrates the workflow of a privacy application's administrators.
 The administrator is responsible for:
 
 - Deploying an instance of privacy and public smart contracts and effectively the privacy application. The users rely on these smart contract addresses to get bootstrapped! 
 
 - Since the administrator is the contract owner he can mint public ERC20 tokens to any users based on their EOA ethereum address.
 
-- The administrator can allocate privacy budgets for any users based on their privacy user identifier (PID). 
+- The administrator can allocate privacy budgets for any number of users, based on their privacy user identifier (PID). 
 
 # Workflow
 ## Deploy the privacy application (all smart contracts)
@@ -60,7 +60,7 @@ created budget successfully..
 ```
 
 ## Mint public balance
-Note teh address for alice is public ethereum address. For this testing it can be inferred from alice logs (or) show-state command shown below
+Note the address for Alice is a public ethereum address. For this testing it can be inferred from Alice's logs or the show command.
 ```sh
  node privacy-admin-dapp.js mint-public 0x45159Aef48d2337bAedd83a76a764e869073BBa7 1000
 Privacy wallet service grpc:  0.0.0.0:49002
