@@ -165,6 +165,7 @@ kubectl get pods [-n <namespace-used-during-deployment>]
       ```
       cp -r -L -p /mnt/source/replica-2/<namespace>/<blockchainid>/replica-2/rocksdbdata/checkpoints/<checkpoint-number>/* /mnt/destination/replica-2/<namespace>/<blockchainid>/replica-2/rocksdbdata
       ```
+      - Detach the original volume and the restored volume from the EC2 instance.
       - At this point you can unmount the original and restored volume from the instance, and delete the restored volume from EC2 along with its snapshots.
 
 ## Checkpointing via Operator
