@@ -82,4 +82,95 @@ replicaCheckpointBackup:
       Here, default is the namespace under which the blockchain was deployed. To take a backup, these directories plus contents would be copied to the backup location.
     - Repeat this for all Blockchain Replica and Client components in the K8s cluster.
   - EKS
+  
+    You can check the volumes used for the cluster by navigating to EKS > cluster-name > Resources
+    Example:
+    ![alt text][ebs_pv]
+  
+    [ebs_pv]: https://github.com/vmware-samples/vmware-blockchain-samples/blob/stage-eth-dev/vmbc-ethereum/vmbc-operations-guides/images/EKS_PV.png "EKS PV Sample"
+  
+    Clicking on a PV will show the EBS volume id:
+    ![alt text][ebs_vol]
+  
+    [ebs_vol]: https://github.com/vmware-samples/vmware-blockchain-samples/blob/stage-eth-dev/vmbc-ethereum/vmbc-operations-guides/images/EKS_EBS.png "EKS EBS Vol id Sample"
+    
+    Note the Volume ID. Clicking on it shows an EC2 instance to which the volume is attached. This EC2 instance is needed later in the restore step.
+    
+## Restore
+There are 2 steps for properly restoring data:
+- Users restore storage from backups via their vendor-specific capabilities.
+- Users restore the blockchain data to its logical, consistent point by choosing the right checkpoint backup.
 
+# User Flow
+- Ensure that the blockchain components are stopped in the cluster. Use this helm upgrade command to stop the blockchain components:
+```
+helm upgrade <name-of-release> <path-to-chart> --reuse-values --set global.replicaCount=0
+```
+Note the replicaCount: 0.
+- After a while, all pods in the cluster should be shut down. This can be verified using
+```
+kubectl get pods [-n <namespace-used-during-deployment>]
+```
+- Restore process can be started now from the backups taken before.
+  - Minikube
+    - Log into the minikube VM as described in the Backup section, and restore the directories that have the backups to their original locations under /tmp/hostpath-provisioner/default
+    - Repeat the process for all Volumes for all clusters.
+    - Once all volumes have been restored, restart all blockchain components in the cluster by running this helm upgrade command:
+    ```
+    helm upgrade <name-of-release> <path-to-chart> --reuse-values --set global.replicaCount=1
+    ```
+    - Confirm that the pods are started and running using this kubectl command:
+    ```
+    kubectl get pods [-n <namespace-used-during-deployment>]
+    ```
+    - Perform blockchain functional validation on the recovered blockchain.
+  - EKS
+    - For AWS, the data is restored to a new  volume, which then needs to be re-attached to the original instance. See [AWS EBS restore guide](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-restoring-volume.html) for more details.
+      Note: Make sure that the restored volume is hosted in the same Availability Zone as the original volume.
+    - For EKS. attach the snapshot EBS volume from above to the EC2 instance from the Backup step, and then copy over data from the snapshot volume to the original volume. Do not replace the original volume with the snapshot volume.
+      Say the original EBS volume is attached at /dev/abcd. Say the restored EBS volume is attached at /dev/pqrs. Then, one approach to restoring the data would be to mount both volumes at different directories, and then copy the data from the restored directory location to the original directory location, for example, to copy restored data for replica-2 to the original location
+      - switch to root
+      ```
+      sudo su -
+      ```
+      - create the destination mount point for replica-2's original volume (repeat this for each replica whose persistent store is attached to the instance)
+      ```
+      mkdir -p /mnt/destination/replica-2
+      ```
+      - create the source mount point for replica-2's restored volume
+      ```
+      mkdir -p /mnt/source/replica-2
+      ```
+      - Mount the original destination volume
+      ```
+      mount /dev/abcd /mnt/destination/replica-2
+      ```
+      - Mount the restored source volume
+      ```
+      mount /dev/pqrs /mnt/source/replica-2
+      ```
+      - If you want to restore only rocksdb data, figure out the appropriate checkpoint that you want to restore. This checkpoint number and directory should be the same for all replicas. Say that checkpoint number is 123.
+      - Make a note of the user and group of the files under rocksdbdata, available under 
+      ```
+      /mnt/destination/replica-2/<namespace>/<blockchainid>/replica-2/rocksdbdata/*
+      ```
+      - Blow away the original rocksdbdata
+      ```
+      rm -rf /mnt/destination/replica-2/<namespace>/<blockchainid>/replica-2/rocksdbdata/*
+      ```
+      - Copy over the checkpointed rocksdbdata from the source restored volume to the original location
+      ```
+      cp -r -L -p /mnt/source/replica-2/<namespace>/<blockchainid>/replica-2/rocksdbdata/checkpoints/<checkpoint-number>/* /mnt/destination/replica-2/<namespace>/<blockchainid>/replica-2/rocksdbdata
+      ```
+      - At this point you can unmount the original and restored volume from the instance, and delete the restored volume from EC2 along with its snapshots.
+
+## Checkpointing via Operator
+- A checkpoint can be forced by issuing the concop db-checkpoint create command, e.g. once you have logged into the operator, you can run this command:
+```
+./concop db-checkpoint create
+```
+A new checkpoint directory under /rocksdbdata/checkpoints will be created.
+- The status of checkpoints can also be seen by running this command:
+```
+./concop db-checkpoint status
+```
