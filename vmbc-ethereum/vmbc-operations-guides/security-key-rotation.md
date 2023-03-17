@@ -224,7 +224,7 @@ root@vmbc-deployment-operator-0-operator-5496c96cfb-jsrph:/operator# ./concop ke
 ```
 Note: You may need to perform other operator operations so that TLS handshake happens with replicas and new operator key will be reflected on replicas. Example: Perform any command from [blockchain wedge](./blockchain-wedge-unwedge.md)
 
-Note: Operator key rotation is not fully supported for multi cluster environment where all cluster have their own operator. Impact: If you rotate the operator key in one cluster then in a different cluster containing operator, communication might break since it may n have updated key.
+Note: Operator key rotation is not fully supported for multi cluster environment where all cluster have their own operator. Impact: If you rotate the operator key in one cluster then in a different cluster containing operator, communication might break since it may not have updated key.
 ###### Operator tls key rotation status
 ```
 ./concop key-exchange status --tls --operator
