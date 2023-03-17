@@ -127,6 +127,9 @@ kubectl get pods [-n <namespace-used-during-deployment>]
   - EKS
     - For AWS, the data is restored to a new  volume, which then needs to be re-attached to the original instance. See [AWS EBS restore guide](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-restoring-volume.html) for more details.
       Note: Make sure that the restored volume is hosted in the same Availability Zone as the original volume.
+      ![alt text][ebs_snapshot]
+  
+    [ebs_snapshot]: https://github.com/vmware-samples/vmware-blockchain-samples/blob/stage-eth-dev/vmbc-ethereum/vmbc-operations-guides/images/EKS_EBS_SNAPSHOT.png "EKS EBS snapshot Sample"
     - For EKS. attach the snapshot EBS volume from above to the EC2 instance from the Backup step, and then copy over data from the snapshot volume to the original volume. Do not replace the original volume with the snapshot volume.
       Say the original EBS volume is attached at /dev/abcd. Say the restored EBS volume is attached at /dev/pqrs. Then, one approach to restoring the data would be to mount both volumes at different directories, and then copy the data from the restored directory location to the original directory location, for example, to copy restored data for replica-2 to the original location
       - switch to root
