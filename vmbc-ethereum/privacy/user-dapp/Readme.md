@@ -15,9 +15,8 @@ Currently these steps are handled by a sample bash script for demonstration.
 This flow should be tailored appropriate to the application requirements.
 
 ```sh
-root@privacy-user-dapp-0:/app# cd storage/ && mkdir certs && cd certs/
-root@privacy-user-dapp-0:/app/storage# 
-root@privacy-user-dapp-0:/app/storage# 
+root@privacy-user-dapp-0:/app# cd /app/storage/ && mkdir certs && cd certs/
+
 root@privacy-user-dapp-0:/app/storage/certs# /app/user-dapp/generate_self_signed_certificate.sh alice
 Generating a RSA private key
 ...................................+++++
