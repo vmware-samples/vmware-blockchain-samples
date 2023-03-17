@@ -1,10 +1,13 @@
 ## Introduction
-A Kubernetes based deployment of privacy dapps is demonstrated here. In this demo, we use minikube as the kubernetes engine and helm for managing resources related to the deployment. In this instance, minikube is configured to use docker as the driver, athough the user is free to choose a different one if necessary.
+A Kubernetes based deployment of privacy dapps is demonstrated here. In this demo, we use minikube as the kubernetes engine and helm for managing resources related to the deployment. In this instance, minikube is configured to use docker as the driver, although the user is free to choose a different one if necessary.
 
 The focus here is on kubernetes deployment and not on the workflows supported by the DApp ecosystem. For pod specific workflows, please refer to their corresponding README files linked below:
-For privacy admin workflows, refer [here](https://gitlab.eng.vmware.com/blockchain/vmwathena_blockchain/-/blob/master/privacy-demo/web3/privacy-dapp/admin-dapp/Readme.md).
-For privacy user workflows, refer [here](https://gitlab.eng.vmware.com/blockchain/vmwathena_blockchain/-/blob/master/privacy-demo/web3/privacy-dapp/user-dapp/Readme.md).
 
+For privacy admin workflows, refer [here](../admin-dapp/Readme.md).
+
+For privacy user workflows, refer [here](../user-dapp/Readme.md).
+
+![deployment overview](../docs/privacy-k8s.png)
 ## Pre-requisites
 Make sure to have docker, minikube, helm installed. The versions used at the time of making this README are as follows:
 ```
@@ -54,7 +57,7 @@ Note: StatefulSetAutoDeletePVC is an experimental feature that lets minikube del
 The privacy capabilities are not currently supported with permission enabled blockchain. VMware Blockchain must be deployed with read and write permissions disabled before trying out privacy.
 
 ## Configuring the deployment.
-Helm charts for the deployment are available [here](https://gitlab.eng.vmware.com/blockchain/vmwathena_blockchain/-/tree/master/privacy-demo/web3/privacy-dapp/k8s/helm-charts). The user can set the following configuration to deploy with the intended image.
+Helm charts for the deployment are available [here](helm-charts). The user can set the following configuration to deploy with the intended image.
 1. global.imageCredentials.registry: Container registry for image downloads
 2. global.imageCredentials.username: Username to access/download for registry
 3. global.imageCredentials.password: Password to access/download for registry
@@ -144,7 +147,7 @@ kubectl scale sts privacy-user-dapp --replicas=5
 ```
 This scales up the deployment to 5 user pods.
 
-The user can remove all pods and associated resources by running **helm unintall <name of privacy app deployment>**.
+The user can remove all pods and associated resources by running **helm uninstall <name of privacy app deployment>**.
 ```
 helm uninstall privacy-dapp-ecosystem
 ```
