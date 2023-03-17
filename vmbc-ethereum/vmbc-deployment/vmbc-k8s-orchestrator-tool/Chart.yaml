@@ -1,6 +1,0 @@
-apiVersion: v2
-name: vmbc-k8s-orchestrator
-description: Helm charts for k8s orchestrator API mode
-type: application
-version: 0.1.0
-
