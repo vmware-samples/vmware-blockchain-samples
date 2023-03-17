@@ -169,7 +169,7 @@ kubectl get pods [-n <namespace-used-during-deployment>]
 ```
 ./concop db-checkpoint create
 ```
-A new checkpoint directory under /rocksdbdata/checkpoints will be created.
+  A new checkpoint directory under /rocksdbdata/checkpoints will be created.
 - The status of checkpoints can also be seen by running this command:
 ```
 ./concop db-checkpoint status
