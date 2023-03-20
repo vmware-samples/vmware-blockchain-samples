@@ -1,5 +1,5 @@
 # VMware Blockchain Wedge/Unwedge Guide
-The wedge command stops the committers from processing new write requests. This means that after a wedge, the system is still working and can answer read requests, but the state will not be changed anymore. It thus means no write requests can be executed, includeing reconfiguration requests.
+The wedge command stops the committers from processing new write requests. This means that after a wedge, the system is still working and can answer read requests, but the state will not be changed anymore. It thus means no write requests can be executed, including reconfiguration requests.
 ## Prerequisites
 - You must have a blockchain deployed with operator. Please see [vmbc deployment](../vmbc-deployment/vmbc-k8s-orchestrator-tool) for details on how to generate charts and deploy blockchain with operator.
 - You must have exactly one operator per zone/cluster.
@@ -114,7 +114,8 @@ Here --bft to support n-f wedge. With --bft flag it won't wait for n/n consensus
 #### Unwedge the blockchain
 The unwedge command tells the committers to resume processing new write requests after being stopped with 'wedge'. It is meant to be used at the end of a reconfiguration workflow that starts with 'wedge'.
 
-Note: If you wedge the system and then restart the pods, the system will remain wedged. Unwedge must be executed to resume the system.To initiate unwedge run:
+Note: If you wedge the system and then restart the pods, the system will remain wedged. Unwedge must be executed to resume the system.\
+To initiate unwedge run:
 ```
 ./concop unwedge
 ```
