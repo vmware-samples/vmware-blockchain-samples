@@ -1,24 +1,24 @@
-# VMware Blockchain Four Node One Client Sample Deployment With Logging
+# Sample Deployment with Four Replica Nodes and One Client Node With Logging
 The sample VMware Blockchain for Ethereum deployment includes a set of Helm charts for four Replica nodes and one Client node. The deployment on Kubernetes must only be on a supported host with a single cluster. 
-
 Replica nodes are the participants in the consensus algorithm, concord-bft. Client nodes are the clients in the blockchain network running ethrpc.
-
 The current sample deployment has been tested on the following components:
--	Minikube with VirtualBox, Hyperkit and Docker drivers
+-	Minikube with VirtualBox
+-	Hyperkit 
+-	Docker drivers
 
-## Prerequisites
-Make sure that you implement all the required prerequisites. See [Deployment Prerequisites](./../README.md).
+## Deployment Prerequisites
+Make sure that you implement all the required deployment prerequisites. See [System Requirements](./../README.md).
 
-### ELK Setup
+## Install Monitoring
+VMware Blockchain for Ethereum collects monitoring metrics from your blockchain deployment nodes and uses third-party providers to analyze the metrics. VMware Blockchain for Ethereum uses the ELK stack platform for monitoring metrics.
 
-#### Install Elasticsearch, Logstash and Kibana
-- Add helm repo if not already added
+- Add the Helm repository.
      ```sh
      helm repo add elastic https://helm.elastic.co
      helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
      helm repo update
      ```
-- Install Elasticsearch
+- Install Elasticsearch.
      ```sh
      cat <<ELASTICSEARCH | helm install elasticsearch elastic/elasticsearch --version 7.17.3 -f -
      antiAffinity: "soft"
@@ -37,13 +37,13 @@ Make sure that you implement all the required prerequisites. See [Deployment Pre
           storage: "200M"
      ELASTICSEARCH
      ```
-- Install Kibana
+- Install Kibana.
      ```sh
      cat <<KIBANA | helm install kibana elastic/kibana --version 7.17.3 -f -
      KIBANA
      ```
 
-- Install logstash
+- Install Logstash.
      ```sh
      cat <<LOGSTASH | helm install logstash elastic/logstash --version 7.17.3 -f -
      persistence:
@@ -88,67 +88,71 @@ Make sure that you implement all the required prerequisites. See [Deployment Pre
      LOGSTASH
      ```
 
-## VMware Blockchain four node one client deployment
+## VMware Blockchain Nodes Deployment
+You can deploy four Replica nodes and one Client node on Minikube.
 
-The below section explains how to install VMware Blockchain four node one client deployment on minikube.
-
-### Quick Start
-#### Deploy
+#### Deploy Helm.
 ```sh
 helm install <name of blockchain> . --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password>i
 ```
-Note that it may take upto 5 mins for the blockchain to be operational the first time it's deployed. Please wait for 5 mins or until you see ```client_id=8 is serving - the pool is ready``` in the ```vmbc-deployment-client-0-clientservice-xxx-yyy``` pod logs.
+**Note**: It might take up to 5 mins for the blockchain nodes to be operational after deployment. Open the pod logs ```vmbc-deployment-client-0-clientservice-xxx-yyy``` and wait for the ```client_id=8 is serving - the pool is ready``` notification.
 
-#### Test
-- Get ethrpc endpoint
+#### Test your deployment.
+- Get ethrpc endpoint.
     ```sh
     minikube service list
     ```
-  Note: If you don't see a URL using the above command then try ```minikube service client-0-ethrpc```
+  **Note**: If you do not see a URL, try an alternate ```minikube service client-0-ethrpc``` command.
   
-- Run ethrpc curl
+- Run ethrpc curl command.
     ```sh
     curl -H 'Content-Type: application/json' -H "Accept: application/json" -d '{"id": 1, "jsonrpc": "2.0", "method": "eth_getBlockByNumber", "params": ["0x00", true]}' <ethrpc url from above>
     ```
-  You should see a sample output similar to below
+Sample output:
     ```json
     {"id":1,"jsonrpc":"2.0","method":"eth_getBlockByNumber","result":{"extraData":"0x","gasLimit":"0x7fffffffffffffff","gasUsed":"0x0","hash":"0x92e4414494ec1b4752faea0d80e79f618d447743f32eff4153c5e391be1d1a88","miner":"0x52a06a6cBEF9543244C530F52b602712FE5dfb74","nonce":"0x0000000000000000","number":"0x0","parentHash":"0x0000000000000000000000000000000000000000000000000000000000000000","size":1,"stateRoot":"0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470","timestamp":"0x1669680399","transactions":[{"blockHash":"0x92e4414494ec1b4752faea0d80e79f618d447743f32eff4153c5e391be1d1a88","blockNumber":"0x0","contractAddress":"0x","from":"0x0000000000000000000000000000000000000000","gas":"0x0","gasPrice":0,"hash":"0x77f5bd9e7dbe2c2772f58f53431dfdfa205991ec4ff0b2bc385adecefd8895be","input":"0x","logs":[],"nonce":"0x0","to":"0xfb389874fb4e03182a7358275eaf78008775c7ed","transactionIndex":"0x0","value":"0x0000000000000000000000000000000000000000000000007fffffffffffffff"}]}}
     ```
-See [Troubleshooting](./../Troubleshooting.md) for any errors.
+    
+See, [Troubleshooting](./../Troubleshooting.md) to resolve any errors.
 
-#### View logs in Kibana
-- Open a port-forward to Kibana
+#### View logs in Kibana.
+- Open a port-forward to Kibana.
     ```sh
     kubectl port-forward svc/kibana-kibana 5601:5601
     ```
-- Open the following page to see logs
-http://localhost:5601/app/discover#
-- On first open, it will ask to create an index.
- - Click on "Create index pattern"
- - Type logs-generic-default* in the Name field and select the @timestamp field from the Timestamp field drop down.
-   If you don't see logs-generic-default, wait a few minutes for the index to be created after a blockchain has been deployed.
-   If you haven't deployed a blockchain yet, then you will have to return to this page after the blockchain is deployed.
-   The index is automatically created when the first blockchain is deployed.
- - After you click Create index pattern on the page above, you should see a page to customize the index fields.
-   You can leave this page as is as the defaults are fine.
- - Now you can search and view logs on this page: http://localhost:5601/app/discover#. You can filter logs based on blockhain ID, service name etc.
+- Open the following page to view
+http://localhost:5601/app/discover# logs.
+- For the inital log in, create an index.
+ - Click **Create index pattern**.
+ - Enter *logs-generic-default** in the Name option.
+ - From the Timestamp field drop-down menu, select the **@timestamp** field.
+ 
+   If you do not see *logs-generic-default*, wait a few minutes for the index to be created after deploying a blockchain.
+   
+   If you have not deployed a blockchain yet, return to this page after the blockchain is deployed. 
+   The index is created when the first blockchain is deployed.
+   
+ - From the Create index pattern page, you can view the customize the index fields.
+   
+   You can accept the default index field values.
+   
+ - Search and view logs on this page, http://localhost:5601/app/discover#.
+ 
+   You can filter logs based on blockchain ID, service name, etc.
 
-#### Uninstall
-##### Uninstall Blockchain
+#### Uninstall the VMware Blockchain nodes.
 ```sh
 helm uninstall <name of blockchain>
 ```
-##### Uninstall ELK
+#### Uninstall ELK.
 ```sh
 helm delete elasticsearch 
 helm delete logstash
 helm delete kibana
 ```
 
-### Detailed configurations for customization
-
-- Configurations
-  List of available configurations in values.yaml. Use "--set" param for setting up the params.
+### Deployment Configuration and Customization
+You can customize your deployment configurations. A list of configurations is available in the values.yaml file. You can use the "--set" parameter value for configuration.
 
 | Name                             | Description                                      | Value                       | Type      |
 |----------------------------------|--------------------------------------------------|-----------------------------|-----------|
