@@ -90,7 +90,7 @@ Login into the desired replica/concord pod of which you want to rotate the key
 ```
 kubectl get pods
 ```
-Copy name of the replica pod. Lets say that is replica-pod-name-uuid
+Copy name of the replica pod. Lets say that is replica-pod-name-uuid\
 Grep logs to get replica id.
 ```
 kubectl logs <replica-pod-name-uuid> | grep "Starting committer replica with id"
@@ -183,8 +183,8 @@ vmbc-deployment-replica-1-concord        1/1     1            1           47m
 vmbc-deployment-replica-2-concord        1/1     1            1           47m
 vmbc-deployment-replica-3-concord        1/1     1            1           47m
 ```
-Copy the pod name containing your desired client name and "clientservice" in it. Lets say it is client-service-deployment
-####### Scale down clientservice deployment
+Copy the pod name containing your desired client name and "clientservice" in it. Lets say it is client-service-deployment\
+Scale down clientservice deployment
 ```
 kubectl scale deployment <client-service-deployment> --replicas=0
 ```
@@ -193,7 +193,7 @@ sample:
 kubectl scale deployment vmbc-deployment-client-0-clientservice --replicas=0
 deployment.apps/vmbc-deployment-client-0-clientservice scaled
 ```
-####### Scale up clientservice deployment
+Scale up clientservice deployment
 ```
 kubectl scale deployment <client-service-deployment> --replicas=1
 ```
@@ -224,7 +224,7 @@ root@vmbc-deployment-operator-0-operator-5496c96cfb-jsrph:/operator# ./concop ke
 ```
 Note: You may need to perform other operator operations so that TLS handshake happens with replicas and new operator key will be reflected on replicas. Example: Perform any command from [blockchain wedge](./blockchain-wedge-unwedge.md)
 
-Note: Operator key rotation is not fully supported for multi cluster environment where all cluster have their own operator. Impact: If you rotate the operator key in one cluster then in a different cluster containing operator, communication might break since it may not have updated key.
+Note: Operator key rotation is not fully supported for multi cluster environment where all cluster have their own operator. Impact: If you rotate the operator key in one cluster then in a different cluster containing operator, communication might break since it may not have updated key.\
 ###### Operator tls key rotation status
 ```
 ./concop key-exchange status --tls --operator
