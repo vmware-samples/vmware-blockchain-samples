@@ -64,12 +64,15 @@ We have two ways to consume this feature,
 2. Generate new helm charts for use-cases where you need more customization than the sample helm charts mentioned above
 
 #### Details about relevant fields in Helm charts
-Under `clientTlsAndTokenAuthSettings` for each client, following fields could exist depending on the configuration of the helm charts you are using,
+Under `clientTlsAndTokenAuthSettings` for each VMBC Client, following fields could exist depending on the configuration of the helm charts you are using,
 - `type`
    - the supported types are `mutualTLS` and `serverTLS`
 - `serverCert`
-   - this is the server cert which will be used by the client
+   - this is the server certificate which will be used by EthRPC
    - this is a mandatory field if `clientTlsAndTokenAuthSettings` is present
+- `clientRootCaCert`
+   - this is the root CA certificate for the client certificates which will be used by dApps
+   - this is a mandatory field if using `mutualTLS` 
 - Todo: Add about more fields
 
 #### Sample Pre-Generated Helm Charts
