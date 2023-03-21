@@ -4,7 +4,7 @@ const Web3 = require("web3");
 const Web3HttpProvider = require('web3-providers-http');
 const Web3WsProvider = require('web3-providers-ws');
 const { Issuer, errors: { OPError } } = require('openid-client');
-const config = require('./config-self.json');
+const config = require('./config.json');
 const { exit } = require('process');
 
 const oauthUsername = config.clientJwt.authUsername;
@@ -17,7 +17,7 @@ const clientCert = config.tls.clientCertPath;
 var abi, account;
 
 const getJwtToken = async () => {
-  console.log("\n========== Fetching Access Token from Auth Server ==========");
+  console.log("\x1b[32m%s\x1b[0m", "\n========== Fetching Access Token from Auth Server ==========");
   // Fetches the .well-known endpoint for endpoints, issuer value etc.
   const authEndpointInfo = await Issuer.discover(config.clientJwt.authDiscoveryUrl);
 
@@ -118,7 +118,7 @@ const deployContract = async (accessToken) => {
   const bytecode = contractFile.evm.bytecode.object;
   abi = contractFile.abi;
 
-  console.log("\n========== Deploying contract using https endpoint ==========");
+  console.log("\x1b[32m%s\x1b[0m", "\n========== Deploying contract using https endpoint ==========");
 
   web3 = await createHttpProvider(accessToken);
   
@@ -145,7 +145,7 @@ const deployContract = async (accessToken) => {
 }
 
 const subscribeToLogs = async (accessToken, contractAddress) => {
-  console.log("\n========== Subscribing to logs of deployed contract using wss endpoint ==========");
+  console.log("\x1b[32m%s\x1b[0m", "\n========== Subscribing to logs of deployed contract using wss endpoint ==========");
   web3Ws = await createWsProvider(accessToken);
 
   var subcribeOptions = {
@@ -156,7 +156,7 @@ const subscribeToLogs = async (accessToken, contractAddress) => {
     if (error)
       console.log(error);
   }).on("data", function (log) {
-    console.log("\n========== Received data from websocket ==========");
+    console.log("\x1b[32m%s\x1b[0m", "\n========== Received data from websocket ==========");
     console.log("Received log: " + JSON.stringify(log));
     console.log("Successfully received logs on websocket subscription");
     exit(0);
@@ -166,7 +166,7 @@ const subscribeToLogs = async (accessToken, contractAddress) => {
 }
 
 const sendSampleTransaction = async (contractAddress) => {
-  console.log("\n========== Sending a sample transaction ==========");
+  console.log("\x1b[32m%s\x1b[0m", "\n========== Sending a sample transaction ==========");
   // Build increment tx
   const incrementValue = 1000
   const deployedContractInstance = new web3.eth.Contract(abi, contractAddress)
