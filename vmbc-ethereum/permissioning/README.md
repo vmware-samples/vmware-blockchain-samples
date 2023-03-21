@@ -17,22 +17,19 @@ Following diagram depicts both mTLS and serverTLS which have been enabled in two
 - Each DApp and EthRPC Server instance have certificates depicted along side. These are the certificates and keys required for the respective components
 - Colors represent the association of Certificates and Keys with corresponding DApp or EthRPC instance or internal CA 
 
-##### Server TLS
-
-###### dApp
-- If using an internal CA based Server Certificate, DApp needs to utilize Root Certificate of the EthRPC Server's Server Certificate
-
-###### EthRPC
-- Needs to start up with a Server certificate. If using a internal CA certificate, the root certificate of the internal CA would need to be provided for DApp clients
-
-##### Mutual TLS
-###### dApp
-- If using an internal CA based Server Certificate, DApp needs to utilize Root Certificate of the EthRPC Server's Server Certificate
-- DApp needs to use Client certificate and Client Key
-
-###### EthRPC
-- Needs to start up with a Server certificate. If using a internal CA certificate, the root certificate of the internal CA would need to be provided for DApp clients
-- If DApp is using an internal CA for Client Certificate, the root certificate of the internal CA which was used to sign the client certificate is needed by EthRPC
+**Few Notable Points**
+- Server TLS
+   - dApp
+      - If using an internal CA based Server Certificate, DApp needs to utilize Root Certificate of the EthRPC Server's Server Certificate
+   - EthRPC
+      - Needs to start up with a Server certificate. If using a internal CA certificate, the root certificate of the internal CA would need to be provided for DApp clients
+- Mutual TLS
+   - dApp
+      - If using an internal CA based Server Certificate, DApp needs to utilize Root Certificate of the EthRPC Server's Server Certificate
+      - DApp needs to use Client certificate and Client Key
+   - EthRPC
+      - Needs to start up with a Server certificate. If using a internal CA certificate, the root certificate of the internal CA would need to be provided for DApp clients
+      - If DApp is using an internal CA for Client Certificate, the root certificate of the internal CA which was used to sign the client certificate is needed by EthRPC
 
 #### Client JWT using OAuth Server
 DApp would have to handle following aspects,
