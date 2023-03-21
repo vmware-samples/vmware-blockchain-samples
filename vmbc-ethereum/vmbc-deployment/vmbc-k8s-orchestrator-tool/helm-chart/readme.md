@@ -1,13 +1,5 @@
 # VMBC K8s Orchestrator service
 
-VMBC k8s Orchestrator is a self service orchestration platform for creation of VMWare Blockchain helm charts with desired configurations.
-
-## Prerequisites
-
-Make sure that you implement all the required prerequisites. See [Deployment Prerequisites](./../README.md).
-
-Install HTTPIE (https://httpie.io/docs/cli/main-features)
-
 ## Deploy K8s Orchestrator
 
 ```
