@@ -5,8 +5,8 @@ VMware Blockchain for Ethereum in a broad form provides two forms of permissioni
 ## Read Permissioning
 Read Permissioning is implemented through external Authorizations mechanisms such as Certificate Authority or OAuth Server in two forms namely Mutual TLS and Client JWT.
 
-### High Level Feature Architecture
-#### Server and Mutual TLS using Certificate Authority
+<!--### High Level Feature Architecture-->
+### Server and Mutual TLS using Certificate Authority
 There will be two options for TLS Modes namely ServerTLS and MutualTLS which can be enabled at EthRPC level
 
 Following diagram depicts both mTLS and serverTLS which have been enabled in two different Client Nodes
@@ -31,28 +31,26 @@ Following diagram depicts both mTLS and serverTLS which have been enabled in two
       - Needs to start up with a Server certificate. If using a internal CA certificate, the root certificate of the internal CA would need to be provided for DApp clients
       - If DApp is using an internal CA for Client Certificate, the root certificate of the internal CA which was used to sign the client certificate is needed by EthRPC
 
-#### Client JWT using OAuth Server
+### Client JWT using OAuth Server
 DApp would have to handle following aspects,
 - Fetching of a JWT Access Token from an OAuth Server managed by Customer
 - When utilizing the integration libraries the JWT Access Token has to be passed as a header to EthRPC
 
 Following are the depictions for two of the ways EthRPC can be configured to verify JWT Token,
 
-##### JWT Token Verification using Live Authorization Server
+#### JWT Token Verification using Live Authorization Server
 ![Client JWT with Live OAuth Server Depiction](./assets/images/client-jwt-live-oauth-server-depiction.png)
 
-Following is the sequence of steps,
-
+**Description of the Depiction**
 1. The DApp procures JWT Token from the JWT Authorization Server
    - This operation would happen periodically, based on the expiry time set for the JWT Token
 2. The DApp through the selected integration library would pass the above acquired JWT Token as a header
 3. EthRPC would communicate with the JWT Authorization Server to get the public key for verifying the JWT Token received from DApp. EthRPC would cache the public keys of Authorization server for 5 minutes
 
-##### JWT Token Verification using Local Public Key
+#### JWT Token Verification using Local Public Key
 ![Client JWT with Live OAuth Server Depiction](./assets/images/client-jwt-local-jwks-depiction.png)
 
-Following is the sequence of steps,
-
+**Description of the Depiction**
 1. The DApp procures JWT Token from the JWT Authorization Server
    - This operation would happen periodically, based on the expiry time set for the JWT Token
 2. The DApp through the selected integration library would pass the above acquired JWT Token as a header
