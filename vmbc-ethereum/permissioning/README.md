@@ -1,6 +1,6 @@
 # Ethereum Permissioning
 
-VMware Blockchain for Ethereum in a broad form provides two forms of permissioning, Read and Write Permissioning. Read Permissioning is provided using Certificate Authorities in the form of Mutual TLS by utilizing Client certificates or using OAuth Server by utilizing Client JWT Tokens. The Write Permissioning is provided using a permissioning pre-deployed smart contract.
+VMware Blockchain for Ethereum in a broad form provides two forms of permissioning, Read and Write Permissioning. Read Permissioning is provided using Certificate Authorities in the form of Mutual TLS by utilizing Client certificates or using OAuth Server by utilizing Client JWT Tokens. The Write Permissioning is provided using a permissioning pre-deployed smart contract in accordance with the Enterprise Ethereum Alliance (EEA) specifications.
 
 ## Read Permissioning
 Read Permissioning is implemented through external Authorizations mechanisms such as Certificate Authority or OAuth Server in two forms namely Mutual TLS and Client JWT.
