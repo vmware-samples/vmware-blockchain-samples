@@ -1,0 +1,66 @@
+{
+  "organization": {
+    "blockchainVersion": "<BLOCKCHAIN_VERSION>",
+    "secureStore": {
+      "storeType": "INSECURE"
+    }
+  },
+  "zones": [
+    {
+      "name": "Virginia",
+      "domain": "vmwarebc.net",
+      "k8s": {
+      },
+      "containerRegistry": {
+        "registryName": "vmwaresaas.jfrog.io",
+        "userName": "vmbc-ro-token",
+        "password": "..."
+      }
+    },
+    {
+      "name": "Ohio",
+      "domain": "vmwarebc.net",
+      "k8s": {
+      },
+      "containerRegistry": {
+        "registryName": "vmwaresaas.jfrog.io",
+        "userName": "vmbc-ro-token",
+        "password": "..."
+      }
+    },
+    {
+      "name": "California",
+      "domain": "vmwarebc.net",
+      "k8s": {
+      },
+      "containerRegistry": {
+        "registryName": "vmwaresaas.jfrog.io",
+        "userName": "vmbc-ro-token",
+        "password": "..."
+      }
+    },
+    {
+      "name": "Oregon",
+      "domain": "vmwarebc.net",
+      "k8s": {
+      },
+      "containerRegistry": {
+        "registryName": "vmwaresaas.jfrog.io",
+        "userName": "vmbc-ro-token",
+        "password": "..."
+      }
+    },
+    {
+      "name": "Canada",
+      "domain": "vmwarebc.net",
+      "k8s": {
+      },
+      "containerRegistry": {
+        "registryName": "vmwaresaas.jfrog.io",
+        "userName": "vmbc-ro-token",
+        "password": "..."
+      }
+    }
+]
+}
+
