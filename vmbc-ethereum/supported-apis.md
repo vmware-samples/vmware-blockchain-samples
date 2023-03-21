@@ -1,9 +1,9 @@
 # VMware Blockchain Supported Ethereum JSON RPC API Endpoints
 VMware Blockchain Ethereum supports the standard interface for Ethereum clients and Enterprise Ethereum Requirements [API Reference](https://ethereum.org/en/developers/docs/apis/json-rpc)
 
- Methods | Description |
+ Methods | Description | Input/Output differences
 | --- | ----------- |
-| eth_accounts | Returns a list of Client node addresses.|
+| eth_accounts | Returns a list of Client node addresses.| 
 | eth_blockNumber | Returns the most recent block number.|
 | eth_call | Executes a new message call immediately without creating a transaction on the blockchain.|
 | eth_chainId (Reference is EIP-695) | Returns the current network or chain ID.|
@@ -15,12 +15,13 @@ VMware Blockchain Ethereum supports the standard interface for Ethereum clients 
 | eth_getBlockTransactionCountByHash | Returns the number of block transactions by block matching the given block.|
 | eth_getBlockTransactionCountByNumber | Returns the number of block transactions by matching the given block number.|
 | eth_getCode | Returns code at a given address.|
-| eth_getLogs | Returns an array of all logs matching a given filter object.|
-| eth_getStorageAt | Returns the value from a storage position at a given address.|
+| eth_getLogs | Returns an array of all logs matching a given filter object.| "pending" treated the same as "latest". TransactionIndex, LogIndex - never have pending blocks. more:TAG always false
+| eth_getStorageAt | Returns the value from a storage position at a given address.| "pending" treated the same as "latest"
 | eth_getTransactionByHash | Returns the information about a transaction requested by transaction hash.|
 | eth_getTransactionCount | Returns the number of transactions sent from an address.|
 | eth_getTransactionReceipt | Returns the receipt of a transaction by transaction hash.|
-| eth_sendRawTransaction | Creates a message call transaction or a contract creation for signed transactions.|
+| eth_getTransactionCount | Returns the number of transactions sent from an address. | "pending" treated the same as "latest"
+| eth_sendRawTransaction | Creates a message call transaction or a contract creation for signed transactions.| "To" address as EOA is unsupported.
 | eth_subscribe | Subscribe to logs that are included in new imported blocks and match the given filter criteria. This uses the WebSocket interface. |
 | eth_unsubscribe | Cancel a current subscription. This uses the WebSocket interface. |
 | net_version | Returns the current network ID.|
