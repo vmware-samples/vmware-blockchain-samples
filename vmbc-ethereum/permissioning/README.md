@@ -68,6 +68,11 @@ Following is the sequence of steps,
 As part of this feature, we have provided multiple sample dApps using various integration libraries such as Web3.js, Web3j and Ethers.js as reference and sample implementation to utilize various aspects of read permissioning in VMBC.
 
 #### Web3.js Sample dApp
+- Set the content inside [config file](./sample-dapps/authentication/web3js/config.json) as per blockchain and related environment,
+- Few of the notable parameters,
+   - `tls.mode` supported are `serverTLS` or `mutualTLS`
+   - `clientJwt.enabled` should be `true` if VMBC has tokenAuthentication enabled
+
 ```sh
 # Change to lib for authentication sample dapps
 cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/lib
