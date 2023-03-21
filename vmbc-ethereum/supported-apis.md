@@ -2,7 +2,7 @@
 VMware Blockchain Ethereum supports the standard interface for Ethereum clients and Enterprise Ethereum Requirements [API Reference](https://ethereum.org/en/developers/docs/apis/json-rpc)
 
  Methods | Description | Input/Output differences
-| --- | ----------- |
+| --- | ----------- | -------------- |
 | eth_accounts | Returns a list of Client node addresses.| 
 | eth_blockNumber | Returns the most recent block number.|
 | eth_call | Executes a new message call immediately without creating a transaction on the blockchain.|
