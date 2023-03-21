@@ -15,12 +15,12 @@ VMware Blockchain Ethereum supports the standard interface for Ethereum clients 
 | eth_getBlockTransactionCountByHash | Returns the number of block transactions by block matching the given block.|
 | eth_getBlockTransactionCountByNumber | Returns the number of block transactions by matching the given block number.|
 | eth_getCode | Returns code at a given address.|
-| eth_getLogs | Returns an array of all logs matching a given filter object.| "pending" treated the same as "latest". TransactionIndex, LogIndex - never have pending blocks. more:TAG always false
+| eth_getLogs | Returns an array of all logs matching a given filter object.| "pending" treated the same as "latest". "more" TAG always false.
 | eth_getStorageAt | Returns the value from a storage position at a given address.| "pending" treated the same as "latest"
 | eth_getTransactionByHash | Returns the information about a transaction requested by transaction hash.|
 | eth_getTransactionCount | Returns the number of transactions sent from an address.|
 | eth_getTransactionReceipt | Returns the receipt of a transaction by transaction hash.|
-| eth_getTransactionCount | Returns the number of transactions sent from an address. | "pending" treated the same as "latest"
+| eth_getTransactionCount | Returns the number of transactions sent from an address. | "pending" treated the same as "latest".
 | eth_sendRawTransaction | Creates a message call transaction or a contract creation for signed transactions.| "To" address as EOA is unsupported.
 | eth_subscribe | Subscribe to logs that are included in new imported blocks and match the given filter criteria. This uses the WebSocket interface. |
 | eth_unsubscribe | Cancel a current subscription. This uses the WebSocket interface. |
