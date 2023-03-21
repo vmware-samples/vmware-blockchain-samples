@@ -73,9 +73,16 @@ Under `clientTlsAndTokenAuthSettings` for each client, following fields could ex
 - Todo: Add about more fields
 
 #### Sample Pre-Generated Helm Charts
-- VMBC Four Node One Client Deployment with mutualTLS
-- VMBC Four Node One Client Deployment with Client JWT and serverTLS
-- VMBC Four Node One Client Deployment with Client JWT and mutualTLS
+Todo: Link following to the helm charts in `vmbc-deployment/vmbc-sample-deployments` directory
+
+- VMBC Four Node and One Client Deployment
+   - mutual TLS
+   - Client JWT with server TLS
+   - Client JWT with mutual TLS
+- VMBC Four Node and Twelve Client Deployment
+   - mutual TLS
+   - Client JWT with server TLS
+   - Client JWT with mutual TLS
 
 #### Generating new Helm Charts
 Todo: Add information about fields in deployment descriptor and link to running of orchestrator tool
