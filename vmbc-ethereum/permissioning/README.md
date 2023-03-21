@@ -5,7 +5,8 @@ VMware Blockchain for Ethereum in a broad form provides two forms of permissioni
 ## Read Permissioning
 Read Permissioning is implemented through external Authorizations mechanisms such as Certificate Authority or OAuth Server in two forms namely Mutual TLS and Client JWT.
 
-### Server and Mutual TLS using Certificate Authority
+### High Level Feature Architecture
+#### Server and Mutual TLS using Certificate Authority
 There will be two options for TLS Modes namely ServerTLS and MutualTLS which can be enabled at EthRPC level
 
 Following diagram depicts both mTLS and serverTLS which have been enabled in two different Client Nodes
@@ -16,31 +17,31 @@ Following diagram depicts both mTLS and serverTLS which have been enabled in two
 - Each DApp and EthRPC Server instance have certificates depicted along side. These are the certificates and keys required for the respective components
 - Colors represent the association of Certificates and Keys with corresponding DApp or EthRPC instance or internal CA 
 
-#### Server TLS
+##### Server TLS
 
-##### dApp
+###### dApp
 - If using an internal CA based Server Certificate, DApp needs to utilize Root Certificate of the EthRPC Server's Server Certificate
 
-##### EthRPC
+###### EthRPC
 - Needs to start up with a Server certificate. If using a internal CA certificate, the root certificate of the internal CA would need to be provided for DApp clients
 
-#### Mutual TLS
-##### dApp
+##### Mutual TLS
+###### dApp
 - If using an internal CA based Server Certificate, DApp needs to utilize Root Certificate of the EthRPC Server's Server Certificate
 - DApp needs to use Client certificate and Client Key
 
-##### EthRPC
+###### EthRPC
 - Needs to start up with a Server certificate. If using a internal CA certificate, the root certificate of the internal CA would need to be provided for DApp clients
 - If DApp is using an internal CA for Client Certificate, the root certificate of the internal CA which was used to sign the client certificate is needed by EthRPC
 
-### Client JWT using OAuth Server
+#### Client JWT using OAuth Server
 DApp would have to handle following aspects,
 - Fetching of a JWT Access Token from an OAuth Server managed by Customer
 - When utilizing the integration libraries the JWT Access Token has to be passed as a header to EthRPC
 
 Following are the depictions for two of the ways EthRPC can be configured to verify JWT Token,
 
-#### JWT Token Verification using Live Authorization Server
+##### JWT Token Verification using Live Authorization Server
 ![Client JWT with Live OAuth Server Depiction](./assets/images/client-jwt-live-oauth-server-depiction.png)
 
 Following is the sequence of steps,
@@ -50,7 +51,7 @@ Following is the sequence of steps,
 2. The DApp through the selected integration library would pass the above acquired JWT Token as a header
 3. EthRPC would communicate with the JWT Authorization Server to get the public key for verifying the JWT Token received from DApp. EthRPC would cache the public keys of Authorization server for 5 minutes
 
-#### JWT Token Verification using Local Public Key
+##### JWT Token Verification using Local Public Key
 ![Client JWT with Live OAuth Server Depiction](./assets/images/client-jwt-local-jwks-depiction.png)
 
 Following is the sequence of steps,
@@ -59,6 +60,38 @@ Following is the sequence of steps,
    - This operation would happen periodically, based on the expiry time set for the JWT Token
 2. The DApp through the selected integration library would pass the above acquired JWT Token as a header
 3. EthRPC would utilize the local public JWKS file for verifying the JWT Token received from DApp
+
+### Enabling Read Permissioning in Blockchain
+<Todo: Add details here>
+
+### Using Sample DApps for Read Permissioning
+As part of this feature, we have provided multiple sample dApps using various integration libraries such as Web3.js, Web3j and Ethers.js as reference and sample implementation to utilize various aspects of read permissioning in VMBC.
+
+#### Web3.js Sample dApp
+```sh
+# Change to lib for authentication sample dapps
+cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/lib
+# Install dependencies
+npm install
+
+# Change to web3js authentication sample dapp
+cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/web3js
+# Install dependencies
+npm install
+
+# Edit the config file as per your enviroment
+# Path to config file: vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/web3js/config.json
+
+# Run the sample dApp
+# If using an internal CA based Auth Server set NODE_EXTRA_CA_CERTS to ca certificate of Auth Server otherwise ignore the variable
+NODE_EXTRA_CA_CERTS=../artifacts/certs/auth-server.crt node sample-dapp.js
+```
+
+#### Web3j Sample dApp
+<Todo: Add details here>
+
+#### Ethers.js Sample dApp
+<Todo: Add details here>
 
 ## Write Permissioning
 
