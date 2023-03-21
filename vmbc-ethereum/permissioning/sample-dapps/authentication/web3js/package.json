@@ -1,0 +1,17 @@
+{
+  "name": "web3js-auth-sample-dapp",
+  "version": "1.0.0",
+  "description": "Example sample dApp for Authentication using Web3.js",
+  "main": "sample-dapp-new.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "openid-client": "^5.3.2",
+    "web3": "^1.8.2",
+    "web3-providers-http": "^1.8.2",
+    "web3-providers-ws": "^1.8.2"
+  }
+}
