@@ -62,7 +62,28 @@ Following is the sequence of steps,
 3. EthRPC would utilize the local public JWKS file for verifying the JWT Token received from DApp
 
 ### Enabling Read Permissioning in Blockchain
-<Todo: Add details here>
+The Read Permissioning in Blockchain is exposed as mutual TLS and JWT Token based authentication through Certificate Authorities and Authorization servers. The valid combinations which which a client can be brought up are no TLS, mutual TLS, Client JWT with server TLS or Client JWT with mutual TLS.
+
+We have two ways to consume this feature,
+1. Utilize the pre-generated helm charts related to various combinations mentioned above [here](../vmbc-deployment/vmbc-sample-deployments)
+2. Generate new helm charts for use-cases where you need more customization than the sample helm charts mentioned above
+
+#### Details about relevant fields in Helm charts
+Under `clientTlsAndTokenAuthSettings` for each client, following fields could exist depending on the configuration of the helm charts you are using,
+- `type`
+   - the supported types are `mutualTLS` and `serverTLS`
+- `serverCert`
+   - this is the server cert which will be used by the client
+   - this is a mandatory field if `clientTlsAndTokenAuthSettings` is present
+- Todo: Add about more fields
+
+#### Sample Pre-Generated Helm Charts
+- VMBC Four Node One Client Deployment with mutualTLS
+- VMBC Four Node One Client Deployment with Client JWT and serverTLS
+- VMBC Four Node One Client Deployment with Client JWT and mutualTLS
+
+#### Generating new Helm Charts
+Todo: Add information about fields in deployment descriptor and link to running of orchestrator tool
 
 ### Using Sample DApps for Read Permissioning
 As part of this feature, we have provided multiple sample dApps using various integration libraries such as Web3.js, Web3j and Ethers.js as reference and sample implementation to utilize various aspects of read permissioning in VMBC.
