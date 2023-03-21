@@ -22,15 +22,82 @@
         }
     ],
     "clients": [
-        {
-            "zoneName": "<ZONE_NAME>",
-            "providedName": "<CLIENT_NAME-1>",
-            "storageClassName": ""
-        },
-	{
-            "zoneName": "<ZONE_NAME>",
-	    "providedName": "CLIENT_NAME-2>"
-	}
+	    {
+		"zoneName": "k8s-zone-A",
+		"providedName": "client-0",
+		"storageClassName": "gp2"
+	    },
+	    { 
+		# MTLS with Token based authentication using issuerUri and issuerCaCert. Issuer URI with https protocol needs issuer ca cert.
+		"zoneName": "k8s-zone-A",
+		"providedName": "client-1",
+		"storageClassName": "gp2",
+		"tlsAndTokenAuthSettings": {
+		  "type": "mutualTLS",
+		  "serverCert": "-----BEGIN CERTIFICATE-----\ndsalfjsldjfldsfjlsdfjsdfl\n-----END CERTIFICATE-----",
+		  "clientRootCaCert": "-----BEGIN CERTIFICATE-----\nmnopasdlkfjdslfjldsf\n-----END CERTIFICATE-----",
+		  "serverPrivateKeySecret": "client-0-ethrpc-server-key",
+		  "tokenAuthentication": {
+		    "issuerUri": "https://idp.example.com",
+		    "issuerCaCert": "-----BEGIN CERTIFICATE-----\nsomecert\n-----END CERTIFICATE-----"
+		   }
+		}
+	    },
+	    {
+		# Mutual TLS with Token based authentication. Uses just Issuer URI.
+		"zoneName": "k8s-zone-A",
+		"providedName": "client-2",
+		"storageClassName": "gp2",
+		"tlsAndTokenAuthSettings": {
+		  "type": "mutualTLS",
+		  "serverCert": "-----BEGIN CERTIFICATE-----\ndsalfjsldjfldsfjlsdfjsdfl\n-----END CERTIFICATE-----",
+		  "clientRootCaCert": "-----BEGIN CERTIFICATE-----\nabcdefghijklmnop\n-----END CERTIFICATE-----",
+		  "serverPrivateKeySecret": "client-0-ethrpc-server-key",
+		  "tokenAuthentication": {
+		    "issuerUri": "http://idp.example.com"
+		  }
+		}
+	    },
+	    {
+		# Mutual TLS with Token based authentication. Uses public JWKS.
+		"zoneName": "k8s-zone-A",
+		"providedName": "client-3",
+		"storageClassName": "gp2",
+		"tlsAndTokenAuthSettings": {
+		  "type": "mutualTLS",
+		  "serverCert": "-----BEGIN CERTIFICATE-----\ndsalfjsldjfldsfjlsdfjsdfl\n-----END CERTIFICATE-----",
+		  "clientRootCaCert": "-----BEGIN CERTIFICATE-----\nabcdefghijklmnop\n-----END CERTIFICATE-----",
+		  "serverPrivateKeySecret": "client-0-ethrpc-server-key",
+		  "tokenAuthentication": {
+		    "publicJwks": '{ "keys": [ { "kid": "_XHwP4jJ7fa_4q7VRt2geR1fDwxP7C1uB1uJy5IMOP8", "kty": "RSA", "alg": "RS256", "use": "sig", "n": "reuTs-uwUUtkFxJ0hwIT9fproqMxVPgQn1JnuudqZqK7pMOS1-oypsmeEXn8viW-Xgjh2Bldx8xzVXk_e8XDMgIr9YSH7wf-KTsX1iyEn1WxjG9kcG5XApjH8dG5vD9enxPIzLNb6mi-Dd9KAJfoqG6zXUKLnMJLVImc2k5Z5B-ZawQGbuYDHdV7S4gkuEY-mPLS3jCS9osIQDWXrKQdsiYudvhmpwk1VyqLsqcE_7qecuDho9q6lboOJTPN1x-lGYJTiXDE05qd74gQeacnYAb1vWWI3SgygpnziuXXmXE53HGJ01NU07U9Syk5fFYWfOKcPohglKGMPlAMrzVtvw", "e": "AQAB", "x5c": [ "MIICmzCCAYMCBgGGVQpUUDANBgkqhkiG9w0BAQsFADARMQ8wDQYDVQQDDAZtYXN0ZXIwHhcNMjMwMjE1MTIyNDQ1WhcNMzMwMjE1MTIyNjI1WjARMQ8wDQYDVQQDDAZtYXN0ZXIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCt65Oz67BRS2QXEnSHAhP1+muiozFU+BCfUme652pmorukw5LX6jKmyZ4Refy+Jb5eCOHYGV3HzHNVeT97xcMyAiv1hIfvB/4pOxfWLISfVbGMb2RwblcCmMfx0bm8P16fE8jMs1vqaL4N30oAl+iobrNdQoucwktUiZzaTlnkH5lrBAZu5gMd1XtLiCS4Rj6Y8tLeMJL2iwhANZespB2yJi52+GanCTVXKouypwT/up5y4OGj2rqVug4lM83XH6UZglOJcMTTmp3viBB5pydgBvW9ZYjdKDKCmfOK5deZcTnccYnTU1TTtT1LKTl8VhZ84pw+iGCUoYw+UAyvNW2/AgMBAAEwDQYJKoZIhvcNAQELBQADggEBABV2G1qaA6eHfN+skFprflDWnJNjezj+tJH6lY/HZ2ELBcigf/dgdFmrLqiODaOVzPyeGLhXj0yjjePWrzufAk9dNgAU7vv3Y020mRjfxNKfmJAXSFjKB/JbTZCHuiOB3gY4Uy65cG/gJKeqODvwzld6xLRb+9SVVVVfcK3c0QyUvIBQrbR6LpMdVXKzKplqxAx7x2Xo3wfk4rxlP5Pf8DQ5YoyDonh895kv9BQNadI5Zy+MKn0rtv1tBepMUk1AjIEdTQ/YHBjmLFXEdMF+Bhnj/t8bzsjMpA1ek0T+nPbjlL115V5rmcXA81Mmh8Y+t9JPZp1XJeES4Q2Sv29BXdA=" ], "x5t": "L-Bh7Yumm1xYHVh-8gqtnjP5fZY", "x5t#S256": "Y7ZZ1hJGVau0uDZU0QoYkA5M4LZLk6ll6U_YdoXt6to" }, { "kid": "cMRsaZQ03I5RT6HQKr-gcUGERW5U-jpdi0Dks9X0l1I", "kty": "RSA", "alg": "RSA-OAEP", "use": "enc", "n": "4_A2bvbphq2IKd4wDM-kMCCZgfZU9ipC_j6RIBeYWvF22BYsQ7Zrj55TjgNtdZ7aJu3VAii_h9nhY1L-CHVOptxnlQfgfFPBfnod9900quTDvfHqnPwrjChoxFATkm01UiZAcEShcvHvmDEE5BVNJN9mmia7fl3Wbnseok3liDPOEelataxfENJ1qAgmER9I-YHrsGBddtE80Bn13X_YNTbq1Ans6FE25zpDpwa0fYRWkdBRLG0SwvUQnwfttDa1vuusuU2Ini6YCfAFQ6tlKi4WIbOMdmfDFl0hUIDCPhbyo558AOB4p1DFk2rfRf7Mdx043hknXFduAngo_wuGwQ", "e": "AQAB", "x5c": [ "MIICmzCCAYMCBgGGVQpU/zANBgkqhkiG9w0BAQsFADARMQ8wDQYDVQQDDAZtYXN0ZXIwHhcNMjMwMjE1MTIyNDQ1WhcNMzMwMjE1MTIyNjI1WjARMQ8wDQYDVQQDDAZtYXN0ZXIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDj8DZu9umGrYgp3jAMz6QwIJmB9lT2KkL+PpEgF5ha8XbYFixDtmuPnlOOA211ntom7dUCKL+H2eFjUv4IdU6m3GeVB+B8U8F+eh333TSq5MO98eqc/CuMKGjEUBOSbTVSJkBwRKFy8e+YMQTkFU0k32aaJrt+XdZuex6iTeWIM84R6Vq1rF8Q0nWoCCYRH0j5geuwYF120TzQGfXdf9g1NurUCezoUTbnOkOnBrR9hFaR0FEsbRLC9RCfB+20NrW+66y5TYieLpgJ8AVDq2UqLhYhs4x2Z8MWXSFQgMI+FvKjnnwA4HinUMWTat9F/sx3HTjeGSdcV24CeCj/C4bBAgMBAAEwDQYJKoZIhvcNAQELBQADggEBALzYI15XqoP6tJfe2CbftkYZGDjjpH+8lqAq8wzOvtv8OA7ofgF3smcrp08wcbH9f5TRIrxd+qqtT3XTYQAvQPWtGhYEmJWx0gBqo4qFG9pZpy8q0wt9awRdFMs1AJ7TPdpZMzYoFs9uld+11LWJ7IbD1Nwbn124vW6bPA9I38RklT4nqOPazd15syvVWrEIp5Oc3kUoYmZOBQjlfpgTcYAGjinZlqAvwOQ36lrQc7Mca0XwcuTbvWc8KCY6lDdPEdx68CKrFCKA41eCuCWcroWI6GarjifQlk9ckUah9uPgMLN5wd/IYlwl1WFrpzRymMlAvWhXyIY1R6qHeBQPYzg=" ], "x5t": "xf0O1Tzx6M1UtADr16qGifzfbCs", "x5t#S256": "vwGWvLEJKPxc8iRAcvZARnYz66y4Yr15b9NmyTGnp8E" } ] } ' 
+		  }
+		}
+	    },
+	    {
+		# Server TLS
+		"zoneName": "k8s-zone-A",
+		"providedName": "client-3",
+		"storageClassName": "gp2",
+		"tlsAndTokenAuthSettings": {
+		  "type": "serverTLS",
+		  "serverCert": "-----BEGIN CERTIFICATE-----\ndsalfjsldjfldsfjlsdfjsdfl\n-----END CERTIFICATE-----",
+		  "serverPrivateKeySecret": "client-0-ethrpc-server-key"
+		}
+	    },
+	    {
+		# Server TLS with Token based authentication. Uses JWKS.
+		"zoneName": "k8s-zone-A",
+		"providedName": "client-3",
+		"storageClassName": "gp2",
+		"tlsAndTokenAuthSettings": {
+		  "type": "serverTLS",
+		  "serverCert": "-----BEGIN CERTIFICATE-----\ndsalfjsldjfldsfjlsdfjsdfl\n-----END CERTIFICATE-----",
+		  "serverPrivateKeySecret": "client-0-ethrpc-server-key",
+		  "tokenAuthentication": {
+		   "publicJwks": '{ "keys": [ { "kid": "_XHwP4jJ7fa_4q7VRt2geR1fDwxP7C1uB1uJy5IMOP8", "kty": "RSA", "alg": "RS256", "use": "sig", "n": "reuTs-uwUUtkFxJ0hwIT9fproqMxVPgQn1JnuudqZqK7pMOS1-oypsmeEXn8viW-Xgjh2Bldx8xzVXk_e8XDMgIr9YSH7wf-KTsX1iyEn1WxjG9kcG5XApjH8dG5vD9enxPIzLNb6mi-Dd9KAJfoqG6zXUKLnMJLVImc2k5Z5B-ZawQGbuYDHdV7S4gkuEY-mPLS3jCS9osIQDWXrKQdsiYudvhmpwk1VyqLsqcE_7qecuDho9q6lboOJTPN1x-lGYJTiXDE05qd74gQeacnYAb1vWWI3SgygpnziuXXmXE53HGJ01NU07U9Syk5fFYWfOKcPohglKGMPlAMrzVtvw", "e": "AQAB", "x5c": [ "MIICmzCCAYMCBgGGVQpUUDANBgkqhkiG9w0BAQsFADARMQ8wDQYDVQQDDAZtYXN0ZXIwHhcNMjMwMjE1MTIyNDQ1WhcNMzMwMjE1MTIyNjI1WjARMQ8wDQYDVQQDDAZtYXN0ZXIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCt65Oz67BRS2QXEnSHAhP1+muiozFU+BCfUme652pmorukw5LX6jKmyZ4Refy+Jb5eCOHYGV3HzHNVeT97xcMyAiv1hIfvB/4pOxfWLISfVbGMb2RwblcCmMfx0bm8P16fE8jMs1vqaL4N30oAl+iobrNdQoucwktUiZzaTlnkH5lrBAZu5gMd1XtLiCS4Rj6Y8tLeMJL2iwhANZespB2yJi52+GanCTVXKouypwT/up5y4OGj2rqVug4lM83XH6UZglOJcMTTmp3viBB5pydgBvW9ZYjdKDKCmfOK5deZcTnccYnTU1TTtT1LKTl8VhZ84pw+iGCUoYw+UAyvNW2/AgMBAAEwDQYJKoZIhvcNAQELBQADggEBABV2G1qaA6eHfN+skFprflDWnJNjezj+tJH6lY/HZ2ELBcigf/dgdFmrLqiODaOVzPyeGLhXj0yjjePWrzufAk9dNgAU7vv3Y020mRjfxNKfmJAXSFjKB/JbTZCHuiOB3gY4Uy65cG/gJKeqODvwzld6xLRb+9SVVVVfcK3c0QyUvIBQrbR6LpMdVXKzKplqxAx7x2Xo3wfk4rxlP5Pf8DQ5YoyDonh895kv9BQNadI5Zy+MKn0rtv1tBepMUk1AjIEdTQ/YHBjmLFXEdMF+Bhnj/t8bzsjMpA1ek0T+nPbjlL115V5rmcXA81Mmh8Y+t9JPZp1XJeES4Q2Sv29BXdA=" ], "x5t": "L-Bh7Yumm1xYHVh-8gqtnjP5fZY", "x5t#S256": "Y7ZZ1hJGVau0uDZU0QoYkA5M4LZLk6ll6U_YdoXt6to" }, { "kid": "cMRsaZQ03I5RT6HQKr-gcUGERW5U-jpdi0Dks9X0l1I", "kty": "RSA", "alg": "RSA-OAEP", "use": "enc", "n": "4_A2bvbphq2IKd4wDM-kMCCZgfZU9ipC_j6RIBeYWvF22BYsQ7Zrj55TjgNtdZ7aJu3VAii_h9nhY1L-CHVOptxnlQfgfFPBfnod9900quTDvfHqnPwrjChoxFATkm01UiZAcEShcvHvmDEE5BVNJN9mmia7fl3Wbnseok3liDPOEelataxfENJ1qAgmER9I-YHrsGBddtE80Bn13X_YNTbq1Ans6FE25zpDpwa0fYRWkdBRLG0SwvUQnwfttDa1vuusuU2Ini6YCfAFQ6tlKi4WIbOMdmfDFl0hUIDCPhbyo558AOB4p1DFk2rfRf7Mdx043hknXFduAngo_wuGwQ", "e": "AQAB", "x5c": [ "MIICmzCCAYMCBgGGVQpU/zANBgkqhkiG9w0BAQsFADARMQ8wDQYDVQQDDAZtYXN0ZXIwHhcNMjMwMjE1MTIyNDQ1WhcNMzMwMjE1MTIyNjI1WjARMQ8wDQYDVQQDDAZtYXN0ZXIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDj8DZu9umGrYgp3jAMz6QwIJmB9lT2KkL+PpEgF5ha8XbYFixDtmuPnlOOA211ntom7dUCKL+H2eFjUv4IdU6m3GeVB+B8U8F+eh333TSq5MO98eqc/CuMKGjEUBOSbTVSJkBwRKFy8e+YMQTkFU0k32aaJrt+XdZuex6iTeWIM84R6Vq1rF8Q0nWoCCYRH0j5geuwYF120TzQGfXdf9g1NurUCezoUTbnOkOnBrR9hFaR0FEsbRLC9RCfB+20NrW+66y5TYieLpgJ8AVDq2UqLhYhs4x2Z8MWXSFQgMI+FvKjnnwA4HinUMWTat9F/sx3HTjeGSdcV24CeCj/C4bBAgMBAAEwDQYJKoZIhvcNAQELBQADggEBALzYI15XqoP6tJfe2CbftkYZGDjjpH+8lqAq8wzOvtv8OA7ofgF3smcrp08wcbH9f5TRIrxd+qqtT3XTYQAvQPWtGhYEmJWx0gBqo4qFG9pZpy8q0wt9awRdFMs1AJ7TPdpZMzYoFs9uld+11LWJ7IbD1Nwbn124vW6bPA9I38RklT4nqOPazd15syvVWrEIp5Oc3kUoYmZOBQjlfpgTcYAGjinZlqAvwOQ36lrQc7Mca0XwcuTbvWc8KCY6lDdPEdx68CKrFCKA41eCuCWcroWI6GarjifQlk9ckUah9uPgMLN5wd/IYlwl1WFrpzRymMlAvWhXyIY1R6qHeBQPYzg=" ], "x5t": "xf0O1Tzx6M1UtADr16qGifzfbCs", "x5t#S256": "vwGWvLEJKPxc8iRAcvZARnYz66y4Yr15b9NmyTGnp8E" } ] } '
+		  }
+		}
+         
     ],
     "replicaNodeSpec": {
         "cpuRequested": "100m",
