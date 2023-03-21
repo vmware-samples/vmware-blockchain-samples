@@ -24,6 +24,11 @@ VMware Blockchain Ethereum supports the standard interface for Ethereum clients 
 | eth_sendRawTransaction | Creates a message call transaction or a contract creation for signed transactions.| "To" address as EOA is unsupported.
 | eth_subscribe | Subscribe to logs that are included in new imported blocks and match the given filter criteria. This uses the WebSocket interface. |
 | eth_unsubscribe | Cancel a current subscription. This uses the WebSocket interface. |
+| eth_newFilter | Creates a filter object, based on filter options, to notify when the state changes (logs). To check if the state has changed, call eth_getFilterChanges. | 
+| eth_newBlockFilter	| Creates a filter in the node, to notify when a new block arrives. To check if the state has changed, call eth_getFilterChanges.|
+| eth_uninstallFilter | Uninstalls a filter with given id. Should always be called when watch is no longer needed. Additionally Filters timeout when they aren't requested with eth_getFilterChanges for a period of time which is set 15 minutes for 1.9 Release.|
+| eth_getFilterChanges | |
+| eth_getFilterLogs | |
 | net_version | Returns the current network ID.|
 
  Construct | Description |
