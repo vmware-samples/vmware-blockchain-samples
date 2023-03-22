@@ -1,0 +1,22 @@
+{
+  "replicasUuidToPrincipalId": {
+    "cd97f2c1-bffe-4fd7-afa1-04dfe963524e": 3,
+    "9b9324c3-1c10-4b82-8b16-ac704ec8e5fa": 1,
+    "8336613d-c479-4ad4-bdf4-1b2d2acd326b": 0,
+    "ed2f5ea4-f3dc-4eb7-af41-4ef6f7282812": 2
+  },
+  "clientsUuidToPrincipalIds": {
+    "d747f4da-9449-4929-82ff-4bfbd1a4c4cf": [
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17
+    ]
+  }
+}
