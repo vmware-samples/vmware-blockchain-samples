@@ -7,8 +7,8 @@ VMware Blockchain Ethereum supports the standard interface for Ethereum clients 
 | eth_blockNumber | Returns the most recent block number.|
 | eth_call | Executes a new message call immediately without creating a transaction on the blockchain.|
 | eth_chainId (Reference is EIP-695) | Returns the current network or chain ID.|
-| eth_estimateGas | Generates and returns an estimate of how much gas is required for the transaction to complete. The transaction is not added to the blockchain. |
-| eth_gasPrice | Returns the current price per gas.|
+| eth_estimateGas | Generates and returns an estimate of how much gas is required for the transaction to complete. The transaction is not added to the blockchain. | Returns fixed value 0x1ffffffffffffe.
+| eth_gasPrice | Returns the current price per gas.| Returns fixed value of 0.
 | eth_getBalance | Returns the given address account balance.|
 | eth_getBlockByHash | Returns the block hash.|
 | eth_getBlockByNumber | Returns the block number.|
