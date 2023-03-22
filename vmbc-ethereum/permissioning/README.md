@@ -15,6 +15,7 @@ Read Permissioning is implemented through external Authorizations mechanisms suc
 - JWT: JSON Web Token
 - JWK: JSON Web Key
 - JWKS: JSON Web Key Set
+- CLI: Command Line Interface
 
 <!--### High Level Feature Architecture-->
 ### Server and Mutual TLS using Certificate Authority
@@ -242,7 +243,12 @@ node testWrite.js
   body: '{"error":{"code":-32060,"data":"evm error, status code: -2","message":"Permission denied"},"id":58,"jsonrpc":"2.0"}',
 ```
 #### Solution
-You have enabled write permissioning. Make sure the ethereum account you are using to send transactions or deploy contract has the WRITE/DEPLOY permission. 
+You have enabled write permissioning. Make sure the ethereum account you are using to send transactions or deploy contract has the WRITE/DEPLOY permission.
+
+## Known Issues
+- The max supported version of NodeJS when using Server or Mutual TLS in EthRPC is `v16.19.1`
+- Ethers.js does not support Mutual TLS when using `JsonRpcProvider`, as it does not support passing of client certificate and client key when creating the provider object.
+   - For similar reasons, hardhat also does not support the Mutual TLS option
 
 ## References
 - JSON RPC API - https://ethereum.org/en/developers/docs/apis/json-rpc/
