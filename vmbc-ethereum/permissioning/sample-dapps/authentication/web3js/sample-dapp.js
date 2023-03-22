@@ -152,7 +152,7 @@ const subscribeToLogs = async (accessToken, contractAddress) => {
     address: contractAddress,
   };
 
-  web3Ws.eth.subscribe('logs', subcribeOptions, function (error, result) {
+  await web3Ws.eth.subscribe('logs', subcribeOptions, function (error, result) {
     if (error)
       console.log(error);
   }).on("data", function (log) {
@@ -163,6 +163,8 @@ const subscribeToLogs = async (accessToken, contractAddress) => {
   }).on("changed", function (log) {
     console.log('changed');
   });
+
+  console.log(`Successfully subscribed to logs for contract with contract address : ${contractAddress}`);
 }
 
 const sendSampleTransaction = async (contractAddress) => {
