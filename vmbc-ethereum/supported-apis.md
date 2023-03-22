@@ -1,8 +1,8 @@
 # VMware Blockchain Supported Ethereum JSON RPC API Endpoints
 VMware Blockchain Ethereum supports the standard interface for Ethereum clients and Enterprise Ethereum Requirements [API Reference](https://ethereum.org/en/developers/docs/apis/json-rpc)
 
- Methods | Description | Input/Output differences
-| --- | ----------- | -------------- |
+ Methods | Description | Input/Output differences | Error handling
+| --- | ----------- | -------------- | ---------- | 
 | eth_accounts | Returns a list of Client node addresses.| 
 | eth_blockNumber | Returns the most recent block number.|
 | eth_call | Executes a new message call immediately without creating a transaction on the blockchain.|
@@ -13,7 +13,7 @@ VMware Blockchain Ethereum supports the standard interface for Ethereum clients 
 | eth_getBlockByHash | Returns the block hash.|
 | eth_getBlockByNumber | Returns the block number.|
 | eth_getBlockTransactionCountByHash | Returns the number of block transactions by block matching the given block.|
-| eth_getBlockTransactionCountByNumber | Returns the number of block transactions by matching the given block number.|
+| eth_getBlockTransactionCountByNumber | Returns the number of block transactions by matching the given block number.| "pending" treated the same as "latest".
 | eth_getCode | Returns code at a given address.|
 | eth_getLogs | Returns an array of all logs matching a given filter object.| "pending" treated the same as "latest".
 | eth_getStorageAt | Returns the value from a storage position at a given address.| "pending" treated the same as "latest"
