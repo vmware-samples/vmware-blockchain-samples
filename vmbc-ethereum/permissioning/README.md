@@ -1,9 +1,20 @@
 # Ethereum Permissioning
 
-VMware Blockchain for Ethereum in a broad form provides two forms of permissioning, Read and Write Permissioning. Read Permissioning is provided using Certificate Authorities in the form of Mutual TLS by utilizing Client certificates or using OAuth Server by utilizing Client JWT Tokens. The Write Permissioning is provided using a permissioning pre-deployed smart contract in accordance with the Enterprise Ethereum Alliance (EEA) specifications.
+VMware Blockchain for Ethereum in a broad form provides two forms of permissioning, Read and Write Permissioning. Read Permissioning is provided using Certificate Authorities in the form of Mutual TLS by utilizing Client certificates or using OAuth Server by utilizing Client JWTs. The Write Permissioning is provided using a permissioning pre-deployed smart contract in accordance with the Enterprise Ethereum Alliance (EEA) specifications.
 
-## Read Permissioning
-Read Permissioning is implemented through external Authorizations mechanisms such as Certificate Authority or OAuth Server in two forms namely Mutual TLS and Client JWT.
+## Authentication and Read Permissioning
+Read Permissioning is implemented through external Authorizations mechanisms such as Certificate Authority or OAuth Server in two forms namely Mutual TLS and Token Authentication.
+
+**Terminology**
+- DApp/dApp: Decentralized Application
+- TLS: Transport Layer Security
+- mTLS: Mutual TLS
+- CA: Certificate Authority
+   - Internal CA: When Root CA Certificate is not well-known
+   - External CA: When Root CA Certificate is well-known
+- JWT: JSON Web Token
+- JWK: JSON Web Key
+- JWKS: JSON Web Key Set
 
 <!--### High Level Feature Architecture-->
 ### Server and Mutual TLS using Certificate Authority
@@ -14,27 +25,34 @@ Following diagram depicts both mTLS and serverTLS which have been enabled in two
 ![Server and Mutual TLS Depiction](./assets/images/server-and-mutual-tls-depiction.png)
 
 **Description of the Depiction**
-- Each DApp and EthRPC Server instance have certificates depicted along side. These are the certificates and keys required for the respective components
+- Each dApp and EthRPC Server instance have certificates depicted along side. These are the certificates and keys required for the respective components
 - Colors represent the association of Certificates and Keys with corresponding DApp or EthRPC instance or internal CA 
 
 **Few Notable Points**
 - Server TLS
    - dApp
-      - If using an internal CA based Server Certificate, DApp needs to utilize Root Certificate of the EthRPC Server's Server Certificate
+      - If using an internal CA based Server Certificate, dApp needs to utilize Root Certificate of the EthRPC Server's Server Certificate
    - EthRPC
       - Needs to start up with a Server certificate. If using a internal CA certificate, the root certificate of the internal CA would need to be provided for DApp clients
 - Mutual TLS
    - dApp
-      - If using an internal CA based Server Certificate, DApp needs to utilize Root Certificate of the EthRPC Server's Server Certificate
-      - DApp needs to use Client certificate and Client Key
+      - If using an internal CA based Server Certificate, dApp needs to utilize Root Certificate of the EthRPC Server's Server Certificate
+      - dApp needs to use Client certificate and Client Key
    - EthRPC
-      - Needs to start up with a Server certificate. If using a internal CA certificate, the root certificate of the internal CA would need to be provided for DApp clients
-      - If DApp is using an internal CA for Client Certificate, the root certificate of the internal CA which was used to sign the client certificate is needed by EthRPC
+      - Needs to start up with a Server certificate. If using a internal CA certificate, the root certificate of the internal CA would need to be provided for dApp clients
+      - If dApp is using an internal CA for Client Certificate, the root certificate of the internal CA which was used to sign the client certificate is needed by EthRPC
 
-### Client JWT using OAuth Server
-DApp would have to handle following aspects,
-- Fetching of a JWT Access Token from an OAuth Server managed by Customer
-- When utilizing the integration libraries the JWT Access Token has to be passed as a header to EthRPC
+### Token Authentication using Authorization Server
+Token Authentication can be utilized for Client Authentication. Any OAuth2.0 standard based Authorization server can be used. We have used Keycloak based Authorization server for development and testing.
+
+Following are few responsibilities of components,
+- DApp
+   - Fetching of a JWT Access Token from an Authorization Server managed by Customer
+   - When utilizing the integration libraries the JWT Access Token has to be passed as a header to EthRPC
+- EthRPC
+   - When deploying blockchain with token authentication enabled, either URI of the Authentication server or a public JWKS file needs to be provided
+      - The recommended approach is to provide URI of the Authorization server
+
 
 Following are the depictions for two of the ways EthRPC can be configured to verify JWT Token,
 
@@ -56,6 +74,13 @@ Following are the depictions for two of the ways EthRPC can be configured to ver
 2. The DApp through the selected integration library would pass the above acquired JWT Token as a header
 3. EthRPC would utilize the local public JWKS file for verifying the JWT Token received from DApp
 
+### User Perspective
+This feature offers three distinct capabilities - which can be combined depending on the user goals. These capabilities are:
+
+1. Security for Server authentication - Provides assurances to the application that the end-point is indeed that of VMBC, and that the public key is indeed that of the VMBC EthRPC server.
+2. Security for Data in Transit - Mechanism to secure communication between the application and the EthRPC server via encrypting data in flight.
+3. Read permissioning - Mechanism for the blockchain administrators to decide who has read access to the blockchain, via issuing certificates or JWT Tokens to applications/users.
+
 ### Enabling Read Permissioning in Blockchain
 The Read Permissioning in Blockchain is exposed as mutual TLS and JWT Token based authentication through Certificate Authorities and Authorization servers. The valid combinations which which a client can be brought up are no TLS, mutual TLS, Client JWT with server TLS or Client JWT with mutual TLS.
 
@@ -69,6 +94,7 @@ Under `clientTlsAndTokenAuthSettings` for each VMBC Client, following fields cou
    - Supported types are `mutualTLS` and `serverTLS`
 - `serverCert`
    - Server certificate which will be used by EthRPC
+      - X509 format based certificate
    - Mandatory field if `clientTlsAndTokenAuthSettings` is present
 - `serverPrivateKeySecret`
    - Name of the secret containing the private key corresponding to the server certificate
@@ -77,6 +103,7 @@ Under `clientTlsAndTokenAuthSettings` for each VMBC Client, following fields cou
       - The value in secret is base64 encoded
 - `clientRootCaCert`
    - Root CA certificate for the client certificates which will be used by dApps
+      - X509 format based certificate
    - Mandatory field if using `mutualTLS`
 - `tokenAuthentication`
    - `issuerUri`
@@ -84,18 +111,19 @@ Under `clientTlsAndTokenAuthSettings` for each VMBC Client, following fields cou
       - If tokenAuthentication is to be used, either the current field or `publicJwks` field is mandatory
    - `issuerCaCert`
       - CA Certificate for the `issuerUri`
+         - X509 format based certificate
    - `publicJwks`
       - A JSON Web Key Set (JWKS) representing the public keys of Authorization server
       - If tokenAuthentication is to be used, either the current field or `issuerUri` field is mandatory
 
 #### Sample Pre-Generated Helm Charts
-We have pre-generated few set of helm charts for different feature set combinations of authentication mechanims enabled. The samples have been generated for minikube environment with server certificate of client-ethrpc with static ip as `192.168.200.200`. The token auth for the sample charts is based on live authorization server and the default certificate for the authentication server is a self-signed certificate for `localhost`. The secret corresponding to the `serverPrivateKeySecret` for all the pre-generated sample helm charts is present [here](../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/secret.yaml).
+We have pre-generated few set of helm charts for different feature set combinations of authentication mechanism enabled. The samples have been generated for minikube environment with server certificate of client-ethrpc with static ip as `192.168.200.200`. The token auth for the sample charts is based on live authorization server and the default certificate for the authentication server is a self-signed certificate for `localhost`. The secret corresponding to the `serverPrivateKeySecret` for all the pre-generated sample helm charts is present [here](../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/secret.yaml).
 
 **Few Notable Points**
 - Minikube can be started with static ip to utilize the samples mentioned below easily (Reference: https://minikube.sigs.k8s.io/docs/tutorials/static_ip/)
 - Only values for standalone fields which are already in use are the only fields recommended and supported to be modified.
    - For example, if `issuerUri` is already being used, only then the value for that field can be changed in `values.yaml` of the helm charts.
-   - For all other scenarios where a field was not in use before and needs to be changed, we recommend to generate a new set of helm charts using the procedure mentioned [here](#generating-new-helm-charts)
+   - For all other scenarios where a field was not in use or empty before and needs to be changed, you need to generate a new set of helm charts using the procedure mentioned [here](#generating-new-helm-charts).
 
 **Sample Helm Charts**
 - [VMBC Four Node and One Client Deployment](../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/vmbc-four-node-one-client-deployment/)
@@ -108,7 +136,14 @@ We have pre-generated few set of helm charts for different feature set combinati
    - Client JWT with mutual TLS
 
 #### Generating new Helm Charts
-Todo: Add information about fields in deployment descriptor and link to running of orchestrator tool
+We have [vmbc-orchestrator-tool](../vmbc-deployment/vmbc-k8s-orchestrator-tool/) which can be used to generate new helm charts when there is a need for introducing new fields or removing fields or changing values for any fields which have not been used in the sample helm charts.
+
+The relevant fields for the current feature in discussion is same as mentioned in the [above section](#details-about-relevant-fields-in-helm-charts). Only difference is the parent field under which all the fields mentioned above become relevant is `tlsAndTokenAuthSettings` inside a `client` construct in `deployment.json`
+
+A sample `deployment.json` with different options and fields is [here](../vmbc-deployment/vmbc-k8s-orchestrator-tool/ethereum-authentication-and-authorization/readme.md).
+
+#### Day 2 Serviceability
+<Todo: Add details about the serviceability aspects>
 
 ### Using Sample DApps for Read Permissioning
 As part of this feature, we have provided multiple sample dApps using various integration libraries such as Web3.js, Web3j and Ethers.js as reference and sample implementation to utilize various aspects of read permissioning in VMBC.
@@ -144,6 +179,9 @@ NODE_EXTRA_CA_CERTS=../artifacts/certs/auth-server.crt node sample-dapp.js
 #### Ethers.js Sample dApp
 <Todo: Add details here>
 
+#### Browser dApps
+<Todo: Add details about how to handle browser dApps. Add runbook md file and link that here>
+
 ## Write Permissioning
 
 For Write Permissioning, VMware Blockchain for Ethereum implements “account permissioning” as a tech preview feature in accordance with the Enterprise Ethereum Alliance (EEA) specifications to provide the necessary tools and granularity to govern actions permitted by accounts on the blockchain. Permissioning in the context of enterprise blockchains is a required feature for our customers as they seek ways to control access to deploy and execute smart contracts running on the blockchain. The account permissioning feature can be enabled during network creation by providing the necessary parameters in the deployment configurations file. The compiled permissioning smart contract and the account(s) that can grant permissions to other addresses should also be included in the genesis file. The “permission admin” user can use a dApp or the permissioning user interface to control which accounts are allowed to send transactions and specify the type of transactions permitted. Types of transaction can be WRITE and DEPLOY permissions to other accounts. The dApp should be the preferred method to grant access to a large number of accounts.
@@ -153,7 +191,7 @@ By default in VMware Blockchain the permissioning feature is disabled. It means 
 ### Permissioning Contract
 For reference, Permissioning contract is present at `vmware-blockchain-samples/vmbc-ethereum/permissioning/contracts/Permissioning.sol`
 
-(Note: This contract is provided here just for reference, this contract is pre-deployed in VMware Blockchain for Ethereum, changes to this contract's source code here, will not propogate to VMware Blockchain)
+(Note: This contract is provided here just for reference, this contract is pre-deployed in VMware Blockchain for Ethereum, changes to this contract's source code here, will not propagate to VMware Blockchain)
  
 ### Permissioning fields in `values.yaml`
 
