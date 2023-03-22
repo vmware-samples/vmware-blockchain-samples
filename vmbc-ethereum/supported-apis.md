@@ -35,5 +35,8 @@ VMware Blockchain Ethereum supports the standard interface for Ethereum clients 
 | --- | ----------- |
 | JSON RPC API Batching | Multiple requests are batched into a single JSON object aligning with [Ethereum JSON RPC Standard](https://www.jsonrpc.org/specification) for optimizing the platform's performance.|
 
+## Error Handling - Overall Approach
+As per [Ethereum JSON RPC Standard](https://www.jsonrpc.org/specification), the "message" field in the error object has a short description of the error, such as "Server error" and the "data" field has an elaborate description of the error. VMware Blockchain for Ethereum error handling overall approach is slightly different from [Ethereum JSON RPC Standard](https://www.jsonrpc.org/specification) for aligning with the popular open ecosystem tools such as Hardhat and integration libraries such as Ethersjs. The "message" field in the error response has both the short decription of the error as per standard and additionally has an elaborate description of the error.
+
 ## Limitations
 - Contract upgrades using hardhat is not supported yet
