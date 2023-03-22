@@ -15,8 +15,8 @@ Create a folder of your choice and place the following in descriptors in it.
   
 ### Sample descriptors
 See below for sample descriptors
-- [Deployment descriptor](./../sample-descriptors/deployment.json)
-- [Infrastructure descriptor](./../sample-descriptors/infrastructure.json)
+- [Deployment descriptor](./sample-descriptors/deployment.json)
+- [Infrastructure descriptor](./sample-descriptors/infrastructure.json)
 
 ### Get API URL
 
