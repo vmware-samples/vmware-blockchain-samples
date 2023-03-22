@@ -1,0 +1,31 @@
+{
+  "organization": {
+    "blockchainVersion": "<BLOCKCHAIN_VERSION>",
+    "secureStore": {
+      "storeType": "INSECURE"
+    }
+  },
+  "zones": [
+    {
+      "name": "<ZONE_NAME-1>",
+      "k8s": {
+      },
+      "containerRegistry": {
+        "registryName": "<REPLACE_ME>",
+        "userName": "<REPLACE_ME>",
+        "password": "<REPLACE_ME>"
+      }
+    },
+    {
+      "name": "<ZONE_NAME-2>",
+      "k8s": {
+      },
+      "containerRegistry": {
+        "registryName": "<REPLACE_ME>",
+        "userName": "<REPLACE_ME>",
+        "password": "<REPLACE_ME>"
+      }
+    }
+  ]
+}
+
