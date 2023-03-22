@@ -1,0 +1,33 @@
+{
+  "organization": {
+    "blockchainVersion": "<BLOCKCHAIN_VERSION>",
+    "secureStore": {
+      "storeType": "INSECURE"
+    }
+  },
+  "zones": [
+    {
+      "name": "<ZONE_NAME-1>",
+      "k8s": {
+      },
+      "cloudwatchMetricsHttpEndpoint": {
+        "namespace": "<metrics namespace>",
+        "region": "<region name>",
+        "token": "<Replace Me>",
+        "secretKey": "<Replace Me>",
+        "accessKey": "<Replace Me>"
+      },
+      "pushMetricsHttpEndpoint": {
+        "url": "http://one-prometheus-grafana:80/api/live/push/custom_stream_id",
+        "userName": "<Replace Me>",
+        "password": "<Replace Me>"
+      },
+      "containerRegistry": {
+        "registryName": "<replace_me>",
+        "userName": "<replace_me>",
+        "password": "<replace_me>"
+      }
+    }
+  ]
+}
+

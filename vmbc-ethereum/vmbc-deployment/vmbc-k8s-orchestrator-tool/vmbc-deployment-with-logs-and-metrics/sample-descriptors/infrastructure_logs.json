@@ -10,16 +10,13 @@
       "name": "<ZONE_NAME-1>",
       "k8s": {
       },
-      "containerRegistry": {
-        "registryName": "<REPLACE_ME>",
-        "userName": "<REPLACE_ME>",
-        "password": "<REPLACE_ME>"
-      }
-    },
-    {
-      "name": "<ZONE_NAME-2>",
-      "k8s": {
-      },
+      "logManagement": [
+       {
+          "type": "HTTP",
+          "address": "http://logstash-logstash",
+          "port": "8080"
+        }
+      ],
       "containerRegistry": {
         "registryName": "<REPLACE_ME>",
         "userName": "<REPLACE_ME>",
