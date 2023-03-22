@@ -15,7 +15,7 @@ VMware Blockchain Ethereum supports the standard interface for Ethereum clients 
 | eth_getBlockTransactionCountByHash | Returns the number of block transactions by block matching the given block.|
 | eth_getBlockTransactionCountByNumber | Returns the number of block transactions by matching the given block number.| "pending" treated the same as "latest".
 | eth_getCode | Returns code at a given address.|
-| eth_getLogs | Returns an array of all logs matching a given filter object.| "pending" treated the same as "latest". | Supports single address as a filter parameter and not an array.
+| eth_getLogs | Returns an array of all logs matching a given filter object.| "pending" treated the same as "latest". Supports single address as a filter parameter and not an array. | 
 | eth_getStorageAt | Returns the value from a storage position at a given address.| "pending" treated the same as "latest"
 | eth_getTransactionByHash | Returns the information about a transaction requested by transaction hash.|
 | eth_getTransactionCount | Returns the number of transactions sent from an address.|
