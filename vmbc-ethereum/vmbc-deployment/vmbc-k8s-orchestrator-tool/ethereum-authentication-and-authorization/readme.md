@@ -29,7 +29,7 @@ JWKS - JSON Web Key Set
   
 ## Deployment
 - Generate helm charts using the [k8s orchestrator tool](./../helm-chart).\
-See [sample deployment descriptor](./../sample-descriptors/ethereum-authentication-and-authorization/deployment.json). The clients can be described as either type as mentioned in the descriptor.
+See [sample deployment descriptor](./sample-descriptors/deployment.json). The clients can be described as either type as mentioned in the descriptor.
 - Install blockchain
 ```
 helm install <name of blockchain> . --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password>
