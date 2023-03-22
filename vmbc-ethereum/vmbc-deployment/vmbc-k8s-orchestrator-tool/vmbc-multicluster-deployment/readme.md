@@ -81,7 +81,7 @@ Follow the steps in [deploying blockchain with helm charts](#deploy-blockchain-u
 ### Generate helm charts
 
 - Generate helm charts following instructions in [k8s orchestrator tool](./../helm-chart/readme.md)
-- For this example, we have used the descriptors: [infrastructure descriptor](./../sample-descriptors/multicluster-deployment/infrastructure.json) and [deployment descriptor](./../sample-descriptors/multicluster-deployment/deployment.json).
+- For this example, we have used the descriptors: [infrastructure descriptor](./sample-descriptors/infrastructure.json) and [deployment descriptor](./sample-descriptors/deployment.json).
 
 ### Deploy blockchain nodes on clusters
 
