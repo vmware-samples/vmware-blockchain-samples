@@ -66,14 +66,25 @@ We have two ways to consume this feature,
 #### Details about relevant fields in Helm charts
 Under `clientTlsAndTokenAuthSettings` for each VMBC Client, following fields could exist depending on the configuration of the helm charts you are using,
 - `type`
-   - the supported types are `mutualTLS` and `serverTLS`
+   - Supported types are `mutualTLS` and `serverTLS`
 - `serverCert`
-   - this is the server certificate which will be used by EthRPC
-   - this is a mandatory field if `clientTlsAndTokenAuthSettings` is present
+   - Server certificate which will be used by EthRPC
+   - Mandatory field if `clientTlsAndTokenAuthSettings` is present
+- `serverPrivateKeySecret`
+   - Name of the secret containing the private key corresponding to the server certificate
+   - Mandatory field if `clientTlsAndTokenAuthSettings` is present
 - `clientRootCaCert`
-   - this is the root CA certificate for the client certificates which will be used by dApps
-   - this is a mandatory field if using `mutualTLS` 
-- Todo: Add about more fields
+   - Root CA certificate for the client certificates which will be used by dApps
+   - Mandatory field if using `mutualTLS`
+- `tokenAuthentication`
+   - `issuerUri`
+      - Contains the URI of the Authorization server
+      - If tokenAuthentication is to be used, either the current field or `publicJwks` field is mandatory
+   - `issuerCaCert`
+      - CA Certificate for the `issuerUri`
+   - `publicJwks`
+      - A JSON Web Key Set (JWKS) representing the public keys of Authorization server
+      - If tokenAuthentication is to be used, either the current field or `issuerUri` field is mandatory
 
 #### Sample Pre-Generated Helm Charts
 Todo: Link following to the helm charts in `vmbc-deployment/vmbc-sample-deployments` directory
