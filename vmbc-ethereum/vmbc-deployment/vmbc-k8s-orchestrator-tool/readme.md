@@ -9,7 +9,7 @@ Make sure that you implement all the required prerequisites. See [Deployment Pre
 Install HTTPIE (https://httpie.io/docs/cli/main-features)
 
 ## Contents
-- [Installation guide](./vmbc-k8s-orchestrator-tool/helm-chart)
-- [Logging and Metrics](./vmbc-k8s-orchestrator-tool/deployment-with-logs-and-metrics)
-- [Multi cluster deployment](./vmbc-k8s-orchestrator-tool/multicluster-deployment)
-- [Ethereum authentication and authorization](./vmbc-k8s-orchestrator-tool/ethereum-authentication-and-authorization)
+- [Installation guide](./helm-chart)
+- [Logging and Metrics](./deployment-with-logs-and-metrics)
+- [Multi cluster deployment](./multicluster-deployment)
+- [Ethereum authentication and authorization](./ethereum-authentication-and-authorization)
