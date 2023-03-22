@@ -21,12 +21,11 @@ async function privacyWalletConfig(skey, pkey, cert) {
     } catch (error) {
         console.log(error);
         if (error.code == grpcweb.StatusCode.ALREADY_EXISTS) {
-            console.log("Wallet is already configured skip registration");
-            return;
+            console.log("Wallet is already configured");
         } else {
             console.error("wallet configuration failed: ", error);
+            throw error;
         }
-        throw error;
     }
 
     // Register the user

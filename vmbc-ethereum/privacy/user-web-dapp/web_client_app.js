@@ -74,6 +74,7 @@ window.handleFile = pubToken.handleFile;
 window.addPrivateTransferRecipient = pubToken.addPrivateTransferRecipient
 window.showPrivateTransferAddressbook = pubToken.showPrivateTransferAddressbook
 window.removePrivateTransferRecipient = pubToken.removePrivateTransferRecipient
+window.resetLastSyncedTxNum = pubToken.resetLastSyncedTxNum
 
 window.showPublicTransfer = showElements.showPublicTransfer
 window.showPrivateTransfer = showElements.showPrivateTransfer

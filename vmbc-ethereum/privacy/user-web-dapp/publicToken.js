@@ -1,4 +1,4 @@
-const { ethers } = require("ethers");
+const { ethers, BigNumber } = require("ethers");
 const values = require('./values.js');
 const privacy_wallet = require("./../privacy-lib/privacy-wallet.js");
 const { walletRegistered } = require('./web-privacy.js');
@@ -39,6 +39,30 @@ async function UpdateInfo() {
         await getPrivacyBudget();
     let privateBalance;
     let privacyBudget;
+    let lastAddedTxNum = await PrivateToken.getNumOfLastAddedTransaction();
+    let userId = await values.getUserId();
+    let lastSyncedTxNum = BigNumber.from(0);
+    if(userId) {
+        lastSyncedTxNum = parseInt(localStorage.getItem("lastSyncedTxNum/" + userId))
+        if(isNaN(lastSyncedTxNum)) lastSyncedTxNum = BigNumber.from(0);
+        else lastSyncedTxNum = BigNumber.from(lastSyncedTxNum);
+        if(lastSyncedTxNum.gt(lastAddedTxNum)) {
+            localStorage.setItem("lastSyncedTxNum/" + userId, 0);
+            lastSyncedTxNum = BigNumber.from(0);
+        }
+        if(lastAddedTxNum != BigNumber.from(0)) {
+            if(lastAddedTxNum.gt(lastSyncedTxNum)) {
+                console.log("Syncing state for tx number ", lastAddedTxNum, ", lastSyncedTxNum: ", lastSyncedTxNum);
+                for(let i = lastSyncedTxNum; i.lte(lastAddedTxNum); i = i.add(1))
+                {
+                    if(i.eq(BigNumber.from(0))) continue;
+                    await syncState(i);
+                    localStorage.setItem("lastSyncedTxNum/" + userId, i);
+                }
+                lastSyncedTxNum = lastAddedTxNum;
+            }
+        }
+    }
     try {
         let privacyState = await getPrivacyState();
         privateBalance = privacyState.balance;
@@ -66,9 +90,16 @@ async function UpdateInfo() {
         document.getElementById("minting").innerHTML = "";
     }
 
-    let lastAddedTxNum = await PrivateToken.getNumOfLastAddedTransaction();
     document.getElementById("lastAddedTxNum").innerHTML = "Last added tx number: " + lastAddedTxNum.toString();
+    document.getElementById("lastSyncedTxNum").innerHTML = "Last synced tx number: " + lastSyncedTxNum.toString() +
+    `<button id="resetLastSyncedTxNum" onclick="resetLastSyncedTxNum()"><b>Reset</b></button>`;
     fillAccountConnection();
+}
+
+async function resetLastSyncedTxNum() {
+    let userId = await values.getUserId();
+    localStorage.setItem("lastSyncedTxNum/" + userId, 0);
+    UpdateInfo();
 }
 
 async function sendPublicTokenTransfer() {
@@ -235,5 +266,6 @@ module.exports = {
     handleFile,
     showPrivateTransferAddressbook,
     addPrivateTransferRecipient,
-    removePrivateTransferRecipient
+    removePrivateTransferRecipient,
+    resetLastSyncedTxNum
 };

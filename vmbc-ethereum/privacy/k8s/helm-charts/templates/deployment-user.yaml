@@ -1,3 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: privacy-user-dapp-service
+  labels:
+    app: privacy-user-dapp-service
+spec:
+  clusterIP: None
+  selector:
+    app: privacy-user-dapp-service
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -9,6 +20,7 @@ spec:
   persistentVolumeClaimRetentionPolicy:
     whenScaled: Delete
     whenDeleted: Delete
+  serviceName: "privacy-user-dapp-service"
   replicas: 3
   selector:
     matchLabels:

@@ -20,11 +20,6 @@ if (PRIVACY_WALLET_GRPC_SERVICE_URL == undefined) {
     PRIVACY_WALLET_GRPC_SERVICE_URL = "localhost:49002";
 }
 
-initialPublicBalance = 10000;
-if (process.env.INITIAL_PUBLIC_BALANCE != undefined) {
-    initialPublicBalance = process.env.INITIAL_PUBLIC_BALANCE;
-}
-
 let PRIVACY_WALLET_DAPP_PATH = process.env.PRIVACY_WALLET_DAPP_PATH;
 if (PRIVACY_WALLET_DAPP_PATH == undefined) {
     PRIVACY_WALLET_DAPP_PATH = "admin-dapp-state.json";
@@ -199,14 +194,8 @@ async function deploy(appConfig) {
             console.log("Successfully deployed PrivateToken contract at", privacyContractAddr);
             const tokenContractCompileData = common.compileContract("./../privacy-lib/contracts/PublicToken.sol");
 
-            let user_addrs = [];
-            for (const key in eth_accounts) {
-                if (key == 'admin') continue;
-                user_addrs.push(eth_accounts[key].address);
-            }
-
-            console.log("Deploying PublicToken contract with initial balance", initialPublicBalance, "for accounts", user_addrs);
-            const tokenContractArgs = [privacyContractAddr, user_addrs, initialPublicBalance]
+            console.log("Deploying PublicToken contract");
+            const tokenContractArgs = [privacyContractAddr, [], 0]
             const tokenContractAddr = await common.deployContract(web3, adminAccount, tokenContractCompileData.abi, tokenContractCompileData.bytecode, tokenContractArgs);
             tokenContract = new web3.eth.Contract(tokenContractCompileData.abi, tokenContractAddr);
             console.log("Successfully deployed PublicToken contract at", tokenContractAddr);
