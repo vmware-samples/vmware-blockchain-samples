@@ -73,6 +73,8 @@ Under `clientTlsAndTokenAuthSettings` for each VMBC Client, following fields cou
 - `serverPrivateKeySecret`
    - Name of the secret containing the private key corresponding to the server certificate
    - Mandatory field if `clientTlsAndTokenAuthSettings` is present
+   - A sample secret file is [here](../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/secret.yaml)
+      - The value in secret is base64 encoded
 - `clientRootCaCert`
    - Root CA certificate for the client certificates which will be used by dApps
    - Mandatory field if using `mutualTLS`
@@ -87,7 +89,7 @@ Under `clientTlsAndTokenAuthSettings` for each VMBC Client, following fields cou
       - If tokenAuthentication is to be used, either the current field or `issuerUri` field is mandatory
 
 #### Sample Pre-Generated Helm Charts
-We have pre-generated few set of helm charts for different feature set combinations of authentication mechanims enabled. The samples have been generated for minikube environment with server certificate of client-ethrpc with static ip as `192.168.200.200`. The token auth for the sample charts is based on live authorization server and the default certificate for the authentication server is a self-signed certificate for `localhost`.
+We have pre-generated few set of helm charts for different feature set combinations of authentication mechanims enabled. The samples have been generated for minikube environment with server certificate of client-ethrpc with static ip as `192.168.200.200`. The token auth for the sample charts is based on live authorization server and the default certificate for the authentication server is a self-signed certificate for `localhost`. The secret corresponding to the `serverPrivateKeySecret` for all the pre-generated sample helm charts is present [here](../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/secret.yaml).
 
 **Few Notable Points**
 - Minikube can be started with static ip to utilize the samples mentioned below easily (Reference: https://minikube.sigs.k8s.io/docs/tutorials/static_ip/)
