@@ -47,4 +47,4 @@ helm install <name of blockchain> . --set global.imageCredentials.registry=<regi
 
 ### Helm chart details
 You may edit `values.yaml` to set a different url, username or password during helm installation by changing the below section.
-(TODO)
+`(TODO)`
