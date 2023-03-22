@@ -29,7 +29,7 @@ You may edit `values.yaml` to set a different url, username or password during h
 ```
 logManagement: 
   endpoint_1:
-    url: "http://3.92.133.17:31234"
+    url: "http://0.0.0.0:<port>"
     username: ""
     password: ""
 ```
