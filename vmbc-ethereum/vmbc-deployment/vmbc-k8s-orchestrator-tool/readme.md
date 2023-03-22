@@ -10,6 +10,6 @@ Install HTTPIE (https://httpie.io/docs/cli/main-features)
 
 ## Contents
 - [Installation guide](./vmbc-k8s-orchestrator-tool/helm-chart)
-- [Multi cluster deployment](./vmbc-k8s-orchestrator-tool/vmbc-multicluster-deployment/readme.md)
-- [Ethereum authentication and authorization](./vmbc-k8s-orchestrator-tool/ethereum-authentication-and-authorization/readme.md)
-- [Sample descriptors](./vmbc-k8s-orchestrator-tool/sample-descriptors/)
+- [Multi cluster deployment](./vmbc-k8s-orchestrator-tool/multicluster-deployment)
+- [Ethereum authentication and authorization](./vmbc-k8s-orchestrator-tool/ethereum-authentication-and-authorization)
+- [Logging and Metrics](./vmbc-k8s-orchestrator-tool/deployment-with-logs-and-metrics)
