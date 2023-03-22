@@ -15,20 +15,20 @@ VMware Blockchain Ethereum supports the standard interface for Ethereum clients 
 | eth_getBlockTransactionCountByHash | Returns the number of block transactions by block matching the given block.|
 | eth_getBlockTransactionCountByNumber | Returns the number of block transactions by matching the given block number.|
 | eth_getCode | Returns code at a given address.|
-| eth_getLogs | Returns an array of all logs matching a given filter object.| "pending" treated the same as "latest". "more" TAG always false.
+| eth_getLogs | Returns an array of all logs matching a given filter object.| "pending" treated the same as "latest".
 | eth_getStorageAt | Returns the value from a storage position at a given address.| "pending" treated the same as "latest"
 | eth_getTransactionByHash | Returns the information about a transaction requested by transaction hash.|
 | eth_getTransactionCount | Returns the number of transactions sent from an address.|
 | eth_getTransactionReceipt | Returns the receipt of a transaction by transaction hash.|
 | eth_getTransactionCount | Returns the number of transactions sent from an address. | "pending" treated the same as "latest".
 | eth_sendRawTransaction | Creates a message call transaction or a contract creation for signed transactions.| "To" address as EOA is unsupported.
-| eth_subscribe | Subscribe to logs that are included in new imported blocks and match the given filter criteria. This uses the WebSocket interface. |
+| eth_subscribe | Subscribe to logs that are included in new imported blocks and match the given filter criteria. This uses the WebSocket interface. | newHeads, newPendingTransactions and syncing are not supported.
 | eth_unsubscribe | Cancel a current subscription. This uses the WebSocket interface. |
-| eth_newFilter | Creates a filter object, based on filter options, to notify when the state changes (logs). To check if the state has changed, call eth_getFilterChanges. | 
-| eth_newBlockFilter	| Creates a filter in the node, to notify when a new block arrives. To check if the state has changed, call eth_getFilterChanges.|
+| eth_newFilter | Creates a filter object, based on filter options, to notify when the state changes (logs). To check if the state has changed, call eth_getFilterChanges. Filters are not saved in persistent storage - if a node restarts, the filters will be lost. | 
+| eth_newBlockFilter	| Creates a filter in the node, to notify when a new block arrives. To check if the state has changed, call eth_getFilterChanges. Filters are not saved in persistent storage - if a node restarts, the filters will be lost.|
 | eth_uninstallFilter | Uninstalls a filter with given id. Should always be called when watch is no longer needed. Additionally Filters timeout when they aren't requested with eth_getFilterChanges for a period of time which is set 15 minutes for 1.9 Release.|
-| eth_getFilterChanges | |
-| eth_getFilterLogs | |
+| eth_getFilterChanges | Polling method for a filter, which returns an array of logs which occurred since last poll. | "pending" treated the same as "latest".
+| eth_getFilterLogs | Returns an array of all logs matching filter with given id. | "pending" treated the same as "latest".
 | net_version | Returns the current network ID.|
 
  Construct | Description |
