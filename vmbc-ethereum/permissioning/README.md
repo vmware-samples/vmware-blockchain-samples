@@ -87,15 +87,13 @@ Under `clientTlsAndTokenAuthSettings` for each VMBC Client, following fields cou
       - If tokenAuthentication is to be used, either the current field or `issuerUri` field is mandatory
 
 #### Sample Pre-Generated Helm Charts
-Todo: Link following to the helm charts in `vmbc-deployment/vmbc-sample-deployments` directory
-
 We have pre-generated few set of helm charts for different feature set combinations of authentication mechanims enabled. The samples have been generated for minikube environment with server certificate of client-ethrpc with static ip as `192.168.200.200`. The token auth for the sample charts is based on live authorization server and the default certificate for the authentication server is a self-signed certificate for `localhost`.
 
 **Few Notable Points**
 - Minikube can be started with static ip to utilize the samples mentioned below easily (Reference: https://minikube.sigs.k8s.io/docs/tutorials/static_ip/)
 - Only values for standalone fields which are already in use are the only fields recommended and supported to be modified.
    - For example, if `issuerUri` is already being used, only then the value for that field can be changed in `values.yaml` of the helm charts.
-   - For all other scenarios where a field was not in use before and needs to be changed, we recommend to genearate a new set of helm charts using the procedure mentioned [here](#generating-new-helm-charts)
+   - For all other scenarios where a field was not in use before and needs to be changed, we recommend to generate a new set of helm charts using the procedure mentioned [here](#generating-new-helm-charts)
 
 **Sample Helm Charts**
 - [VMBC Four Node and One Client Deployment](../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/vmbc-four-node-one-client-deployment/)
