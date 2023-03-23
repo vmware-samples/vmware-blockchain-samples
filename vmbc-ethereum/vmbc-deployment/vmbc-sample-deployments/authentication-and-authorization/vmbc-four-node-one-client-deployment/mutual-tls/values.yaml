@@ -15,11 +15,11 @@ global:
   # The credentials for the docker registry. If username/password/email are specified, a corresponding Secret
   # with the name vmwathena-regcred is created.
   imageCredentials:
-    registry: "blockchain-docker-internal.artifactory.eng.vmware.com"
+    registry: ""
     username: |-
-      blockchain-artifactory-deployer
+
     password: |-
-      4V-qnv[HrG)ep"Mb
+    
     email: ""
   storageClassName: "standard"
 
