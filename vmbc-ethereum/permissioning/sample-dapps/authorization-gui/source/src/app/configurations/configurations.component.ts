@@ -13,7 +13,7 @@ let permissionMap = new Map<String,string>();
 export class ConfigurationsComponent implements OnInit {
   fromAddress: String = "";
   toAddress: String = "0x0000000000000000000000000000000000000000";
-  readPermission: boolean = false;
+  readPermission: boolean = true;
   writePermission: boolean = false;
   deployPermission: boolean = false;
   adminPermission: boolean = false;
@@ -29,7 +29,6 @@ export class ConfigurationsComponent implements OnInit {
   write:Number  = 2;
   deploy:Number = 4;
   admin:Number  = 8;
-  readVisible: boolean = false;
   writeVisible: boolean = false;
   deployVisible: boolean = false;
   responseHash: boolean = false;
@@ -42,14 +41,6 @@ export class ConfigurationsComponent implements OnInit {
   allPermissions:Number = 0;
   contractAddress: String = "0x57a268e7694371880a2c5881bd240db812bbfbf0";
   displayPermissions:String = "";
-  
-  onReadPermissionChange(e) {
-    if(e.target.checked){
-      this.readPermission = true;
-    } else {
-      this.readPermission = false;
-    }
-  }
 
   onWritePermissionChange(e) {
     if(e.target.checked){
@@ -128,7 +119,6 @@ export class ConfigurationsComponent implements OnInit {
     this.permissionModal=false;
     this.alertSuccess=false;
     this.alertFailure=false;
-    this.readVisible = false;
     this.writeVisible = false;
     this.deployVisible = false;
     this.alertSuccess=false;
@@ -154,9 +144,6 @@ export class ConfigurationsComponent implements OnInit {
       this.permissionModal= true;
       //alert(this.allPermissions)
       if (!response) {
-        if(this.readPermission){
-          this.readVisible = false;
-        }
         if(this.writePermission){
           this.writeVisible = false;
         }
@@ -165,17 +152,7 @@ export class ConfigurationsComponent implements OnInit {
         }
         this.alertFailure=true;
       } else {
-        if(!this.readPermission&&!this.writePermission&&!this.deployPermission){
-          this.allPermissions=0;
-          this.allPermissions = Number(this.allPermissions) + Number(this.read);
-          const read = await permissionContract.checkUserAction(this.fromAddress, this.toAddress, this.allPermissions);
-          if(!read){
-            this.map.set("Read", "No Permission Given");
-            this.readVisible = false;
-          }else{
-            this.map.set("Read", "Permission Given");
-            this.readVisible = true;
-          }
+        if(!this.writePermission&&!this.deployPermission){
           this.allPermissions=0;
           this.allPermissions = Number(this.allPermissions) + Number(this.write);
           const write = await permissionContract.checkUserAction(this.fromAddress, this.toAddress, this.allPermissions);
@@ -196,14 +173,10 @@ export class ConfigurationsComponent implements OnInit {
             this.map.set("Deploy", "Permission Given");
             this.deployVisible = true;
           }
-          if(!this.readVisible&&!this.writeVisible&&!this.deployVisible){
+          if(!this.writeVisible&&!this.deployVisible){
             this.alertFailure=true;
           }
         }else{
-          if(this.readPermission){
-            this.map.set("Read", "Permission Given");
-            this.readVisible = true;
-          }
           if(this.writePermission){
             this.map.set("Write", "Permission Given");
             this.writeVisible = true;

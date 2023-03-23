@@ -28,10 +28,6 @@
     <div class="clr-col-1">
       <div class="clr-form-control">
         <div class="checkbox-inline">
-          <input type="checkbox" id="readPermission" name="checkbox-full-1" value="readPermission" class="clr-checkbox" (change)="onReadPermissionChange($event)">
-          <label for="readPermission">Read</label>
-        </div>
-        <div class="checkbox-inline">
           <input type="checkbox" id="writePermission" name="checkbox-full-2" value="writePermission" class="clr-checkbox" (change)="onWritePermissionChange($event)"/>
           <label for="writePermission">Write</label>
         </div>
@@ -61,7 +57,6 @@
           <div [ngClass]="checkPermissions" > 
             <strong>Address: </strong>{{fromAddress}}
            </div>
-          <div [ngClass]="checkPermissions"  *ngIf="readVisible"><strong>Read: </strong> {{map.get("Read")}}</div>
           <div [ngClass]="checkPermissions"  *ngIf="writeVisible"><strong>Write: </strong> {{map.get("Write")}}</div>
           <div [ngClass]="checkPermissions"  *ngIf="deployVisible"><strong>Deploy: </strong>{{map.get("Deploy")}}</div>
           <div [ngClass]="checkPermissions"  *ngIf="alertFailure"> No Permission Given </div>
