@@ -5,9 +5,10 @@ const { Issuer, errors: { OPError } } = require('openid-client');
 const config = require('./config.json');
 const { exit } = require('process');
 const ethers = require('ethers');
+const WebSocket = require('ws');
 const oauthUsername = config.clientJwt.authUsername;
 const oauthPassword = config.clientJwt.authPassword;
-
+let contract = {};
 const getJwtToken = async () => {
   console.log("\x1b[32m%s\x1b[0m", "\n========== Fetching Access Token from Auth Server ==========");
   // Fetches the .well-known endpoint for endpoints, issuer value etc.
@@ -37,6 +38,7 @@ const createHttpProvider = async (accessToken) => {
   let connection = {};
   connection.url = httpsEndpoint;
   connection.headers = { "Authorization": `Bearer ${accessToken}` };
+
   const provider = new ethers.providers.StaticJsonRpcProvider(connection, 5000);
   return provider;
 }
@@ -44,7 +46,9 @@ const createHttpProvider = async (accessToken) => {
 const createWsProvider = async (accessToken) => {
   const wsUrl = `wss://${config.jsonrpc.endpointHost}:${config.jsonrpc.ports.ws}`;
   console.log("wssEndpoint is " + wsUrl);
-
+  let connection = {};
+  connection.url = wsUrl;
+  connection.headers = { "Authorization": `Bearer ${accessToken}` };
   const ws = new WebSocket(wsUrl, {headers: connection.headers});
   var wsProvider = new ethers.providers.WebSocketProvider(ws);
   return wsProvider;
@@ -67,7 +71,7 @@ const deployContract = async (accessToken) => {
 
   const incrementer = new ethers.ContractFactory(abi, bytecode, wallet);
 
-  const contract = await incrementer.deploy([5]);
+  contract = await incrementer.deploy([5]);
   await contract.deployed();
 
   console.log(`Contract deployed at address: ${contract.address}`);
@@ -76,9 +80,9 @@ const deployContract = async (accessToken) => {
 
 const subscribeToLogs = async (accessToken, contractAddress) => {
   console.log("\x1b[32m%s\x1b[0m", "\n========== Subscribing to logs of deployed contract using wss endpoint ==========");
-  web3Ws = await createWsProvider(accessToken);
+  const  web3Ws = await createWsProvider(accessToken);
 
-  let contractInstanceForWs = new ethers.Contract(contractAddress, abi, wsProvider);
+  let contractInstanceForWs = new ethers.Contract(contractAddress, abi, web3Ws);
   contractInstanceForWs.on("*", (log) => {
     console.log("\x1b[32m%s\x1b[0m", "\n========== Received data from websocket ==========");
     console.log("Received log: " + JSON.stringify(log));
@@ -92,17 +96,14 @@ const subscribeToLogs = async (accessToken, contractAddress) => {
 const sendSampleTransaction = async () => {
   console.log("\x1b[32m%s\x1b[0m", "\n========== Sending a sample transaction ==========");
   txResponse = await contract.increment(8);
-  taxReceipt = txResponse.wait();
-  console.log(`Tx successful with hash: ${taxReceipt.transactionHash}`);
+  console.log(`Tx successful with hash: ${txResponse.hash}`);
 }
 
 const main = async () => {
   try {
     var accessToken = "";
-    if (config.clientJwt.enabled) {
       accessToken = await getJwtToken();
       console.log("Access Token received from Auth Server is: " + accessToken);
-    }
 
     var contractAddress = await deployContract(accessToken);
     console.log("Contract deployed at address: " + contractAddress);
@@ -117,4 +118,3 @@ const main = async () => {
 }
 
 main();
-
