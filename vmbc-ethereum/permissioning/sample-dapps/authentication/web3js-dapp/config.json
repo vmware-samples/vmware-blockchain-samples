@@ -8,9 +8,9 @@
     },
     "tls": {
         "mode": "mutualTLS",
-        "serverCaCertPath": "../artifacts/certs/ethrpc-ca.crt",
-        "clientKeyPath": "../artifacts/certs/client.key",
-        "clientCertPath": "../artifacts/certs/client.crt"
+        "serverCaCertPath": "../../../../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/artifacts-for-dapps/ethrpc-ca.crt",
+        "clientKeyPath": "../../../../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/artifacts-for-dapps/client.key",
+        "clientCertPath": "../../../../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/artifacts-for-dapps/client.crt"
     },
     "clientJwt": {
         "enabled": true,
