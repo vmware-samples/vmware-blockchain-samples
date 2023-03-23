@@ -6,7 +6,7 @@ VMware Blockchain for Ethereum in a broad form provides two forms of permissioni
 Read Permissioning is implemented through external Authorizations mechanisms such as Certificate Authority or OAuth Server in two forms namely Mutual TLS and Token Authentication.
 
 **Terminology**
-- DApp/dApp: Decentralized Application
+- dApp: Decentralized Application
 - TLS: Transport Layer Security
 - mTLS: Mutual TLS
 - CA: Certificate Authority
@@ -27,14 +27,14 @@ Following diagram depicts both mTLS and serverTLS which have been enabled in two
 
 **Description of the Depiction**
 - Each dApp and EthRPC Server instance have certificates depicted along side. These are the certificates and keys required for the respective components
-- Colors represent the association of Certificates and Keys with corresponding DApp or EthRPC instance or internal CA 
+- Colors represent the association of Certificates and Keys with corresponding dApp or EthRPC instance or internal CA 
 
 **Few Notable Points**
 - Server TLS
    - dApp
       - If using an internal CA based Server Certificate, dApp needs to utilize Root Certificate of the EthRPC Server's Server Certificate
    - EthRPC
-      - Needs to start up with a Server certificate. If using a internal CA certificate, the root certificate of the internal CA would need to be provided for DApp clients
+      - Needs to start up with a Server certificate. If using a internal CA certificate, the root certificate of the internal CA would need to be provided for dApp clients
 - Mutual TLS
    - dApp
       - If using an internal CA based Server Certificate, dApp needs to utilize Root Certificate of the EthRPC Server's Server Certificate
@@ -47,7 +47,7 @@ Following diagram depicts both mTLS and serverTLS which have been enabled in two
 Token Authentication can be utilized for Client Authentication. Any OAuth2.0 standard based Authorization server can be used. We have used Keycloak based Authorization server for development and testing.
 
 Following are few responsibilities of components,
-- DApp
+- dApp
    - Fetching of a JWT Access Token from an Authorization Server managed by Customer
    - When utilizing the integration libraries the JWT Access Token has to be passed as a header to EthRPC
 - EthRPC
@@ -61,19 +61,19 @@ Following are the depictions for two of the ways EthRPC can be configured to ver
 ![Client JWT with Live OAuth Server Depiction](./assets/images/client-jwt-live-oauth-server-depiction.png)
 
 **Description of the Depiction**
-1. The DApp procures JWT Token from the JWT Authorization Server
+1. The dApp procures JWT Token from the JWT Authorization Server
    - This operation would happen periodically, based on the expiry time set for the JWT Token
-2. The DApp through the selected integration library would pass the above acquired JWT Token as a header
-3. EthRPC would communicate with the JWT Authorization Server to get the public key for verifying the JWT Token received from DApp. EthRPC would cache the public keys of Authorization server for 5 minutes
+2. The dApp through the selected integration library would pass the above acquired JWT Token as a header
+3. EthRPC would communicate with the JWT Authorization Server to get the public key for verifying the JWT Token received from dApp. EthRPC would cache the public keys of Authorization server for 5 minutes
 
 #### JWT Token Verification using Local Public Key
 ![Client JWT with Live OAuth Server Depiction](./assets/images/client-jwt-local-jwks-depiction.png)
 
 **Description of the Depiction**
-1. The DApp procures JWT Token from the JWT Authorization Server
+1. The dApp procures JWT Token from the JWT Authorization Server
    - This operation would happen periodically, based on the expiry time set for the JWT Token
-2. The DApp through the selected integration library would pass the above acquired JWT Token as a header
-3. EthRPC would utilize the local public JWKS file for verifying the JWT Token received from DApp
+2. The dApp through the selected integration library would pass the above acquired JWT Token as a header
+3. EthRPC would utilize the local public JWKS file for verifying the JWT Token received from dApp
 
 ### User Perspective
 This feature offers three distinct capabilities - which can be combined depending on the user goals. These capabilities are:
