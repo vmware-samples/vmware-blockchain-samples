@@ -131,10 +131,6 @@ We have pre-generated few set of helm charts for different feature set combinati
    - [mutual TLS](../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/vmbc-four-node-one-client-deployment/mutual-tls/)
    - [Client JWT with server TLS](../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/vmbc-four-node-one-client-deployment/server-tls-with-token-auth/)
    - [Client JWT with mutual TLS](../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/vmbc-four-node-one-client-deployment/mutual-tls-with-token-auth/)
-- VMBC Four Node and Twelve Client Deployment
-   - mutual TLS
-   - Client JWT with server TLS
-   - Client JWT with mutual TLS
 
 #### Generating new Helm Charts
 We have [vmbc-orchestrator-tool](../vmbc-deployment/vmbc-k8s-orchestrator-tool/) which can be used to generate new helm charts when there is a need for introducing new fields or removing fields or changing values for any fields which have not been used in the sample helm charts.
@@ -318,7 +314,7 @@ node testWrite.js
 #### Solution
 You have enabled write permissioning. Make sure the ethereum account you are using to send transactions or deploy contract has the WRITE/DEPLOY permission.
 
-## Known Issues
+## Known Ecosystem Integration Issues
 - The max supported version of NodeJS when using Server or Mutual TLS in EthRPC is `v16.19.1`
 - Ethers.js does not support Mutual TLS when using `JsonRpcProvider`, as it does not support passing of client certificate and client key when creating the provider object.
    - For similar reasons, hardhat also does not support the Mutual TLS option
