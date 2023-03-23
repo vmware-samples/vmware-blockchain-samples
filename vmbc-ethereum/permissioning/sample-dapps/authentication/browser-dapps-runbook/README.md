@@ -2,7 +2,7 @@
 
 # Overview
 
-HTTP-based mTLS is a secure protocol that combines HTTPS with mutual authentication of both client and server. This provides an extra layer of security to protect against eavesdropping and tampering of data in transit. Firefox supports HTTP-based mTLS and following is a detailed procedure.
+HTTP-based mTLS is a secure protocol that combines HTTPS with mutual authentication of both client and server. This provides an extra layer of security to protect against eavesdropping and tampering of data in transit. Both Chrome and Firefox support HTTP-based mTLS, but the steps to set it up and use it may differ.
 
 ## Pre-Requisite
 
@@ -10,6 +10,28 @@ HTTP-based mTLS is a secure protocol that combines HTTPS with mutual authenticat
 - Suggested and Supported Stack:
   - MAC Operating System
   - Metamask Wallet
+
+## Chrome
+
+Chrome uses OS level certificates to communicate with EthRPC through HTTP based mTLS.
+
+To add root certificate and client certificate, follow these steps:
+
+1. On your computer open the Keychain Access application.
+2. Navigate to the "Login" section and select "Certificates".
+<br> ![Keychain](assets/Keychain.png)
+
+3. Drag and drop the client certificate, client key, and certificate authority into Keychain Access.
+4. Double click on the certificates (Client Certificate and Certificate Authority), if you get the following warning "This root certificate isn't trusted" under the trust sub-section set ***When using this certificate*** to ***Always Trust***. Confirm the changes by entering your computer password.
+<br> ![Certificate](assets/Keychain_certificate.png)
+5. Open Chrome go to Metamask. Click Expand View then open Settings go to Networks and then click the VMBC URL you are trying to connect to. Chrome will pop up a list of certificates that can be used.
+6. Click the certificate you have added and then click okay.
+<br> ![Chrome](assets/Chrome_select_certificate.png)
+
+7. Change the Metamask network to the VMBC URL, and you should have a successful connection.
+
+### Troubleshooting Guide
+- If you face problems related to CORS or some valid scenarios start failing to work during set up, we suggest to reset your chrome browser
 
 ## Firefox
 
@@ -60,5 +82,3 @@ In order to import a client certificate via Firefox certificate manager you need
 ```sh
 openssl pkcs12 -export -out client.p12 -inkey <client.key> -in <client.crt> -certfile <ca.crt>
 ```
-
-
