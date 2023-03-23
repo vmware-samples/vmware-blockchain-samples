@@ -1,0 +1,23 @@
+{
+    "jsonrpc": {
+        "endpointHost": "192.168.200.200",
+        "ports": {
+            "http": "8545",
+            "ws": "8546"
+        }
+    },
+    "tls": {
+        "mode": "mutualTLS",
+        "serverCaCertPath": "../artifacts/decc/ethrpc-ca.crt",
+        "clientKeyPath": "../artifacts/decc/client.key",
+        "clientCertPath": "../artifacts/decc/client.crt",
+        "authServerPath": "../artifacts/decc/auth-server.crt"
+    },
+    "clientJwt": {
+        "enabled": true,
+        "authDiscoveryUrl": "https://localhost:8443/realms/vmbc_realm",
+        "authUsername": "dappuser",
+        "authPassword": "pas5w0rd",
+        "clientId": "dapp_client"
+    }
+}
