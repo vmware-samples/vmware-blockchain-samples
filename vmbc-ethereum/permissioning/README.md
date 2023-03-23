@@ -149,12 +149,27 @@ A sample `deployment.json` with different options and fields is [here](../vmbc-d
 ### Using Sample DApps for Read Permissioning
 As part of this feature, we have provided multiple sample dApps using various integration libraries such as Web3.js, Web3j and Ethers.js as reference and sample implementation to utilize various aspects of read permissioning in VMBC.
 
+- Few Notable Points
+   - All the following sample dApps which have a config file are pre-populated with mutualTLS with token authentication mode
+   - All the sample artifacts which can be used with the sample dApps are present [here](../../vmbc-ethereum/vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/artifacts-for-dapps/)
+      - The `ethrpc-root.ca` corresponds to the server certificate (generated as a IP based certificate for static IP `192.168.200.200`) added in the sample helm charts described in the above section
+      - The `client.crt` and `client.key` are created with `clientRootCa` cert mentioned in the sample helm charts
+      - The `auth-server.crt` corresponds to a localhost based auth server
+      - The config and following sample dApps are for reference purpose, depending on the integration library and language of the dApp might have variations in their functionality and support
+      - As these sample dApps are only for reference, we have not done any validations, it is up to the user to ensure the validity and correctness of blockchain and config files
+
 #### Web3.js Sample dApp
-- Set the content inside [config file](./sample-dapps/authentication/web3js/config.json) as per blockchain and related environment,
+- Set the content inside [config file](./sample-dapps/authentication/web3js-dapp/config.json) as per blockchain and related environment,
 - Few of the notable parameters,
    - `tls.mode` supported are `serverTLS` or `mutualTLS`
    - `clientJwt.enabled` should be `true` if VMBC has tokenAuthentication enabled
 
+**Pre-Requisites**
+- Blockchain with the current feature enabled with appropriate components running and reachable from the dApp
+- Node.js v16.19.1 (this is the max version supported)
+- npm
+
+**Steps to run the sample dApp**
 ```sh
 # Change to lib for authentication sample dapps
 cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/lib
@@ -167,18 +182,76 @@ cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentica
 npm install
 
 # Edit the config file as per your enviroment
-# Path to config file: vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/web3js/config.json
+# Path to config file: vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/web3js-dapp/config.json
+
+# If using an internal CA based Auth Server export NODE_EXTRA_CA_CERTS to ca certificate of Auth Server otherwise ignore the variable
+export NODE_EXTRA_CA_CERTS=../../../../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/artifacts-for-dapps/auth-server.crt
 
 # Run the sample dApp
-# If using an internal CA based Auth Server set NODE_EXTRA_CA_CERTS to ca certificate of Auth Server otherwise ignore the variable
-NODE_EXTRA_CA_CERTS=../artifacts/certs/auth-server.crt node sample-dapp.js
+node sample-dapp.js
 ```
 
 #### Web3j Sample dApp
-<Todo: Add details here>
+ Set the content inside [config file](./sample-dapps/authentication/web3j-dapp/config.json) as per blockchain and related environment,
+- Few of the notable parameters,
+   - `tls.mode` supported are `serverTLS` or `mutualTLS`
+   - `clientJwt.enabled` should be `true` if VMBC has tokenAuthentication enabled
+
+**Pre-Requisites**
+- Blockchain with the current feature enabled with appropriate components running and reachable from the dApp
+- Maven
+- Java
+
+**Steps to run the sample dApp**
+```sh
+# Change to web3j authentication sample dapp
+cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/web3js
+
+# Installation
+mvn clean install
+
+# Edit the config file as per your enviroment
+# Path to config file: vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/web3j-dapp/config.json
+
+# Running of the https version
+mvn exec:java -Dexec.mainClass=com.vmware.SampleDappHttps
+
+# Running of the wss version
+mvn exec:java -Dexec.mainClass=com.vmware.SampleDappWss
+```
 
 #### Ethers.js Sample dApp
-<Todo: Add details here>
+ Set the content inside [config file](./sample-dapps/authentication/web3j-dapp/config.json) as per blockchain and related environment,
+- Few of the notable parameters,
+   - `tls.mode` supported is only `serverTLS`
+   - `clientJwt.enabled` should be `true`
+
+**Pre-Requisites**
+- Blockchain with the current feature enabled with appropriate components running and reachable from the dApp
+- Node.js v16.19.1 (this is the max version supported)
+- npm
+
+**Steps to run the sample dApp**
+```sh
+# Change to lib for authentication sample dapps
+cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/lib
+# Install dependencies
+npm install
+
+# Change to ethersjs authentication sample dapp
+cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/ethersjs
+# Install dependencies
+npm install
+
+# Edit the config file as per your enviroment
+# Path to config file: vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/ethersjs-dapp/config.json
+
+# If using an internal CA based Auth Server export NODE_EXTRA_CA_CERTS to ca certificate of Auth Server otherwise ignore the variable
+export NODE_EXTRA_CA_CERTS=../../../../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/artifacts-for-dapps/auth-server.crt
+
+# Run the sample dApp
+node sample-dapp.js
+```
 
 #### Browser dApps
 <Todo: Add details about how to handle browser dApps. Add runbook md file and link that here>
