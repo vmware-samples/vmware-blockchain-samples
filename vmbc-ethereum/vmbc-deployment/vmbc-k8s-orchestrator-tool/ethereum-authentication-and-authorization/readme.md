@@ -71,9 +71,9 @@ During deployment of blockchain, you may also edit "clientTlsAndTokenAuthSetting
 Note: If the charts were generated with no TLS settings, then Values.yaml file would not have clientTlsAndTokenAuthSettings section.
 
 ### Validations
-Please see the below conditions under which chart generation will be restricted.
-- If "tlsAndTokenAuthSettings" block is present, then "type" is mandatory. Valid values for "type" is either "serverTLS" or "mutualTLS".
-- If "tlsAndTokenAuthSettings" block is present, then "serverCert" and "serverPrivateKeySecret" is mandatory.
+Please see the below conditions if you choose to use the feature "tlsAndTokenAuthSettings", under which chart generation will be restricted.
+- "type" is mandatory. Valid values for "type" is either "serverTLS" or "mutualTLS".
+- "serverCert" and "serverPrivateKeySecret" is mandatory.
 - If "type" is "mutualTLS" then "clientRootCaCert" is mandatory else it is not required.
 - If "type" is "serverTLS" then "tokenAuthentication" block is mandatory else it is optional.
 - If "publicJwks" is provided then "issuerUri" and "issuerCaCert" are not required.
