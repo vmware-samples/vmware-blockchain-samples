@@ -27,17 +27,19 @@ Following diagram depicts both mTLS and serverTLS which have been enabled in two
 
 **Description of the Depiction**
 - Each dApp and EthRPC Server instance have certificates depicted along side. These are the certificates and keys required for the respective components
-- Colors represent the association of Certificates and Keys with corresponding dApp or EthRPC instance or internal CA 
+- Colors represent the association of Certificates and Keys with corresponding dApp or EthRPC instance or internal CA
+- When using multiple clients, on the basis of the need, different clients can correspond to the same or different Server or Client related CA and Authentication Server
+- Above is just a depiction few of the scenarios which are feasible
 
 **Few Notable Points**
 - Server TLS
    - dApp
-      - If using an internal CA based Server Certificate, dApp needs to utilize Root Certificate of the EthRPC Server's Server Certificate
+      - If using an internal CA based Server Certificate, dApp needs to utilize Root Certificate of the EthRPC Server's CA Certificate
    - EthRPC
       - Needs to start up with a Server certificate. If using a internal CA certificate, the root certificate of the internal CA would need to be provided for dApp clients
 - Mutual TLS
    - dApp
-      - If using an internal CA based Server Certificate, dApp needs to utilize Root Certificate of the EthRPC Server's Server Certificate
+      - If using an internal CA based Server Certificate, dApp needs to utilize Root Certificate of the EthRPC Server's CA Certificate
       - dApp needs to use Client certificate and Client Key
    - EthRPC
       - Needs to start up with a Server certificate. If using a internal CA certificate, the root certificate of the internal CA would need to be provided for dApp clients
@@ -53,6 +55,8 @@ Following are few responsibilities of components,
 - EthRPC
    - When deploying blockchain with token authentication enabled, either URI of the Authentication server or a public JWKS file needs to be provided
       - The recommended approach is to provide URI of the Authorization server
+      - Issuer URI mentioned here is the `issuer` field available in the Open ID Provider metadata (https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata)
+      - JWKS JSON content is available at the Authorization Server’s `jwks_uri` which is available in the its Provider metadata (https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata)
 
 
 Following are the depictions for two of the ways EthRPC can be configured to verify JWT Token,
@@ -64,7 +68,7 @@ Following are the depictions for two of the ways EthRPC can be configured to ver
 1. The dApp procures JWT Token from the JWT Authorization Server
    - This operation would happen periodically, based on the expiry time set for the JWT Token
 2. The dApp through the selected integration library would pass the above acquired JWT Token as a header
-3. EthRPC would communicate with the JWT Authorization Server to get the public key for verifying the JWT Token received from dApp. EthRPC would cache the public keys of Authorization server for 5 minutes
+3. EthRPC would communicate with the JWT Authorization Server to get the public key for verifying the JWT Token received from dApp. EthRPC would cache the public keys of Authorization server
 
 #### JWT Token Verification using Local Public Key
 ![Client JWT with Live OAuth Server Depiction](./assets/images/client-jwt-local-jwks-depiction.png)
@@ -113,6 +117,7 @@ Under `clientTlsAndTokenAuthSettings` for each VMBC Client, following fields cou
    - `issuerCaCert`
       - CA Certificate for the `issuerUri`
          - X509 format based certificate
+         - This field is optional and necessary when using a https based authentication server whose CA is not well-known
    - `publicJwks`
       - A JSON Web Key Set (JWKS) representing the public keys of Authorization server
       - If tokenAuthentication is to be used, either the current field or `issuerUri` field is mandatory
