@@ -37,7 +37,7 @@ import java.util.Base64;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class ClientMTLS {
+public class SampleDappHttps {
 
     public static void main(String[] args) throws Exception {
         FileReader fileReader = new FileReader("./config.json");

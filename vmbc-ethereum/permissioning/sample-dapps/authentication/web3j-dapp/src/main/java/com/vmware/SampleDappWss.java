@@ -36,7 +36,7 @@ As of now the "web3j" object is not used to consume subscription API's. Below ar
 1. VMBC doesn't support filter API's. 
 2. We have to use web3j.blockFlowable() api ultimately which internally uses filter API's
 --------------------------------------------------------------------------- */
-public class ClientMTLSWss {
+public class SampleDappWss {
 
     public static void main(String[] args) throws Exception {
         FileReader fileReader = new FileReader("./config.json");
