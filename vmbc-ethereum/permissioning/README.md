@@ -106,6 +106,7 @@ Under `clientTlsAndTokenAuthSettings` for each VMBC Client, following fields cou
    - Mandatory field if `clientTlsAndTokenAuthSettings` is present
    - A sample secret file is [here](../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/secret.yaml)
       - The value in secret is base64 encoded
+      - You can use `kubectl` to create this secret in your kubernetes environment
 - `clientRootCaCert`
    - Root CA certificate for the client certificates which will be used by dApps
       - X509 format based certificate
@@ -124,6 +125,14 @@ Under `clientTlsAndTokenAuthSettings` for each VMBC Client, following fields cou
 
 #### Sample Pre-Generated Helm Charts
 We have pre-generated few set of helm charts for different feature set combinations of authentication mechanism enabled. The samples have been generated for minikube environment with server certificate of client-ethrpc with static ip as `192.168.200.200`. The token auth for the sample charts is based on live authorization server and the default certificate for the authentication server is a self-signed certificate for `localhost`. The secret corresponding to the `serverPrivateKeySecret` for all the pre-generated sample helm charts is present [here](../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/secret.yaml).
+
+```sh
+# Sample command to create secret resource inside kubernetes cluster
+kubectl apply -f secret.yaml
+
+# Command to install helm charts
+# Utilize the corresponding readme files inside the helm charts to set appropriate values and install helm charts
+```
 
 **Few Notable Points**
 - Minikube can be started with static ip to utilize the samples mentioned below easily (Reference: https://minikube.sigs.k8s.io/docs/tutorials/static_ip/)
@@ -144,8 +153,12 @@ The relevant fields for the current feature in discussion is same as mentioned i
 
 A sample `deployment.json` with different options and fields is [here](../vmbc-deployment/vmbc-k8s-orchestrator-tool/ethereum-authentication-and-authorization/readme.md).
 
-#### Day 2 Serviceability
-<Todo: Add details about the serviceability aspects>
+#### Serviceability
+If there is an update required for an existing standalone field such as a certificate or URI or public JWKS content, you can use update the fields in `values.yml` and can run following command to update,
+
+```sh
+helm upgrade <release name> <chart dir>
+```
 
 ### Using Sample DApps for Read Permissioning
 As part of this feature, we have provided multiple sample dApps using various integration libraries such as Web3.js, Web3j and Ethers.js as reference and sample implementation to utilize various aspects of read permissioning in VMBC.
