@@ -136,6 +136,7 @@ kubectl apply -f secret.yaml
 
 **Few Notable Points**
 - Minikube can be started with static ip to utilize the samples mentioned below easily (Reference: https://minikube.sigs.k8s.io/docs/tutorials/static_ip/)
+   - Minimum version of minikube required for using static-ip feature is `1.29.0`
 - Only values for standalone fields which are already in use are the only fields recommended and supported to be modified.
    - For example, if `issuerUri` is already being used, only then the value for that field can be changed in `values.yaml` of the helm charts.
    - For all other scenarios where a field was not in use or empty before and needs to be changed, you need to generate a new set of helm charts using the procedure mentioned [here](#generating-new-helm-charts).
@@ -170,7 +171,7 @@ As part of this feature, we have provided multiple sample dApps using various in
       - The `client.crt` and `client.key` are created with `clientRootCa` cert mentioned in the sample helm charts
       - The `auth-server.crt` corresponds to a localhost based auth server
       - The config and following sample dApps are for reference purpose, depending on the integration library and language of the dApp might have variations in their functionality and support
-      - As these sample dApps are only for reference, we have not done any validations, it is up to the user to ensure the validity and correctness of blockchain and config files
+      - As these sample dApps are only for reference, we have not done any input validations, it is up to the user to ensure the validity and correctness of blockchain and config files
 
 #### Web3.js Sample dApp
 - Set the content inside [config file](./sample-dapps/authentication/web3js-dapp/config.json) as per blockchain and related environment,
@@ -191,7 +192,7 @@ cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentica
 npm install
 
 # Change to web3js authentication sample dapp
-cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/web3js
+cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/web3js-dapp
 # Install dependencies
 npm install
 
@@ -231,6 +232,7 @@ mvn clean install
 mvn exec:java -Dexec.mainClass=com.vmware.SampleDappHttps
 
 # Running of the wss version
+## This just establishes a subscription
 mvn exec:java -Dexec.mainClass=com.vmware.SampleDappWss
 ```
 
@@ -260,8 +262,11 @@ npm install
 # Edit the config file as per your enviroment
 # Path to config file: vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/ethersjs-dapp/config.json
 
-# If using an internal CA based Auth Server export NODE_EXTRA_CA_CERTS to ca certificate of Auth Server otherwise ignore the variable
-export NODE_EXTRA_CA_CERTS=../../../../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/artifacts-for-dapps/auth-server.crt
+# If using an internal CA based Auth Server, create a bundle of the auth certificate and the ethrpc-ca.crt as follows
+cat ../../../../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/artifacts-for-dapps/auth-server.crt ../../../../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/artifacts-for-dapps/ethrpc-ca.crt > ca-bundle.crt
+
+# Add the above created bundle to NODE_EXTRA_CA_CERTS
+export NODE_EXTRA_CA_CERTS=./ca-bundle.crt
 
 # Run the sample dApp
 node sample-dapp.js
@@ -334,12 +339,39 @@ node testWrite.js
 ```
 #### Solution
 You have enabled write permissioning. Make sure the ethereum account you are using to send transactions or deploy contract has the WRITE/DEPLOY permission.
+### 2. Problem of EthRPC communicating with Authorization server
+Following error occurs when there is a problem with issueCaCert supplied to EthRPC and it cannot communicate with Authorization server on startup 
+```sh
+Caused by: org.springframework.web.client.ResourceAccessException: I/O error on GET request for "https://<host>:8443/realms/master/.well-known/openid-configuration": PKIX path building failed: sun.security.provider.cert
+path.SunCertPathBuilderException: unable to find valid certification path to requested target; nested exception is javax.net.ssl.SSLHandshakeException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilde
+rException: unable to find valid certification path to requested target                                                                                                                                                            
+        at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:785)                                                                                                                                            
+        at org.springframework.web.client.RestTemplate.exchange(RestTemplate.java:670)                                                                                                                                             
+        at org.springframework.security.oauth2.jwt.JwtDecoderProviderConfigurationUtils.getConfiguration(JwtDecoderProviderConfigurationUtils.java:150)                                                                            
+        ... 55 common frames omitted
+```
+#### Solution
+Ensure that issueCaCert provided for the EthRPC is indeed the one which corresponds to the Authorization server
+
+### 3. Could not connect to node JSON RPC URL
+Following error occurs when there is mismatch with the server cert provided to ethRPC and root-ca being used. This can also occur if Node.js version is above the max supported version when using Web3.js
+```sh
+Error: CONNECTION ERROR: Couldn't connect to node https://<host>:32379.                                                                                                                                                      
+    at Object.ConnectionError (/home/dclyde/Code/ethrpc_auth_epic/vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/web3js/node_modules/web3-core-helpers/lib/errors.js:66:23)                     
+    at Object.InvalidConnection (/home/dclyde/Code/ethrpc_auth_epic/vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/web3js/node_modules/web3-core-helpers/lib/errors.js:36:21)                   
+    at HttpProvider.failed (/home/dclyde/Code/ethrpc_auth_epic/vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/web3js/node_modules/web3-providers-http/lib/index.js:139:25)                      
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+```
+#### Solution
+- Ensure the correct combination of server cert & root-ca and client cert and client root ca cert are being utilized.
+- Also ensure the Node.js version is `16.19.1` at max when using with Web3.js
 
 ## Known Ecosystem Integration Issues
 - The max supported version of NodeJS when using Server or Mutual TLS in EthRPC is `v16.19.1`
 - Ethers.js does not support Mutual TLS when using `JsonRpcProvider`, as it does not support passing of client certificate and client key when creating the provider object.
    - For similar reasons, hardhat also does not support the Mutual TLS option
-
+#### Solution
+Ensure that the combination of sever cert for EthRPC and root-ca and other combination such as client.cert for the correct clientRootCa provided to EthRPC is being used
 ## References
 - JSON RPC API - https://ethereum.org/en/developers/docs/apis/json-rpc/
 - JSON RPC Provider Ethers.js - https://docs.ethers.io/v5/api/providers/jsonrpc-provider/
