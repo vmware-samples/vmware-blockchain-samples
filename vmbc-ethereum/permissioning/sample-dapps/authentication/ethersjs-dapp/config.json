@@ -1,6 +1,6 @@
 {
     "jsonrpc": {
-        "endpointHost": "localhost",
+        "endpointHost": "192.168.200.200",
         "ports": {
             "http": "8545",
             "ws": "8546"
