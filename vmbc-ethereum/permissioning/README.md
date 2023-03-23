@@ -255,7 +255,10 @@ node sample-dapp.js
 ```
 
 #### Browser dApps
-<Todo: Add details about how to handle browser dApps. Add runbook md file and link that here>
+For browser dApps we currently only support the aspect of mTLS only mode for blockchain client. Detailed procedure of how to set your browser for communicating with VMBC for Ethereum with mTLS only mode is [here](./sample-dapps/authentication/browser-dapps-runbook/README.md).
+
+- Note: If you need to deploy smart contracts using hardhat, then we suggest atleast a two client configuration, where one of the client is ServerTLS with Token Auth and using httpHeaders section of hardhat config, the access token can be passed to deploy contracts and another client with just mTLS to utilize the browser dApp with browser wallet such as Metamask
+   - Details about how to pass custom httpHeaders in hardhat config file: https://hardhat.org/hardhat-network/docs/guides/forking-other-networks#custom-http-headers
 
 ## Write Permissioning
 
