@@ -206,7 +206,7 @@ async function convert_public_to_private(
         throw new Error(resp.getErr());
     }
 
-    const ehter_mint_req = {
+    const ether_mint_req = {
         userId: user_id,
         value: value,
         txData: resp.getGenerateTxResponse().getTx()
@@ -215,7 +215,7 @@ async function convert_public_to_private(
     const tokens_contract = new web3.eth.Contract(tokens_contract_abi, tokens_contract_address);
     const tx = {
         to: tokens_contract.options.address,
-        data: tokens_contract.methods.convertPublicToPrivate(ehter_mint_req).encodeABI()
+        data: tokens_contract.methods.convertPublicToPrivate(ether_mint_req).encodeABI()
     }
     await sendTx(tx, _get_ethereum_account(ether_account_private_key));
     const post_tx_seq_num = parseInt(await privacyContract.methods.getNumOfLastAddedTransaction().call());

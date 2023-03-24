@@ -62,7 +62,9 @@ function compileContract(filePath) {
 
     const output = JSON.parse(solc.compile(JSON.stringify(input), { import: findImports }));
 
-    console.log(output.errors);
+    if (output.errors != undefined) {
+        console.log(output.errors);
+    }
 
     const abi = output.contracts[filePath][fileName].abi;
     const bytecode = output.contracts[filePath][fileName].evm.bytecode.object;
