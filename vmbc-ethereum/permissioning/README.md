@@ -175,11 +175,17 @@ As part of this feature, we have provided multiple sample dApps using various in
       - The config and following sample dApps are for reference purpose, depending on the integration library and language of the dApp might have variations in their functionality and support
       - As these sample dApps are only for reference, we have not done any input validations, it is up to the user to ensure the validity and correctness of blockchain and config files
 
-#### Web3.js Sample dApp
+#### [Web3.js Sample dApp](./sample-dapps/authentication/web3js-dapp/README.md)
 - Set the content inside [config file](./sample-dapps/authentication/web3js-dapp/config.json) as per blockchain and related environment,
 - Few of the notable parameters,
-   - `tls.mode` supported are `serverTLS` or `mutualTLS`
-   - `clientJwt.enabled` should be `true` if VMBC has tokenAuthentication enabled
+    - JSON RPC related
+        - `jsonrpc` related parameter such as `endpointHost` and `ports` 
+    - TLS related
+        - `tls.mode` supported are `serverTLS` or `mutualTLS`
+        - Paths to various artifacts
+    - Client JWT related
+        - `clientJwt.enabled` should be `true` if VMBC has tokenAuthentication enabled
+        - Details related to Authentication Server
 
 **Pre-Requisites**
 - Blockchain with the current feature enabled with appropriate components running and reachable from the dApp
@@ -208,11 +214,17 @@ export NODE_EXTRA_CA_CERTS=../../../../vmbc-deployment/vmbc-sample-deployments/a
 node sample-dapp.js
 ```
 
-#### Web3j Sample dApp
+#### [Web3j Sample dApp](./sample-dapps/authentication/web3j-dapp/README.md)
  Set the content inside [config file](./sample-dapps/authentication/web3j-dapp/config.json) as per blockchain and related environment,
 - Few of the notable parameters,
-   - `tls.mode` supported are `serverTLS` or `mutualTLS`
-   - `clientJwt.enabled` should be `true` if VMBC has tokenAuthentication enabled
+    - JSON RPC related
+        - `jsonrpc` related parameter such as `endpointHost` and `ports` 
+    - TLS related
+        - `tls.mode` supported are `serverTLS` or `mutualTLS`
+        - Paths to various artifacts
+    - Client JWT related
+        - `clientJwt.enabled` should be `true` if VMBC has tokenAuthentication enabled
+        - Details related to Authentication Server
 
 **Pre-Requisites**
 - Blockchain with the current feature enabled with appropriate components running and reachable from the dApp
@@ -238,11 +250,17 @@ mvn exec:java -Dexec.mainClass=com.vmware.SampleDappHttps
 mvn exec:java -Dexec.mainClass=com.vmware.SampleDappWss
 ```
 
-#### Ethers.js Sample dApp
+#### [Ethers.js Sample dApp]((./sample-dapps/authentication/ethersjs-dapp/README.md))
  Set the content inside [config file](./sample-dapps/authentication/ethersjs-dapp/config.json) as per blockchain and related environment,
 - Few of the notable parameters,
-   - `tls.mode` supported is only `serverTLS`
-   - `clientJwt.enabled` should be `true`
+    - JSON RPC related
+        - `jsonrpc` related parameter such as `endpointHost` and `ports` 
+    - TLS related
+        - `tls.mode` supported is only `serverTLS`
+        - Paths to various artifacts
+    - Client JWT related
+        - `clientJwt.enabled` should be `true`
+        - Details related to Authentication Server
 
 **Pre-Requisites**
 - Blockchain with the current feature enabled with appropriate components running and reachable from the dApp
