@@ -101,6 +101,8 @@ Under `clientTlsAndTokenAuthSettings` for each VMBC Client, following fields cou
    - Server certificate which will be used by EthRPC
       - X509 format based certificate
    - Mandatory field if `clientTlsAndTokenAuthSettings` is present
+   - Few Notable Points
+      - Depending on the environment and the endpoint of EthRPC server, the server certificate provided here should be able to pass Host Name Verification which will be performed by dApps when connecting with EthRPC Server
 - `serverPrivateKeySecret`
    - Name of the secret containing the private key corresponding to the server certificate
    - Mandatory field if `clientTlsAndTokenAuthSettings` is present
@@ -237,7 +239,7 @@ mvn exec:java -Dexec.mainClass=com.vmware.SampleDappWss
 ```
 
 #### Ethers.js Sample dApp
- Set the content inside [config file](./sample-dapps/authentication/web3j-dapp/config.json) as per blockchain and related environment,
+ Set the content inside [config file](./sample-dapps/authentication/ethersjs-dapp/config.json) as per blockchain and related environment,
 - Few of the notable parameters,
    - `tls.mode` supported is only `serverTLS`
    - `clientJwt.enabled` should be `true`
