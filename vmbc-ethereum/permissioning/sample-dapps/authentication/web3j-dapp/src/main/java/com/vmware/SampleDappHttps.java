@@ -1,27 +1,23 @@
 package com.vmware;
 
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import okhttp3.OkHttpClient;
-import okhttp3.OkHttpClient.Builder;
-import org.json.JSONArray;
 import org.json.JSONObject;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.ECKeyPair;
+import org.web3j.crypto.Keys;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.methods.response.EthAccounts;
-import org.web3j.protocol.core.methods.response.EthBlockNumber;
 import org.web3j.protocol.core.methods.response.EthGasPrice;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.tx.gas.DefaultGasProvider;
 
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
-import java.io.File;
+import javax.net.ssl.*;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -33,9 +29,6 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SampleDappHttps {
 
@@ -116,7 +109,18 @@ public class SampleDappHttps {
                         .body(ResponseBody.create(response.body().bytes(), response.body().contentType()))
                         .build();
             });
-        }
+        } else {
+            okHttpClientBuilder = okHttpClientBuilder
+            .addInterceptor(chain -> {
+                Request request = chain.request().newBuilder()
+                        .build();
+                Response response = chain.proceed(request);
+                return response.newBuilder()
+                        // Retrieve the full response
+                        .body(ResponseBody.create(response.body().bytes(), response.body().contentType()))
+                        .build();
+            });
+	}
         
         OkHttpClient okHttpClient = okHttpClientBuilder.build();
 
@@ -130,6 +134,17 @@ public class SampleDappHttps {
         EthGasPrice ethGasPrice = web3j.ethGasPrice().send();
         System.out.println(ethGasPrice.getRawResponse());
 
+        // Create keypair
+        ECKeyPair keyPair =  Keys.createEcKeyPair();
+        Credentials credentials = Credentials.create(keyPair);
+
+        // Deploy contract
+        Incrementer incrementer = Incrementer.deploy(web3j,credentials, new DefaultGasProvider(), BigInteger.ONE).send();
+
+        // Do write operation on contract
+        TransactionReceipt tr = incrementer.increment(BigInteger.TWO).send();
+        System.out.println("Successfully executed transaction. Transaction hash: " + tr.getTransactionHash());
+
         // Clear the connection pool
         okHttpClient.connectionPool().evictAll();
     }
@@ -140,3 +155,4 @@ public class SampleDappHttps {
         return keyStore;
     }
 }
+
