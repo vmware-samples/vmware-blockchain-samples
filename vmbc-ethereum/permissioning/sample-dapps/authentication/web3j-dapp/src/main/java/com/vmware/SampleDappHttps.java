@@ -109,7 +109,18 @@ public class SampleDappHttps {
                         .body(ResponseBody.create(response.body().bytes(), response.body().contentType()))
                         .build();
             });
-        }
+        } else {
+            okHttpClientBuilder = okHttpClientBuilder
+            .addInterceptor(chain -> {
+                Request request = chain.request().newBuilder()
+                        .build();
+                Response response = chain.proceed(request);
+                return response.newBuilder()
+                        // Retrieve the full response
+                        .body(ResponseBody.create(response.body().bytes(), response.body().contentType()))
+                        .build();
+            });
+	}
         
         OkHttpClient okHttpClient = okHttpClientBuilder.build();
 
