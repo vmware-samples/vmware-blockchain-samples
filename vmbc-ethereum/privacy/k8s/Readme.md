@@ -59,11 +59,17 @@ The privacy capabilities are not currently supported with permission enabled blo
 ## Configuring the deployment.
 Helm charts for the deployment are available [here](helm-charts). The user can set the following configuration to deploy with the intended image.
 1. global.imageCredentials.registry: Container registry for image downloads
-2. global.imageCredentials.username: Username to access/download for registry
-3. global.imageCredentials.password: Password to access/download for registry
+2. global.imageCredentials.username: Username to access/download the registry
+3. global.imageCredentials.password: Password to access/download the registry
 4. blockchainURL: URL to connect to ETHRPC service.
 5. blockchainPubSubUrl: URL to subscribe for events from the blockchain.
 6. chainID: Blockchain ID
+7. global.image.tag (Optional): Global tag to pull the requisite version of dApps for deployment.
+
+For example, the user can pass in a specific build tag in the following manner when deploying the dApps:
+```
+helm install --set global.image.tag="<user-specific-tag>" --set blockchainUrl="http://192.168.49.2:32175" --set blockchainPubSubUrl="http://192.168.49.2:32326" privacy-dapp-ecosystem .
+```
 
 By default, one admin DApp and 3 user DApps are deployed by these charts. To scale up or down the number of user DApps, ether
 1. Edit the field replicas in the file templates/deployment-user.yaml.
