@@ -1,6 +1,6 @@
 # VMBC K8s Orchestrator service
 
-VMBC k8s Orchestrator is a self service orchestration platform for creation of VMWare Blockchain helm charts with desired configurations.
+VMBC k8s Orchestrator is a self service orchestration platform for creation of VMware blockchain helm charts with desired configurations.
 
 ## Prerequisites
 
