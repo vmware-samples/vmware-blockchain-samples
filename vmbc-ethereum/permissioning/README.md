@@ -175,8 +175,8 @@ As part of this feature, we have provided multiple sample dApps using various in
       - The config and following sample dApps are for reference purpose, depending on the integration library and language of the dApp might have variations in their functionality and support
       - As these sample dApps are only for reference, we have not done any input validations, it is up to the user to ensure the validity and correctness of blockchain and config files
 
-#### [Web3.js Sample dApp](./sample-dapps/authentication/web3js-dapp/README.md)
-- Set the content inside [config file](./sample-dapps/authentication/web3js-dapp/config.json) as per blockchain and related environment,
+#### [Web3.js Sample dApp](./sample-dapps/read-authentication/web3js-dapp/README.md)
+- Set the content inside [config file](./sample-dapps/read-authentication/web3js-dapp/config.json) as per blockchain and related environment,
 - Few of the notable parameters,
     - JSON RPC related
         - `jsonrpc` related parameter such as `endpointHost` and `ports` 
@@ -195,17 +195,17 @@ As part of this feature, we have provided multiple sample dApps using various in
 **Steps to run the sample dApp**
 ```sh
 # Change to lib for authentication sample dapps
-cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/lib
+cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/read-authentication/lib
 # Install dependencies
 npm install
 
 # Change to web3js authentication sample dapp
-cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/web3js-dapp
+cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/read-authentication/web3js-dapp
 # Install dependencies
 npm install
 
 # Edit the config file as per your enviroment
-# Path to config file: vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/web3js-dapp/config.json
+# Path to config file: vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/read-authentication/web3js-dapp/config.json
 
 # If using an internal CA based Auth Server export NODE_EXTRA_CA_CERTS to ca certificate of Auth Server otherwise ignore the variable
 export NODE_EXTRA_CA_CERTS=../../../../vmbc-deployment/vmbc-sample-deployments/read-authentication/artifacts-for-dapps/auth-server.crt
@@ -214,8 +214,8 @@ export NODE_EXTRA_CA_CERTS=../../../../vmbc-deployment/vmbc-sample-deployments/r
 node sample-dapp.js
 ```
 
-#### [Web3j Sample dApp](./sample-dapps/authentication/web3j-dapp/README.md)
- Set the content inside [config file](./sample-dapps/authentication/web3j-dapp/config.json) as per blockchain and related environment,
+#### [Web3j Sample dApp](./sample-dapps/read-authentication/web3j-dapp/README.md)
+ Set the content inside [config file](./sample-dapps/read-authentication/web3j-dapp/config.json) as per blockchain and related environment,
 - Few of the notable parameters,
     - JSON RPC related
         - `jsonrpc` related parameter such as `endpointHost` and `ports` 
@@ -234,13 +234,13 @@ node sample-dapp.js
 **Steps to run the sample dApp**
 ```sh
 # Change to web3j authentication sample dapp
-cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/web3js
+cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/read-authentication/web3js
 
 # Installation
 mvn clean install
 
 # Edit the config file as per your enviroment
-# Path to config file: vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/web3j-dapp/config.json
+# Path to config file: vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/read-authentication/web3j-dapp/config.json
 
 # Running of the https version
 mvn exec:java -Dexec.mainClass=com.vmware.SampleDappHttps
@@ -250,8 +250,8 @@ mvn exec:java -Dexec.mainClass=com.vmware.SampleDappHttps
 mvn exec:java -Dexec.mainClass=com.vmware.SampleDappWss
 ```
 
-#### [Ethers.js Sample dApp]((./sample-dapps/authentication/ethersjs-dapp/README.md))
- Set the content inside [config file](./sample-dapps/authentication/ethersjs-dapp/config.json) as per blockchain and related environment,
+#### [Ethers.js Sample dApp](./sample-dapps/read-authentication/ethersjs-dapp/README.md)
+ Set the content inside [config file](./sample-dapps/read-authentication/ethersjs-dapp/config.json) as per blockchain and related environment,
 - Few of the notable parameters,
     - JSON RPC related
         - `jsonrpc` related parameter such as `endpointHost` and `ports` 
@@ -270,17 +270,17 @@ mvn exec:java -Dexec.mainClass=com.vmware.SampleDappWss
 **Steps to run the sample dApp**
 ```sh
 # Change to lib for authentication sample dapps
-cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/lib
+cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/read-authentication/lib
 # Install dependencies
 npm install
 
 # Change to ethersjs authentication sample dapp
-cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/ethersjs
+cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/read-authentication/ethersjs
 # Install dependencies
 npm install
 
 # Edit the config file as per your enviroment
-# Path to config file: vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/ethersjs-dapp/config.json
+# Path to config file: vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/read-authentication/ethersjs-dapp/config.json
 
 # If using an internal CA based Auth Server, create a bundle of the auth certificate and the ethrpc-ca.crt as follows
 cat ../../../../vmbc-deployment/vmbc-sample-deployments/read-authentication/artifacts-for-dapps/auth-server.crt ../../../../vmbc-deployment/vmbc-sample-deployments/read-authentication/artifacts-for-dapps/ethrpc-ca.crt > ca-bundle.crt
@@ -293,7 +293,7 @@ node sample-dapp.js
 ```
 
 #### Browser dApps
-For browser dApps we currently only support the aspect of mTLS only mode for blockchain client. Detailed procedure of how to set your browser for communicating with VMBC for Ethereum with mTLS only mode is [here](./sample-dapps/authentication/browser-dapps-runbook/README.md).
+For browser dApps we currently only support the aspect of mTLS only mode for blockchain client. Detailed procedure of how to set your browser for communicating with VMBC for Ethereum with mTLS only mode is [here](./sample-dapps/read-authentication/browser-dapps-runbook/README.md).
 
 - Note: If you need to deploy smart contracts using hardhat, then we suggest atleast a two client configuration, where one of the client is ServerTLS with Token Auth and using httpHeaders section of hardhat config, the access token can be passed to deploy contracts and another client with just mTLS to utilize the browser dApp with browser wallet such as Metamask
    - Details about how to pass custom httpHeaders in hardhat config file: https://hardhat.org/hardhat-network/docs/guides/forking-other-networks#custom-http-headers
@@ -377,9 +377,9 @@ Ensure that issueCaCert provided for the EthRPC is indeed the one which correspo
 Following error occurs when there is mismatch with the server cert provided to ethRPC and root-ca being used. This can also occur if Node.js version is above the max supported version when using Web3.js
 ```sh
 Error: CONNECTION ERROR: Couldn't connect to node https://<host>:32379.                                                                                                                                                      
-    at Object.ConnectionError (/home/dclyde/Code/ethrpc_auth_epic/vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/web3js/node_modules/web3-core-helpers/lib/errors.js:66:23)                     
-    at Object.InvalidConnection (/home/dclyde/Code/ethrpc_auth_epic/vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/web3js/node_modules/web3-core-helpers/lib/errors.js:36:21)                   
-    at HttpProvider.failed (/home/dclyde/Code/ethrpc_auth_epic/vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/web3js/node_modules/web3-providers-http/lib/index.js:139:25)                      
+    at Object.ConnectionError (/home/dclyde/Code/ethrpc_auth_epic/vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/read-authentication/web3js/node_modules/web3-core-helpers/lib/errors.js:66:23)
+    at Object.InvalidConnection (/home/dclyde/Code/ethrpc_auth_epic/vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/read-authentication/web3js/node_modules/web3-core-helpers/lib/errors.js:36:21)
+    at HttpProvider.failed (/home/dclyde/Code/ethrpc_auth_epic/vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/read-authentication/web3js/node_modules/web3-providers-http/lib/index.js:139:25)
     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
 ```
 #### Solution

@@ -1,5 +1,5 @@
 # Ethers.js Sample dApp
-This is a sample dApp written using Ethers.js library to serve as a reference implementation to utilize the [Authentication and Read Permissioning](../../../README.md#authentication-and-read-permissioning) feature of VMBC for Ethereum.
+This is a sample dApp written using Ethers.js library to serve as a reference implementation to utilize the [Read Authentication and Permissioning](../../../README.md#read-authentication-and-permissioning) feature of VMBC for Ethereum.
 
 Set the content inside [config file](./config.json) as per blockchain and related environment,
 - Few of the notable parameters,
