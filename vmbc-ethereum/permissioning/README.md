@@ -1,8 +1,8 @@
 # Ethereum Permissioning
 
-VMware Blockchain for Ethereum in a broad form provides two forms of permissioning, Read and Write Permissioning. Read Permissioning is provided using Certificate Authorities in the form of Mutual TLS by utilizing Client certificates or using OAuth Server by utilizing Client JWTs. The Write Permissioning is provided using a permissioning pre-deployed smart contract in accordance with the Enterprise Ethereum Alliance (EEA) specifications.
+VMware Blockchain for Ethereum in a broad form provides two forms of permissioning, Read and Write Permissioning. Read Permissioning is provided as a form of Read Authentication. Read Authentication is provided using Certificate Authorities in the form of Mutual TLS by utilizing Client certificates or using OAuth Server by utilizing Client JWTs. The Write Permissioning is provided using a permissioning pre-deployed smart contract in accordance with the Enterprise Ethereum Alliance (EEA) specifications.
 
-## Authentication and Read Permissioning
+## Read Authentication and Permissioning
 Read Permissioning is implemented through external Authorizations mechanisms such as Certificate Authority or OAuth Server in two forms namely Mutual TLS and Token Authentication.
 
 **Terminology**
@@ -106,7 +106,7 @@ Under `clientTlsAndTokenAuthSettings` for each VMBC Client, following fields cou
 - `serverPrivateKeySecret`
    - Name of the secret containing the private key corresponding to the server certificate
    - Mandatory field if `clientTlsAndTokenAuthSettings` is present
-   - A sample secret file is [here](../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/secret.yaml)
+   - A sample secret file is [here](../vmbc-deployment/vmbc-sample-deployments/read-authentication/secret.yaml)
       - The value in secret is base64 encoded
       - You can use `kubectl` to create this secret in your kubernetes environment
 - `clientRootCaCert`
@@ -126,7 +126,7 @@ Under `clientTlsAndTokenAuthSettings` for each VMBC Client, following fields cou
       - If tokenAuthentication is to be used, either the current field or `issuerUri` field is mandatory
 
 #### Sample Pre-Generated Helm Charts
-We have pre-generated few set of helm charts for different feature set combinations of authentication mechanism enabled. The samples have been generated for minikube environment with server certificate of client-ethrpc with static ip as `192.168.200.200`. The token auth for the sample charts is based on live authorization server and the default certificate for the authentication server is a self-signed certificate for `localhost`. The secret corresponding to the `serverPrivateKeySecret` for all the pre-generated sample helm charts is present [here](../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/secret.yaml).
+We have pre-generated few set of helm charts for different feature set combinations of authentication mechanism enabled. The samples have been generated for minikube environment with server certificate of client-ethrpc with static ip as `192.168.200.200`. The token auth for the sample charts is based on live authorization server and the default certificate for the authentication server is a self-signed certificate for `localhost`. The secret corresponding to the `serverPrivateKeySecret` for all the pre-generated sample helm charts is present [here](../vmbc-deployment/vmbc-sample-deployments/read-authentication/secret.yaml).
 
 ```sh
 # Sample command to create secret resource inside kubernetes cluster
@@ -144,17 +144,17 @@ kubectl apply -f secret.yaml
    - For all other scenarios where a field was not in use or empty before and needs to be changed, you need to generate a new set of helm charts using the procedure mentioned [here](#generating-new-helm-charts).
 
 **Sample Helm Charts**
-- [VMBC Four Node and One Client Deployment](../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/vmbc-four-node-one-client-deployment/)
-   - [mutual TLS](../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/vmbc-four-node-one-client-deployment/mutual-tls/)
-   - [Client JWT with server TLS](../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/vmbc-four-node-one-client-deployment/server-tls-with-token-auth/)
-   - [Client JWT with mutual TLS](../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/vmbc-four-node-one-client-deployment/mutual-tls-with-token-auth/)
+- [VMBC Four Node and One Client Deployment](../vmbc-deployment/vmbc-sample-deployments/read-authentication/vmbc-four-node-one-client-deployment/)
+   - [mutual TLS](../vmbc-deployment/vmbc-sample-deployments/read-authentication/vmbc-four-node-one-client-deployment/mutual-tls/)
+   - [Client JWT with server TLS](../vmbc-deployment/vmbc-sample-deployments/read-authentication/vmbc-four-node-one-client-deployment/server-tls-with-token-auth/)
+   - [Client JWT with mutual TLS](../vmbc-deployment/vmbc-sample-deployments/read-authentication/vmbc-four-node-one-client-deployment/mutual-tls-with-token-auth/)
 
 #### Generating new Helm Charts
 We have [vmbc-orchestrator-tool](../vmbc-deployment/vmbc-k8s-orchestrator-tool/) which can be used to generate new helm charts when there is a need for introducing new fields or removing fields or changing values for any fields which have not been used in the sample helm charts.
 
 The relevant fields for the current feature in discussion is same as mentioned in the [above section](#details-about-relevant-fields-in-helm-charts). Only difference is the parent field under which all the fields mentioned above become relevant is `tlsAndTokenAuthSettings` inside a `client` construct in `deployment.json`
 
-A sample `deployment.json` with different options and fields is [here](../vmbc-deployment/vmbc-k8s-orchestrator-tool/ethereum-authentication-and-authorization/readme.md).
+A sample `deployment.json` with different options and fields is [here](../vmbc-deployment/vmbc-k8s-orchestrator-tool/ethereum-read-authentication/readme.md).
 
 #### Serviceability
 If there is an update required for an existing standalone field such as a certificate or URI or public JWKS content, you can use update the fields in `values.yml` and can run following command to update,
@@ -168,7 +168,7 @@ As part of this feature, we have provided multiple sample dApps using various in
 
 - Few Notable Points
    - All the following sample dApps which have a config file are pre-populated with mutualTLS with token authentication mode
-   - All the sample artifacts which can be used with the sample dApps are present [here](../../vmbc-ethereum/vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/artifacts-for-dapps/)
+   - All the sample artifacts which can be used with the sample dApps are present [here](../../vmbc-ethereum/vmbc-deployment/vmbc-sample-deployments/read-authentication/artifacts-for-dapps/)
       - The `ethrpc-root.ca` corresponds to the server certificate (generated as a IP based certificate for static IP `192.168.200.200`) added in the sample helm charts described in the above section
       - The `client.crt` and `client.key` are created with `clientRootCa` cert mentioned in the sample helm charts
       - The `auth-server.crt` corresponds to a localhost based auth server
@@ -208,7 +208,7 @@ npm install
 # Path to config file: vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/web3js-dapp/config.json
 
 # If using an internal CA based Auth Server export NODE_EXTRA_CA_CERTS to ca certificate of Auth Server otherwise ignore the variable
-export NODE_EXTRA_CA_CERTS=../../../../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/artifacts-for-dapps/auth-server.crt
+export NODE_EXTRA_CA_CERTS=../../../../vmbc-deployment/vmbc-sample-deployments/read-authentication/artifacts-for-dapps/auth-server.crt
 
 # Run the sample dApp
 node sample-dapp.js
@@ -283,7 +283,7 @@ npm install
 # Path to config file: vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/authentication/ethersjs-dapp/config.json
 
 # If using an internal CA based Auth Server, create a bundle of the auth certificate and the ethrpc-ca.crt as follows
-cat ../../../../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/artifacts-for-dapps/auth-server.crt ../../../../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/artifacts-for-dapps/ethrpc-ca.crt > ca-bundle.crt
+cat ../../../../vmbc-deployment/vmbc-sample-deployments/read-authentication/artifacts-for-dapps/auth-server.crt ../../../../vmbc-deployment/vmbc-sample-deployments/read-authentication/artifacts-for-dapps/ethrpc-ca.crt > ca-bundle.crt
 
 # Add the above created bundle to NODE_EXTRA_CA_CERTS
 export NODE_EXTRA_CA_CERTS=./ca-bundle.crt
