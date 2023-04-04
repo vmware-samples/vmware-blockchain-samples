@@ -234,7 +234,7 @@ node sample-dapp.js
 **Steps to run the sample dApp**
 ```sh
 # Change to web3j authentication sample dapp
-cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/read-authentication/web3js
+cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/read-authentication/web3j-dapp
 
 # Installation
 mvn clean install
@@ -275,7 +275,7 @@ cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/read-authe
 npm install
 
 # Change to ethersjs authentication sample dapp
-cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/read-authentication/ethersjs
+cd vmware-blockchain-samples/vmbc-ethereum/permissioning/sample-dapps/read-authentication/ethersjs-dapp
 # Install dependencies
 npm install
 
