@@ -26,6 +26,9 @@ The heathcheck dApp requires client.crt, client.key and ethrpc-ca.crt(filenames 
 # Helm installation
 ``` sh helm install healthcheckdapp . --set healthcheck.dapp.imageCredentials.registry="" --set healthcheck.dapp.imageCredentials.username="" --set healthcheck.dapp.imageCredentials.password=""  --set healthcheck.apiserver.vmwareCloudApiServerUrl="" --set healthcheck.vmbc.blockchainUrl="" ```
 
+# Helm installation for mTLS
+``` sh helm install healthcheckdapp . --set healthcheck.dapp.security.type="mtls" --set healthcheck.dapp.imageCredentials.registry="" --set healthcheck.dapp.imageCredentials.username="" --set healthcheck.dapp.imageCredentials.password=""  --set healthcheck.apiserver.vmwareCloudApiServerUrl="" --set healthcheck.vmbc.blockchainUrl="" ```
+
 #### Image, Blockchain location settings
 
 | Name                             | Description                                      | Value                       | Type      |
