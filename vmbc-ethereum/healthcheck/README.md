@@ -40,3 +40,4 @@ The heathcheck dApp requires client.crt, client.key and ethrpc-ca.crt(filenames 
 | healthcheck.dapp.imageCredentials.username | Username to access/download for registry         | ""                          | Mandatory |
 | healthcheck.dapp.imageCredentials.password | Password to access/download for registry         | ""                          | Mandatory | 
 | healthcheck.apiserver.vmwareCloudApiServerUrl | Vmware cloud API server URL         | ""                          | Mandatory |
+| healthcheck.dapp.security.type | Security type can be "none/mtls/servertls (value can be lower/upper/unicap)         | default: "none"                          | Optional |
