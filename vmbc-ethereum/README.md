@@ -84,7 +84,9 @@ No one, including the administrator, can view the private transaction details, s
 VMware Blockchain for Ethereum provides several security features to secure blockchain data and communication. For details, see details [Security](https://github.com/vmware-samples/vmware-blockchain-samples/blob/eth-doc/vmbc-ethereum/security.md).
 
 ### Observability
-ADD INTRO HERE + LINK TO THE OBSERVABILITY DOC (ROHINI)
+Blockchain users must deliver complex dApps without wasting time looking for health information and hopping between fragmented tools. To aid that VMware Blockchain for Ethereum offers healthcheck and API metrics checks and the following options of Block Explorers:
+- [Sirato Explorer](https://github.com/vmware-samples/vmware-blockchain-samples/blob/stage-eth-dev/vmbc-ethereum/block-explorers/sirato-explorer/README.md)- Developed by Web3Labs
+- [VMware Blockchain Explorer](https://github.com/vmware-samples/vmware-blockchain-samples/blob/stage-eth-dev/vmbc-ethereum/block-explorers/vmbc-explorer/README.md) - Developed by VMware Blockchain for Ethereum 
 
 ### Sample dApps
 The Ethereum sample dApps conform to various aspects of Ethereum in VMware Blockchain. These sample dApps are developed in a generic form to run on any Ethereum-based Blockchain. In addition, the sample dApps have been verified to work in Public Ethereum Testnet such as Goerli.
