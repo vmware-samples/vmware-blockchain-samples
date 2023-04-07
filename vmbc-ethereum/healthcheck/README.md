@@ -3,7 +3,7 @@ Healthcheck and metrics feature is to capture the Logs and Metrics required to a
 
 # Architecture
 ## Kubernetes deployment overview
-![Healthcheck Depiction](./assets/images/health-check-flow.png)
+![Healthcheck Depiction](./assets/images/health-check-flow.jpg)
 
 Health check and API metrics both should be checked periodically and parallelly. Health check involves periodically sending transactions to a health check smart contract using a health check DApp. API metrics ensures that the VMBC blockchain works well and also what are all the Ethereum API's consumed by the end user.
 
