@@ -1,5 +1,6 @@
 # VMware Blockchain Supported Ethereum JSON RPC API Endpoints
-VMware Blockchain Ethereum supports the standard interface for Ethereum clients and Enterprise Ethereum Requirements [API Reference](https://ethereum.org/en/developers/docs/apis/json-rpc)
+VMware Blockchain Ethereum supports the standard interface for Ethereum clients and Enterprise Ethereum Requirements [API Reference](https://ethereum.org/en/developers/docs/apis/json-rpc).<br />
+With VMware Blockchain for Ethereum API response returns the method name in addition to the other mandatory fields. An example for net_version API is '{"id":67,"jsonrpc":"2.0","method":"net_version","result":"5000"}'.
 
  Methods | Description | Input/Output differences | Error Handling differences
 | --- | ----------- | -------------- | ---------- | 
@@ -36,3 +37,4 @@ VMware Blockchain Ethereum supports the standard interface for Ethereum clients 
 
 ## Error Handling - Overall Approach
 As per [Ethereum JSON RPC Standard](https://www.jsonrpc.org/specification), the "message" field in the error object has a short description of the error, such as "Server error" and the "data" field has an elaborate description of the error. VMware Blockchain for Ethereum error handling overall approach is slightly different from [Ethereum JSON RPC Standard](https://www.jsonrpc.org/specification) for aligning with the popular open ecosystem tools such as Hardhat and integration libraries such as Ethersjs. The "message" field in the error response has both the short decription of the error as per standard and additionally has an elaborate description of the error. An example for eth_getLogs API is "Invalid Parameters: fromBlock/toBlock and blockHash are not compatible, Specify one of them".
+
