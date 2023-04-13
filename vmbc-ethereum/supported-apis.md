@@ -38,3 +38,8 @@ With VMware Blockchain for Ethereum API response returns the method name in addi
 ## Error Handling - Overall Approach
 As per [Ethereum JSON RPC Standard](https://www.jsonrpc.org/specification), the "message" field in the error object has a short description of the error, such as "Server error" and the "data" field has an elaborate description of the error. VMware Blockchain for Ethereum error handling overall approach is slightly different from [Ethereum JSON RPC Standard](https://www.jsonrpc.org/specification) for aligning with the popular open ecosystem tools such as Hardhat and integration libraries such as Ethersjs. The "message" field in the error response has both the short decription of the error as per standard and additionally has an elaborate description of the error. An example for eth_getLogs API is "Invalid Parameters: fromBlock/toBlock and blockHash are not compatible, Specify one of them".
 
+## Limitations
+- Ethers.js Library v6 version is not supported with VMware Blockchain For Ethereum for below reasons:
+  1.  Hardhat does not support Ethers.js v6 version
+  2.  Ethers.js v6 version is not production grade yet
+  3.  VMBC Ethereum API's and Dapps need to be changed to support Ethers.js v6 version
