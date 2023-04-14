@@ -1,7 +1,10 @@
 # VMware Blockchain Deployment Sample Helm Charts
 The sample VMware Blockchain for Ethereum deployment includes:
+- [four replia one client deployment](./vmbc-four-node-one-client-deployment)
+- [four replica one client deployment with logging and metrics](./vmbc-four-node-one-client-deployment-with-logging-and-metrics)
+- [four replica twelve client deployment](./vmbc-four-node-twelve-client-deployment)
 
-The deployment on Kubernetes must only be on a supported host with a single cluster.
+The deployment samples on Kubernetes is only be on a supported host with a single cluster.
 
 Replica nodes are the participants in the consensus algorithm, concord-bft. Client nodes are the clients in the blockchain network running ethrpc.\
 Refering to [logging and metrics sample](),Telegraf node is a service used to collect metrics from replicas and clients. Fluentd runs as sidecar in each of replica and client pods.
@@ -80,7 +83,7 @@ helm install <name of blockchain> </patg/to/samples> --set global.storageClassNa
 }
  ```
     
-  See [Troubleshooting](./../Troubleshooting.md) for any errors.
+  See [Troubleshooting](./Troubleshooting.md) for any errors.
   
 ### Uninstall VMware Blockchain Nodes.
 ```sh
