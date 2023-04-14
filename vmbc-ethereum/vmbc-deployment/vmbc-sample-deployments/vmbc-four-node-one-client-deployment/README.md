@@ -10,7 +10,7 @@
 | global.imageCredentials.password                    |                                | Password for docker registry                 | Mandatory |
 | global.imageCredentials.email                       | ""                             | Email for docker registry                    | Optional  |
 | global.storageClassName                             | "standard"                     | Global StorageClass for Persistent Volume(s) |           |
-| global.image.tag                                    | 0.0.0.0.7833                   | The global artifact tag                      | Mandatory |
+| global.image.tag                                    | 0.0.0.0.8603                   | The global artifact tag                      | Mandatory |
 | global.config.configOverride                        | ""                             | Overwrite tls cert files during upgrade      | Optional  |
 | global.maintenanceModeEnabled                       | false                          | Launch containers in maintenance mode        | Optional  |
 | operator.publicKey                                  | ""                             | Public key for corresponding operator pvt key| Mandatory |
@@ -25,8 +25,8 @@
 | logManagement                                       |                                | logmanagement-specific parameters            |           |
 | resources.replica.cpuRequest                        | 100m                           | CPU request for replica                      | Optional  |
 | resources.replica.cpuLimit                          | 100m                           | CPU Limit for replica                        | Optional  |
-| resources.replica.memoryRequest                     | 1225Mi                         | Memory request for replica                   | Optional  |
-| resources.replica.memoryLimit                       | 1225Mi                         | Memory limit for replica                     | Optional  |
+| resources.replica.memoryRequest                     | 2000Mi                         | Memory request for replica                   | Optional  |
+| resources.replica.memoryLimit                       | 2000Mi                         | Memory limit for replica                     | Optional  |
 | resources.replica.storageRequest                    | 1Gi                            | Storage request for replica                  | Optional  |
 | resources.client.cpuRequest                         | 100m                           | CPU request for client                       | Optional  |
 | resources.client.cpuLimit                           | 100m                           | CPU limit for client                         | Optional  |
