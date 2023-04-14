@@ -1,0 +1,97 @@
+{{ if .Values.operator.install }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vmbc-deployment-operator-0-operator
+  labels:
+    app: operator-0-operator
+    blockchainId: {{ .Values.global.blockchainId }}
+spec:
+  replicas: {{ .Values.global.replicaCount }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: operator-0-operator
+      blockchainId: {{ .Values.global.blockchainId }}
+  template:
+    metadata:
+      labels:
+        app: operator-0-operator
+        blockchainId: {{ .Values.global.blockchainId }}
+    spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - {{ .Values.operator.clientNodeName }}-clientservice
+              topologyKey: "kubernetes.io/hostname"
+      imagePullSecrets:
+        - name: vmwathena-regcred
+      volumes:
+        # client persistent volume claim
+        - name: client-operator-0-volume
+          persistentVolumeClaim:
+            claimName: client-pvc-{{ .Values.global.blockchainId }}-{{ .Values.operator.clientNodeName }}
+        # component specific configmap volume
+        - name: config-operator-volume
+          configMap:
+            name: vmbc-configmap-operator-0-operator
+        # component specific secret volume
+        - name: secret-operator-volume
+          secret:
+            secretName: vmbc-secret-operator-0-operator
+      containers:
+        - name: operator-0-operator
+          image: {{ include "operator.image" . }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3600
+              protocol: TCP
+          resources:
+            limits:
+              cpu: "{{ .Values.resources.operator.cpuLimit | default .Values.resources.operator.defaultCpuLimit }}"
+              memory: "{{ .Values.resources.operator.memoryLimit | default .Values.resources.operator.defaultMemoryLimit }}"
+            requests:
+              cpu: "{{ .Values.resources.operator.cpuRequest | default .Values.resources.operator.defaultCpuRequest }}"
+              memory: "{{ .Values.resources.operator.memoryRequest | default .Values.resources.operator.defaultMemoryRequest }}"
+          volumeMounts:
+            # cert files
+            - name: client-operator-0-volume
+              mountPath: /config/clientservice/tls_certs
+              subPath: {{.Release.Namespace}}/{{.Values.global.blockchainId}}/{{.Values.operator.clientNodeName}}/clientservice/tls_certs
+            # operator config file
+            {{- $operatorconfigfile := "operator-0/config/concord-operator/operator.config" }}
+            {{- $operatorfilePrefixRemoved := $operatorconfigfile | replace "operator-0/config/concord-operator" "operator/config-local" }}
+            - name: config-operator-volume
+              mountPath: {{ $operatorfilePrefixRemoved }}
+              subPath: operator-config-file
+            # mappings json file
+            {{- $mappingsjsonfile := "operator-0/config/concord-operator/mappings.json" }}
+            {{- $mappingsjsonPrefixRemoved := $mappingsjsonfile | replace "operator-0/config/concord-operator" "operator/config-local" }}
+            - name: config-operator-volume
+              mountPath: {{ $mappingsjsonPrefixRemoved }}
+              subPath: mappings-json-file
+      initContainers:
+        - name: init-container
+          image: {{ include "operator.image" . }}
+          command: ["/bin/bash", "-ec", "echo 'Start verifying if files exist in persistent volume client-operator-0-volume';
+          while [ ! -d /config/{{.Release.Namespace}}/{{.Values.global.blockchainId}}/{{.Values.operator.clientNodeName}}/clientservice/tls_certs ]; do
+            sleep 5;
+          done;
+          echo 'End verifying for files exist in persistent volume client-operator-0-volume' "]
+          volumeMounts:
+            - mountPath: /config
+              name: client-operator-0-volume
+          resources:
+            limits:
+              cpu: "{{ .Values.resources.initContainer.cpuLimit }}"
+              memory: "{{ .Values.resources.initContainer.memoryLimit }}"
+            requests:
+              cpu: "{{ .Values.resources.initContainer.cpuRequest }}"
+              memory: "{{ .Values.resources.initContainer.memoryRequest }}"
+{{- end }}

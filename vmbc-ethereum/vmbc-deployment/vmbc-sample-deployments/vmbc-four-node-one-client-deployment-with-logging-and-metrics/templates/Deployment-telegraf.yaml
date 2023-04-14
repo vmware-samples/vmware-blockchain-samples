@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telegraf-deployment
+spec:
+  selector:
+    matchLabels:
+      app: telegraf
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: telegraf
+    spec:
+      imagePullSecrets:
+        - name: vmwathena-regcred
+      containers:
+        - name: telegraf
+          image: {{ include "telegraf.image" . }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: CW_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: vmbc-secret-telegraf
+                  key: CW_ACCESS_KEY
+            - name: CW_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: vmbc-secret-telegraf
+                  key: CW_SECRET_KEY
+            - name: CW_TOKEN_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: vmbc-secret-telegraf
+                  key: CW_TOKEN_KEY
+            - name: CW_NAMESPACE
+              valueFrom:
+                secretKeyRef:
+                  name: vmbc-secret-telegraf
+                  key: CW_NAMESPACE
+            - name: CW_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: vmbc-secret-telegraf
+                  key: CW_REGION
+            - name: PUSH_HTTP_URL
+              valueFrom:
+                secretKeyRef:
+                  name: vmbc-secret-telegraf
+                  key: PUSH_HTTP_URL
+            - name: PUSH_HTTP_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: vmbc-secret-telegraf
+                  key: PUSH_HTTP_USERNAME
+            - name: PUSH_HTTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: vmbc-secret-telegraf
+                  key: PUSH_HTTP_PASSWORD
+            - name: PUSH_HTTP_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: vmbc-secret-telegraf
+                  key: PUSH_HTTP_TOKEN
+          volumeMounts:
+            - name: vmbc-configmap-telegraf
+              mountPath: /etc/telegraf/telegraf.conf
+              subPath: telegraf.conf
+            {{- $certFile := "telegraf/certs/push_metrics_http/telegraf.crt" }}
+            {{- $certs := $.Files.Get $certFile }}
+            {{ if $certs }}
+            - name: vmbc-configmap-telegraf
+              mountPath: /telegraf/certs/ca.crt
+              subPath: ca.crt
+            {{ end }}
+      volumes:
+        - name: vmbc-configmap-telegraf
+          configMap:
+            name: vmbc-configmap-telegraf

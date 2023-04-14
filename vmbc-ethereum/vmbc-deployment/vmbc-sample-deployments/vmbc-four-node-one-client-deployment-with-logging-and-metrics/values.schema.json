@@ -1,0 +1,244 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "values-yaml-schema",
+  "title": "values.yaml schema",
+  "description": "values.yaml schema",
+  "type": "object",
+  "properties": {
+    "global": {
+      "description": "Global configurations",
+      "type": "object",
+      "properties": {
+        "imageCredentials": {
+          "description": "Image credentials",
+          "type": "object",
+          "properties": {
+            "registry": {
+              "description": "Container registry for image downloads",
+              "type": "string",
+              "minLength": 1
+            },
+            "username": {
+              "description": "Username to access/download for registry",
+              "type": "string",
+              "minLength": 1
+            },
+            "password": {
+              "description": "Password to access/download for registry",
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "registry",
+            "username",
+            "password"
+          ]
+        },
+        "storageClassName": {
+          "description": "Global storage class for deployment",
+          "examples": [
+            "standard"
+          ],
+          "type": "string"
+        },
+        "replicaCount": {
+          "description": "Global replica count for deployment",
+          "examples": [
+            "1"
+          ],
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "imageCredentials",
+        "storageClassName"
+      ]
+    },
+    "operator": {
+      "description": "Operator details",
+      "type": "object",
+      "properties": {
+        "publicKey": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "publicKey"
+      ]
+    },
+    "genesisBlock": {
+      "description": "Genesis Block",
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "pattern": "^\\d{4}\\-\\d{2}\\-\\d{2} \\d{2}:\\d{2}:\\d{2}",
+          "$comment": "blockchain creation time in UTC, 24 hours format - YYYY-MM-DD hh:mm:ss",
+          "examples": [
+            "2022-12-02 00:01:00"
+          ]
+        }
+      },
+      "required": [
+        "timestamp"
+      ]
+    },
+    "replicaCheckpointBackup": {
+      "description": "Replica checkpoint-based backup",
+      "type": "object",
+      "properties": {
+        "numberOfCheckpoints":{
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        }
+      }
+    },
+    "clientTlsAndTokenAuthSettings": {
+      "description": "Client tls and token auth settings",
+      "type": "object",
+      "patternProperties": {
+        "^.*$": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["serverTLS", "mutualTLS"]
+            },
+            "clientRootCaCert": {
+              "type": "string"
+            },
+            "serverCert": {
+              "type": "string",
+              "minLength": 1
+            },
+            "serverPrivateKeySecret": {
+              "type": "string",
+              "minLength": 1
+            },
+            "tokenAuthentication": {
+              "type": "object",
+              "properties": {
+                "publicJwks": {
+                  "type": "string"
+                },
+                "issuerUri": {
+                  "type": "string"
+                },
+                "issuerCaCert": {
+                  "type": "string"
+                }
+              },
+              "if": {
+                "$comment": "Check if clientTlsAndTokenAuthSettings.*.tokenAuthentication.publicJwks is not provided",
+                "properties": {
+                  "publicJwks": {
+                    "maxLength": 0
+                  }
+                }
+              },
+              "then": {
+                "$comment": "If clientTlsAndTokenAuthSettings.*.tokenAuthentication.publicJwks is not provided then issuerUri is required",
+                "required": ["issuerUri"],
+                "if": {
+                  "$comment": "Check if clientTlsAndTokenAuthSettings.*.tokenAuthentication.issuerUri starts with 'http://'",
+                  "properties": {
+                    "issuerUri": {
+                      "pattern": "^(http)://"
+                    }
+                  }
+                },
+                "then": {
+                  "$comment": "If clientTlsAndTokenAuthSettings.*.tokenAuthentication.issuerUri starts with 'http://' then issuerCaCert is not required",
+                  "properties": {
+                    "issuerCaCert": {
+                      "maxLength": 0
+                    }
+                  }
+                }
+              },
+              "else": {
+                "$comment": "If clientTlsAndTokenAuthSettings.*.tokenAuthentication.publicJwks is provided then issuerUri and/or issuerCaCert is not required",
+                "properties": {
+                  "issuerUri": {
+                    "maxLength": 0
+                  },
+                  "issuerCaCert": {
+                    "maxLength": 0
+                  }
+                }
+              }
+            }
+          },
+          "required": ["type", "serverCert", "serverPrivateKeySecret"],
+          "if": {
+            "$comment": "Check if clientTlsAndTokenAuthSettings.*.type is serverTLS or mutualTLS",
+            "properties": {
+              "type": {
+                "enum": ["serverTLS"]
+              }
+            }
+          },
+          "then": {
+            "$comment": "If clientTlsAndTokenAuthSettings.*.type is serverTLS then clientRootCaCert is not required but tokenAuthentication is required",
+            "properties": {
+              "clientRootCaCert": {
+                "maxLength": 0
+              }
+            },
+            "required": ["tokenAuthentication"]
+          },
+          "else": {
+            "$comment": "If clientTlsAndTokenAuthSettings.*.type is mutualTLS then clientRootCaCert is required",
+            "properties": {
+              "clientRootCaCert": {
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "global",
+    "storageClassNames",
+    "genesisBlock",
+    "operator"
+  ],
+  "if": {
+    "$comment": "Check if global.storageClassName is initialized",
+    "properties": {
+      "global": {
+        "properties": {
+          "storageClassName": {
+            "minLength": 1
+          }
+        }
+      }
+    }
+  },
+  "else": {
+    "$comment": "Else all properties for storageClassNames.replica must be initialized",
+    "properties": {
+      "storageClassNames": {
+        "properties": {
+          "replica": {
+            "allOf": [
+              {
+                "patternProperties": {
+                  "^replica": {
+                    "minLength": 1
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vmbc-configmap-fluentd
+  labels:
+    blockchainId: {{ .Values.global.blockchainId }}
+data:
+    {{ (.Files.Glob "fluentd/config/fluent.conf").AsConfig | indent 4 }}
+{{- $globdash := .Files.Glob "fluentd/config/certs/*.crt" }}
+{{ if $globdash }}
+binaryData:
+    {{ range $path, $_ := .Files.Glob "fluentd/config/certs/*.crt" }}
+    {{- $crtName:= (splitList "/" $path)|last }}
+    {{- $crtName | indent 2 }}: {{ $.Files.Get $path | b64enc }}
+    {{ end }}
+{{- end }}

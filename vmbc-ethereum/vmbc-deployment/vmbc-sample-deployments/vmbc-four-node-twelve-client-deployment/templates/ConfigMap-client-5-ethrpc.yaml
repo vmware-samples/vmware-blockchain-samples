@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vmbc-configmap-client-5-ethrpc
+  labels:
+    blockchainId: {{ .Values.global.blockchainId }}
+binaryData:
+  # environment vars file
+  {{- $environmentvarsfile := "client-5/config/ethrpc/environment-vars" }}
+  environment-vars-file: {{ $.Files.Get $environmentvarsfile | b64enc }}
+
+  {{- $tlsEnabled := "${tlsEnabled}" }}
+  {{ if eq  $tlsEnabled "true" }}
+  # server.crt
+  {{- $servercertcontent := .Values.clientTlsAndTokenAuthSettings.client5.serverCert }}
+  {{- if $servercertcontent }}
+  server-cert-file: {{ $servercertcontent | b64enc }}
+  {{ end }}
+
+  # client-ca.crt
+  {{- $clientcacertcontent := .Values.clientTlsAndTokenAuthSettings.client5.clientRootCaCert }}
+  {{- if $clientcacertcontent }}
+  client-ca-cert-file: {{ $clientcacertcontent | b64enc }}
+  {{ end }}
+
+  # tokenAuthentication
+  {{- $tokenauthenticationcontent := .Values.clientTlsAndTokenAuthSettings.client5.tokenAuthentication }}
+  {{- if $tokenauthenticationcontent }}
+  # issuer-ca.crt
+  {{- $issuercacertcontent := .Values.clientTlsAndTokenAuthSettings.client5.tokenAuthentication.issuerCaCert }}
+  {{- if $issuercacertcontent }}
+  issuer-ca-cert-file: {{ $issuercacertcontent | b64enc }}
+  {{ end }}
+
+  # public-jwk.json
+  {{- $publicjwkcontent := .Values.clientTlsAndTokenAuthSettings.client5.tokenAuthentication.publicJwks }}
+  {{- if $publicjwkcontent }}
+  public-jwk-json-file: {{ $publicjwkcontent | b64enc }}
+  {{ end }}
+  {{ end }}
+  {{ end }}
+
+
