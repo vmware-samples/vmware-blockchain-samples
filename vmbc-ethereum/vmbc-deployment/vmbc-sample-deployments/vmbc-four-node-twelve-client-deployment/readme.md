@@ -10,7 +10,7 @@
 | global.imageCredentials.password                    |                                | Password for docker registry                 | Mandatory |
 | global.imageCredentials.email                       | ""                             | Email for docker registry                    | Optional  |
 | global.storageClassName                             | "standard"                     | Global StorageClass for Persistent Volume(s) |           |
-| global.image.tag                                    | 0.0.0.0.7833                   | The global artifact tag                      | Mandatory |
+| global.image.tag                                    | 0.0.0.0.8603                   | The global artifact tag                      | Mandatory |
 | global.config.configOverride                        | ""                             | Overwrite tls cert files during upgrade      | Optional  |
 | global.maintenanceModeEnabled                       | false                          | Launch containers in maintenance mode        | Optional  |
 | operator.publicKey                                  | ""                             | Public key for corresponding operator pvt key| Mandatory |
