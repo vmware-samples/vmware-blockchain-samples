@@ -1,4 +1,4 @@
-FROM athena-docker-local.artifactory.eng.vmware.com/node:14.19.0 as node
+FROM node:14.19.0 as node
 
 WORKDIR /app
 

@@ -19,6 +19,7 @@
 <div id="appConfigure">
   <p>Wallet service: <input id="walletServiceUrl" value="http://localhost:8080"></p>
   <p>VMBC node: <input id="vmbcUrl" value="http://localhost:8545"></p>
+  <p>Subscription service: <input id="subscriptionServiceUrl" value="ws://host.docker.internal:8546"></p>
   <p><button id="setWalletServiceUrl" onclick="setWalletServiceUrl()"><b>wallet configure</b></button></p>
 </div>
 
@@ -68,6 +69,7 @@
 <button id="updateButton" onclick="UpdateInfo()"><b>Update</b></button>
 <div>Sync from tx: <input type="text" id="syncFromTxNumber" value="0" /></div>
 <button id="sync" onclick="syncTriggered()"><b>Sync</b></button>
+<div><input type="checkbox" id="syncOnNewBlock"><b>Sync on new block</b></button></div>
 </div>
 
 <p id="minting"></p>

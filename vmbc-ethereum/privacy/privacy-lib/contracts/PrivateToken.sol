@@ -54,7 +54,7 @@ function equalBytes(bytes memory lhs, bytes memory rhs) pure returns (bool) {
 // to interact with it.
 
 contract PrivateToken {
-    event RegSigAdded(address indexed contractAddress, uint64 txId, uint64 sigId, bytes signature);
+    event ClaimableTokens(address indexed contractAddress, uint64 sequenceNumber);
 
     struct Registration {
         bool isSet;
@@ -75,6 +75,7 @@ contract PrivateToken {
         TxType txType;
         bytes txData;
         uint64[] sigIds;
+        uint64 collectedSigs;
     }
 
     mapping(uint64 => bytes) _sigIdToSig;
@@ -308,10 +309,10 @@ contract PrivateToken {
         require(_vc.UttValidateTransaction(req.txData));
         
         string[] memory nulls = _vc.getTransactionNullifiers(req.txData);
-        require(nulls.length > 0);
+        require(nulls.length > 0, "nulls.length > 0");
         for (uint i = 0; i < nulls.length; i++) {
-            require(bytes(nulls[i]).length > 0);
-            require(_nullifiers[nulls[i]] == false);
+            require(bytes(nulls[i]).length > 0, "bytes(nulls[i]).length > 0");
+            require(_nullifiers[nulls[i]] == false, "_nullifiers[nulls[i]] == false");
             _nullifiers[nulls[i]] = true;
         }
 
@@ -373,10 +374,14 @@ contract PrivateToken {
     // This function is called from the Virtual Contract when a signature is ready
     function setSig(uint64 sigId, bytes memory sig) external returns (bool) {
         _sigIdToSig[sigId] = sig;
+        uint64 txId = _sigIdToTxId[sigId];
 
-        // TODO: Emit an event only when all of the transaction's signatures have been collected.
-        emit RegSigAdded(address(this), _sigIdToTxId[sigId], sigId, sig);
-
+        if (_ledger[txId].txType == TxType.Transfer) { 
+            _ledger[txId].collectedSigs++;
+            if (_ledger[txId].collectedSigs == _ledger[txId].sigIds.length) {
+                emit ClaimableTokens(address(this), txId);
+            }
+        }
         return true;
     }
 }

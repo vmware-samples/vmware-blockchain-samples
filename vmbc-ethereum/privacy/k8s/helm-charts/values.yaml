@@ -9,7 +9,7 @@
 global:
   # The credentials for the docker registry. If username/password/email are specified, a corresponding Secret is created.
   imageCredentials:
-    registry: "blockchain-docker-internal.artifactory.eng.vmware.com"
+    registry: ""
     username: ""
     password: ""
     email: ""

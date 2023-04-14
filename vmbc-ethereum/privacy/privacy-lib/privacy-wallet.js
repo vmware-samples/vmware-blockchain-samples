@@ -3,6 +3,11 @@ const proto = require('./wallet-api_pb.js')
 require('dotenv').config();
 var VMBC_URL = process.env.VMBC_URL;
 var web3 = new Web3(new Web3.providers.HttpProvider(VMBC_URL));
+
+var web3_websocket;
+// = new Web3(new Web3.providers.WebsocketProvider("ws://host.docker.internal:8546"/*process.env.VMBC_PUB_SUB_URL*/));
+var eventsSubscriptionObject;
+
 const BN = web3.utils.BN;
 const sigRetryCount = 20;
 const sigRetryDelayMs = 1000;
@@ -19,6 +24,17 @@ function setVmbcUrl(url) {
     web3 = new Web3(new Web3.providers.HttpProvider(VMBC_URL));
 }
 
+function setSubscriptionUrl(url) {
+    console.log("Setting subscription url to:", url);
+    web3_websocket = new Web3(new Web3.providers.WebsocketProvider(url));
+}
+
+function getEventsSubscriptionObject(privacy_contract_abi, privacy_contract_address) {
+    if(!eventsSubscriptionObject)
+        eventsSubscriptionObject = new web3_websocket.eth.Contract(privacy_contract_abi, privacy_contract_address);
+    return eventsSubscriptionObject;
+}
+
 function tx_type_to_string(tx_type) {
     switch (tx_type) {
         case proto.TxType.MINT: 
@@ -31,6 +47,7 @@ function tx_type_to_string(tx_type) {
             throw Error("unknown transaction type");
     }
 }
+
 async function sendTx(tx, account) {
     if (send_transaction_callback != undefined) {
         console.log("calling send transaction callback...");
@@ -239,7 +256,7 @@ async function get_signed_transaction(tx_num, privacyContract) {
         tx_data: txData,
         sigs: []
     }
-
+    console.log("get_signed_transaction: txn number: ", tx_num, " tx type", txType);
     function sigsComplete(sigs) {
         if (sigs.length == 0) {
             return false;
@@ -249,7 +266,6 @@ async function get_signed_transaction(tx_num, privacyContract) {
                 return false;
             }
         }
-    
         return true;
     }
 
@@ -264,8 +280,11 @@ async function get_signed_transaction(tx_num, privacyContract) {
                 }
                 break; // Done
             } else {
-                console.log("sigs not ready... retry in 1 sec");
+                console.log("signatures not ready... retry in 1 sec");
                 await sleep(sigRetryDelayMs);
+            }
+            if (i == sigRetryCount) {
+                console.log("error: no signature found check retry timer exceeded!");
             }
         }
     }
@@ -275,6 +294,11 @@ async function sync_state_for_seq_num(seq_num, privacy_contract, tx_types) {
     console.log("syncing state for sequence number:", seq_num, ", searching for", tx_types.map(t => tx_type_to_string(t)));
     const data = await get_signed_transaction(seq_num, privacy_contract);
     if (!tx_types.includes(data.tx_type - 1)) return;
+    // avoid sending bogus value for claim
+    if (data.sigs.length == 0) {
+        console.log("skip empty signature response");
+        return;
+    }
     let claim_coins_request = new proto.ClaimCoinsRequest();
     claim_coins_request.setTx(Uint8Array.from(data.tx_data));
     for (let i = 0; i < data.sigs.length; i++) {
@@ -306,6 +330,35 @@ async function claim_transferred_coins(privacy_contract_abi, privacy_contract_ad
     }
     
     return parseInt(to_sn);
+}
+
+ /**
+  * @param {string} privacy_contract_abi     the privacy contract abi
+  * @param {string} privacy_contract_address the privacy contract address
+  * @param {BigInt} sequence_number the sequence number for which any transferred coins will be claimed
+  */
+ async function claim_transferred_coins_for_sequence_number(privacy_contract_abi, privacy_contract_address, sequence_number) {
+    const privacyContract = new web3.eth.Contract(privacy_contract_abi, privacy_contract_address);
+    await sync_state_for_seq_num(sequence_number, privacyContract, [proto.TxType.TRANSFER])
+}
+
+ /**
+  * @param {string} privacy_contract_abi     the privacy contract abi
+  * @param {string} privacy_contract_address the privacy contract address
+  */
+async function contract_get_latest_transaction_number(privacy_contract_abi, privacy_contract_address) {
+    const privacyContract = new web3.eth.Contract(privacy_contract_abi, privacy_contract_address);
+    return parseInt(await privacyContract.methods.getNumOfLastAddedTransaction().call());
+}
+
+ /**
+  * @param {string} privacy_contract_abi     the privacy contract abi
+  * @param {string} privacy_contract_address the privacy contract address
+  * @param {string} sequence_number the sequence number to synchronize the state for
+  */
+async function sync_state_by_sequence_number(privacy_contract_abi, privacy_contract_address, sequence_number) {
+    const privacyContract = new web3.eth.Contract(privacy_contract_abi, privacy_contract_address);
+    await sync_state_for_seq_num(sequence_number, privacyContract, [proto.TxType.MINT, proto.TxType.BURN, proto.TxType.TRANSFER]);
 }
 
 /**
@@ -348,6 +401,48 @@ async function get_privacy_state() {
         budget: state_resp.getGetStateResponse().getBudget(),
         coins: coins,
         userId: state_resp.getGetStateResponse().getUserId()
+    }
+}
+
+/**
+ * store specific application data in the privacy wallet service in the form of a key-value pairs
+ * @param {string} keys the data keys
+ * @param {string} values the data values
+ */
+async function set_application_data(keys, values) {
+    if(keys.length != values.length)
+        throw new Error("Keys and values lengths don't match: ", keys.length, " != ", values.length);
+    let wallet_grpc_request = new proto.PrivacyWalletRequest();
+    let set_app_data_request = new proto.SetAppDataRequest();
+
+    for(let i = 0; i < keys.length; i++) {
+        set_app_data_request.addKeys(keys[i]);
+        set_app_data_request.addValues(values[i]);
+    }
+    wallet_grpc_request.setSetAppDataRequest(set_app_data_request);
+
+    const resp = await grpc_callback(wallet_grpc_request);
+    if (!resp.getSetAppDataResponse().getSucc()) {
+        throw new Error("Unable to store the requested application data");
+    }
+}
+
+/**
+ * get specific application data from the privacy wallet service by its key
+ * @param {string} keys the required data keys
+ * @returns {json} {value: `value`} representing the current value of the given `key` that is held by the privacy service
+ */
+async function get_application_data(keys) {
+    let wallet_grpc_request = new proto.PrivacyWalletRequest();
+    let get_app_data_request = new proto.GetAppDataRequest();
+    for(let i = 0; i < keys.length; i++)
+        get_app_data_request.addKeys(keys[i]);
+    wallet_grpc_request.setGetAppDataRequest(get_app_data_request);
+
+    const app_state_resp = await grpc_callback(wallet_grpc_request);
+    
+    return {
+        values: app_state_resp.getGetAppDataResponse().getValuesList(),
     }
 }
 
@@ -396,6 +491,7 @@ async function transfer(privacy_contract_abi,
             }
             await _transfer(privacy_contract, _get_ethereum_account(shielded_account_private_key), parseInt(generate_tx_resp.getNumOfOutputCoins()), generate_tx_resp.getTx());
             const post_tx_seq_num = parseInt(await privacy_contract.methods.getNumOfLastAddedTransaction().call());
+            console.log("transfer init_sn: ", initial_sn, " post_sn: ", post_tx_seq_num);
             for (let tx_num = initial_sn; tx_num <= post_tx_seq_num ; tx_num++) {
                 await sync_state_for_seq_num(tx_num, privacy_contract, [proto.TxType.TRANSFER]);
             }
@@ -529,10 +625,17 @@ module.exports = {
     register: register,
     convert_public_to_private: convert_public_to_private,
     sync_state: sync_state,
+    sync_state_by_sequence_number: sync_state_by_sequence_number,
     claim_transferred_coins: claim_transferred_coins,
+    claim_transferred_coins_for_sequence_number: claim_transferred_coins_for_sequence_number,
+    contract_get_latest_transaction_number: contract_get_latest_transaction_number,
     get_privacy_state: get_privacy_state,
+    set_application_data: set_application_data,
+    get_application_data: get_application_data,
     convert_private_to_public: convert_private_to_public,
     get_privacy_budget: get_privacy_budget,
     transfer: transfer,
     setVmbcUrl: setVmbcUrl,
+    setSubscriptionUrl: setSubscriptionUrl,
+    getEventsSubscriptionObject: getEventsSubscriptionObject,
 }

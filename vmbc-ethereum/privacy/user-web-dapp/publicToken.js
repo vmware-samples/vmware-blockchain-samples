@@ -41,28 +41,10 @@ async function UpdateInfo() {
     let privacyBudget;
     let lastAddedTxNum = await PrivateToken.getNumOfLastAddedTransaction();
     let userId = await values.getUserId();
-    let lastSyncedTxNum = BigNumber.from(0);
-    if(userId) {
-        lastSyncedTxNum = parseInt(localStorage.getItem("lastSyncedTxNum/" + userId))
-        if(isNaN(lastSyncedTxNum)) lastSyncedTxNum = BigNumber.from(0);
-        else lastSyncedTxNum = BigNumber.from(lastSyncedTxNum);
-        if(lastSyncedTxNum.gt(lastAddedTxNum)) {
-            localStorage.setItem("lastSyncedTxNum/" + userId, 0);
-            lastSyncedTxNum = BigNumber.from(0);
-        }
-        if(lastAddedTxNum != BigNumber.from(0)) {
-            if(lastAddedTxNum.gt(lastSyncedTxNum)) {
-                console.log("Syncing state for tx number ", lastAddedTxNum, ", lastSyncedTxNum: ", lastSyncedTxNum);
-                for(let i = lastSyncedTxNum; i.lte(lastAddedTxNum); i = i.add(1))
-                {
-                    if(i.eq(BigNumber.from(0))) continue;
-                    await syncState(i);
-                    localStorage.setItem("lastSyncedTxNum/" + userId, i);
-                }
-                lastSyncedTxNum = lastAddedTxNum;
-            }
-        }
-    }
+    let lastSyncedTxNum;
+    if(document.getElementById("syncOnNewBlock").checked)
+        lastSyncedTxNum = await syncStateForNewTxs(userId, lastAddedTxNum);
+    else lastSyncedTxNum = BigNumber.from(0);
     try {
         let privacyState = await getPrivacyState();
         privateBalance = privacyState.balance;
@@ -94,6 +76,34 @@ async function UpdateInfo() {
     document.getElementById("lastSyncedTxNum").innerHTML = "Last synced tx number: " + lastSyncedTxNum.toString() +
     `<button id="resetLastSyncedTxNum" onclick="resetLastSyncedTxNum()"><b>Reset</b></button>`;
     fillAccountConnection();
+}
+
+async function syncStateForNewTxs(userId, lastAddedTxNum) {
+    if (!userId) {
+        return BigNumber.from(0);
+    }
+    lastSyncedTxNum = parseInt(localStorage.getItem("lastSyncedTxNum/" + userId));
+    if (isNaN(lastSyncedTxNum))
+        lastSyncedTxNum = BigNumber.from(0);
+    else
+        lastSyncedTxNum = BigNumber.from(lastSyncedTxNum);
+    if (lastSyncedTxNum.gt(lastAddedTxNum)) {
+        localStorage.setItem("lastSyncedTxNum/" + userId, 0);
+        lastSyncedTxNum = BigNumber.from(0);
+    }
+    if (lastAddedTxNum != BigNumber.from(0)) {
+        if (lastAddedTxNum.gt(lastSyncedTxNum)) {
+            console.log("Syncing state for tx number ", lastAddedTxNum, ", lastSyncedTxNum: ", lastSyncedTxNum);
+            for (let i = lastSyncedTxNum; i.lte(lastAddedTxNum); i = i.add(1)) {
+                if (i.eq(BigNumber.from(0)))
+                    continue;
+                await syncState(i);
+                localStorage.setItem("lastSyncedTxNum/" + userId, i);
+            }
+            lastSyncedTxNum = lastAddedTxNum;
+        }
+    }
+    return lastSyncedTxNum;
 }
 
 async function resetLastSyncedTxNum() {
@@ -186,6 +196,26 @@ async function syncState(lastKnownTxNum) {
     await privacy_wallet.sync_state(values.getPrivateTokenAbi(), values.privacyContractAddress, lastKnownTxNum);
 }
 
+async function backfill(startingSequenceNumber) {
+    const privateTokenAbi = values.getPrivateTokenAbi();
+    const privacyContractAddress = values.privacyContractAddress;
+
+    const latestContractSequenceNumber = privacy_wallet.contract_get_latest_transaction_number(privateTokenAbi, privacyContractAddress);
+    if (startingSequenceNumber < latestContractSequenceNumber) {
+        for (let currentSequenceNumber = startingSequenceNumber; currentSequenceNumber <= latestContractSequenceNumber; currentSequenceNumber++) {
+            await privacy_wallet.sync_state_by_sequence_number(privateTokenAbi, privacyContractAddress, currentSequenceNumber);
+            try {
+                await privacy_wallet.set_application_data(["lastStableSequenceNumber"], [currentSequenceNumber]);
+            } catch (ex) {
+                console.error("Backfilling: Setting a StableSequenceNumber in the privacy wallet service has failed.", ex);
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
 async function syncTriggered() {
     console.log("Sync triggered");
     const syncFrom = document.getElementById("syncFromTxNumber").value;
@@ -267,5 +297,6 @@ module.exports = {
     showPrivateTransferAddressbook,
     addPrivateTransferRecipient,
     removePrivateTransferRecipient,
-    resetLastSyncedTxNum
+    resetLastSyncedTxNum,
+    backfill
 };

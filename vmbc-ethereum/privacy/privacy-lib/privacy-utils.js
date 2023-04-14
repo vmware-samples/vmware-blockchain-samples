@@ -65,6 +65,19 @@ function privacy_request_message_google_protobuf_2_json(gproto_message) {
                 validatorPublicKey: gproto_message.getPrivacyAppConfig().getValidatorpublickeyList()
             }
         }
+    } else if (gproto_message.hasSetAppDataRequest()) {
+        return {
+            set_app_data_request: {
+                keys: gproto_message.getSetAppDataRequest().getKeysList(),
+                values: gproto_message.getSetAppDataRequest().getValuesList()
+            }
+        }
+    } else if (gproto_message.hasGetAppDataRequest()) {
+        return {
+            get_app_data_request: {
+                keys: gproto_message.getGetAppDataRequest().getKeysList()
+            }
+        }
     }
     throw new Error("unknown grpc request")
 }
@@ -108,6 +121,14 @@ function privacy_reply_message_json_2_google_protobuf(json_res) {
         let internal_resp = new proto.PrivacyAppConfigResponse();
         internal_resp.setConfiguration(Uint8Array.from(json_res.privacy_app_config_response.configuration));
         grpc_reply.setPrivacyAppConfigResponse(internal_resp);
+    } else if (json_res.hasOwnProperty("set_app_data_response")) {
+        let internal_resp = new proto.SetAppDataResponse();       
+        internal_resp.setSucc(json_res.set_app_data_response.succ);
+        grpc_reply.setSetAppDataResponse(internal_resp);
+    } else if (json_res.hasOwnProperty("get_app_data_response")) {
+        let internal_resp = new proto.GetAppDataResponse();
+        internal_resp.setValuesList(json_res.get_app_data_response.values);
+        grpc_reply.setGetAppDataResponse(internal_resp);
     } else if (json_res.hasOwnProperty("err")) {
         console.log(json_res, " - failed resp: ", err);
         grpc_reply.setErr(json_res.err);

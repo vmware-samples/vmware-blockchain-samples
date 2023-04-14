@@ -1,8 +1,8 @@
 # Containerize UTT library exposed as an GRPC service!
 # Run with: --add-host=host.docker.internal:host-gateway
 
-ARG CONCORD_BFT_IMAGE_REPO="athena-docker-local.artifactory.eng.vmware.com/concord-bft"
-ARG CONCORD_BFT_IMAGE_TAG="0.49"
+ARG CONCORD_BFT_IMAGE_REPO="concord-bft"
+ARG CONCORD_BFT_IMAGE_TAG="0.60"
 FROM ${CONCORD_BFT_IMAGE_REPO}:${CONCORD_BFT_IMAGE_TAG} as builder
 
 # Compile wallet command line app
@@ -10,14 +10,20 @@ COPY concord/submodules/concord-bft /concord-bft
 
 WORKDIR /concord-bft
 
-ARG CC="clang-9"
-ARG CXX="clang++-9"
+ARG CC="gcc"
+ARG CXX="g++"
+ARG CXXFLAGS='-fPIE -fstack-protector-all -O3'
 
 RUN mkdir build
-RUN cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_WALLET_CLI=On -DBUILD_PRIVACY_WALLET_LIBRARY=On -B build/ -S .
+## pass additional cmake cli options
+# e.g. for building concord code coverage image: --build-arg CMAKE_OPTIONS="-DCODE_INSTRUMENTATION=CODECOVERAGE"
+ARG CMAKE_OPTIONS="-DBUILD_UTT=ON"
+# Please do not split to several lines, this line is parsed by Makefile
+RUN cmake ${CMAKE_OPTIONS} -B build/ -S .
+
 RUN cmake --build build/ --target privacy-wallet-service
 
-FROM athena-docker-local.artifactory.eng.vmware.com/ubuntu:18.04
+FROM ubuntu:22.04-amd64
 RUN apt-get update && apt-get install -y netcat
 
 # Wallet service - Node.js gRPC server using web3.js
@@ -33,8 +39,8 @@ RUN ldconfig && ldconfig /usr/local/ssl/lib/
 COPY privacy-demo/docker/entrypoint_privacy_service.sh .
 RUN chmod +x entrypoint_privacy_service.sh
 
-# Enviroinment Variables
-# the values are not requred to be explicity specified since the entire env variables are copied.
+# Environment Variables
+# the values are not required to be explicitly specified since the entire env variables are copied.
 # this is done explicitly more for documentation and to cross check if the 
 # containers ENV are satisfied by kubernetes config map / deployments
 ENV PRIVACY_WALLET_GRPC_SERVICE_PORT=49002
