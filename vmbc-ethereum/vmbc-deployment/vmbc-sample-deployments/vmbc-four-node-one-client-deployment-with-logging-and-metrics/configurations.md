@@ -42,4 +42,18 @@
 | replicaCheckpointBackup.checkpointIntervalInSeconds | 21600                          | Interval between checkpoint backups          | Optional  |
 | replicaCheckpointBackup.numberOfCheckpoints         | 2                              | Number of checkpoints to retain              | Optional  |
 | replicaCheckpointBackup.checkpointWindow            | 30000                          | Number of sequences to wait for              | Optional  |
+| logManagement.endpoint_1.url                        | logstash endpoint url          | http://logstash-logstash:8080                | Optional  |
+| logManagement.endpoint_1.username                   | logstash setup username        | ""                                           | Optional  |
+| logManagement.endpoint_1.password                   | logstash setup port            | ""                                           | Optional  |
+| telegraf.cloudWatch.accessKey                       | accessKey                      | ""                                           | Optional  |
+| telegraf.cloudWatch.secretKey                       | secretKey                      | ""                                           | Optional  |
+| telegraf.cloudWatch.tokenKey                        | tokenKey                       | ""                                           | Optional  |
+| telegraf.cloudWatch.namespace                       | namespace                      | ""                                           | Optional  |
+| telegraf.cloudWatch.region                          | region                         | ""                                           | Optional  |
+| telegraf.pushHttp.url                               | url                            | http://logstash-logstash:8080                | Optional  |
+| telegraf.pushHttp.username                          | username                       | ""                                           | Optional  |
+| telegraf.pushHttp.password                          | password                       | ""                                           | Optional  |
+| genesisBlock.timestamp                              | blockchain creation time in UTC, 24 hours format - YYYY-MM-DD hh:mm:ss | 2022-12-02 00:01:00| Optional <br/> |
+
+
 
