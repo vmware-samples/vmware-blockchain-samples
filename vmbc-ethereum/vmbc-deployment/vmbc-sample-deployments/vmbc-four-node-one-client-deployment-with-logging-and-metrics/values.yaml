@@ -93,7 +93,7 @@ telegraf:
     namespace: <Replace Me>
     region: <Replace Me>
   pushHttp:
-    url: http://logstash-logstash
+    url: http://logstash-logstash:8080
     username: <Replace Me>
     password: <Replace Me>
     token: 
