@@ -1,4 +1,4 @@
-**Detailed configurations for customization**
+## Detailed configurations for customization
 
     Configurations List of available configurations in values.yaml. Use "--set" param for setting up the params.
 
@@ -43,6 +43,6 @@
 | replicaCheckpointBackup.numberOfCheckpoints         | 2                              | Number of checkpoints to retain              | Optional  |
 | replicaCheckpointBackup.checkpointWindow            | 30000                          | Number of sequences to wait for              | Optional  |
 
-**Important Notice**
+## Important Notice
 This configuration is very resource heavy. Unless you have a minikube setup with large enough cpu and memory for 12 clients, please consider deploying on AWS EKS.
 This works well with an AWS EKS cluster of 15 nodes with m4-large instances.
