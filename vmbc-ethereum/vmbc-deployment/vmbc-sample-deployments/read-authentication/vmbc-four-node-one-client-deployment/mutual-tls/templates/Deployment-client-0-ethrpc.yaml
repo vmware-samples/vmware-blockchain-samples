@@ -7,6 +7,8 @@ metadata:
     blockchainId: {{ .Values.global.blockchainId }}
 spec:
   replicas: {{ .Values.global.replicaCount }}
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: client-0-ethrpc
@@ -77,10 +79,19 @@ spec:
               value: "need"
             - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ENABLED
               value: "false"
+            {{- $tokenauthenticationcontent := .Values.clientTlsAndTokenAuthSettings.client0.tokenAuthentication }}
+            {{ if $tokenauthenticationcontent }}
+            {{- $issueruricontent := .Values.clientTlsAndTokenAuthSettings.client0.tokenAuthentication.issuerUri }}
+            {{ if $issueruricontent }}
             - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER-URI
               value: {{ .Values.clientTlsAndTokenAuthSettings.client0.tokenAuthentication.issuerUri }}
+            {{ end }}
+            {{- $publicjwkscontent := .Values.clientTlsAndTokenAuthSettings.client0.tokenAuthentication.publicJwks }}
+            {{ if $publicjwkscontent }}
             - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_PUBLIC-JWKS
-              value: ""
+              value: /config/public-jwk.json
+            {{ end }}
+            {{ end }}
           {{ end }}
 
           resources:
@@ -90,17 +101,6 @@ spec:
             requests:
               cpu: "{{ .Values.resources.client.cpuRequest | default .Values.resources.client.defaultCpuRequest }}"
               memory: "{{ .Values.resources.client.memoryRequest | default .Values.resources.client.defaultMemoryRequest }}"
-          readinessProbe:
-            tcpSocket:
-              port: 8545
-            initialDelaySeconds: 60
-            periodSeconds: 10
-            failureThreshold: 60
-          livenessProbe:
-            tcpSocket:
-              port: 8545
-            initialDelaySeconds: 420
-            periodSeconds: 60
           volumeMounts:
           ##########################################
           #           config file volumes          #
@@ -145,6 +145,10 @@ spec:
               subPath: client-ca-cert-file
           {{- end }}
 
+          # token authentication
+          {{- $tokenauthenticationcontent := .Values.clientTlsAndTokenAuthSettings.client0.tokenAuthentication }}
+          {{ if $tokenauthenticationcontent }}
+
           {{- $issuercacertcontent := .Values.clientTlsAndTokenAuthSettings.client0.tokenAuthentication.issuerCaCert }}
           {{- if $issuercacertcontent }}
           # issuer-ca.crt
@@ -159,6 +163,8 @@ spec:
             - name: config-volume
               mountPath: /config/public-jwk.json
               subPath: public-jwk-json-file
+          {{- end }}
+
           {{- end }}
 
           {{- end }}
@@ -189,4 +195,9 @@ spec:
               mountPath: /fluentd/etc/fluent.conf
               subPath: fluent.conf
               readOnly: true
+            {{- $certs:= .Files.Glob "fluentd/config/certs/*.crt" }}
+            {{ if $certs }}
+            - name: vmbc-configmap-fluentd
+              mountPath: /fluentd/certs
+            {{ end }}
     {{ end }}
