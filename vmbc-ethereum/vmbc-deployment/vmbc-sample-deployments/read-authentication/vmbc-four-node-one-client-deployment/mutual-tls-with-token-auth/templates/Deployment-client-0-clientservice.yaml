@@ -7,6 +7,8 @@ metadata:
     blockchainId: {{ .Values.global.blockchainId }}
 spec:
   replicas: {{ .Values.global.replicaCount }}
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: client-0-clientservice
@@ -59,6 +61,7 @@ spec:
         - name: client-0-clientservice
           image: {{ include "clientservice.image" . }}
           imagePullPolicy: IfNotPresent
+          {{- include "clientservice.command" . | indent 10 }}
           ports:
             - containerPort: 50505
               protocol: TCP
@@ -130,6 +133,11 @@ spec:
               mountPath: /fluentd/etc/fluent.conf
               subPath: fluent.conf
               readOnly: true
+            {{- $certs:= .Files.Glob "fluentd/config/certs/*.crt" }}
+            {{ if $certs }}
+            - name: vmbc-configmap-fluentd
+              mountPath: /fluentd/certs
+            {{ end }}
         {{ end }}
       initContainers:
         - name: init-container

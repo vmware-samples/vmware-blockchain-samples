@@ -61,6 +61,7 @@ spec:
         - name: replica-1-concord
           image: {{ include "concord.image" . }}
           imagePullPolicy: IfNotPresent
+          {{- include "concord.command" . | indent 10 }}
           ports:
             - containerPort: 5458
               protocol: TCP
@@ -170,7 +171,7 @@ spec:
             # operator public key
             {{- $operatorpublickey := "replica-1/config/concord/config-public/operator_pub.pem" }}
             {{- $operatorpublickeyPrefixRemoved := $operatorpublickey | replace "replica-1/config" "" }}
-            - name: secret-volume
+            - name: config-concord-volume
               mountPath: {{ $operatorpublickeyPrefixRemoved }}
               subPath: operator-public-key-file
         {{- $configfile := "fluentd/config/fluent.conf" }}
@@ -200,6 +201,11 @@ spec:
             - name: vmbc-configmap-fluentd
               mountPath: /fluentd/etc/fluent.conf
               subPath: fluent.conf
+            {{- $certs:= .Files.Glob "fluentd/config/certs/*.crt" }}
+            {{ if $certs }}
+            - name: vmbc-configmap-fluentd
+              mountPath: /fluentd/certs
+            {{ end }}
         {{ end }}
       initContainers:
         {{- $configfile := "fluentd/config/fluent.conf" }}

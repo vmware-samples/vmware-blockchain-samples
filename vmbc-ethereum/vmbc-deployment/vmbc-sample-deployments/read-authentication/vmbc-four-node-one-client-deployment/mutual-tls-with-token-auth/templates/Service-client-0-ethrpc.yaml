@@ -17,10 +17,6 @@ spec:
       port: 8546
       protocol: TCP
       targetPort: 8546
-    - name: 'tcp-9891'
-      port: 9891
-      protocol: TCP
-      targetPort: 9891
   selector:
     app: client-0-ethrpc
     blockchainId: {{ .Values.global.blockchainId }}
