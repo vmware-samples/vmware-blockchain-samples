@@ -23,6 +23,9 @@ binaryData:
   client-ca-cert-file: {{ $clientcacertcontent | b64enc }}
   {{ end }}
 
+  # tokenAuthentication
+  {{- $tokenauthenticationcontent := .Values.clientTlsAndTokenAuthSettings.client0.tokenAuthentication }}
+  {{- if $tokenauthenticationcontent }}
   # issuer-ca.crt
   {{- $issuercacertcontent := .Values.clientTlsAndTokenAuthSettings.client0.tokenAuthentication.issuerCaCert }}
   {{- if $issuercacertcontent }}
@@ -33,6 +36,7 @@ binaryData:
   {{- $publicjwkcontent := .Values.clientTlsAndTokenAuthSettings.client0.tokenAuthentication.publicJwks }}
   {{- if $publicjwkcontent }}
   public-jwk-json-file: {{ $publicjwkcontent | b64enc }}
+  {{ end }}
   {{ end }}
   {{ end }}
 

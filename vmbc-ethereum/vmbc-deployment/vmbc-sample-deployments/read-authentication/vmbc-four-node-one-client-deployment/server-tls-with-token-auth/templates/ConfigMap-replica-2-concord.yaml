@@ -12,6 +12,7 @@ binaryData:
   {{- $depconfigfile := "replica-2/config/concord/config-local/deployment.config" }}
   {{- $deploymentDict := $.Files.Get $depconfigfile | fromYaml }}
   {{- $_ := set $deploymentDict "eth_permissioning_write_enabled" .Values.permissioning.ethPermissioningWriteEnabled }}
+  {{- $_ := set $deploymentDict "eth_filtered_privacy_enabled" .Values.filteredPrivacy.ethFilteredPrivacyEnabled }}
   {{- $_ := set $deploymentDict "utt_enabled" .Values.privacy.privacyEnabled }}
   {{ if .Values.privacy.privacyEnabled }}
   {{- $_ := set $deploymentDict "consensus_batching_policy" 2 }}
@@ -28,4 +29,5 @@ binaryData:
   # application config file
   {{- $applicationconfigfile := "replica-2/config/concord/config-local/application.config" }}
   application-config-file: {{ $.Files.Get $applicationconfigfile | b64enc }}
-
+  # operator public key
+  operator-public-key-file: {{ .Values.operator.publicKey | replace "\\n" "\n" | b64enc }}

@@ -7,6 +7,8 @@ metadata:
     blockchainId: {{ .Values.global.blockchainId }}
 spec:
   replicas: {{ .Values.global.replicaCount }}
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: client-0-cre

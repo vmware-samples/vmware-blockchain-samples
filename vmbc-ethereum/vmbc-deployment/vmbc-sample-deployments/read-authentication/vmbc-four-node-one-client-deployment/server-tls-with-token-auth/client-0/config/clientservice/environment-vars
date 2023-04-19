@@ -4,4 +4,4 @@ export CLIENTSERVICE_TRC_TLS_PATH=/config/clientservice/tls_certs
 export JAEGER_AGENT_ADDRESS=
 export CLIENTSERVICE_CONFIG=/config/clientservice/clientservice.config
 export CLIENTSERVICE_PORT=50505
-export CLIENTSERVICE_TRC_ID=p690eba94_1fa1_4e74_b939_bce24b0e0223
+export CLIENTSERVICE_TRC_ID=paffc3b5f_55e8_4346_970a_35827f825a79

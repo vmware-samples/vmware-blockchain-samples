@@ -1,12 +1,12 @@
 {
   "replicasUuidToPrincipalId": {
-    "d902dc92-300b-4763-8e57-1440bb103e3f": 1,
-    "4b560ff2-46b0-4468-94e3-2a999c5a7631": 3,
-    "755fcaf8-aeb5-49d5-929a-751bdcb6fbb7": 2,
-    "01827b2b-eba3-48db-8216-92e4746cf65a": 0
+    "67c92cf7-f8d6-43d7-bf26-ae79c037ed1c": 0,
+    "71e5b47a-b637-42a7-a745-cac21fcbca0a": 1,
+    "b3a62056-6b9b-4fa5-a8f5-9e2471db737d": 2,
+    "51f91d96-9c66-4011-976a-09926f4f62ca": 3
   },
   "clientsUuidToPrincipalIds": {
-    "690eba94-1fa1-4e74-b939-bce24b0e0223": [
+    "affc3b5f-55e8-4346-970a-35827f825a79": [
       8,
       9,
       10,

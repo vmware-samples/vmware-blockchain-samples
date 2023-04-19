@@ -57,6 +57,18 @@
         "storageClassName"
       ]
     },
+    "operator": {
+      "description": "Operator details",
+      "type": "object",
+      "properties": {
+        "publicKey": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "publicKey"
+      ]
+    },
     "genesisBlock": {
       "description": "Genesis Block",
       "type": "object",
@@ -84,12 +96,118 @@
           "maximum": 100
         }
       }
+    },
+    "clientTlsAndTokenAuthSettings": {
+      "description": "Client tls and token auth settings",
+      "type": "object",
+      "patternProperties": {
+        "^.*$": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["serverTLS", "mutualTLS"]
+            },
+            "clientRootCaCert": {
+              "type": "string"
+            },
+            "serverCert": {
+              "type": "string",
+              "minLength": 1
+            },
+            "serverPrivateKeySecret": {
+              "type": "string",
+              "minLength": 1
+            },
+            "tokenAuthentication": {
+              "type": "object",
+              "properties": {
+                "publicJwks": {
+                  "type": "string"
+                },
+                "issuerUri": {
+                  "type": "string"
+                },
+                "issuerCaCert": {
+                  "type": "string"
+                }
+              },
+              "if": {
+                "$comment": "Check if clientTlsAndTokenAuthSettings.*.tokenAuthentication.publicJwks is not provided",
+                "properties": {
+                  "publicJwks": {
+                    "maxLength": 0
+                  }
+                }
+              },
+              "then": {
+                "$comment": "If clientTlsAndTokenAuthSettings.*.tokenAuthentication.publicJwks is not provided then issuerUri is required",
+                "required": ["issuerUri"],
+                "if": {
+                  "$comment": "Check if clientTlsAndTokenAuthSettings.*.tokenAuthentication.issuerUri starts with 'http://'",
+                  "properties": {
+                    "issuerUri": {
+                      "pattern": "^(http)://"
+                    }
+                  }
+                },
+                "then": {
+                  "$comment": "If clientTlsAndTokenAuthSettings.*.tokenAuthentication.issuerUri starts with 'http://' then issuerCaCert is not required",
+                  "properties": {
+                    "issuerCaCert": {
+                      "maxLength": 0
+                    }
+                  }
+                }
+              },
+              "else": {
+                "$comment": "If clientTlsAndTokenAuthSettings.*.tokenAuthentication.publicJwks is provided then issuerUri and/or issuerCaCert is not required",
+                "properties": {
+                  "issuerUri": {
+                    "maxLength": 0
+                  },
+                  "issuerCaCert": {
+                    "maxLength": 0
+                  }
+                }
+              }
+            }
+          },
+          "required": ["type", "serverCert", "serverPrivateKeySecret"],
+          "if": {
+            "$comment": "Check if clientTlsAndTokenAuthSettings.*.type is serverTLS or mutualTLS",
+            "properties": {
+              "type": {
+                "enum": ["serverTLS"]
+              }
+            }
+          },
+          "then": {
+            "$comment": "If clientTlsAndTokenAuthSettings.*.type is serverTLS then clientRootCaCert is not required but tokenAuthentication is required",
+            "properties": {
+              "clientRootCaCert": {
+                "maxLength": 0
+              }
+            },
+            "required": ["tokenAuthentication"]
+          },
+          "else": {
+            "$comment": "If clientTlsAndTokenAuthSettings.*.type is mutualTLS then clientRootCaCert is required",
+            "properties": {
+              "clientRootCaCert": {
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
     }
   },
   "required": [
     "global",
     "storageClassNames",
-    "genesisBlock"
+    "genesisBlock",
+    "operator"
   ],
   "if": {
     "$comment": "Check if global.storageClassName is initialized",
