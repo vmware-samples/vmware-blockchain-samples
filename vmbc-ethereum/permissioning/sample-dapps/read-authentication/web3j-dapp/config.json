@@ -8,10 +8,10 @@
     },
     "tls": {
         "mode": "mutualTLS",
-        "serverCaCertPath": "../../../../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/artifacts-for-dapps/ethrpc-ca.crt",
-        "clientKeyPath": "../../../../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/artifacts-for-dapps/client.key",
-        "clientCertPath": "../../../../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/artifacts-for-dapps/client.crt",
-        "authServerPath": "../../../../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/artifacts-for-dapps/auth-server.crt"
+        "serverCaCertPath": "../../../../vmbc-deployment/vmbc-sample-deployments/read-authentication/artifacts-for-dapps/ethrpc-ca.crt",
+        "clientKeyPath": "../../../../vmbc-deployment/vmbc-sample-deployments/read-authentication/artifacts-for-dapps/client.key",
+        "clientCertPath": "../../../../vmbc-deployment/vmbc-sample-deployments/read-authentication/artifacts-for-dapps/client.crt",
+        "authServerPath": "../../../../vmbc-deployment/vmbc-sample-deployments/read-authentication/artifacts-for-dapps/auth-server.crt"
     },
     "clientJwt": {
         "enabled": true,

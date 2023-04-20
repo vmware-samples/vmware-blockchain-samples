@@ -8,7 +8,7 @@
     },
     "tls": {
         "mode": "serverTLS",
-        "serverCaCertPath": "../../../../vmbc-deployment/vmbc-sample-deployments/authentication-and-authorization/artifacts-for-dapps/ethrpc-ca.crt"
+        "serverCaCertPath": "../../../../vmbc-deployment/vmbc-sample-deployments/read-authentication/artifacts-for-dapps/ethrpc-ca.crt"
     },
     "clientJwt": {
         "authDiscoveryUrl": "https://localhost:8443/realms/vmbc_realm",
