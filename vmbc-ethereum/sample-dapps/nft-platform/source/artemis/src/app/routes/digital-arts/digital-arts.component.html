@@ -1,5 +1,5 @@
 <div class="mint-button-cont">
-  <button class="btn btn-success mint-button" (click)="mintingFormReset(); mintingModalShown=true">Mint New Token</button>
+  <button *ngIf="!this.jsonrpcOnly" class="btn btn-success mint-button" (click)="mintingFormReset(); mintingModalShown=true">Plant Tree</button>
 </div>
 <div style="height: 0.55rem;"></div>
 
@@ -61,25 +61,25 @@
 
 <clr-tabs>
   <clr-tab>
-    <button clrTabLink>All NFTs</button>
+    <button clrTabLink>All Trees</button>
     <clr-tab-content *clrIfActive>
       <app-digital-arts-grid [arts]="arts"></app-digital-arts-grid>
     </clr-tab-content>
   </clr-tab>
-  <clr-tab>
-    <button clrTabLink>Owned NFTs</button>
+  <clr-tab *ngIf="!this.jsonrpcOnly">
+    <button clrTabLink>Trees Owned By Me</button>
     <clr-tab-content>
       <app-digital-arts-grid [arts]="artsOwnedByMe"></app-digital-arts-grid>
     </clr-tab-content>
   </clr-tab>
-  <clr-tab>
-    <button clrTabLink>Minted by You</button>
+  <clr-tab *ngIf="!this.jsonrpcOnly">
+    <button clrTabLink>Trees Planted By Me</button>
     <clr-tab-content>
       <app-digital-arts-grid [arts]="artsMintedByMe"></app-digital-arts-grid>
     </clr-tab-content>
   </clr-tab>
   <clr-tab>
-    <button clrTabLink>Transferred</button>
+    <button clrTabLink>Gifted Trees</button>
     <clr-tab-content>
       <app-digital-arts-grid [arts]="artsTradedAway"></app-digital-arts-grid>
     </clr-tab-content>

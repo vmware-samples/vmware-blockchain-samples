@@ -45,6 +45,9 @@ export class DigitalArtsComponent implements OnInit, OnDestroy {
   artsOwnedByMe: DigitalArt[] = [];
   artsTradedAway: DigitalArt[] = [];
 
+  // jsonrpc only mode for reading
+  jsonrpcOnly = false;
+
   constructor(
     private ethService: EthereumService,
     private digitalArtsService: DigitalArtsService,
@@ -63,6 +66,8 @@ export class DigitalArtsComponent implements OnInit, OnDestroy {
       this.artsMintedByMe = this.digitalArtsService.digitalArtsByMinter[user] || [];
       this.artsTradedAway = this.arts.filter(art => art.ownerHistory?.includes(user) && art.ownerHistory?.lastIndexOf(user) != art.ownerHistory?.length - 1);
     });
+
+    this.jsonrpcOnly = this.ethService.jsonrpcOnly;
   }
 
   mintingFormCheck() {

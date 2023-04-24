@@ -1,5 +1,5 @@
 <div style="margin-top: 1rem;" class="grid-wrapper">
-  <div *ngIf="arts.length === 0">No NFT matching criteria.</div>
+  <div *ngIf="arts.length === 0">No Tree matching criteria.</div>
   <ng-template ngFor let-art [ngForOf]="arts">
     <div [attr.id]="'digital-art-grid-token-' + art.tokId" class="card grid-item" style="max-width: 500px; display: flex; min-width: 15.5rem; margin: 0; display: inline-block;" (click)="goToArt(art)">
       <div class="card-img" style="min-height: 50px; max-height:500px; min-width: 50px; max-width: 500px; overflow-y:hidden; cursor: pointer;">
