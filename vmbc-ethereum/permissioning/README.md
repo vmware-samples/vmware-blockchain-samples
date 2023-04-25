@@ -347,8 +347,8 @@ node testWrite.js
 - This is a Sample GUI dApp which can assist you in providing permissioning to any Ethereum account
 - To provide a permission to an account, you need to use Admin Account of VMware Blockchain
 - The details about default Admin account in VMware Blockchain is as follows,
- - Admin Account Address: `0xFB389874FB4e03182A7358275eaf78008775c7ed`
- - Admin Account Private Key: `0x5bedcdfdfe7e3d9444b3494eaee4bb9339be4745d7a4f79cd4bde59d3e9e9dcc`
+   - Admin Account Address: `0xFB389874FB4e03182A7358275eaf78008775c7ed`
+   - Admin Account Private Key: `0x5bedcdfdfe7e3d9444b3494eaee4bb9339be4745d7a4f79cd4bde59d3e9e9dcc`
 - To use this Admin Account, import this account into Metamask
 - Link to more details about Running and Using Authorization GUI is [here](./sample-dapps/authorization-gui/README.md)
 
