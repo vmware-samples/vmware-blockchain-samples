@@ -1,0 +1,22 @@
+---
+procedure
+---
+ cd vmware-blockchain-samples
+ export GIT_EDITOR=vim
+ git branch
+ git remote -v
+ git remote add amrita git@github.com:AmritaValueCS-22/vmware-blockchain-samples.git
+ git remote -v
+ git status
+ git add .
+ git status
+ git commit
+ git push amrita
+ git push amrita master
+ git remote remove amrita
+ git remote -v
+---
+remove junk files from commit after git add .
+---
+ git status
+ git restore --staged vmbc-ethereum/sample-dapps/nft-platform/source/artemis/src/x
