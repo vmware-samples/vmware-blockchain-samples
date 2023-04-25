@@ -38,8 +38,8 @@ Created eth account for identity: admin address: 0x22dAB3b747b7D0529bf8023F36442
 -------------------------------------
 Admin ethereum account address: 0x22dAB3b747b7D0529bf8023F36442228865E666b
 Grpc client is UP
-Private token contract address:  0x44f95010ba6441e9c50c4f790542a44a2cdc1281
-Public contract address:  0x3d8b57c2d58bb8c8e36626b05ff03381734ead43
+Private token contract address <privacy_contract_address>:  0x44f95010ba6441e9c50c4f790542a44a2cdc1281
+Public token contract address <tokens_contract_address>:  0x3d8b57c2d58bb8c8e36626b05ff03381734ead43
 ```
 
 ## Create budget

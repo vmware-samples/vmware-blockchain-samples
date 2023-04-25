@@ -30,7 +30,7 @@ root@privacy-user-dapp-0:/app/storage/certs# more alice.userid
 aff312dfede462a2c00b9efab941c5302f06a00cf709e2a1f0891262dd78d833  alice.pub.pem
 ```
 
-In this demo application the users privacy ID is based on his public key digest.
+As seen in the example above, the script generate_self_signed_certificate.sh generates a private key, a public key and a user ID, which is a SHA256 digest based on the public key of the user. This user ID is used in user workflows in the demo application.
 
 ## General help command for the DAPP
 

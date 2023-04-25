@@ -165,8 +165,8 @@ commander
 
 commander
     .command('init')
-    .argument('<privacy_contract_address>', 'the deployed privacy contract address')
-    .argument('<tokens_contract_address>', 'the deployed tokens contract address')
+    .argument('<privacy_contract_address>', 'admin deployed private token contract address')
+    .argument('<tokens_contract_address>', 'admin deployed public token contract address')
     .argument('<user_id>', 'the user public id')
     .description('initialize the application with a specific privacy configuration')
     .action(async (privacy_contract_address, tokens_contract_address, user_id) => {
@@ -267,9 +267,8 @@ commander
             process.exit(0);
         }
         console.log("synchronizing to contract states");
-        await privacy_wallet.sync_state(app_data.privacy_abi, app_data.privacy_contract_address, 1).then(async (_) => {
-            await privacy_wallet.get_privacy_budget(app_data.privacy_abi, app_data.privacy_contract_address, app_data.user_id);
-        });
+        await privacy_wallet.get_privacy_budget(app_data.privacy_abi, app_data.privacy_contract_address, app_data.user_id);
+        await privacy_wallet.sync_state(app_data.privacy_abi, app_data.privacy_contract_address, 1);
         console.log("synchronized successfully");
         process.exit(0);
     });

@@ -134,8 +134,8 @@ function AppSummary() {
     if (!(privacyContract && tokenContract)) {
         console.log("Privacy application contract is not yet deployed!!");
     } else {
-        console.log("Private token contract address: ", privacyContract.options.address.toLowerCase());
-        console.log("Public contract address: ", tokenContract.options.address.toLowerCase());
+        console.log("Private token contract address <privacy_contract_address>: ", privacyContract.options.address.toLowerCase());
+        console.log("Public token contract address <tokens_contract_address>:", tokenContract.options.address.toLowerCase());
     }
     console.log("-------------------------------------");
 }
@@ -279,7 +279,7 @@ cli
 cli
     .command('mint-public')
     .description('mints public tokens to specified address.')
-    .argument('<address>', 'public address to mint tokens to')
+    .argument('<ethereum_public_address>', 'ethereum public address to mint tokens to')
     .argument('<tokens>', 'amount of public tokens to mint')
     .action(async (address, amount) => {
         await mintPublicToken(address, amount);
@@ -289,7 +289,7 @@ cli
 cli
     .command('create-budget')
     .description('requests creation of a privacy budget for a user.')
-    .argument('<pid>', 'Accountable privacy user ID (or) PID')
+    .argument('<userId>', 'Accountable privacy user ID generated prior to user init')
     .argument('<budget>', 'Privacy budget')
     .action(async (pid, budget) => {
         await createPrivacyBudget(pid, budget);

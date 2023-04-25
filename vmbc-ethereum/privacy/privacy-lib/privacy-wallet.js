@@ -294,8 +294,8 @@ async function sync_state_for_seq_num(seq_num, privacy_contract, tx_types) {
     console.log("syncing state for sequence number:", seq_num, ", searching for", tx_types.map(t => tx_type_to_string(t)));
     const data = await get_signed_transaction(seq_num, privacy_contract);
     if (!tx_types.includes(data.tx_type - 1)) return;
-    // avoid sending bogus value for claim
-    if (data.sigs.length == 0) {
+    // avoid sending bogus value for claim (notice that the final burn transaction doesn't contain a signature)
+    if (((data.tx_type - 1) != proto.TxType.BURN) && data.sigs.length == 0) {
         console.log("skip empty signature response");
         return;
     }
