@@ -169,8 +169,9 @@ As part of this feature, we have provided multiple sample dApps using various in
 - Few Notable Points
    - All the following sample dApps which have a config file are pre-populated with mutualTLS with token authentication mode
    - All the sample artifacts which can be used with the sample dApps are present [here](../../vmbc-ethereum/vmbc-deployment/vmbc-sample-deployments/read-authentication/artifacts-for-dapps/)
-      - The `ethrpc-root.ca` corresponds to the server certificate (generated as a IP based certificate for static IP `192.168.200.200`) added in the sample helm charts described in the above section
-      - The `client.crt` and `client.key` are created with `clientRootCa` cert mentioned in the sample helm charts
+      - The `ethrpc-ca.crt` corresponds to the server certificate (generated as a IP based certificate for static IP `192.168.200.200`) added in the sample helm charts described in the above section
+      - The `ethrpc-ca.key` as well is provided for flexibility, which can be used to generate more instances of EthRPC server certificates
+      - The `client.crt` and `client.key` are created with the certificate present under the field `clientRootCa` in the mutualTLS related sample helm charts
       - The `auth-server.crt` corresponds to a localhost based auth server
       - The config and following sample dApps are for reference purpose, depending on the integration library and language of the dApp might have variations in their functionality and support
       - As these sample dApps are only for reference, we have not done any input validations, it is up to the user to ensure the validity and correctness of blockchain and config files
