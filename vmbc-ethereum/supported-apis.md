@@ -43,3 +43,5 @@ As per [Ethereum JSON RPC Standard](https://www.jsonrpc.org/specification), the 
   1.  Hardhat does not support Ethers.js v6 version
   2.  Ethers.js v6 version is not production grade yet
   3.  VMBC Ethereum API's and Dapps need to be changed to support Ethers.js v6 version
+
+- eth_newfilter and eth_getLogs APIs support a single address and not a list of addresses as an input parameter
