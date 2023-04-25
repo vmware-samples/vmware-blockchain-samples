@@ -20,7 +20,7 @@ Make sure that you implement all the required prerequisites. See [Deployment Pre
 For each of the samples, you could do the following.
 ### Deploy
 ```sh
-helm install <name of blockchain> </patg/to/samples> --set global.storageClassName=<standard for minukube or gp2 for AWS EKS> --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password>
+helm install <name of blockchain> </path/to/samples> --set global.storageClassName=<standard for minukube or gp2 for AWS EKS> --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password>
 ```
 ### Test
 - Get the ethrpc endpoint.
