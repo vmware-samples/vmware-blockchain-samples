@@ -28,7 +28,7 @@
 		"storageClassName": "gp2"
 	    },
 	    { 
-		# MTLS with Token based authentication using issuerUri and issuerCaCert. Issuer URI with https protocol needs issuer ca cert.
+		# Mutual TLS with Token based authentication using issuerUri and issuerCaCert. Issuer URI with https protocol needs issuer CA cert if using internal CA for issuerUri.
 		"zoneName": "k8s-zone-A",
 		"providedName": "client-1",
 		"storageClassName": "gp2",
@@ -73,18 +73,7 @@
 		  }
 		}
 	    },
-	    {
-		# Server TLS
-		"zoneName": "k8s-zone-A",
-		"providedName": "client-4",
-		"storageClassName": "gp2",
-		"tlsAndTokenAuthSettings": {
-		  "type": "serverTLS",
-		  "serverCert": "-----BEGIN CERTIFICATE-----\ndsalfjsldjfldsfjlsdfjsdfl\n-----END CERTIFICATE-----",
-		  "serverPrivateKeySecret": "client-0-ethrpc-server-key"
-		}
-	    },
-            {
+        {
 		# Server TLS with Token based Authentication. Uses Issuer URI.
 		"zoneName": "k8s-zone-A",
 		"providedName": "client-5",

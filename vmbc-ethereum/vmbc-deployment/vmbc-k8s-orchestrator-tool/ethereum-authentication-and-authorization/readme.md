@@ -1,4 +1,4 @@
-# Ethereum Authentication - supporting mTLS and server TLS for ethrpc
+# Ethereum Authentication - supporting mTLS and server TLS for EthRPC
 This feature offers three distinct capabilities - which can be combined depending on the user goals. These capabilities are:
 - Security for Server authentication - Provides assurances to the application that the end-point is indeed that of VMBC, and that the public key is indeed that of the VMBC EthRPC server.
 - Security for Data in Transit - Mechanism to secure communication between the application and the EthRPC server via encrypting data in flight.
@@ -6,11 +6,13 @@ This feature offers three distinct capabilities - which can be combined dependin
 
 By default, both security mechanisms and read permissioning is turned off.
 
+For more details about this feature, refer to this [main feature page](../../../permissioning/README.md)
+
 ## Terminology
 DApp - Decentralized Application
 TLS - Transport Layer Security
 mTLS/mutualTLS - Mutual TLS
-serverTls - server TLS
+serverTLS - server TLS
 CA - Certificate Authority
 JWT - JSON Web Token
 JWK - JSON Web Key
@@ -29,7 +31,7 @@ JWKS - JSON Web Key Set
   
 ## Deployment
 - Generate helm charts using the [k8s orchestrator tool](./../helm-chart).\
-See [sample deployment descriptor](./sample-descriptors/deployment.json). The clients can be described as either type as mentioned in the descriptor.
+See [sample deployment descriptor](./sample-descriptors/deployment.json). The clients can be described as either type as mentioned in the descriptor. This file contains few of the notable combinations. For more details on the parameters and valid combinations, refer to [this section](../../../permissioning/README.md#generating-new-helm-charts).
 - Install blockchain
 ```
 helm install <name of blockchain> . --set global.imageCredentials.registry=<registry address> --set global.imageCredentials.username=<username> --set global.imageCredentials.password=<password>
