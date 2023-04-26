@@ -1,4 +1,5 @@
 ## VMware Blockchain Ethers Extension
+**Note: This is an archived integration library. It will not work with current version of VMBC. The read permissioning feature has been enhanced to a different form in the latest version of VMBC.**
 - This is an extension of ethers (https://github.com/ethers-io/ethers.js)
 - Usage in all aspects remains same, except there is an introduction of new Provider, `VmbcJsonRpcProvider`
 - `VmbcJsonRpcProvider` is an extension of `JsonRpcProvider`
@@ -18,5 +19,3 @@ providerVmbc = new ethers.providers.VmbcJsonRpcProvider("127.0.0.1:8545");
 // Setting signing key for the provider for communicating with VMware Blockchain which has read permissioning enabled
 providerVmbc.setSigningKey({readPermissioningKeyOrEnable: "0xf61ac24a7d0af636dbdee18a146afda453df2118e95ff765dbf843620f931722"});
 ```
-
-For more information about Permissioning and Read Permissioning refer to documentation of [Permissioning](../../../../README.md)
