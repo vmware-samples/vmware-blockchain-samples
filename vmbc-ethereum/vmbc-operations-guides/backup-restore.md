@@ -167,7 +167,7 @@ kubectl get pods [-n <namespace-used-during-deployment>]
       ```
       - Remove of LOCK file
       ```
-      rm -rf /mnt/destination/<replica name>/<namespace>/<blockchainid>/<replica name>/rocksdbdata/LOCK
+      rm -rf /mnt/destination/replica-2/<namespace>/<blockchainid>/replica-2/rocksdbdata/LOCK
       ```
       - Detach the original volume and the restored volume from the EC2 instance.
       - At this point you can unmount the original and restored volume from the instance, and delete the restored volume from EC2 along with its snapshots.
