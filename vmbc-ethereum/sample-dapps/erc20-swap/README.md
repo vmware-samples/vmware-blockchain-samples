@@ -1,6 +1,6 @@
 # ERC20-Swap
 
-This is a Ethereum Sample dApp which comes with few pre-deployed ERC20 based smart contracts. Few of the Ethereum Accounts are are pre-supplied with tokens to get started.
+This is a Ethereum Sample dApp which comes with few pre-deployed ERC20 based smart contracts. Few of the Ethereum Accounts are pre-supplied with tokens to get started.
 
 ## Features
 - Transfer two types of ERC20 based Tokens across accounts
