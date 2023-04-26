@@ -1,0 +1,1 @@
+const e=JSON.parse('{"key":"v-2fa611e0","path":"/vmbc-other-details.html","title":"","lang":"en-US","frontmatter":{},"excerpt":"","headers":[],"git":{"updatedTime":null},"filePathRelative":"vmbc-other-details.md"}');export{e as data};

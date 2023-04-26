@@ -1,0 +1,1 @@
+const e=JSON.parse('{"key":"v-370615c6","path":"/sample-dapps/erc20-swap/source/erc20-swap/demo/","title":"","lang":"en-US","frontmatter":{},"excerpt":"","headers":[],"git":{"updatedTime":null},"filePathRelative":"sample-dapps/erc20-swap/source/erc20-swap/demo/Readme.md"}');export{e as data};

@@ -1,0 +1,1 @@
+const e=JSON.parse('{"key":"v-b39f8d90","path":"/sample-dapps/erc20-test-tool/","title":"ERC20 Test Tool","lang":"en-US","frontmatter":{},"excerpt":"","headers":[],"git":{"updatedTime":null},"filePathRelative":"sample-dapps/erc20-test-tool/README.md"}');export{e as data};
