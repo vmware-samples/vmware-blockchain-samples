@@ -1,0 +1,1 @@
+export const version = "@vmware-blockchain/ethers-extension/0.0.1";
