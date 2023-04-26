@@ -154,7 +154,7 @@ We have [vmbc-orchestrator-tool](../vmbc-deployment/vmbc-k8s-orchestrator-tool/)
 
 The relevant fields for the current feature in discussion is same as mentioned in the [above section](#details-about-relevant-fields-in-helm-charts). Only difference is the parent field under which all the fields mentioned above become relevant is `tlsAndTokenAuthSettings` inside a `client` construct in `deployment.json`
 
-A sample `deployment.json` with different options and fields is [here](../vmbc-deployment/vmbc-k8s-orchestrator-tool/ethereum-read-authentication/readme.md).
+A sample `deployment.json` with various notable options and fields is [here](../vmbc-deployment/vmbc-k8s-orchestrator-tool/ethereum-authentication-and-authorization/sample-descriptors/deployment.json).
 
 #### Serviceability
 If there is an update required for an existing standalone field such as a certificate or URI or public JWKS content, you can use update the fields in `values.yml` and can run following command to update,
