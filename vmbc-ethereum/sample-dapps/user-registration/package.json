@@ -1,0 +1,18 @@
+{
+  "name": "vmbc-ethers-write-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vijaya Prakash Masilamani",
+  "license": "ISC",
+  "dependencies": {
+    "ethers": "^5.7.2",
+    "console": "0.7.2",
+    "dotenv": "16.0.1",
+    "fs": "0.0.1-security",
+    "solc": "^0.8.15"
+  }
+}
