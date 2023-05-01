@@ -17,8 +17,8 @@ contract userReg {
     }
     string[] adminPublicKey;
     mapping(bytes => userDataDefinition) public userData;
-    error invalidUserSignature(string message, address addr, bytes data, bytes signature);
-    event userRegister(bytes caller, address addr, bytes data);
+    error errMsg(string message, address addr, bytes data, bytes signature);
+    event userRegister(string caller, address addr, bytes data);
 
     function isUserRegister(address addr, string memory message, bytes memory signature) public view returns (bool) {
         bool validsig = false;
@@ -34,50 +34,35 @@ contract userReg {
     }
 
     function newUserRegisterUserStart(bytes[] memory publicKey, bytes[] memory data, string memory message, bytes memory signature) public {
-        bool validsig = false;
-        uint i = 0;
-        address[] memory addr;
+        if (isValidsigPublicKey(publicKey, data, message, signature, "newUserRegisterUserStart") == false)
+            return;
 
-        for (i = 0; i < publicKey.length; i++)
-            addr[i] = address(bytes20(keccak256(publicKey[i])));
-
-        validsig = verify(addr[0], message, signature);
-
-        if (validsig) {
-            userData[signature].register = false;
-            userData[signature].registerTime = block.timestamp;
-            userData[signature].registerOtpStartTime = block.timestamp;
-        }
-        else
-            revert invalidUserSignature({message: "invalid signature newUserRegisterUserStart", addr: addr[0], data: data[0], signature: signature});
-
-        for (i = 0; i < addr.length; i++)
-            emit userRegister("newUserRegisterUserStart", addr[i], data[i]);
+        userData[signature].register = false;
+        userData[signature].registerTime = block.timestamp;
+        userData[signature].registerOtpStartTime = block.timestamp;
     }
 
-    function newUserRegisterUserEnd(bytes[] memory publicKey, bytes[] memory data, string memory message, bytes memory signature) public {
-        bool validsig = false;
-        uint i = 0;
-        address[] memory addr;
-
-        for (i = 0; i < publicKey.length; i++)
-            addr[i] = address(bytes20(keccak256(publicKey[i])));
-
-        validsig = verify(addr[0], message, signature);
-
-        if (validsig == false) 
-            revert invalidUserSignature({message: "invalid signature newUserRegisterUserEnd", addr: addr[0], data: data[0], signature: signature});
+    function newUserRegisterUserComplete(bytes[] memory publicKey, bytes[] memory data, string memory message, bytes memory signature) public {
+        if (isValidsigPublicKey(publicKey, data, message, signature, "newUserRegisterUserComplete") == false)
+            return;
 
         if (block.timestamp < (userData[signature].registerOtpStartTime + 30 minutes))
             userData[signature].registerOtp = true;
-
-        for (i = 0; i < addr.length; i++)
-            emit userRegister("newUserRegisterUserEnd", addr[i], data[i]);
+        else
+            revert errMsg({message: "newUserRegisterUserOtpExpire", addr: address(bytes20(keccak256(publicKey[0]))), data: data[0], signature: signature});
     }
 
-    function newUserRegisterAdminEnd(bytes[] memory publicKey, bytes[] memory data, string memory message, bytes memory signature) public {
+    function newUserRegisterAdminApprove(bytes[] memory publicKey, bytes[] memory data, string memory message, bytes memory signature) public {
+        if (isValidsigPublicKey(publicKey, data, message, signature, "newUserRegisterAdminApprove") == false)
+            return;
+
+        userData[signature].register = true;
+    }
+
+    function isValidsigPublicKey(bytes[] memory publicKey, bytes[] memory data, string memory message, bytes memory signature, string memory str) private returns (bool) {
         bool validsig = false;
         uint i = 0;
+        string memory err = string.concat("invalid signature ", str);
         address[] memory addr;
 
         for (i = 0; i < publicKey.length; i++)
@@ -86,12 +71,13 @@ contract userReg {
         validsig = verify(addr[0], message, signature);
 
         if (validsig == false)
-            revert invalidUserSignature({message: "invalid signature newUserRegisterAdminEnd", addr: addr[0], data: data[0], signature: signature});
+            revert errMsg({message: err, addr: addr[0], data: data[0], signature: signature});
+        else {
+            for (i = 0; i < addr.length; i++)
+                emit userRegister(str, addr[i], data[i]);
+        }
 
-        userData[signature].register = true;
-
-        for (i = 0; i < addr.length; i++)
-            emit userRegister("newUserRegisterAdminEnd", addr[i], data[i]);
+        return validsig;
     }
 
     function getMessageHash(
