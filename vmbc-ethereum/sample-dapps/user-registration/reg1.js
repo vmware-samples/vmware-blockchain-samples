@@ -78,7 +78,7 @@ const generateAccount = async () => {
 }
 
 const deployContract = async (keyPair) => {
-    console.log("------------------------- DEPLOY Test -------------------------");
+    console.log("------------------------- DEPLOY Contract -------------------------");
 
     const nonce = 0;
 //    let deployedAddress = ethers.utils.getAddress(ethers.utils.getContractAddress({ from: keyPair.address, nonce }));
@@ -102,6 +102,7 @@ const adminDeployContract = async () => {
 }
 
 const userRegisterStart = async () => {
+    console.log("------------------------- User Registration Start -------------------------");
     let privateKey = String(user1AccountKeyPair.privateKey);
     let address = user1AccountKeyPair.address;
     let publicKey = user1AccountKeyPair.publicKey;
@@ -126,19 +127,19 @@ const userRegisterStart = async () => {
     console.log("");
 
     let tx = "";
+    let userPublicKey = ethers.utils.toUtf8Bytes(publicKey);
+    let admin1PublicKey = ethers.utils.toUtf8Bytes(admin1AccountKeyPair.publicKey);
+    let admin2PublicKey = ethers.utils.toUtf8Bytes(admin1AccountKeyPair.publicKey);
+    let dataEmail = "ramkri123@gmail.com";
+    let userData = {
+        publickey: publicKey,
+        email : dataEmail
+    };
+    let admin1Data = {
+        publickey: admin1AccountKeyPair.publicKey,
+        email : dataEmail
+    };
     try {
-        let userPublicKey = ethers.utils.toUtf8Bytes(publicKey);
-        let admin1PublicKey = ethers.utils.toUtf8Bytes(admin1AccountKeyPair.publicKey);
-        let admin2PublicKey = ethers.utils.toUtf8Bytes(admin1AccountKeyPair.publicKey);
-        let dataEmail = "ramkri123@gmail.com";
-        let userData = {
-            publickey: publicKey,
-            email : dataEmail
-        };
-        let admin1Data = {
-            publickey: admin1AccountKeyPair.publicKey,
-            email : dataEmail
-        };
         console.log("\x1b[34m%s\x1b[0m","Encrypt user's publicKey and email...")
         let data00 = await ACCOUNT_WALLET.encrypt(JSON.stringify(userData));
         console.log("\x1b[34m%s\x1b[0m", "Encrypted data is: ", data00);
@@ -174,7 +175,7 @@ const userRegisterStart = async () => {
         console.log(txr.logs[2]);
     }
    
-    
+    // Check if user is registered or not ( at this stage it shouldn't)
     data = await contract.isUserRegister(publicKey, signature);
     if (data == 0) {
         console.log("\x1b[34m%s\x1b[0m", "User " + address + " has not registered.")
@@ -185,6 +186,21 @@ const userRegisterStart = async () => {
     }
     console.log("");
 
+    await contractWithSigner.newUserRegisterAdminApprove(userPublicKey, admin1PublicKey, admin2PublicKey, ethers.utils.toUtf8Bytes(signature));
+   
+    console.log("------------------------- Extract publicKey from userIndex -------------------------");
+    // Get current user context
+    let currentuserIndex = await contract.getCurrentUserIndex();
+    currentuserIndex = currentuserIndex.toNumber();
+    console.log("\x1b[34m%s\x1b[0m", "currentuserIndex: ", currentuserIndex);
+
+    // Extract publickey from the data 
+    //data = await contract.userIndexToPublickey(currentuserIndex);
+    let publicKeyBytes = await contract.userIndexToPublickey(0);
+    console.log("\x1b[34m%s\x1b[0m", "publicKeyBytes: ", publicKeyBytes);
+    const userPublicKeyExtracted = ethers.utils.toUtf8String(publicKeyBytes);
+    console.log("\x1b[34m%s\x1b[0m", "userPublicKeyExtracted: ", userPublicKeyExtracted);
+    console.log("");
     return;
 }
 
@@ -195,8 +211,8 @@ const testNow = async () => {
     return true;
 }
 
-process.argv.forEach((value, index) => {
+/*process.argv.forEach((value, index) => {
   console.log(index, value);
-});
+});*/
 
 testNow();

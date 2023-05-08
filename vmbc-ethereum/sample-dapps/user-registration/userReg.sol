@@ -65,6 +65,10 @@ contract userReg {
        return  userIndexData[index];
     }
 
+    function getCurrentUserIndex() view public returns (uint){
+       return  currentUserIndex;
+    }
+
     // userPublicKey is the public key of the user
     // user signs userPublicKey with his private key and passes it through the signature field
     // data has encrypted user email - data[0] is encrypted by public key of user and only visible to user; data[1] is encrypted by public key of admin 1 and only visible to admin 1
