@@ -22,15 +22,15 @@ contract userReg {
         //for user
         bytes data00; //encrypted user email
         bytes data01; //encrypted user otp
-        bytes data02; //encrypted user mobile number
+       
         //for admin1
         bytes data10; //encrypted user email
         bytes data11; //encrypted user otp
-        bytes data12; //encrypted user mobile number
+        
         //for admin2
         bytes data20; //encrypted user email
         bytes data21; //encrypted user otp
-        bytes data22; //encrypted user mobile number
+       
     }
     uint currentUserIndex;
     mapping(bytes => userDataDefinition) public userData;
@@ -59,6 +59,10 @@ contract userReg {
             return 2; 
 
         return 0;
+    }
+
+    function userIndexToPublickey(uint index) view public returns (bytes memory){
+       return  userIndexData[index];
     }
 
     // userPublicKey is the public key of the user
