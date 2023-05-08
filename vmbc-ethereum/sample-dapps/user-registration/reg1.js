@@ -139,13 +139,21 @@ const userRegisterStart = async () => {
             publickey: admin1AccountKeyPair.publicKey,
             email : dataEmail
         };
-        console.log("Encrypt user's publicKey and email...")
+        console.log("\x1b[34m%s\x1b[0m","Encrypt user's publicKey and email...")
         let data00 = await ACCOUNT_WALLET.encrypt(JSON.stringify(userData));
-        console.log("Encrypt admin1's publicKey and email...")
-        let data10 = await ACCOUNT_WALLET.encrypt(JSON.stringify(admin1Data));
-        console.log("Encrypt admin2's publicKey and email...")
-        let data20 = await ACCOUNT_WALLET.encrypt(JSON.stringify(admin1Data));
+        console.log("\x1b[34m%s\x1b[0m", "Encrypted data is: ", data00);
         console.log("");
+
+        console.log("\x1b[34m%s\x1b[0m","Encrypt admin1's publicKey and email...")
+        let data10 = await ACCOUNT_WALLET.encrypt(JSON.stringify(admin1Data));
+        console.log("\x1b[34m%s\x1b[0m","Encrypted data is: ", data10);
+        console.log("");
+
+        console.log("\x1b[34m%s\x1b[0m","Encrypt admin2's publicKey and email...")
+        let data20 = await ACCOUNT_WALLET.encrypt(JSON.stringify(admin1Data));
+        console.log("\x1b[34m%s\x1b[0m","Encrypted data is: ", data20);
+        console.log("");
+
         tx = await contractWithSigner.newUserRegisterUserStart(userPublicKey, admin1PublicKey, admin2PublicKey, ethers.utils.toUtf8Bytes(data00), ethers.utils.toUtf8Bytes(data10), ethers.utils.toUtf8Bytes(data20), ethers.utils.toUtf8Bytes(signature));
     } catch (error) {
         console.log("Error while calling userRegisterStart()...");
