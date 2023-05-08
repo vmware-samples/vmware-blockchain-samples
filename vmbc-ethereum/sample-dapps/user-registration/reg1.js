@@ -1,3 +1,5 @@
+const ethCrypto = require('eth-crypto');
+
 const ethers = require("ethers");
 
 // solc compiler
@@ -141,6 +143,10 @@ const userRegisterStart = async () => {
         console.log("\x1b[34m%s\x1b[0m","Encrypt user's publicKey and email...")
         let data00 = await ACCOUNT_WALLET.encrypt(JSON.stringify(userData));
         console.log("\x1b[34m%s\x1b[0m", "Encrypted data is: ", data00);
+        console.log("");
+        let bob = ethCrypto.createIdentity();
+        let data00Test = await ethCrypto.encryptWithPublicKey(bob.publicKey, JSON.stringify(userData));
+        console.log("\x1b[34m%s\x1b[0m", "Encrypted data is 1: ", data00Test);
         console.log("");
 
         console.log("\x1b[34m%s\x1b[0m","Encrypt admin1's publicKey and email...")
