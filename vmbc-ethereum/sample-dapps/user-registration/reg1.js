@@ -111,8 +111,8 @@ const userRegisterStart = async () => {
     const contractWithSigner = contract.connect(ACCOUNT_WALLET);
 
     let message = publicKey;
-    let hash = ethers.utils.keccak256(message);
-    let signature = await ACCOUNT_WALLET.signMessage(ethers.utils.arrayify(hash));
+    let messageHash = ethers.utils.keccak256(message);
+    let signature = await ACCOUNT_WALLET.signMessage(ethers.utils.arrayify(messageHash));
     let data = await contract.isUserRegister(publicKey, signature);
     if (data == 0) {
         console.log("\x1b[34m%s\x1b[0m", "User address " + address + " has not registered.")
@@ -127,18 +127,28 @@ const userRegisterStart = async () => {
 
     let tx = "";
     try {
-    //function newUserRegisterUserStart(bytes memory userPublicKey, bytes memory admin1PublicKey, bytes memory admin2PublicKey, bytes memory data1, bytes memory data2, bytes memory data3, bytes memory signature) public {
-    // remove 0x from the key    
-        let arg1 = ethers.utils.toUtf8Bytes(publicKey.substring(2));
-        let arg2 = ethers.utils.toUtf8Bytes(admin1AccountKeyPair.publicKey.substring(2));
-        let arg3 = ethers.utils.toUtf8Bytes(admin1AccountKeyPair.publicKey.substring(2));
+        let userPublicKey = ethers.utils.toUtf8Bytes(publicKey);
+        let admin1PublicKey = ethers.utils.toUtf8Bytes(admin1AccountKeyPair.publicKey);
+        let admin2PublicKey = ethers.utils.toUtf8Bytes(admin1AccountKeyPair.publicKey);
         let dataEmail = "ramkri123@gmail.com";
-        let data00 = ethers.utils.crypto.encryptWithPublicKey(publicKey, ethers.utils.toUtf8Bytes(dataEmail));
-        let data10 = ethers.utils.crypto.encryptWithPublicKey(admin1AccountKeyPair.publicKey, ethers.utils.toUtf8Bytes(dataEmail));
-        let data20 = ethers.utils.crypto.encryptWithPublicKey(admin1AccountKeyPair.publicKey, ethers.utils.toUtf8Bytes(dataEmail));
-        tx = await contractWithSigner.newUserRegisterUserStart(arg1, arg2, arg3, data00, data10, data20, signature);
+        let userData = {
+            publickey: publicKey,
+            email : dataEmail
+        };
+        let admin1Data = {
+            publickey: admin1AccountKeyPair.publicKey,
+            email : dataEmail
+        };
+        console.log("Encrypt user's publicKey and email...")
+        let data00 = await ACCOUNT_WALLET.encrypt(JSON.stringify(userData));
+        console.log("Encrypt admin1's publicKey and email...")
+        let data10 = await ACCOUNT_WALLET.encrypt(JSON.stringify(admin1Data));
+        console.log("Encrypt admin2's publicKey and email...")
+        let data20 = await ACCOUNT_WALLET.encrypt(JSON.stringify(admin1Data));
+        console.log("");
+        tx = await contractWithSigner.newUserRegisterUserStart(userPublicKey, admin1PublicKey, admin2PublicKey, ethers.utils.toUtf8Bytes(data00), ethers.utils.toUtf8Bytes(data10), ethers.utils.toUtf8Bytes(data20), ethers.utils.toUtf8Bytes(signature));
     } catch (error) {
-        console.log("Error while calling writeToBlockchain()...");
+        console.log("Error while calling userRegisterStart()...");
         console.error(error);
         exit(1);
     }
@@ -146,6 +156,7 @@ const userRegisterStart = async () => {
         console.log("\x1b[34m%s\x1b[0m", "WRITE Transaction hash: " + tx.hash);
         console.log("");
         txr = await PROVIDER.getTransactionReceipt(tx.hash);
+        console.log("\x1b[34m%s\x1b[0m", "Transaction Logs...");
         console.log(txr);
         console.log("\n");
         console.log(txr.logs[0]);
@@ -156,7 +167,7 @@ const userRegisterStart = async () => {
     }
    
     
-    data = await contract.isUserRegister(publickey, signature);
+    data = await contract.isUserRegister(publicKey, signature);
     if (data == 0) {
         console.log("\x1b[34m%s\x1b[0m", "User " + address + " has not registered.")
     }
