@@ -132,11 +132,9 @@ const userRegisterStart = async () => {
     let admin2PublicKey = ethers.utils.toUtf8Bytes(admin1AccountKeyPair.publicKey);
     let dataEmail = "ramkri123@gmail.com";
     let userData = {
-        publickey: publicKey,
         email : dataEmail
     };
     let admin1Data = {
-        publickey: admin1AccountKeyPair.publicKey,
         email : dataEmail
     };
     try {
@@ -146,12 +144,12 @@ const userRegisterStart = async () => {
         console.log("");
 
         console.log("\x1b[34m%s\x1b[0m","Encrypt admin1's publicKey and email...")
-        let data10 = await ACCOUNT_WALLET.encrypt(JSON.stringify(admin1Data));
+        let data10 = JSON.stringify(admin1Data);
         console.log("\x1b[34m%s\x1b[0m","Encrypted data is: ", data10);
         console.log("");
 
         console.log("\x1b[34m%s\x1b[0m","Encrypt admin2's publicKey and email...")
-        let data20 = await ACCOUNT_WALLET.encrypt(JSON.stringify(admin1Data));
+        let data20 = JSON.stringify(admin1Data);
         console.log("\x1b[34m%s\x1b[0m","Encrypted data is: ", data20);
         console.log("");
 
@@ -195,7 +193,6 @@ const userRegisterStart = async () => {
     console.log("\x1b[34m%s\x1b[0m", "currentuserIndex: ", currentuserIndex);
 
     // Extract publickey from the data 
-    //data = await contract.userIndexToPublickey(currentuserIndex);
     let publicKeyBytes = await contract.userIndexToPublickey(0);
     console.log("\x1b[34m%s\x1b[0m", "publicKeyBytes: ", publicKeyBytes);
     const userPublicKeyExtracted = ethers.utils.toUtf8String(publicKeyBytes);

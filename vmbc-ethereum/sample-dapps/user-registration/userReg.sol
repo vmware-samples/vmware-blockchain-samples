@@ -36,11 +36,24 @@ contract userReg {
     mapping(bytes => userDataDefinition) public userData;
     mapping(uint => bytes) public userIndexData;
     error errMsg(string message, uint eventNumber, address addr, bytes signature);
-    //userAdminIdentifier - 0 user, 1 admin1, 2 admin2
     //
-    //const ethers = require("ethers");
-    //console.log(ethers.utils.keccak256(ethers.utils.toUtf8Bytes("userRegister(uint256,uint256,uint256)")));
+    // userAdminIdentifier - 0 user, 1 admin1, 2 admin2
     //
+    
+    // hash as topics[0] in log
+    // ethers.utils.keccak256(ethers.utils.toUtf8Bytes("userRegister(uint256,uint256,uint256)")));
+    //
+    // caller as topics[1] in log
+    // 0 -- newUserRegisterUserStart
+    // 1 -- newUserRegisterUserComplete
+    // 2 -- newUserRegisterAdminApprove
+
+    // userIndex as topics[2] in log
+
+    // userAdminIdentifieras topics[3] in log
+    // 0 -- user
+    // 1 -- admin1
+    // 2 -- admin2 
     event userRegister(uint256 indexed caller, uint256 indexed userIndex, uint256 indexed userAdminIdentifier);
 
     function isUserRegister(bytes memory userPublicKey, bytes memory signature) view public returns (uint) {
