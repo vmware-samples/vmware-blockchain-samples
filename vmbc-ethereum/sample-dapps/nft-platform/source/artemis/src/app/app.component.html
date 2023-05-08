@@ -3,7 +3,7 @@
     <div class="branding">
       <a class="nav-link" (click)="goHome()" style="cursor: pointer;">
         <cds-icon shape="vm"></cds-icon>
-        <span id='title' class="title">Amma</span>
+        <span id='title' class="title">Amrita Vanam</span>
       </a>
     </div>
     <div class="header-actions">
@@ -17,21 +17,6 @@
           }}</label>
         </clr-input-container1>
       </form>
-      <!-- <cds-icon
-        *ngIf="digitalArtsService.mainContractStatus === 'CONNECTED'"
-        shape="success-standard"
-        style="margin-top: 0.9rem; margin-left: 0.75rem;"
-      ></cds-icon> -->
-      <cds-icon
-      shape="success-standard"
-      style="margin-top: 0.9rem; margin-left: 0.75rem; margin-right: 0.65rem;"
-      ></cds-icon>
-      <!-- <span *ngIf="digitalArtsService.mainContractStatus !== 'CONNECTED'">({{ digitalArtsService.mainContractStatus }})</span> -->
-      <!-- <span *ngIf="digitalArtsService.mainContractStatus !== 'NOT_FOUND'" style="margin-right: 1rem"></span>
-      <button *ngIf="digitalArtsService.mainContractStatus === 'NOT_FOUND' || digitalArtsService.mainContractStatus === 'BAD_ADDRESS'" type="button" class="btn btn-primary"
-              style="margin-left: 0.65rem; margin-top: 0.5rem;" (click)="deployNewNftContract()">
-        Deploy New Contract
-      </button> -->
     </div>
   </header>
   <div id='sidemenu' class="content-container">
