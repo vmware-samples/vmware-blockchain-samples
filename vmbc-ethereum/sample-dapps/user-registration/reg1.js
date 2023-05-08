@@ -78,7 +78,7 @@ const generateAccount = async () => {
 }
 
 const deployContract = async (keyPair) => {
-    console.log("------------------------- DEPLOY Test -------------------------");
+    console.log("------------------------- DEPLOY Contract -------------------------");
 
     const nonce = 0;
 //    let deployedAddress = ethers.utils.getAddress(ethers.utils.getContractAddress({ from: keyPair.address, nonce }));
@@ -102,6 +102,7 @@ const adminDeployContract = async () => {
 }
 
 const userRegisterStart = async () => {
+    console.log("------------------------- User Registration Start -------------------------");
     let privateKey = String(user1AccountKeyPair.privateKey);
     let address = user1AccountKeyPair.address;
     let publicKey = user1AccountKeyPair.publicKey;
@@ -111,8 +112,8 @@ const userRegisterStart = async () => {
     const contractWithSigner = contract.connect(ACCOUNT_WALLET);
 
     let message = publicKey;
-    let hash = ethers.utils.keccak256(message);
-    let signature = await ACCOUNT_WALLET.signMessage(ethers.utils.arrayify(hash));
+    let messageHash = ethers.utils.keccak256(message);
+    let signature = await ACCOUNT_WALLET.signMessage(ethers.utils.arrayify(messageHash));
     let data = await contract.isUserRegister(publicKey, signature);
     if (data == 0) {
         console.log("\x1b[34m%s\x1b[0m", "User address " + address + " has not registered.")
@@ -126,19 +127,35 @@ const userRegisterStart = async () => {
     console.log("");
 
     let tx = "";
+    let userPublicKey = ethers.utils.toUtf8Bytes(publicKey);
+    let admin1PublicKey = ethers.utils.toUtf8Bytes(admin1AccountKeyPair.publicKey);
+    let admin2PublicKey = ethers.utils.toUtf8Bytes(admin1AccountKeyPair.publicKey);
+    let dataEmail = "ramkri123@gmail.com";
+    let userData = {
+        email : dataEmail
+    };
+    let admin1Data = {
+        email : dataEmail
+    };
     try {
-    //function newUserRegisterUserStart(bytes memory userPublicKey, bytes memory admin1PublicKey, bytes memory admin2PublicKey, bytes memory data1, bytes memory data2, bytes memory data3, bytes memory signature) public {
-    // remove 0x from the key    
-        let arg1 = ethers.utils.toUtf8Bytes(publicKey.substring(2));
-        let arg2 = ethers.utils.toUtf8Bytes(admin1AccountKeyPair.publicKey.substring(2));
-        let arg3 = ethers.utils.toUtf8Bytes(admin1AccountKeyPair.publicKey.substring(2));
-        let dataEmail = "ramkri123@gmail.com";
-        let data00 = ethers.utils.crypto.encryptWithPublicKey(publicKey, ethers.utils.toUtf8Bytes(dataEmail));
-        let data10 = ethers.utils.crypto.encryptWithPublicKey(admin1AccountKeyPair.publicKey, ethers.utils.toUtf8Bytes(dataEmail));
-        let data20 = ethers.utils.crypto.encryptWithPublicKey(admin1AccountKeyPair.publicKey, ethers.utils.toUtf8Bytes(dataEmail));
-        tx = await contractWithSigner.newUserRegisterUserStart(arg1, arg2, arg3, data00, data10, data20, signature);
+        console.log("\x1b[34m%s\x1b[0m","Encrypt user's publicKey and email...")
+        let data00 = await ACCOUNT_WALLET.encrypt(JSON.stringify(userData));
+        console.log("\x1b[34m%s\x1b[0m", "Encrypted data is: ", data00);
+        console.log("");
+
+        console.log("\x1b[34m%s\x1b[0m","Encrypt admin1's publicKey and email...")
+        let data10 = JSON.stringify(admin1Data);
+        console.log("\x1b[34m%s\x1b[0m","Encrypted data is: ", data10);
+        console.log("");
+
+        console.log("\x1b[34m%s\x1b[0m","Encrypt admin2's publicKey and email...")
+        let data20 = JSON.stringify(admin1Data);
+        console.log("\x1b[34m%s\x1b[0m","Encrypted data is: ", data20);
+        console.log("");
+
+        tx = await contractWithSigner.newUserRegisterUserStart(userPublicKey, admin1PublicKey, admin2PublicKey, ethers.utils.toUtf8Bytes(data00), ethers.utils.toUtf8Bytes(data10), ethers.utils.toUtf8Bytes(data20), ethers.utils.toUtf8Bytes(signature));
     } catch (error) {
-        console.log("Error while calling writeToBlockchain()...");
+        console.log("Error while calling userRegisterStart()...");
         console.error(error);
         exit(1);
     }
@@ -146,6 +163,7 @@ const userRegisterStart = async () => {
         console.log("\x1b[34m%s\x1b[0m", "WRITE Transaction hash: " + tx.hash);
         console.log("");
         txr = await PROVIDER.getTransactionReceipt(tx.hash);
+        console.log("\x1b[34m%s\x1b[0m", "Transaction Logs...");
         console.log(txr);
         console.log("\n");
         console.log(txr.logs[0]);
@@ -155,8 +173,8 @@ const userRegisterStart = async () => {
         console.log(txr.logs[2]);
     }
    
-    
-    data = await contract.isUserRegister(publickey, signature);
+    // Check if user is registered or not ( at this stage it shouldn't)
+    data = await contract.isUserRegister(publicKey, signature);
     if (data == 0) {
         console.log("\x1b[34m%s\x1b[0m", "User " + address + " has not registered.")
     }
@@ -166,6 +184,20 @@ const userRegisterStart = async () => {
     }
     console.log("");
 
+    await contractWithSigner.newUserRegisterAdminApprove(userPublicKey, admin1PublicKey, admin2PublicKey, ethers.utils.toUtf8Bytes(signature));
+   
+    console.log("------------------------- Extract publicKey from userIndex -------------------------");
+    // Get current user context
+    let currentuserIndex = await contract.getCurrentUserIndex();
+    currentuserIndex = currentuserIndex.toNumber();
+    console.log("\x1b[34m%s\x1b[0m", "currentuserIndex: ", currentuserIndex);
+
+    // Extract publickey from the data 
+    let publicKeyBytes = await contract.userIndexToPublickey(0);
+    console.log("\x1b[34m%s\x1b[0m", "publicKeyBytes: ", publicKeyBytes);
+    const userPublicKeyExtracted = ethers.utils.toUtf8String(publicKeyBytes);
+    console.log("\x1b[34m%s\x1b[0m", "userPublicKeyExtracted: ", userPublicKeyExtracted);
+    console.log("");
     return;
 }
 
@@ -176,8 +208,8 @@ const testNow = async () => {
     return true;
 }
 
-process.argv.forEach((value, index) => {
+/*process.argv.forEach((value, index) => {
   console.log(index, value);
-});
+});*/
 
 testNow();
