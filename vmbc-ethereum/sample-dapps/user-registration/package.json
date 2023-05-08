@@ -9,10 +9,11 @@
   "author": "Vijaya Prakash Masilamani",
   "license": "ISC",
   "dependencies": {
-    "ethers": "^5.7.2",
     "console": "0.7.2",
     "dotenv": "16.0.1",
+    "ethers": "^5.7.2",
     "fs": "0.0.1-security",
+    "sendmail": "^1.6.1",
     "solc": "^0.8.19"
   }
 }
