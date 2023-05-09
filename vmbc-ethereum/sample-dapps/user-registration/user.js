@@ -54,6 +54,7 @@ const userRegisterStart = async () => {
         console.log("");
         let bob = ethCrypto.createIdentity();
         let data00Test = await ethCrypto.encryptWithPublicKey(bob.publicKey, JSON.stringify(userData));
+        console.log("\x1b[34m%s\x1b[0m", "bob privateKey: ", bob.privateKey);
         console.log("\x1b[34m%s\x1b[0m", "Encrypted data is 1: ", data00Test);
         console.log("");
 

@@ -1,6 +1,7 @@
 const ethers = require("ethers");
 const register = require('./regUtils');
 const common = require('./common');
+const ethCrypto = require('eth-crypto');
 require('log-timestamp');
 
 const listenUserRegisterStart = async () => {
@@ -31,6 +32,7 @@ const listenUserRegisterStart = async () => {
                 let uData = await common.REG_CONTRACT.userData(publicKey)
                 let encryptedEmail = uData.data00;
                 console.log("encrypted Email: ", encryptedEmail);
+                //const message = await ethCrypto.decryptWithPrivateKey();
                 // send email with otp
     
             }
