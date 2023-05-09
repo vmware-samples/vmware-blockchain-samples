@@ -2,6 +2,7 @@ const ethCrypto = require('eth-crypto');
 
 const ethers = require("ethers");
 const common = require("./common");
+require('log-timestamp');
 
 // solc compiler
 solc = require("solc");

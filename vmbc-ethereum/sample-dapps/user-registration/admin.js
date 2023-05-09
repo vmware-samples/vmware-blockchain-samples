@@ -1,6 +1,7 @@
 const ethers = require("ethers");
 const register = require('./regUtils');
 const common = require('./common');
+require('log-timestamp');
 
 const listenUserRegisterStart = async () => {
     

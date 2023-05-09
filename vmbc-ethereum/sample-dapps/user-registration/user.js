@@ -2,6 +2,7 @@ const ethers = require("ethers");
 const register = require('./regUtils');
 const common = require('./common');
 const ethCrypto = require('eth-crypto');
+require('log-timestamp');
 
 const userRegisterStart = async () => {
     console.log("------------------------- User Registration Start -------------------------");
