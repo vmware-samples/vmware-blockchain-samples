@@ -14,10 +14,23 @@ const listenUserRegisterStart = async () => {
     };
 
     common.REG_CONTRACT.on(filter, (caller, userIndex, userAdminIdentifier, event) => {
-        console.log(`Received event: ${event.event}`);
-        console.log(`Received event caller: ${caller}`);
-        console.log(`Received event userIndex: ${userIndex}`);
-        console.log(`Received event userAdminIdentifier: ${userAdminIdentifier}`);
+        console.log(`Received event: ${event.event}, caller: ${caller}, userIndex: ${userIndex}, userAdminIdentifier:  ${userAdminIdentifier}`);
+        // extract topic from the log
+        const filter1 = {
+            topics: [eventSignatureHash]
+        }
+        common.PROVIDER.getLogs(filter1).then(response => {
+            console.log(response[0].topics[0]);
+            if (response[0].topics[0] == eventSignatureHash) {
+                /*common.REG_CONTRACT.userIndexToPublickey(userIndex).then(publicKey => {
+                    //got the publicKey as bytes, now get the eamil
+                    common.REG_CONTRACT.userData(publicKey).then(uData => {
+                        let encryptedEmail = uData.data00;
+                        // send email with otp
+                    });
+                });*/
+            }
+        });
 
     });
 }

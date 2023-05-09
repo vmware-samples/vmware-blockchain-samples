@@ -42,6 +42,11 @@ common.privateKey = admin1AccountKeyPair.privateKey;
 common.address = admin1AccountKeyPair.address;
 common.publicKey = admin1AccountKeyPair.publicKey;
 
+common.REG_CONTRACT_ABI = ["function isUserRegister(bytes memory userPublicKey, bytes memory signature) view public returns (uint)", 
+"function newUserRegisterUserStart(bytes memory userPublicKey, bytes memory admin1PublicKey, bytes memory admin2PublicKey, bytes memory data00, bytes memory data10, bytes memory data20, bytes memory signature) public",
+"function newUserRegisterUserComplete(bytes memory userPublicKey, bytes memory admin1PublicKey, bytes memory admin2PublicKey, bytes memory data01, bytes memory data11, bytes memory data21, bytes memory signature) public",
+"function userIndexToPublickey(uint index) view public returns (bytes memory)"];
+
 const compileContract = async () => {
 
     // Reading the file
@@ -140,7 +145,6 @@ const extractPublicKeyFromUserIndex = async () => {
 
 const testNow = async () => {
     await adminDeployContract();
-    await userRegisterStart();
     console.log("\x1b[32m%s\x1b[0m", "==================== DONE ========================");
     return true;
 }

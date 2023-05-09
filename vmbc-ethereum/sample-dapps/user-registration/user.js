@@ -16,11 +16,9 @@ const userRegisterStart = async () => {
         console.log("Error: you have to pass contract address as arg 2");
         process.exit(1);
     }
-    REG_CONTRACT_ABI = ["function isUserRegister(bytes memory userPublicKey, bytes memory signature) view public returns (uint)", 
-                                    "function newUserRegisterUserStart(bytes memory userPublicKey, bytes memory admin1PublicKey, bytes memory admin2PublicKey, bytes memory data00, bytes memory data10, bytes memory data20, bytes memory signature) public",
-                                    "function newUserRegisterUserComplete(bytes memory userPublicKey, bytes memory admin1PublicKey, bytes memory admin2PublicKey, bytes memory data01, bytes memory data11, bytes memory data21, bytes memory signature) public "];
+
  
-    REG_CONTRACT = new ethers.Contract(REG_CONTRACT_ADDRESS, REG_CONTRACT_ABI, common.PROVIDER);
+    REG_CONTRACT = new ethers.Contract(REG_CONTRACT_ADDRESS, common.REG_CONTRACT_ABI, common.PROVIDER);
     const contractWithSigner = REG_CONTRACT.connect(ACCOUNT_WALLET);
 
     let message = publicKey;
