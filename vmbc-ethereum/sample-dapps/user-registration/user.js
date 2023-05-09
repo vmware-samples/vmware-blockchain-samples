@@ -18,13 +18,13 @@ const userRegisterStart = async () => {
     }
 
  
-    REG_CONTRACT = new ethers.Contract(REG_CONTRACT_ADDRESS, common.REG_CONTRACT_ABI, common.PROVIDER);
-    const contractWithSigner = REG_CONTRACT.connect(ACCOUNT_WALLET);
+    common.REG_CONTRACT = new ethers.Contract(REG_CONTRACT_ADDRESS, common.REG_CONTRACT_ABI, common.PROVIDER);
+    const contractWithSigner = common.REG_CONTRACT.connect(ACCOUNT_WALLET);
 
     let message = publicKey;
     let messageHash = ethers.utils.keccak256(message);
     let signature = await ACCOUNT_WALLET.signMessage(ethers.utils.arrayify(messageHash));
-    let data = await REG_CONTRACT.isUserRegister(publicKey, signature);
+    let data = await common.REG_CONTRACT.isUserRegister(publicKey, signature);
     if (data == 0) {
         console.log("\x1b[34m%s\x1b[0m", "User address " + address + " has not registered.")
         console.log("\x1b[34m%s\x1b[0m", "User publickey " + publicKey + " has not registered.")

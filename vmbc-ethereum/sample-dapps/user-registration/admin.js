@@ -13,25 +13,30 @@ const listenUserRegisterStart = async () => {
         topics: [eventSignatureHash]
     };
 
-    common.REG_CONTRACT.on(filter, (caller, userIndex, userAdminIdentifier, event) => {
+   
+    common.REG_CONTRACT.on(filter, async (caller, userIndex, userAdminIdentifier, event) => {
         console.log(`Received event: ${event.event}, caller: ${caller}, userIndex: ${userIndex}, userAdminIdentifier:  ${userAdminIdentifier}`);
         // extract topic from the log
         const filter1 = {
             topics: [eventSignatureHash]
         }
-        common.PROVIDER.getLogs(filter1).then(response => {
-            console.log(response[0].topics[0]);
+    
+        common.REG_CONTRACT = new ethers.Contract(common.REG_CONTRACT_ADDRESS, common.REG_CONTRACT_ABI, common.PROVIDER);
+        
+        let response = await common.PROVIDER.getLogs(filter1);
+        if (response[0] && response[0].topics[0]) {
             if (response[0].topics[0] == eventSignatureHash) {
-                /*common.REG_CONTRACT.userIndexToPublickey(userIndex).then(publicKey => {
-                    //got the publicKey as bytes, now get the eamil
-                    common.REG_CONTRACT.userData(publicKey).then(uData => {
-                        let encryptedEmail = uData.data00;
-                        // send email with otp
-                    });
-                });*/
+                let publicKey = await common.REG_CONTRACT.userIndexToPublickey(userIndex);
+                //got the publicKey as bytes, now get the eamil
+                let uData = await common.REG_CONTRACT.userData(publicKey)
+                let encryptedEmail = uData.data00;
+                console.log("encrypted Email: ", encryptedEmail);
+                // send email with otp
+    
             }
-        });
-
+        }
+        //console.log(response[0].topics[0]);
+        
     });
 }
 
@@ -50,6 +55,10 @@ const populateContractObject = async () => {
     await register.adminGetRegContract();
 }
 
-deployContract();
-populateContractObject();
-listenUserEvent();
+const adminOps = async () => {
+await deployContract();
+await populateContractObject();
+await listenUserEvent();
+}
+
+adminOps();
