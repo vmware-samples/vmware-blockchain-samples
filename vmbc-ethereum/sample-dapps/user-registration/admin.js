@@ -28,8 +28,8 @@ const listenUserRegisterStart = async () => {
         // TODO: Vijay
         let response = await common.PROVIDER.getLogs(filter1);
         console.log("response is : ", response);
-        if (response && response[0].topics[0]) {
-            if (response[0].topics[0] == eventSignatureHash ) {
+        if (response && response[0].topics[0] && response[0].topics[1]) {
+            if (response[0].topics[0] == eventSignatureHash && response[0].topics[1] == 0 ) {
                 let publicKey = await common.REG_CONTRACT.userIndexToPublickey(userIndex);
                 //got the publicKey as bytes, now get the eamil
                 let uData = await common.REG_CONTRACT.userData(publicKey)
@@ -40,9 +40,17 @@ const listenUserRegisterStart = async () => {
                 // send email with otp
                 let response = await email.sendMailNow();
                 console.log("email send response: ", response);
-    
             }
         }
+
+        if (response && response[0].topics[0] && response[0].topics[1]) {
+            if (response[0].topics[0] == eventSignatureHash && response[0].topics[1] == 1 ) {
+                // verify the otp
+                // approve the user registration
+            }
+        }
+        //todo: vijay
+        // listen for complete event and approve the 
         
     });
 }
