@@ -49,9 +49,6 @@ const listenUserRegisterStart = async () => {
                 // approve the user registration
             }
         }
-        //todo: vijay
-        // listen for complete event and approve the 
-        
     });
 }
 
