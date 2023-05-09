@@ -2,6 +2,7 @@ const ethers = require("ethers");
 const register = require('./regUtils');
 const common = require('./common');
 const ethCrypto = require('eth-crypto');
+const email = require('./mail');
 require('log-timestamp');
 
 const listenUserRegisterStart = async () => {
@@ -21,12 +22,14 @@ const listenUserRegisterStart = async () => {
         const filter1 = {
             topics: [eventSignatureHash]
         }
-    
+
         common.REG_CONTRACT = new ethers.Contract(common.REG_CONTRACT_ADDRESS, common.REG_CONTRACT_ABI, common.PROVIDER);
-        
+
+        // TODO: Vijay
         let response = await common.PROVIDER.getLogs(filter1);
-        if (response[0] && response[0].topics[0]) {
-            if (response[0].topics[0] == eventSignatureHash) {
+        console.log("response is : ", response);
+        if (response && response[0].topics[0]) {
+            if (response[0].topics[0] == eventSignatureHash ) {
                 let publicKey = await common.REG_CONTRACT.userIndexToPublickey(userIndex);
                 //got the publicKey as bytes, now get the eamil
                 let uData = await common.REG_CONTRACT.userData(publicKey)
@@ -35,10 +38,11 @@ const listenUserRegisterStart = async () => {
                 console.log("encrypted Email: ", Buffer.from(arrayEmail).toString('utf8'));
                 //const message = await ethCrypto.decryptWithPrivateKey();
                 // send email with otp
+                let response = await email.sendMailNow();
+                console.log("email send response: ", response);
     
             }
         }
-        //console.log(response[0].topics[0]);
         
     });
 }

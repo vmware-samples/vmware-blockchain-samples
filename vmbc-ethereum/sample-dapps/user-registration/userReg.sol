@@ -142,9 +142,9 @@ contract userReg {
         if (validsig == false)
             revert errMsg({message: "isValidsigPublicKeyInvalidSignature", eventNumber: eventNumber, addr: useraddr, signature: signature});
         else {
-            emit userRegister(eventNumber, currentUserIndex, 0);
-            emit userRegister(eventNumber, currentUserIndex, 1);
-            emit userRegister(eventNumber, currentUserIndex, 2);
+            emit userRegister(eventNumber, currentUserIndex, 12345);
+           // emit userRegister(eventNumber, currentUserIndex, 1);
+           // emit userRegister(eventNumber, currentUserIndex, 2);
         }
 
         return validsig;
