@@ -31,7 +31,8 @@ const listenUserRegisterStart = async () => {
                 //got the publicKey as bytes, now get the eamil
                 let uData = await common.REG_CONTRACT.userData(publicKey)
                 let encryptedEmail = uData.data00;
-                console.log("encrypted Email: ", encryptedEmail);
+                let arrayEmail = ethers.utils.arrayify(encryptedEmail);
+                console.log("encrypted Email: ", Buffer.from(arrayEmail).toString('utf8'));
                 //const message = await ethCrypto.decryptWithPrivateKey();
                 // send email with otp
     
