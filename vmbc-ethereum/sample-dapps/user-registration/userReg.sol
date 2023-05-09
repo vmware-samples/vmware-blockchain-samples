@@ -40,7 +40,7 @@ contract userReg {
     // userAdminIdentifier - 0 user, 1 admin1, 2 admin2
     //
     
-    // hash as topics[0] in log
+    // event signature's hash as topics[0] in log
     // ethers.utils.keccak256(ethers.utils.toUtf8Bytes("userRegister(uint256,uint256,uint256)")));
     //
     // caller as topics[1] in log
@@ -50,7 +50,7 @@ contract userReg {
 
     // userIndex as topics[2] in log
 
-    // userAdminIdentifieras topics[3] in log
+    // userAdminIdentifier as topics[3] in log
     // 0 -- user
     // 1 -- admin1
     // 2 -- admin2 
