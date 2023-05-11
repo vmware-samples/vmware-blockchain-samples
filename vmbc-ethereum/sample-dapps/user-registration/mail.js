@@ -1,7 +1,17 @@
 const nodemailer = require("nodemailer");
 
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
-const sendMailNow = async () => {
+const generateOtp = async () => {
+    let otp = getRandomInt(1, 1000000);
+    return otp;
+}
+
+const sendMailNow = async (otp) => {
 
     /*// create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
@@ -31,12 +41,7 @@ const sendMailNow = async () => {
         console.log('Message sent: %s', info.messageId);
     });*/
 
-    function getRandomInt(min, max) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-    let otp = getRandomInt(1, 1000000);
+
 
     const sendmail = require('sendmail')();
     sendmail({
@@ -51,4 +56,4 @@ const sendMailNow = async () => {
     });
 }
 
-module.exports = { sendMailNow };
+module.exports = { generateOtp, sendMailNow };

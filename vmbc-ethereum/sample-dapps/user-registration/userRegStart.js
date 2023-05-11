@@ -6,9 +6,10 @@ require('log-timestamp');
 
 const userRegisterStart = async () => {
     console.log("------------------------- User Registration Start -------------------------");
-    let privateKey = String(common.privateKey);
-    let address = common.address;
-    let publicKey = common.publicKey;
+    
+    let privateKey = String(process.env.USER1_PRIVATE_KEY);
+    let address = process.env.USER1_ADDRESS;
+    let publicKey = process.env.USER1_PUBLIC_KEY;
     let ACCOUNT_WALLET = new ethers.Wallet(privateKey, common.PROVIDER);
 
     REG_CONTRACT_ADDRESS = process.argv[2];

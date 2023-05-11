@@ -5,13 +5,14 @@ const ethCrypto = require('eth-crypto');
 const email = require('./mail');
 require('log-timestamp');
 
+let OTP = {};
 const listenUserRegisterStart = async () => {
     
     //  event signature hash
     let eventSignatureHash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes("userRegister(uint256,uint256,uint256)"));
     console.log("Listening for user events......");
     const filter = {
-        address: common.REG_CONTRACT_ADDRESS,
+        address: await common.REG_CONTRACT_ADDRESS,
         topics: [eventSignatureHash]
     };
 
@@ -21,7 +22,7 @@ const listenUserRegisterStart = async () => {
         // extract topic from the log
         const filter1 = {
             topics: [eventSignatureHash],
-            address: common.REG_CONTRACT_ADDRESS
+            address: await common.REG_CONTRACT_ADDRESS
         }
 
         common.REG_CONTRACT = new ethers.Contract(common.REG_CONTRACT_ADDRESS, common.REG_CONTRACT_ABI, common.PROVIDER);
@@ -34,6 +35,9 @@ const listenUserRegisterStart = async () => {
         let signature = await ADMIN_WALLET.signMessage(ethers.utils.arrayify(messageHash));
 
         // TODO: Vijay
+       
+        // userIndex --> generated otp
+        // match this value in blockchain and approve
         let response = await common.PROVIDER.getLogs(filter1);
         console.log("response is : ", response);
         if (response && response[0].topics[0] && response[0].topics[1]) {
@@ -47,8 +51,10 @@ const listenUserRegisterStart = async () => {
                 console.log("decrypted Email: ", decryptedEmail);
                 //const message = await ethCrypto.decryptWithPrivateKey();
                 // send email with otp
-                let response = await email.sendMailNow();
+                let otp = await email.generateOtp();
+                let response = await email.sendMailNow(otp);
                 console.log("email send response: ", response);
+                OTP[userIndex] = otp;
             }
         }
 
@@ -63,11 +69,15 @@ const listenUserRegisterStart = async () => {
                 let arrayOtp = ethers.utils.arrayify(encryptedOtp);
                 let decryptedOtp = Buffer.from(arrayOtp).toString('utf8');
                 console.log("decrypted Otp: ", decryptedOtp);
-                // approve the user registration
-                let response = await contractWithSigner.newUserRegisterAdminApprove(publicKey,  ethers.utils.toUtf8Bytes(register.admin1AccountKeyPair.publicKey),  ethers.utils.toUtf8Bytes(register.admin1AccountKeyPair.publicKey), signature);
-                console.log("approve is : ", response);
-                console.log("approved public is : ", publicKey);
-                
+                console.log("memory Otp: ", OTP[userIndex]);
+                // approve the user registration if the OTP matches
+                if (OTP[userIndex] == decryptedOtp) {
+                    let response = await contractWithSigner.newUserRegisterAdminApprove(publicKey,  ethers.utils.toUtf8Bytes(register.admin1AccountKeyPair.publicKey),  ethers.utils.toUtf8Bytes(register.admin1AccountKeyPair.publicKey), signature);
+                    console.log("approve is : ", response);
+                    console.log("approved public is : ", publicKey);
+                } else {
+                    console.log("Error: OTP doens't match!. User registration failed !");
+                }
             }
         }
     });
