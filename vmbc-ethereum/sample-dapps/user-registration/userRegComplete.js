@@ -57,12 +57,7 @@ const userRegisterComplete = async () => {
         let admin1Data = OTP; 
         console.log("\x1b[34m%s\x1b[0m", "Encrypted data is: ", data01);
         console.log("");
-        /*let bob = ethCrypto.createIdentity();
-        let data00Test = await ethCrypto.encryptWithPublicKey(bob.publicKey, JSON.stringify(userData));
-        console.log("\x1b[34m%s\x1b[0m", "bob privateKey: ", bob.privateKey);
-        console.log("\x1b[34m%s\x1b[0m", "Encrypted data is 1: ", data00Test);
-        console.log("");*/
-
+   
         console.log("\x1b[34m%s\x1b[0m","Encrypt admin1's publicKey and OTP...")
         let data11 = admin1Data;
         console.log("\x1b[34m%s\x1b[0m","Encrypted data is: ", data11);
@@ -72,8 +67,10 @@ const userRegisterComplete = async () => {
         let data21 = admin1Data;
         console.log("\x1b[34m%s\x1b[0m","Encrypted data is: ", data21);
         console.log("");
-
-        tx = await contractWithSigner.newUserRegisterUserComplete(userPublicKey, admin1PublicKey, admin2PublicKey, Buffer.from(data01, 'utf8'), ethers.utils.toUtf8Bytes(data11), ethers.utils.toUtf8Bytes(data21), ethers.utils.toUtf8Bytes(signature));
+        let data01est = await ethCrypto.encryptWithPublicKey(ethers.utils.arrayify(process.env.ADMIN1_PUBLIC_KEY), data01);
+        let data11Test = await ethCrypto.encryptWithPublicKey(ethers.utils.arrayify(process.env.ADMIN1_PUBLIC_KEY), data01);
+        let data21Test = await ethCrypto.encryptWithPublicKey(ethers.utils.arrayify(process.env.ADMIN1_PUBLIC_KEY), data01);
+        tx = await contractWithSigner.newUserRegisterUserComplete(userPublicKey, admin1PublicKey, admin2PublicKey, ethers.utils.toUtf8Bytes(ethCrypto.cipher.stringify(data01est)), ethers.utils.toUtf8Bytes(ethCrypto.cipher.stringify(data11Test)), ethers.utils.toUtf8Bytes(ethCrypto.cipher.stringify(data21Test)), ethers.utils.toUtf8Bytes(signature));
     } catch (error) {
         console.log("Error while calling userRegisterComplete()...");
         console.error(error);

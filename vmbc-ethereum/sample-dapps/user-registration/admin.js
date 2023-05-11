@@ -34,26 +34,33 @@ const listenUserRegisterStart = async () => {
         let messageHash = ethers.utils.keccak256(message);
         let signature = await ADMIN_WALLET.signMessage(ethers.utils.arrayify(messageHash));
 
-        // TODO: Vijay
-       
-        // userIndex --> generated otp
-        // match this value in blockchain and approve
         let response = await common.PROVIDER.getLogs(filter1);
-        console.log("response is : ", response);
+        //console.log("response is : ", response);
+        if (response == "" || response == "[]") {
+            return;
+        }
+
         if (response && response[0].topics[0] && response[0].topics[1]) {
             if (response[0].topics[0] == eventSignatureHash && response[0].topics[1] == 0 ) {
                 let publicKey = await common.REG_CONTRACT.userIndexToPublickey(userIndex);
+                
+                publicKey = ethers.utils.arrayify(publicKey);
+                
                 //got the publicKey as bytes, now get the eamil
-                let uData = await common.REG_CONTRACT.userData(publicKey)
-                let encryptedEmail = uData.data00;
-                let arrayEmail = ethers.utils.arrayify(encryptedEmail);
-                let decryptedEmail = Buffer.from(arrayEmail).toString('utf8');
+                let uData = await common.REG_CONTRACT.userData(publicKey);
+                let encryptedData = uData.data00;
+                let arrayEmail = ethers.utils.arrayify(encryptedData);
+                let encryptedEmail = Buffer.from(arrayEmail).toString('utf8');
+                console.log("encrypted Email: ", encryptedEmail);
+
+                const decryptedEmail = await ethCrypto.decryptWithPrivateKey(process.env.ADMIN1_PRIVATE_KEY, encryptedEmail);
                 console.log("decrypted Email: ", decryptedEmail);
-                //const message = await ethCrypto.decryptWithPrivateKey();
+                
                 // send email with otp
                 let otp = await email.generateOtp();
-                let response = await email.sendMailNow(otp);
+                let response = await email.sendMailNow(decryptedEmail, otp);
                 console.log("email send response: ", response);
+                // store the otp, it will be useful to approve the request
                 OTP[userIndex] = otp;
             }
         }
@@ -62,13 +69,18 @@ const listenUserRegisterStart = async () => {
             if (response[0].topics[0] == eventSignatureHash && response[0].topics[1] == 1 ) {
                 // verify the otp
                 let publicKey = await common.REG_CONTRACT.userIndexToPublickey(userIndex);
-                console.log("publicKey in Complete: ", publicKey)
+                console.log("publicKey in Complete: ", publicKey);
+                publicKey = ethers.utils.arrayify(publicKey);
                 //got the publicKey as bytes, now get the otp
                 let uData = await common.REG_CONTRACT.userData(publicKey)
-                let encryptedOtp = uData.data01;
-                let arrayOtp = ethers.utils.arrayify(encryptedOtp);
-                let decryptedOtp = Buffer.from(arrayOtp).toString('utf8');
-                console.log("decrypted Otp: ", decryptedOtp);
+                let encryptedData = uData.data01;
+                console.log("encryptedData : ", encryptedData);
+
+                let arrayOtp = ethers.utils.arrayify(encryptedData);
+                let encryptedOtp = Buffer.from(arrayOtp).toString('utf8');
+                console.log("encryptedOtp : ", encryptedOtp);
+                const decryptedOtp = await ethCrypto.decryptWithPrivateKey(process.env.ADMIN1_PRIVATE_KEY, encryptedOtp);
+                console.log("decryptedOtp : ", decryptedOtp);
                 console.log("memory Otp: ", OTP[userIndex]);
                 // approve the user registration if the OTP matches
                 if (OTP[userIndex] == decryptedOtp) {

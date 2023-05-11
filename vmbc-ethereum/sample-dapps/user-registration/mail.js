@@ -11,7 +11,7 @@ const generateOtp = async () => {
     return otp;
 }
 
-const sendMailNow = async (otp) => {
+const sendMailNow = async (email, otp) => {
 
     /*// create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
@@ -46,7 +46,7 @@ const sendMailNow = async (otp) => {
     const sendmail = require('sendmail')();
     sendmail({
         from: 'testethereumcontract@gmail.com',
-        to: 'vijayaprakam@vmware.com',
+        to: email,
         subject: 'DID: User registration OTP',
         text: otp.toString(),
         html: otp.toString(),

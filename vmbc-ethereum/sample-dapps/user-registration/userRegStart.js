@@ -55,23 +55,28 @@ const userRegisterStart = async () => {
         let data00 = dataEmail;
         console.log("\x1b[34m%s\x1b[0m", "Encrypted data is: ", data00);
         console.log("");
-        let bob = ethCrypto.createIdentity();
-        let data00Test = await ethCrypto.encryptWithPublicKey(bob.publicKey, JSON.stringify(userData));
-        console.log("\x1b[34m%s\x1b[0m", "bob privateKey: ", bob.privateKey);
+        //let bob = ethCrypto.createIdentity();
+        let data00Test = await ethCrypto.encryptWithPublicKey(ethers.utils.arrayify(process.env.ADMIN1_PUBLIC_KEY), data00);
+        //console.log("\x1b[34m%s\x1b[0m", "bob privateKey: ", bob.privateKey);
         console.log("\x1b[34m%s\x1b[0m", "Encrypted data is 1: ", data00Test);
         console.log("");
 
         console.log("\x1b[34m%s\x1b[0m","Encrypt admin1's publicKey and email...")
         let data10 = JSON.stringify(admin1Data);
-        console.log("\x1b[34m%s\x1b[0m","Encrypted data is: ", data10);
+        let data10Test = await ethCrypto.encryptWithPublicKey(ethers.utils.arrayify(process.env.ADMIN1_PUBLIC_KEY), data00);
+        console.log("\x1b[34m%s\x1b[0m","Encrypted data is: ", data10Test);
         console.log("");
 
         console.log("\x1b[34m%s\x1b[0m","Encrypt admin2's publicKey and email...")
         let data20 = JSON.stringify(admin1Data);
-        console.log("\x1b[34m%s\x1b[0m","Encrypted data is: ", data20);
+        let data20Test = await ethCrypto.encryptWithPublicKey(ethers.utils.arrayify(process.env.ADMIN1_PUBLIC_KEY), data00);
+        console.log("\x1b[34m%s\x1b[0m","Encrypted data is: ", data20Test);
         console.log("");
 
-        tx = await contractWithSigner.newUserRegisterUserStart(userPublicKey, admin1PublicKey, admin2PublicKey, Buffer.from(data00, 'utf8'), ethers.utils.toUtf8Bytes(data10), ethers.utils.toUtf8Bytes(data20), ethers.utils.toUtf8Bytes(signature));
+        console.log("userPublicKey F --> : ", userPublicKey);
+        console.log("adminPublicKey F --> : ", admin1PublicKey);
+        tx = await contractWithSigner.newUserRegisterUserStart(userPublicKey, admin1PublicKey, admin2PublicKey, ethers.utils.toUtf8Bytes(ethCrypto.cipher.stringify(data00Test)), ethers.utils.toUtf8Bytes(ethCrypto.cipher.stringify(data10Test)), ethers.utils.toUtf8Bytes(ethCrypto.cipher.stringify(data20Test)), ethers.utils.toUtf8Bytes(signature));
+        //tx = await contractWithSigner.newUserRegisterUserStart(userPublicKey, admin1PublicKey, admin2PublicKey, ethers.utils.toUtf8Bytes(JSON.stringify(data00Test)), ethers.utils.toUtf8Bytes( JSON.stringify(data10Test)), ethers.utils.toUtf8Bytes( JSON.stringify(data20Test)), ethers.utils.toUtf8Bytes(signature));
     } catch (error) {
         console.log("Error while calling userRegisterStart()...");
         console.error(error);
@@ -86,12 +91,7 @@ const userRegisterStart = async () => {
         console.log(txr);
         console.log("\n");
         console.log(txr.logs[0]);
-        console.log("\n");
-        console.log(txr.logs[1]);
-        console.log("\n");
-        console.log(txr.logs[2]);
         console.log("\x1b[32m%s\x1b[0m", "==================== DONE ========================");
-
     }
 
 }

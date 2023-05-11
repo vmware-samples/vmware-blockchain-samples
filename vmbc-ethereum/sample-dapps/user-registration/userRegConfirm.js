@@ -6,6 +6,10 @@ require('log-timestamp');
 
 const userRegisterConfirm = async () => {
     console.log("------------------------- User Registration Confirm -------------------------");
+    const wallet = ethers.Wallet.createRandom();
+    console.log(wallet.privateKey);
+    console.log(wallet.publicKey);
+    console.log(wallet.address);
     let privateKey = String(process.env.USER1_PRIVATE_KEY);
     let address = process.env.USER1_ADDRESS;
     let publicKey = process.env.USER1_PUBLIC_KEY;

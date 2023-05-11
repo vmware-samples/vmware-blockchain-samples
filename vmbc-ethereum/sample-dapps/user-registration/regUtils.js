@@ -80,17 +80,18 @@ const compileContract = async () => {
 const generateAccount = async () => {
     console.log("\x1b[33m%s\x1b[0m", "==================== Create new ethereum account ==================");
     var keyPair = {};
-    var id = crypto.randomBytes(32).toString('hex');
-    var privateKey = "0x" + id;
-    console.log("\x1b[34m%s\x1b[0m", "Private Key:", privateKey);
 
-    var wallet = new ethers.Wallet(privateKey);
+    const wallet = ethers.Wallet.createRandom();
+    console.log("\x1b[34m%s\x1b[0m", "Private Key:", wallet.privateKey);
     console.log("\x1b[34m%s\x1b[0m", "Address: " + wallet.address);
     console.log("\x1b[34m%s\x1b[0m", "Public Key: " + wallet.publicKey);
-    keyPair.privateKey = privateKey;
+
+    keyPair.privateKey = wallet.privateKey;
     keyPair.address = wallet.address;
     keyPair.publicKey = wallet.publicKey;
+
     console.log("");
+    console.log("\x1b[32m%s\x1b[0m", "==================== DONE ========================");
     return keyPair;
 
 }
@@ -99,14 +100,11 @@ const deployContract = async (keyPair) => {
     console.log("------------------------- DEPLOY Contract -------------------------");
 
     const nonce = 0;
-//    let deployedAddress = ethers.utils.getAddress(ethers.utils.getContractAddress({ from: keyPair.address, nonce }));
-//    console.log("\x1b[34m%s\x1b[0m", "Before deployment: Contract Address:  " + deployedAddress);
 
     let privateKey = String(keyPair.privateKey);
     let ACCOUNT_WALLET = new ethers.Wallet(privateKey, PROVIDER);
     let factory = new ethers.ContractFactory(REG_CONTRACT_ABI, REG_CONTRACT_BYTECODE, ACCOUNT_WALLET);
     let contract = await factory.deploy({gasLimit: 1000000, gasPrice: 0});
-    //let isDeployed = await contract.deployed();
     if (contract.address) {
         console.log("\x1b[34m%s\x1b[0m", "New contract deployed : Contract Address: " + contract.address);
         console.log("");
@@ -125,37 +123,12 @@ const adminGetRegContract = async () =>  {
     common.REG_CONTRACT = REG_CONTRACT;
 }
 
-
-
-const extractPublicKeyFromUserIndex = async () => {
-    console.log("------------------------- Extract publicKey from userIndex -------------------------");
-    // Get current user context
-    let currentuserIndex = await contract.getCurrentUserIndex();
-    currentuserIndex = currentuserIndex.toNumber();
-    console.log("\x1b[34m%s\x1b[0m", "currentuserIndex: ", currentuserIndex);
-
-    // Extract publickey from the data 
-    let publicKeyBytes = await contract.userIndexToPublickey(0);
-    console.log("\x1b[34m%s\x1b[0m", "publicKeyBytes: ", publicKeyBytes);
-    const userPublicKeyExtracted = ethers.utils.toUtf8String(publicKeyBytes);
-    console.log("\x1b[34m%s\x1b[0m", "userPublicKeyExtracted: ", userPublicKeyExtracted);
-    console.log("");
-    return;
-}
-
-const testNow = async () => {
-    await adminDeployContract();
-    console.log("\x1b[32m%s\x1b[0m", "==================== DONE ========================");
-    return true;
-}
-
-
 module.exports = { 
     adminDeployContract,
-    extractPublicKeyFromUserIndex,
     compileContract,
     deployContract,
     adminGetRegContract,
+    generateAccount,
     PROVIDER ,
     REG_CONTRACT_ABI,
     REG_CONTRACT_ADDRESS,
