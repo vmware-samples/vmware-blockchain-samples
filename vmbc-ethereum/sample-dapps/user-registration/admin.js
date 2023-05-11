@@ -20,10 +20,18 @@ const listenUserRegisterStart = async () => {
         console.log(`Received event: ${event.event}, caller: ${caller}, userIndex: ${userIndex}, userAdminIdentifier:  ${userAdminIdentifier}`);
         // extract topic from the log
         const filter1 = {
-            topics: [eventSignatureHash]
+            topics: [eventSignatureHash],
+            address: common.REG_CONTRACT_ADDRESS
         }
 
         common.REG_CONTRACT = new ethers.Contract(common.REG_CONTRACT_ADDRESS, common.REG_CONTRACT_ABI, common.PROVIDER);
+
+        let ADMIN_WALLET = new ethers.Wallet(process.env.ADMIN1_PRIVATE_KEY, common.PROVIDER);
+        const contractWithSigner = common.REG_CONTRACT.connect(ADMIN_WALLET);
+
+        let message = register.admin1AccountKeyPair.publicKey;
+        let messageHash = ethers.utils.keccak256(message);
+        let signature = await ADMIN_WALLET.signMessage(ethers.utils.arrayify(messageHash));
 
         // TODO: Vijay
         let response = await common.PROVIDER.getLogs(filter1);
@@ -35,7 +43,8 @@ const listenUserRegisterStart = async () => {
                 let uData = await common.REG_CONTRACT.userData(publicKey)
                 let encryptedEmail = uData.data00;
                 let arrayEmail = ethers.utils.arrayify(encryptedEmail);
-                console.log("encrypted Email: ", Buffer.from(arrayEmail).toString('utf8'));
+                let decryptedEmail = Buffer.from(arrayEmail).toString('utf8');
+                console.log("decrypted Email: ", decryptedEmail);
                 //const message = await ethCrypto.decryptWithPrivateKey();
                 // send email with otp
                 let response = await email.sendMailNow();
@@ -46,7 +55,19 @@ const listenUserRegisterStart = async () => {
         if (response && response[0].topics[0] && response[0].topics[1]) {
             if (response[0].topics[0] == eventSignatureHash && response[0].topics[1] == 1 ) {
                 // verify the otp
+                let publicKey = await common.REG_CONTRACT.userIndexToPublickey(userIndex);
+                console.log("publicKey in Complete: ", publicKey)
+                //got the publicKey as bytes, now get the otp
+                let uData = await common.REG_CONTRACT.userData(publicKey)
+                let encryptedOtp = uData.data01;
+                let arrayOtp = ethers.utils.arrayify(encryptedOtp);
+                let decryptedOtp = Buffer.from(arrayOtp).toString('utf8');
+                console.log("decrypted Otp: ", decryptedOtp);
                 // approve the user registration
+                let response = await contractWithSigner.newUserRegisterAdminApprove(publicKey,  ethers.utils.toUtf8Bytes(register.admin1AccountKeyPair.publicKey),  ethers.utils.toUtf8Bytes(register.admin1AccountKeyPair.publicKey), signature);
+                console.log("approve is : ", response);
+                console.log("approved public is : ", publicKey);
+                
             }
         }
     });

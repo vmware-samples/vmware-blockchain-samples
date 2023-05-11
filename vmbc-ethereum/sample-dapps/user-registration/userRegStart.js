@@ -74,7 +74,7 @@ const userRegisterStart = async () => {
     } catch (error) {
         console.log("Error while calling userRegisterStart()...");
         console.error(error);
-        exit(1);
+        process.exit(1);
     }
 
     if (tx.hash) {

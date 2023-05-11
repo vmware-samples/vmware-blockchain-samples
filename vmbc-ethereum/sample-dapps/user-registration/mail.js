@@ -41,9 +41,9 @@ const sendMailNow = async () => {
     const sendmail = require('sendmail')();
     sendmail({
         from: 'testethereumcontract@gmail.com',
-        to: 'ramkik@vmware.com, vijayaprakam@vmware.com',
+        to: 'vijayaprakam@vmware.com',
         subject: 'DID: User registration OTP',
-        text: '1234',
+        text: otp.toString(),
         html: otp.toString(),
     }, function (err, reply) {
         console.log(err && err.stack);

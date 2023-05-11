@@ -107,9 +107,12 @@ contract userReg {
         if (isValidsigPublicKey(userPublicKey, admin1PublicKey, admin2PublicKey, signature, 1) == false)
             return;
 
-        if (block.timestamp >= (userData[signature].registerOtpStartTime + 30 minutes))
-            revert errMsg({message: "newUserRegisterUserOtpExpire", eventNumber: 0, addr: address(bytes20(keccak256(userPublicKey))), signature: signature});
+        if (block.timestamp >= (userData[userPublicKey].registerOtpStartTime + 30 minutes)) {
+             //revert errMsg({message: "newUserRegisterUserOtpExpire", eventNumber: 0, addr: address(bytes20(keccak256(userPublicKey))), signature: signature});
+             revert("timestamp expired !");
 
+        }
+           
         userData[userPublicKey].data01 = data01;
         userData[userPublicKey].data11 = data11;
         userData[userPublicKey].data21 = data21;
@@ -118,12 +121,13 @@ contract userReg {
     // userPublicKey is the public key of the user
     // user signs userPublicKey with his private key and passes it through signature
     // data has encrypted email and admin provided otp - data[0] is encrypted by public key of user and only visible to user; data[1] is encrypted by public key of admin 1 and only visible to admin 1
-    function newUserRegisterAdminApprove(bytes memory userPublicKey, bytes memory admin1PublicKey, bytes memory admin2PublicKey, bytes memory signature) public {
+    function newUserRegisterAdminApprove(bytes memory userPublicKey, bytes memory admin1PublicKey, bytes memory admin2PublicKey, bytes memory signature) public returns (bool) {
         if (isValidsigPublicKey(userPublicKey, admin1PublicKey, admin2PublicKey, signature, 2) == false)
-            return;
+            return false;
 
         userData[userPublicKey].registerTime = block.timestamp;
         userData[userPublicKey].register = true;
+        return true;
     }
 
     function isValidsigPublicKey(bytes memory userPublicKey, bytes memory admin1PublicKey, bytes memory admin2PublicKey, bytes memory signature, uint eventNumber) private returns (bool) {
@@ -142,7 +146,8 @@ contract userReg {
         if (validsig == false)
             revert errMsg({message: "isValidsigPublicKeyInvalidSignature", eventNumber: eventNumber, addr: useraddr, signature: signature});
         else {
-            emit userRegister(eventNumber, currentUserIndex, 12345);
+            
+            emit userRegister(eventNumber, userData[userPublicKey].userIndex, 5566);
            // emit userRegister(eventNumber, currentUserIndex, 1);
            // emit userRegister(eventNumber, currentUserIndex, 2);
         }
