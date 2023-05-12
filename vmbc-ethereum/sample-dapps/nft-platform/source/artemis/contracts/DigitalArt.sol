@@ -5,6 +5,7 @@ import "./@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "./@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "./@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "./@openzeppelin/contracts/utils/Counters.sol";
+import "./userReg.sol";
 
 contract DigitalArt is ERC721,ERC721Enumerable,ERC721URIStorage {
 
@@ -29,8 +30,25 @@ contract DigitalArt is ERC721,ERC721Enumerable,ERC721URIStorage {
     address[] public owners;
     mapping(string=>bool) _DigitalArtExists;
 
-    constructor() ERC721("DigitalArt","ART") {
+    userReg public userRegInstance;
+    bool userRegEnable;
 
+    constructor(address userRegContractAddress, bool _userRegEnable) ERC721("DigitalArt","ART") {
+        userRegInstance = userReg(userRegContractAddress);
+        userRegEnable = _userRegEnable;
+    }
+
+    function setUserRegistration(address userRegContractAddress) public {
+        userRegInstance = userReg(userRegContractAddress);
+    }
+
+    function checkUserRegistration(address userAddress) private view returns (bool) {
+        if (userRegEnable == false)
+            return true;
+        else if (userRegInstance.isUserRegisterAddr(userAddress) == 2)
+            return true;
+        else 
+            return false;
     }
 
     function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, ERC721Enumerable) returns (bool) {
@@ -60,8 +78,9 @@ contract DigitalArt is ERC721,ERC721Enumerable,ERC721URIStorage {
     }
 
     // calls mint updates tokenMap, Incremnts tokenId, checks if the same title has been previously used
-    function mint(string memory title,string memory image,string memory artistName)public{
-       require(!_DigitalArtExists[title]);
+    function mint(string memory title,string memory image,string memory artistName,address addr)public{
+        require(checkUserRegistration(addr) == true);
+        require(!_DigitalArtExists[title]);
         uint _id=_tokenIds.current();
         DigitalArtArr.push(Art(title,image,artistName,_id));
 
