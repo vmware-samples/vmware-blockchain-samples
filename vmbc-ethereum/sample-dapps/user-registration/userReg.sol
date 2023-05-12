@@ -35,6 +35,7 @@ contract userReg {
     uint currentUserIndex;
     mapping(bytes => userDataDefinition) public userData;
     mapping(uint => bytes) public userIndexData;
+    mapping(address => bytes) public userAddressData;
     error errMsg(string message, uint eventNumber, address addr, bytes signature);
     //
     // userAdminIdentifier - 0 user, 1 admin1, 2 admin2
@@ -55,6 +56,15 @@ contract userReg {
     // 1 -- admin1
     // 2 -- admin2 
     event userRegister(uint256 indexed caller, uint256 indexed userIndex, uint256 indexed userAdminIdentifier);
+
+    function isUserRegisterAddr(address addr) view public returns (uint) {
+        bytes memory userPublicKey = userAddressData[addr];
+
+        if (userData[userPublicKey].register == true)
+            return 2;
+
+        return 0;
+    }
 
     function isUserRegister(bytes memory userPublicKey, bytes memory signature) view public returns (uint) {
         bool validsig = false;
@@ -98,6 +108,8 @@ contract userReg {
 
         userIndexData[currentUserIndex] = userPublicKey;
         currentUserIndex = currentUserIndex + 1;
+
+        userAddressData[address(bytes20(keccak256(userPublicKey)))] = userPublicKey;
     }
 
     // userPublicKey is the public key of the user
