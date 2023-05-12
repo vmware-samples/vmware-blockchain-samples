@@ -106,7 +106,7 @@ export class DigitalArtsService {
 
   async deployNewNftContract() {
     const digitalArtFactory = new DigitalArt__factory(this.ethService.currentSigner);
-    const tx = await digitalArtFactory.deploy();
+    const tx = await digitalArtFactory.deploy("0x0000000000000000000000000000000000000000", false);
     this.refreshContractAddress(tx.address);
   }
 
@@ -181,7 +181,7 @@ export class DigitalArtsService {
 
   //for testing
   mintAbi(title: string, artist: string, imageUrl: string) {
-    return this.contract.mint(title, imageUrl, artist);
+    return this.contract.mint(title, imageUrl, artist, this.ethService.currentAccount);
   }
 
   //standard mint function
@@ -192,7 +192,7 @@ export class DigitalArtsService {
     const newContract = await this.contract.connect(signer);
     let transaction;
     try {
-      transaction = await newContract.mint(title, imageUrl, artist);
+      transaction = await newContract.mint(title, imageUrl, artist, this.ethService.currentAccount);
     } catch (err) {
       console.log(err);
       this.error = err;

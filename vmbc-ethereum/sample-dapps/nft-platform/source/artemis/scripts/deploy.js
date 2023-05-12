@@ -13,10 +13,12 @@ async function main() {
 
   if (config['DEFAULT_NFT_CONTRACT_ADDRESS'] == '' || config['REDEPLOY_CONTRACT'] == 'true') {
     const DigitalArt = await hre.ethers.getContractFactory("DigitalArt");
-    const digitalArt = await DigitalArt.deploy();
+    const digitalArt = await DigitalArt.deploy(config['USER_REG_CONTRACT_ADDRESS'], config['USER_REG_ENABLE']);
 
     await digitalArt.deployed();
     console.log(`DigitalArt Smart Contract deployed to ${digitalArt.address}`);
+    console.log(`user registration contract address ${config['USER_REG_CONTRACT_ADDRESS']}`);
+    console.log(`user registration enable ${config['USER_REG_ENABLE']}`);
 
     config['DEFAULT_NFT_CONTRACT_ADDRESS'] = digitalArt.address;
     await fs.writeFileSync('./src/assets/config.json', JSON.stringify(config));
