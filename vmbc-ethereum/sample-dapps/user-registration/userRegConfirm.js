@@ -5,7 +5,7 @@ const ethCrypto = require('eth-crypto');
 require('log-timestamp');
 
 const userRegisterConfirm = async () => {
-    console.log("------------------------- User Registration Confirm -------------------------");
+    console.log("\x1b[34m%s\x1b[0m", "------------------------- User Registration Confirm -------------------------");
     const wallet = ethers.Wallet.createRandom();
     console.log(wallet.privateKey);
     console.log(wallet.publicKey);
@@ -32,8 +32,8 @@ const userRegisterConfirm = async () => {
     let data = await common.REG_CONTRACT.isUserRegister(userPublicKey, signature);
     console.log("data is: ", data);
     if (data == 0) {
-        console.log("\x1b[34m%s\x1b[0m", "User address " + address + " has not registered.")
-        console.log("\x1b[34m%s\x1b[0m", "User publickey " + publicKey + " has not registered.")
+        console.log("\x1b[31m%s\x1b[0m", "User address " + address + " has not registered.")
+        console.log("\x1b[31m%s\x1b[0m", "User publickey " + publicKey + " has not registered.")
     }
     else {
         console.log("\x1b[34m%s\x1b[0m", "User address " + address + " has registered.")

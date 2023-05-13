@@ -23,7 +23,7 @@ const WRITE = 2;
 const DEPLOY = 4;
 
 var VMBC_URL = process.env.VMBC_URL;
-var EMAIL = process.env.EMAIL;
+var EMAIL = process.env.USER1_EMAIL;
 var CONTRACT_FILE = String(process.env.CONTRACT_FILE);
 var CONTRACT_NAME = path.parse(CONTRACT_FILE).name;
 
