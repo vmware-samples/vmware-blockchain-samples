@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: replica-0
+  labels:
+    tier: replica-0
+spec:
+  # comment or delete the following line if you want to use a LoadBalancer
+  type: LoadBalancer
+  # if your cluster supports it, uncomment the following to automatically create
+  # an external load-balanced IP for the replica-0 service.
+  # type: LoadBalancer
+  ports:
+  - port: 3710
+    nodePort: 32010
+    targetPort: 3710
+  selector:
+    tier: replica-0
+---
+apiVersion: apps/v1 #  for k8s versions before 1.9.0 use apps/v1beta2  and before 1.8.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: replica-0
+spec:
+  selector:
+    matchLabels:
+      tier: replica-0
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        tier: replica-0
+    spec:
+      hostNetwork: true
+      containers:
+      - name: replica-0
+        image: localhost:5000/skvbc-sgx-gramine:latest
+        resources:
+          requests:
+            cpu: 1
+            memory: 8Gi
+            sgx.intel.com/enclave: 1
+            sgx.intel.com/epc: 8Gi
+          limits:
+            sgx.intel.com/enclave: 1
+            sgx.intel.com/epc: 8Gi
+        env:
+        - name: GET_HOSTS_FROM
+          value: dns
+          # If your cluster config does not include a dns service, then to
+          # instead access environment variables to find service host
+          # info, comment out the 'value: dns' line above, and uncomment the
+          # line below:
+          # value: env
+        - name: replica_number
+          value: "\x30"
+        ports:
+        - containerPort: 3710
+          hostPort: 3710

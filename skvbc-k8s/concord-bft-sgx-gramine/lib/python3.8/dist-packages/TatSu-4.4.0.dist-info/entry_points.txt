@@ -1,0 +1,4 @@
+[console_scripts]
+g2e = tatsu.g2e:main
+tatsu = tatsu:main
+

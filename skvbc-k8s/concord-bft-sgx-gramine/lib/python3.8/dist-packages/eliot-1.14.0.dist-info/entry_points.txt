@@ -1,0 +1,3 @@
+[console_scripts]
+eliot-prettyprint = eliot.prettyprint:_main
+

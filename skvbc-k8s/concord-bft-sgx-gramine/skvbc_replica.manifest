@@ -1,0 +1,114 @@
+[loader]
+entrypoint = "file:/usr/lib/x86_64-linux-gnu/gramine/libsysdb.so"
+log_level = "error"
+insecure__use_cmdline_argv = true
+
+[loader.env]
+LD_LIBRARY_PATH = "/lib:/lib/x86_64-linux-gnu:/usr/lib:/usr/lib/x86_64-linux-gnu:/usr/local/lib"
+
+[libos]
+entrypoint = "/skvbc_replica"
+
+[sys]
+enable_sigterm_injection = true
+
+[[fs.mounts]]
+path = "/lib"
+uri = "file:/usr/lib/x86_64-linux-gnu/gramine/runtime/glibc"
+
+[[fs.mounts]]
+path = "/lib/x86_64-linux-gnu"
+uri = "file:/lib/x86_64-linux-gnu"
+
+[[fs.mounts]]
+path = "/usr/lib"
+uri = "file:/usr/lib"
+
+[[fs.mounts]]
+path = "/usr/lib/x86_64-linux-gnu"
+uri = "file:/usr/lib/x86_64-linux-gnu"
+
+[[fs.mounts]]
+path = "/usr/local/lib"
+uri = "file:/usr/local/lib"
+
+[[fs.mounts]]
+path = "/skvbc_replica"
+uri = "file:skvbc_replica"
+
+[[fs.mounts]]
+path = "/setA_replica_0"
+uri = "file:../scripts/setA_replica_0"
+
+[[fs.mounts]]
+path = "/setA_replica_1"
+uri = "file:../scripts/setA_replica_1"
+
+[[fs.mounts]]
+path = "/setA_replica_2"
+uri = "file:../scripts/setA_replica_2"
+
+[[fs.mounts]]
+path = "/setA_replica_3"
+uri = "file:../scripts/setA_replica_3"
+
+[[fs.mounts]]
+path = "/certs"
+uri = "file:../scripts/certs"
+
+[[fs.mounts]]
+type = "encrypted"
+path = "/simpleKVBTests_DB_0"
+uri = "file:simpleKVBTests_DB_0"
+key = "default"
+
+[[fs.mounts]]
+type = "encrypted"
+path = "/simpleKVBTests_DB_1"
+uri = "file:simpleKVBTests_DB_1"
+key = "default"
+
+[[fs.mounts]]
+type = "encrypted"
+path = "/simpleKVBTests_DB_2"
+uri = "file:simpleKVBTests_DB_2"
+key = "default"
+
+[[fs.mounts]]
+type = "encrypted"
+path = "/simpleKVBTests_DB_3"
+uri = "file:simpleKVBTests_DB_3"
+key = "default"
+
+[fs.insecure__keys]
+default = "ffeeddccbbaa99887766554433221100"
+
+[sgx]
+debug = true
+enclave_size = "16384M"
+edmm_enable = false
+max_threads = 256
+trusted_files = [
+    { uri = "file:/usr/lib/x86_64-linux-gnu/gramine/libsysdb.so" },
+    { uri = "file:skvbc_replica" },
+    { uri = "file:../scripts/certs/" },
+    { uri = "file:../scripts/setA_replica_0" },
+    { uri = "file:../scripts/setA_replica_1" },
+    { uri = "file:../scripts/setA_replica_2" },
+    { uri = "file:../scripts/setA_replica_3" },
+    { uri = "file:/lib/x86_64-linux-gnu/" },
+    { uri = "file:/usr/lib/" },
+    { uri = "file:/usr/lib/x86_64-linux-gnu/" },
+    { uri = "file:/usr/local/lib/" },
+]
+isvprodid = 0
+isvsvn = 0
+remote_attestation = "none"
+require_avx = false
+require_avx512 = false
+require_mpx = false
+require_pkru = false
+require_amx = false
+require_exinfo = false
+nonpie_binary = false
+enable_stats = false

@@ -1,0 +1,40 @@
+Gramine is starting. Parsing TOML manifest file, this may take some time...
+-----------------------------------------------------------------------------------------------------------------------
+Gramine detected the following insecure configurations:
+
+  - sgx.debug = true                           (this is a debug enclave)
+  - loader.insecure__use_cmdline_argv = true   (forwarding command-line args from untrusted host to the app)
+  - fs.insecure__keys.* = "..."                (keys hardcoded in manifest)
+
+Gramine will continue application execution, but this configuration must not be used in production!
+-----------------------------------------------------------------------------------------------------------------------
+
+2023-04-29T00:01:39,062,+0000|INFO ||concord.bft||||main.cpp:194|skvbc_replia (concord-bft tester replica) starting... | [SQ:0]
+2023-04-29T00:01:39,062,+0000|INFO ||concord.bft||||setup.cpp:61|Parsing argc: 5 arguments, args:-k setA_replica_ -i 2  | [SQ:1]
+2023-04-29T00:01:39,063,+0000|INFO ||concord.bft||||setup.cpp:150|Command line options: | [SQ:2]
+main_key_algorithm=eddsa
+2023-04-29T00:01:39,072,+0000|INFO ||communication.factory||||CommFactory.cpp:57|Replica communication protocol= TlsTcp, Host=0.0.0.0, Port=3714 | [SQ:3]
+2023-04-29T00:01:39,072,+0000|INFO ||skvbctest.replica||||setup.cpp:422|
+Replica Configuration: 
+ rc.isReadOnly: False, rc.numReplicas: 4, rc.numRoReplicas: 0, rc.fVal: 1, rc.cVal: 0, rc.replicaId: 2, rc.numOfClientProxies: 0, rc.numOfExternalClients: 30, rc.statusReportTimerMillisec: 10000, rc.concurrencyLevel: 3, rc.numWorkerThreadsForBlockIO: 8, rc.viewChangeProtocolEnabled: False, rc.viewChangeTimerMillisec: 45000, rc.autoPrimaryRotationEnabled: False, rc.autoPrimaryRotationTimerMillisec: 0, rc.preExecutionFeatureEnabled: True, rc.preExecReqStatusCheckTimerMillisec: 5000, rc.preExecConcurrencyLevel: 0, rc.batchingPolicy: 0, rc.batchFlushPeriod: 1000, rc.maxNumOfRequestsInBatch: 100, rc.maxBatchSizeInBytes: 33554432, rc.maxInitialBatchSize: 350, rc.batchingFactorCoefficient: 4, rc.debugPersistentStorageEnabled: False, rc.maxExternalMessageSize: 131072, rc.maxReplyMessageSize: 8192, rc.maxNumOfReservedPages: 2048, rc.sizeOfReservedPage: 4096, rc.debugStatisticsEnabled: True, rc.metricsDumpIntervalSeconds: 600, rc.keyExchangeOnStart: False, rc.blockAccumulation: False, rc.clientBatchingEnabled: True, rc.clientBatchingMaxMsgsNbr: 10, rc.keyViewFilePath: ., rc.clientTransactionSigningEnabled: False, rc.adaptiveBatchingIncFactor: 0.1, rc.adaptiveBatchingMaxIncCond: 0.95, rc.adaptiveBatchingMidIncCond: 0.9, rc.adaptiveBatchingMinIncCond: 0.75, rc.adaptiveBatchingDecCond: 0.5, rc.sizeOfInternalThreadPool: 8, rc.timeServiceEnabled: True, rc.timeServiceSoftLimitMillis.count(): 500, rc.timeServiceHardLimitMillis.count(): 3000, rc.timeServiceEpsilonMillis.count(): 1, rc.batchedPreProcessEnabled: False, rc.ticksGeneratorPollPeriod.count(): 1, rc.preExecutionResultAuthEnabled: False, rc.prePrepareFinalizeAsyncEnabled: True, rc.threadbagConcurrencyLevel1: 40, rc.threadbagConcurrencyLevel2: 24, rc.enablePostExecutionSeparation: True, rc.postExecutionQueuesSize: 50, rc.stateIterationMultiGetBatchSize: 30, rc.numOfClientServices: 1, rc.dbCheckpointFeatureEnabled: False, rc.maxNumberOfDbCheckpoints: 2, rc.dbCheckPointWindowSize: 30000, rc.dbCheckpointDirPath: , rc.dbSnapshotIntervalSeconds.count(): 3600, rc.dbCheckpointMonitorIntervalSeconds.count(): 60, rc.dbCheckpointDiskSpaceThreshold: 0.5, rc.enableMultiplexChannel: True, rc.enableEventGroups: False, rc.operatorEnabled_: True, rc.preProcessorMemoryPoolMode: 1, rc.diagnosticsServerPort: 0, rc.useUnifiedCertificates: False, rc.kvBlockchainVersion: 4, replicaMsgSignAlgo: eddsa, operatorMsgSignAlgo: eddsa, rc.singleSignatureScheme: True, concord.bft.st.RVT_K: 12
+concord.bft.st.fetchRangeSize: 27
+concord.bft.st.gettingMissingBlocksSummaryWindowSize: 60
+concord.bft.keyExchage.clientKeysEnabled: 0
+concord.bft.st.runInSeparateThread: 1
+sourceReplicaReplacementTimeoutMilli: 6000
+ | [SQ:4]
+void logging::initLogger(const std::string &): can't open logging.properties using default configuration.
+2023-04-29T00:01:39,073,+0000|INFO |2|concord.kvbc.v4-blockchain|main|||v4_blockchain.cpp:744|RocksDB directory path doesn't exist at ./simpleKVBTests_DB_2 skipping recovery | [SQ:5]
+2023-04-29T00:07:17,099,+0000|WARN |2|concord.storage.rocksdb|main|||rocksdb_client.cpp:719|Did not find search key 0x000000000000000001 | [SQ:6]
+2023-04-29T00:07:17,099,+0000|WARN |2|concord.diag.perf|main|||performance_handler.cpp:24|Failed to record value:  name: dba_num_blocks_for_st_link, val: -1, unit: count | [SQ:7]
+2023-04-29T00:07:17,319,+0000|INFO |2|concord.kvbc.categorized-blockchain|main|||replica_adapter.cpp:65|Configured 4 | [SQ:8]
+2023-04-29T00:07:17,319,+0000|INFO |2|concord.kvbc.v4-blockchain|main|||replica_adapter.cpp:83|Instantiating v4 type blockchain | [SQ:9]
+2023-04-29T00:07:17,336,+0000|INFO |2|concord.kvbc.v4-blockchain|main|||blockchain.cpp:25|Created [v4_blocks] column family for the main blockchain | [SQ:10]
+2023-04-29T00:07:17,338,+0000|INFO |2|concord.kvbc.v4-blockchain|main|||blockchain.cpp:28|Created [v4_misc] column family | [SQ:11]
+2023-04-29T00:07:17,340,+0000|INFO |2|concord.kvbc.v4-blockchain|main|||st_chain.cpp:26|Created [v4_st_chain] column family for the state transfer blockchain | [SQ:12]
+2023-04-29T00:07:17,342,+0000|INFO |2|concord.kvbc.v4-blockchain|main|||categories.cpp:27|Created [v4_categories] | [SQ:13]
+2023-04-29T00:07:17,349,+0000|INFO |2|concord.kvbc.v4-blockchain|main|||latest_keys.cpp:35|Created [v4_latest_keys] column family for the latest keys | [SQ:14]
+2023-04-29T00:07:17,351,+0000|INFO |2|concord.kvbc.v4-blockchain|main|||latest_keys.cpp:40|Created [v4_immutable_keys] column family for the immutable keys | [SQ:15]
+2023-04-29T00:07:17,360,+0000|INFO |2|concord.bft.st.dbdatastore|main|||DBDataStore.cpp:62| DBDataStore is not initialized | [SQ:16]
+2023-04-29T00:07:17,491,+0000|INFO |2|concord.util.handoff|main|||Handoff.hpp:165|incomingEventsQ: started handoff consumer thread: thread_id_.load(): 12241585856 | [SQ:17]
+2023-04-29T00:07:17,543,+0000|INFO |2|concord.util.handoff|main|||Handoff.hpp:165|postProcessingQ: started handoff consumer thread: thread_id_.load(): 12241319616 | [SQ:18]

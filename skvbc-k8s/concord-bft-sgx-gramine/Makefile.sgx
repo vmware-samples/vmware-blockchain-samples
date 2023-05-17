@@ -1,0 +1,86 @@
+# Build Redis as follows:
+#
+# - make               -- create non-SGX no-debug-log manifest
+# - make SGX=1         -- create SGX no-debug-log manifest
+# - make SGX=1 DEBUG=1 -- create SGX debug-log manifest
+#
+# Any of these invocations clones Redis' git repository and builds Redis in
+# default configuration and in the latest-to-date (6.0.5) version.
+#
+# By default, Redis uses poll/epoll mechanism of Linux. To build Redis with
+# select, use `make USE_SELECT=1`. For correct re-builds, always clean up
+# Redis source code beforehand via `make distclean`.
+#
+# Use `make clean` to remove Gramine-generated files and `make distclean` to
+# additionally remove the cloned Redis git repository.
+
+################################# CONSTANTS ###################################
+
+# directory with arch-specific libraries, used by Redis
+# the below path works for Debian/Ubuntu; for CentOS/RHEL/Fedora, you should
+# overwrite this default like this: `ARCH_LIBDIR=/lib64 make`
+ARCH_LIBDIR ?= /lib/$(shell $(CC) -dumpmachine)
+
+ifeq ($(DEBUG),1)
+GRAMINE_LOG_LEVEL = debug
+else
+GRAMINE_LOG_LEVEL = error
+endif
+
+.PHONY: all
+all: skvbc_replica skvbc_replica.manifest
+ifeq ($(SGX),1)
+all: skvbc_replica.manifest.sgx skvbc_replica.sig
+endif
+
+################################ REDIS MANIFEST ###############################
+
+# The template file is a Jinja2 template and contains almost all necessary
+# information to run Redis under Gramine / Gramine-SGX. We create
+# skvbc_replica.manifest (to be run under non-SGX Gramine) by replacing variables
+# in the template file using the "gramine-manifest" script.
+
+skvbc_replica.manifest: skvbc_replica.manifest.template
+	gramine-manifest \
+		-Dlog_level=$(GRAMINE_LOG_LEVEL) \
+		-Darch_libdir=$(ARCH_LIBDIR) \
+		$< > $@
+
+# Manifest for Gramine-SGX requires special "gramine-sgx-sign" procedure. This
+# procedure measures all Redis trusted files, adds the measurement to the
+# resulting manifest.sgx file (among other, less important SGX options) and
+# creates skvbc_replica.sig (SIGSTRUCT object).
+
+# Make on Ubuntu <= 20.04 doesn't support "Rules with Grouped Targets" (`&:`),
+# see the helloworld example for details on this workaround.
+skvbc_replica.sig skvbc_replica.manifest.sgx: sgx_outputs
+	@:
+
+.INTERMEDIATE: sgx_outputs
+sgx_outputs: skvbc_replica.manifest
+	gramine-sgx-sign \
+		--manifest skvbc_replica.manifest \
+		--output skvbc_replica.manifest.sgx
+
+############################## RUNNING TESTS ##################################
+
+.PHONY: start-native-server
+start-native-server: all
+	./skvbc_replica --save '' --protected-mode no
+
+ifeq ($(SGX),)
+GRAMINE = gramine-direct
+else
+GRAMINE = gramine-sgx
+endif
+
+# Note that command-line arguments are hardcoded in the manifest file.
+.PHONY: start-gramine-server
+start-gramine-server: all
+	$(GRAMINE) skvbc_replica
+
+################################## CLEANUP ####################################
+
+.PHONY: clean
+clean:
+	$(RM) *.token *.sig *.manifest.sgx *.manifest
