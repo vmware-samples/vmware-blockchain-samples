@@ -44,6 +44,7 @@ print (f"- Name: {myledger.name}")
 print (f"- Location: {myledger.location}")
 print (f"- ID: {myledger.id}")
 
+'''
 ledger_name = "ramki-acl1"
 ledger_url = "https://" + ledger_name + ".confidential-ledger.azure.com"
 exception_path = False
@@ -61,7 +62,6 @@ print (f"- Name: {myledger.name}")
 print (f"- Location: {myledger.location}")
 print (f"- ID: {myledger.id}")
 
-'''
 confidential_ledger_mgmt.ledger.begin_delete(resource_group, ledger_name)
 print("Here are the details of my deleted ledger:")
 print (f"- Name: {myledger.name}")

@@ -39,9 +39,9 @@ ledger_client = ConfidentialLedgerClient(
      ledger_certificate_path=ledger_tls_cert_file_name
 )
 
-latest_entry = ledger_client.get_current_ledger_entry()
-print(f"Current entry (transaction id = {latest_entry['transactionId']}) in collection {latest_entry['collectionId']}: {latest_entry['contents']}")
-
 sample_entry = {"contents": "Hello world!"}
 append_result = ledger_client.create_ledger_entry(entry=sample_entry)
 print(append_result['transactionId'])
+
+latest_entry = ledger_client.get_current_ledger_entry()
+print(f"Current entry (transaction id = {latest_entry['transactionId']}) in collection {latest_entry['collectionId']}: {latest_entry['contents']}")

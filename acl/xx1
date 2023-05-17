@@ -50,3 +50,5 @@ https://portal.azure.com/#@onevmw.onmicrosoft.com/resource/subscriptions/d564228
 
 3) https://learn.microsoft.com/en-us/azure/confidential-ledger/quickstart-python?tabs=azure-cli#use-the-control-plane-client-library - primary
 also - https://learn.microsoft.com/en-us/python/api/overview/azure/confidentialledger-readme?view=azure-python
+
+3a) https://learn.microsoft.com/en-us/azure/confidential-ledger/quickstart-template?tabs=azure-cli%2CCLI#obtain-your-principal-id
