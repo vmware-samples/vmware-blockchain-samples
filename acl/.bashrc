@@ -133,7 +133,6 @@ export GIT_EDITOR=vim
 export PATH=$PATH:~/besu/besu-23.4.0/bin/besu
 
 export AZURE_CLIENT_ID="237153c0-3125-4757-b1c2-0095c3cc0d50"
-export AZURE_CLIENT_SECRET="vvK8Q~KbCpc6cCIDATcGCRCnh_LiQxGRjyxN3dA~"
 export AZURE_TENANT_ID="b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0"
 #ramkik    object id - 84eca3a3-981c-4626-a0be-f6cca293e22c
 #ramki-app object id - a0670ba7-c45f-4d08-8d57-e987dbc77183
