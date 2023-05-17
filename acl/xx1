@@ -1,0 +1,52 @@
+az login
+[
+  {
+    "cloudName": "AzureCloud",
+    "homeTenantId": "b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0",
+    "id": "a1566155-6fd3-4715-b5ee-15239186686e",
+    "isDefault": true,
+    "managedByTenants": [],
+    "name": "desktop-ci",
+    "state": "Enabled",
+    "tenantId": "b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0",
+    "user": {
+      "name": "ramkik@vmware.com",
+      "type": "user"
+    }
+  },
+  {
+    "cloudName": "AzureCloud",
+    "homeTenantId": "b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0",
+    "id": "d5642287-db0e-48da-9592-1b18ace8f084",
+    "isDefault": false,
+    "managedByTenants": [],
+    "name": "Blockchain-Development",
+    "state": "Enabled",
+    "tenantId": "b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0",
+    "user": {
+      "name": "ramkik@vmware.com",
+      "type": "user"
+    }
+  }
+]
+1) create a client
+https://learn.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#get-tenant-and-app-id-values-for-signing-in
+
+https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/AppRoles/appId/237153c0-3125-4757-b1c2-0095c3cc0d50/isMSAApp~/false
+1a) create client id and secret
+https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Credentials/appId/237153c0-3125-4757-b1c2-0095c3cc0d50/isMSAApp~/false
+1b) create client certifcate
+https://learn.microsoft.com/en-us/azure/confidential-ledger/create-client-certificate?WT.mc_id=Portal-fx
+
+2) assign role to client - job function role/reader/owner/contributor/manage user access
+in subscriptions (top level) add role assignment
+https://portal.azure.com/#view/Microsoft_Azure_AD/AddRoleAssignmentsLandingBlade/scope/%2Fsubscriptions%2Fd5642287-db0e-48da-9592-1b18ace8f084/abacSettings~/%7B%7D/priorityRoles~/%5B%5D
+
+https://portal.azure.com/#view/Microsoft_AAD_IAM/ManagedAppMenuBlade/~/Overview/objectId/70d7127f-0bfe-4449-ae61-52e3117bb85d/appId/237153c0-3125-4757-b1c2-0095c3cc0d50
+
+https://learn.microsoft.com/en-us/answers/questions/422151/authorization-failed-error-for-azure-client?orderby=oldest
+
+https://portal.azure.com/#@onevmw.onmicrosoft.com/resource/subscriptions/d5642287-db0e-48da-9592-1b18ace8f084/resourceGroups/ramki/providers/Microsoft.ConfidentialLedger/ledgers/ramki-acl/dxresourceid
+
+3) https://learn.microsoft.com/en-us/azure/confidential-ledger/quickstart-python?tabs=azure-cli#use-the-control-plane-client-library - primary
+also - https://learn.microsoft.com/en-us/python/api/overview/azure/confidentialledger-readme?view=azure-python

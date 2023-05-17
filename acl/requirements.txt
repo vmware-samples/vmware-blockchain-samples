@@ -1,0 +1,9 @@
+azure-core==1.26.4
+azure-identity==1.13.0
+azure-storage-blob==12.16.0
+azure-common==1.1.28
+azure-confidentialledger==1.0.0
+azure-identity==1.13.0
+azure-mgmt-confidentialledger==1.0.0
+azure-mgmt-core==1.4.0
+azure-storage-blob==12.16.0
