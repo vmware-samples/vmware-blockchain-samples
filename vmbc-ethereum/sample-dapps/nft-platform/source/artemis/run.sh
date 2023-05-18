@@ -1,7 +1,4 @@
-echo "deploying smart contacts on vmbc"
-npm run deploy
-
-echo "sleeping for 10s"
-sleep 10
+echo "deploying smart contract on vmbc"
+npm run deploy-contract
 
 npm run start-for-container

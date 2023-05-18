@@ -4,7 +4,7 @@
 
 The goal of this project is to build an NFT platform, conforming to ERC 721 standards,
 on top of VMware Blockchain (Concord).Developed a client-side application that communicates
-with VMware Blockchain to mint and transfer NFTs. The platform allows users to create digital art NFTs
+with VMBC to mint and transfer NFTs. The platform allows users to create digital art NFTs
 on VMware blockchain by providing a title, an image URL and artist name.
 
 ## Features
@@ -13,12 +13,12 @@ on VMware blockchain by providing a title, an image URL and artist name.
 - Transfer an NFT
 - View History of an NFT
 
-## Running dApp
-There are two ways to run this dApp
+## Running DApp
+There are two ways to run this DApp
 
 ### Command Line Based
 - This option is only supported for MAC Operating System
-- Execute following commands to run the dApp through command line
+- Execute following commands to run the DApp through command line
 - At command line, this app defaults to port `4200`
 
 #### Installing Node.js with NVM
@@ -49,11 +49,11 @@ npm install
 # Export the VMBC_URL to the URL of deployed instance of VMware Blockchain
 export VMBC_URL=http://127.0.0.1:8545
 
-# Run the dApp
+# Run the DApp
 npm run start
 ```
 
-The dApp website will be available on `http://localhost:4200`
+The DApp website will be available on `http://localhost:4200`
 
 ### Helm Based
 #### Deployment
@@ -63,18 +63,18 @@ The dApp website will be available on `http://localhost:4200`
    - Install kubectl (https://kubernetes.io/docs/tasks/tools/#kubectl)
 
 - Once above pre-requisites are met, you can execute following command with replacing of various variables appropriately
-   - `<registry-url>`: URL of the Registry containing Docker image of the dApp
+   - `<registry-url>`: URL of the Registry containing Docker image of the DApp
    - `<registry-username>`: Username for registry
    - `<registry-password>`: Password for registry
    - `<blockchain-url>`: URL of VMware Blockchain 
 ```sh
-# Helm install the dApp
+# Helm install the DApp
 helm install artemis . --set global.imageCredentials.registry=<registry-url> --set global.imageCredentials.username=<registry-username> --set global.imageCredentials.password=<registry-password> --set global.image.repository=vmbc-eth-artemis --set global.image.tag=<image-tag> --set blockchainUrl=<blockchain-url>
 ```
-#### Reaching UI of the dApp
+#### Reaching UI of the DApp
 ##### Minkube
 ```sh
-# This command will take the control to the webpage of the dApp in default browser
+# This command will take the control to the webpage of the DApp in default browser
 minikube service artemis-service
 ```
 
@@ -84,10 +84,10 @@ minikube service artemis-service
 kubectl get service artemis-service
 ```
 
-## Using dApp
+## Using DApp
 On the top right corner of the screen you would see Contract with Address. This is the Smart Contract address of this NFT Platform.
-### Navigating dApp
-Regarding various Tabs in dApp,
+### Navigating DApp
+Regarding various Tabs in DApp,
 - `All NFTs`: shows all the NFTs minted on the NFT Platform
 - `Owned NFTs`: showes NFTs owned by you
 - `Minted by You`: shows NFTs minted by you

@@ -3,20 +3,44 @@
     <div class="branding">
       <a class="nav-link" (click)="goHome()" style="cursor: pointer;">
         <cds-icon shape="vm"></cds-icon>
-        <span id='title' class="title">Amrita Vanam</span>
+        <span id='title' class="title">Artemis</span>
       </a>
     </div>
     <div class="header-actions">
       <!-- TODO -->
       <!-- <span>{{ digitalArtsService.mainContractAddress }}</span> -->
       <form clrForm [formGroup]="addressForm">
-        <clr-input-container1 id="reward-points-input">
-          <br>
-          <label style="width: 80px; color: #cccccc; font-weight: bold; margin-right: 10.0rem; margin-left: 30.0rem; font-size: 125%; font-family: 'Courier New', Courier, monospace;">{{
-            'Reward Points: 100'
+        <clr-input-container id="smart-contract-address-input">
+          <label style="width: 80px; color: #cccccc; margin-top: 0.25rem; font-size: 100%; font-family: 'Courier New', Courier, monospace;">{{
+            'Contract'
           }}</label>
-        </clr-input-container1>
+          <input clrInput
+                formControlName="address"
+                style="color: #eeeeee; width: 430px; font-family: 'Courier New', Courier, monospace; font-weight: bold; margin-left: 0.3rem;"
+                (change)="smartContractAddressChange($event)"
+                [value]="digitalArtsService.mainContractAddress"
+                placeholder="NFT Smart Contract Address"
+                spellcheck="false"
+                (keyup.enter)="smartContractAddressFlush($event)" 
+                readonly/>
+          <clr-control-error style="color: #FF9999; margin-left: 0.65rem; margin-top: 0.15rem;">{{ contractAddressErrorMessage }}</clr-control-error>
+        </clr-input-container>
       </form>
+      <!-- <cds-icon
+        *ngIf="digitalArtsService.mainContractStatus === 'CONNECTED'"
+        shape="success-standard"
+        style="margin-top: 0.9rem; margin-left: 0.75rem;"
+      ></cds-icon> -->
+      <cds-icon
+      shape="success-standard"
+      style="margin-top: 0.9rem; margin-left: 0.75rem; margin-right: 0.65rem;"
+      ></cds-icon>
+      <!-- <span *ngIf="digitalArtsService.mainContractStatus !== 'CONNECTED'">({{ digitalArtsService.mainContractStatus }})</span> -->
+      <!-- <span *ngIf="digitalArtsService.mainContractStatus !== 'NOT_FOUND'" style="margin-right: 1rem"></span>
+      <button *ngIf="digitalArtsService.mainContractStatus === 'NOT_FOUND' || digitalArtsService.mainContractStatus === 'BAD_ADDRESS'" type="button" class="btn btn-primary"
+              style="margin-left: 0.65rem; margin-top: 0.5rem;" (click)="deployNewNftContract()">
+        Deploy New Contract
+      </button> -->
     </div>
   </header>
   <div id='sidemenu' class="content-container">

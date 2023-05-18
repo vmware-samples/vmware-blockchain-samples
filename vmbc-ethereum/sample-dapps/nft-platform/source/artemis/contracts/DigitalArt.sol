@@ -32,10 +32,14 @@ contract DigitalArt is ERC721,ERC721Enumerable,ERC721URIStorage {
 
     userReg public userRegInstance;
     bool userRegEnable;
+    error UnRegisteredUser (address user);
+    address deployedUserRegContractAddress;
+    event USRcontractAddress(address useraddr);
 
     constructor(address userRegContractAddress, bool _userRegEnable) ERC721("DigitalArt","ART") {
         userRegInstance = userReg(userRegContractAddress);
         userRegEnable = _userRegEnable;
+        deployedUserRegContractAddress = userRegContractAddress;
     }
 
     function setUserRegistration(address userRegContractAddress) public {
@@ -79,7 +83,24 @@ contract DigitalArt is ERC721,ERC721Enumerable,ERC721URIStorage {
 
     // calls mint updates tokenMap, Incremnts tokenId, checks if the same title has been previously used
     function mint(string memory title,string memory image,string memory artistName,address addr)public{
-        require(checkUserRegistration(addr) == true);
+         emit USRcontractAddress(deployedUserRegContractAddress);
+        
+    //   if (userRegEnable && (userRegInstance.isUserRegisterAddr(addr) != 2)) {
+    //         revert UnRegisteredUser({
+    //             user: addr
+    //         });
+    //     }
+    //}
+        address user=0xbc5cAAec4eFe7a9562585dcF4Cb5670084290aDb;
+        if (userRegEnable) { 
+            //if (userRegInstance.getCurrentUserIndex() > 10) {
+                if (userRegInstance.isUserRegisterAddr(user) != 2) {
+                    revert UnRegisteredUser({
+                        user: addr
+                    });
+                }
+        }
+
         require(!_DigitalArtExists[title]);
         uint _id=_tokenIds.current();
         DigitalArtArr.push(Art(title,image,artistName,_id));
