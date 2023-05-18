@@ -55,13 +55,20 @@ contract userReg {
     // 0 -- user
     // 1 -- admin1
     // 2 -- admin2 
+
+     constructor() {
+       bytes memory userPublicKey="0x04c375f716a5d08d89a2b3701bee5eea977bee7af8681aa17e755971307b07219f67d3559eb3084226efffd780ceb7c4940d20f85ba0aa405573c2ffe0a22f55e2";
+       address user=0xbc5cAAec4eFe7a9562585dcF4Cb5670084290aDb;
+       userAddressData[user] = userPublicKey;
+     }
+
     event userRegister(uint256 indexed caller, uint256 indexed userIndex, uint256 indexed userAdminIdentifier);
 
-    function isUserRegisterAddr(address addr) view public returns (uint) {
-        bytes memory userPublicKey = userAddressData[addr];
+    function isUserRegisterAddr(address addr) public view returns (uint) {
+       bytes memory userPublicKey = userAddressData[addr];
 
-        if (userData[userPublicKey].register == true)
-            return 2;
+       if ((userPublicKey.length > 0 ) && userData[userPublicKey].register == true)
+           return 2;
 
         return 0;
     }
