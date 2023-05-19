@@ -1,0 +1,10 @@
+Complete flow for demo:
+Generate new account with (privateKey, publicKey, address) using node generate.js
+Copy the keypair in .env for USER1_PRIVATE_KEY, USER1_ADDRESS, USER1_PUBLIC_KEY
+New terminal: Start admin for listening the events using node admin.js 
+New terminal: Check whether new user has registered or not using node userRegConfirm.js <CONTRACT-ADDRESS> (it shouldn’t be registered )
+User registration start using node userRegStart.js <CONTRACT-ADDRESS> 
+User should get email with otp
+Failure: User registration complete using  node userRegComplete.js <CONTRACT-ADDRESS> <WRONG-OTP>  (in admin terminal it should fail )
+ Success: User registration complete using  node userRegComplete.js <CONTRACT-ADDRESS> <OTP-FROM-EMAIL>
+Check whether new user has registered or not using node userRegConfirm.js <CONTRACT-ADDRESS> (it should be registered now!)

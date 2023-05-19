@@ -5,7 +5,7 @@ const ethCrypto = require('eth-crypto');
 require('log-timestamp');
 
 const userRegisterConfirm = async () => {
-    console.log("\x1b[34m%s\x1b[0m", "------------------------- User Registration Confirm -------------------------");
+    console.log("\x1b[34m%s\x1b[0m", "------------------------- User Registration Check -------------------------");
     const wallet = ethers.Wallet.createRandom();
     console.log(wallet.privateKey);
     console.log(wallet.publicKey);

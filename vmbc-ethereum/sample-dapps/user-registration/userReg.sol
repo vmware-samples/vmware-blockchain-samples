@@ -115,7 +115,7 @@ contract userReg {
 
         userIndexData[currentUserIndex] = userPublicKey;
         currentUserIndex = currentUserIndex + 1;
-
+      
         userAddressData[address(bytes20(keccak256(userPublicKey)))] = userPublicKey;
     }
 
