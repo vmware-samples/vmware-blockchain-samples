@@ -1,3 +1,8 @@
+export AZURE_CLIENT_ID="237153c0-3125-4757-b1c2-0095c3cc0d50"
+export AZURE_CLIENT_SECRET=""
+export AZURE_CLIENT_CERTIFICATE_PATH=""
+export AZURE_TENANT_ID="b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0"
+
 az login
 [
   {
