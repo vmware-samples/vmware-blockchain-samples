@@ -12,7 +12,6 @@ const baseData = {
   contract: null,
   contractAddressOverride: Config.DEFAULT_NFT_CONTRACT_ADDRESS,
   totalArtsSupply: null,
-  jsonrpcContract: null,
 };
 
 @Injectable({ providedIn: 'root' })
@@ -62,12 +61,10 @@ export class DigitalArtsService {
     if (baseData.contract) { return baseData.contract; }
     
     baseData.contract = new ethers.Contract(this.mainContractAddress, DigitalArtAbi.abi, this.ethService.web3Provider);
-    baseData.jsonrpcContract = new ethers.Contract(this.mainContractAddress, DigitalArtAbi.abi, this.ethService.jsonrpcProvider);
     
     try{
-      baseData.totalArtsSupply = await baseData.jsonrpcContract.totalSupply();
+      baseData.totalArtsSupply = await baseData.contract.totalSupply();
       console.log("Contract deployed successfully at " + baseData.contract.address);
-      console.log("totalArtsSupply " + baseData.totalArtsSupply);
       this.mainContractStatus = 'CONNECTED';
 
       this.mainContract = new ethers.Contract(baseData.contract.address, DigitalArtAbi.abi, this.ethService.web3Provider) as DigitalArtContract;
@@ -92,7 +89,7 @@ export class DigitalArtsService {
     }
     baseData.contract = new ethers.Contract(newAddress, DigitalArtAbi.abi, this.ethService.web3Provider);
     try {
-      await baseData.jsonrpcContract.totalSupply();
+      await baseData.contract.totalSupply();
       console.log(`NFT Contract Address Changed: ${newAddress}`);
       window.location.reload();
     } catch (e) {
@@ -106,16 +103,15 @@ export class DigitalArtsService {
 
   async deployNewNftContract() {
     const digitalArtFactory = new DigitalArt__factory(this.ethService.currentSigner);
-    const tx = await digitalArtFactory.deploy("0x0000000000000000000000000000000000000000", false);
+    const tx = await digitalArtFactory.deploy( Config.USER_REG_CONTRACT_ADDRESS, (Config.USER_REG_ENABLE).toLowerCase() === 'true');
     this.refreshContractAddress(tx.address);
+    console.log("Newly deployed nft ---> : ", tx.address);
   }
 
   //sets up inits
   async waitForIt() {
     if (this.initPromise) { return this.initPromise; }
-    if (this.ethService.jsonrpcOnly == false) {
-      await this.ethService.waitForEthWindow();
-    }
+    await this.ethService.waitForEthWindow();
     await this.initializeDigitalArtsContract();
     const prom = new Promise<boolean>(async resolve => {
       if (this.ready) { return resolve(true); }
@@ -154,14 +150,14 @@ export class DigitalArtsService {
   //getter
   async fetchArtByTokenId(index: string) {
     await this.waitForIt();
-    const artObjData = await baseData.jsonrpcContract.DigitalArtArr(index) as any as DigitalArt;
+    const artObjData = await this.mainContract.DigitalArtArr(index) as any as DigitalArt;
     const artObj: DigitalArt = {
       title: artObjData.title,
       artistName: artObjData.artistName,
       image: artObjData.image,
       tokId: artObjData.tokId,
     };
-    artObj.ownerHistory = await baseData.jsonrpcContract.getOwnerToken(index);
+    artObj.ownerHistory = await this.contract.getOwnerToken(index);
     artObj.effectiveImageUrl = artObj.image.startsWith('http://localhost') ? 
                                 artObj.image.replace(/http\:\/\/localhost\.com/g, '')
                                 : artObj.image;
@@ -181,15 +177,18 @@ export class DigitalArtsService {
 
   //for testing
   mintAbi(title: string, artist: string, imageUrl: string) {
-    return this.contract.mint(title, imageUrl, artist, this.ethService.currentAccount);
+    return this.contract.mint(title, imageUrl, artist);
   }
 
   //standard mint function
   async mint(title: string, artist: string, imageUrl: string) {
-    if (this.ethService.jsonrpcOnly) { return; }
     await this.waitForIt();
     const signer = await this.ethService.web3Provider.getSigner(this.ethService.currentAccount);
     const newContract = await this.contract.connect(signer);
+    let userRegContractAddr = Config.USER_REG_CONTRACT_ADDRESS;
+    let userRegEnable = Config.USER_REG_ENABLE;
+    console.log("contract address  ---> : ", userRegContractAddr);
+    console.log("userEnable  ---> : ", userRegEnable);
     let transaction;
     try {
       transaction = await newContract.mint(title, imageUrl, artist, this.ethService.currentAccount);
@@ -207,11 +206,10 @@ export class DigitalArtsService {
 
   //for mock art minting
   async testMint(title: string, artist: string, imageUrl: string){
-    if (this.ethService.jsonrpcOnly) { return; }
     const newContract = await this.contract.connect(this.ethService.testAccount);
     let transaction;
     try {
-      transaction = await newContract.mint(title, imageUrl, artist);
+      transaction = await newContract.mint(title, imageUrl, artist, this.ethService.currentAccount);
     } catch (err) {
       console.log(err);
       this.error = err;
@@ -221,7 +219,6 @@ export class DigitalArtsService {
 
   //standard transfer function
   async transfer(tokenId: string, to: string) {
-    if (this.ethService.jsonrpcOnly) { return; }
     await this.waitForIt();
     const signer = await this.ethService.web3Provider.getSigner(this.ethService.currentAccount);
     const newContract = await this.contract.connect(signer);

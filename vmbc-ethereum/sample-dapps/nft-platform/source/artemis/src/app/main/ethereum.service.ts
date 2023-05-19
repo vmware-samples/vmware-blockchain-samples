@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { ethers } from 'ethers';
-import Config from 'src/assets/config.json';
 
 declare var window: any;
 let web3Provider: any;
@@ -18,8 +17,6 @@ export class EthereumService {
   currentSigner: any;
   accounts: string[] = [];
   testAccount;
-  jsonrpcProvider: any;
-  jsonrpcOnly: boolean = false;
 
   constructor() {
     this.initialize();
@@ -46,26 +43,15 @@ export class EthereumService {
     } else if(window.web3) { // if deprecated window.web3 provided instead
       this.setWeb3Provider(new ethers.providers.Web3Provider(window.web3));
     } else {
-      //throw new Error('Non-valid/Ethereum browser extension detected. Use MetaMask!');
-      this.jsonrpcOnly = true;
+      throw new Error('Non-valid/Ethereum browser extension detected. Use MetaMask!');
     }
 
-    this.jsonrpcProvider = new ethers.providers.JsonRpcProvider(Config.BLOCKCHAIN_URL);
-    this.jsonrpcProvider.getBlockNumber().then((result) => {
-      console.log("Current block number: " + result);
-    });
-
     // account handling
-    if (this.jsonrpcOnly) {
-      this.currentAccount = '0x5a51Ed9DD3bAC1cdf3Ae4e01593e95d81337dfDD';
-      console.log("jsonrpc current account: " + this.currentAccount);
-    } else {
-      try {
-        await window.ethereum.request({ method: 'eth_requestAccounts' });
-        await this.getAccounts();
-      } catch (e) {
-        console.log(e);
-      }
+    try {
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+      await this.getAccounts();
+    } catch (e) {
+      console.log(e);
     }
   }
 
@@ -81,7 +67,6 @@ export class EthereumService {
   async getAccounts() {
     this.accounts = await web3Provider.listAccounts();
     this.currentAccount = this.accounts[0];
-    console.log("web3 current account: " + this.currentAccount);
     // await this.getAccountBalance(this.currentAccount);
     this.currentSigner = await this.web3Provider.getSigner(this.currentAccount);
   }
