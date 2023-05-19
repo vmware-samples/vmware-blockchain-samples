@@ -1,6 +1,0 @@
-apiVersion: v2
-name: vmbc-permissioning
-description: A Helm chart for vmbc permissioning dapp
-type: application
-version: 0.1.0
-appVersion: "1.16.0"

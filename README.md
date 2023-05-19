@@ -1,10 +1,4 @@
-<img src="./assets/vmware-blockchain-logo.jpg" width="150">
-
-
-# Getting Started
-- VMware Blockchain for Ethereum Beta
-  - [Github Link](https://github.com/vmware-samples/vmware-blockchain-samples/tree/master/vmbc-ethereum)
-  - [Github Docs Website Link](https://vmware-samples.github.io/vmware-blockchain-samples/)
+# Please note that VMware Blockchain for Ethereum has reached End of Life
 
 ## Maintainers
 
