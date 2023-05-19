@@ -19,7 +19,7 @@ credential = DefaultAzureCredential()
 resource_group = "ramki"
 subscription_id = "d5642287-db0e-48da-9592-1b18ace8f084"
 identity_url = "https://identity.confidential-ledger.core.azure.com"
-ledger_name = "ramki-acl"
+ledger_name = "ramki-acl1"
 ledger_url = "https://" + ledger_name + ".confidential-ledger.azure.com"
 
 ##Use the control plane client library

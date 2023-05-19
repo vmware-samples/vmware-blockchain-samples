@@ -37,6 +37,8 @@ https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade
 https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationMenuBlade/~/Credentials/appId/237153c0-3125-4757-b1c2-0095c3cc0d50/isMSAApp~/false
 1b) create client certifcate
 https://learn.microsoft.com/en-us/azure/confidential-ledger/create-client-certificate?WT.mc_id=Portal-fx
+1c) different options - 1a) and 1b)
+https://learn.microsoft.com/en-us/python/api/azure-identity/azure.identity.environmentcredential?view=azure-python
 
 2) assign role to client - job function role/reader/owner/contributor/manage user access
 in subscriptions (top level) add role assignment
