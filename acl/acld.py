@@ -1,3 +1,5 @@
+#https://github.com/Azure/azure-sdk-for-python/tree/main/sdk/confidentialledger/azure-confidentialledger
+#https://github.com/Azure/azure-sdk-for-python/blob/97e27a184f5d186f337270557036197f0b2e07fa/sdk/confidentialledger/azure-confidentialledger/azure/confidentialledger/aio/_operations/_operations.py#L56
 ##Initialization
 
 # Import the Azure authentication library
@@ -14,7 +16,11 @@ from azure.mgmt.confidentialledger.models import ConfidentialLedger
 from azure.confidentialledger import ConfidentialLedgerClient
 from azure.confidentialledger.certificate import ConfidentialLedgerCertificateClient
 
-credential = DefaultAzureCredential()
+#credential = DefaultAzureCredential()
+
+from azure.identity import EnvironmentCredential
+
+credential = EnvironmentCredential()
 
 resource_group = "ramki"
 subscription_id = "d5642287-db0e-48da-9592-1b18ace8f084"
@@ -39,9 +45,21 @@ ledger_client = ConfidentialLedgerClient(
      ledger_certificate_path=ledger_tls_cert_file_name
 )
 
+consortium_members = ledger_client.list_consortium_members()
+print(f"Consortium Members: consortium_members")
+
 sample_entry = {"contents": "Hello world!"}
 append_result = ledger_client.create_ledger_entry(entry=sample_entry)
 print(append_result['transactionId'])
 
 latest_entry = ledger_client.get_current_ledger_entry()
 print(f"Current entry (transaction id = {latest_entry['transactionId']}) in collection {latest_entry['collectionId']}: {latest_entry['contents']}")
+
+constitution = ledger_client.get_constitution()
+
+latest_entry = ledger_client.get_current_ledger_entry()
+print(f"Current entry (transaction id = {latest_entry['transactionId']}) in collection {latest_entry['collectionId']}: {latest_entry['contents']}")
+
+sample_entry = {"contents": "Hello world!"}
+append_result = ledger_client.create_ledger_entry(entry=sample_entry)
+print(append_result['transactionId'])
