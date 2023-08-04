@@ -22,10 +22,8 @@ from azure.identity import EnvironmentCredential
 
 credential = EnvironmentCredential()
 
-resource_group = "ramki"
-subscription_id = "d5642287-db0e-48da-9592-1b18ace8f084"
 identity_url = "https://identity.confidential-ledger.core.azure.com"
-ledger_name = "ramki-acl1"
+ledger_name = "ramki-1"
 ledger_url = "https://" + ledger_name + ".confidential-ledger.azure.com"
 
 ##Use the data plane client library
@@ -47,6 +45,9 @@ ledger_client = ConfidentialLedgerClient(
 
 consortium_members = ledger_client.list_consortium_members()
 print(f"Consortium Members: consortium_members")
+
+latest_entry = ledger_client.get_current_ledger_entry()
+print(f"Current entry (transaction id = {latest_entry['transactionId']}) in collection {latest_entry['collectionId']}: {latest_entry['contents']}")
 
 sample_entry = {"contents": "Hello world!"}
 append_result = ledger_client.create_ledger_entry(entry=sample_entry)

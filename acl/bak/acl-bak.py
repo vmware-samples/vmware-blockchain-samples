@@ -18,8 +18,8 @@ from azure.confidentialledger.certificate import ConfidentialLedgerCertificateCl
 
 # Set variables
 
-resource_group = "ramki"
-ledger_name = "ramki-acl-test"
+resource_group = "ramki-rg"
+ledger_name = "ramki-1"
 subscription_id = "d5642287-db0e-48da-9592-1b18ace8f084"
 
 identity_url = "https://identity.confidential-ledger.core.azure.com"
